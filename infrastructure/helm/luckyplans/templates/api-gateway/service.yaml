@@ -1,0 +1,16 @@
+{{- $component := "api-gateway" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3001
+      targetPort: 3001
+      protocol: TCP
+  selector:
+    {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 4 }}

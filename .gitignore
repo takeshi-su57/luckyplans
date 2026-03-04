@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Turbo
+.turbo/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+*.lcov
+
+# Docker
+*.log
+
+# Kubernetes / Helm
+*.kubeconfig
+infrastructure/helm/luckyplans/charts/
+*.tgz
+# Values files containing secrets — never commit these
+infrastructure/helm/luckyplans/values.secrets.yaml
+infrastructure/helm/luckyplans/values.*.secrets.yaml
+
+# Claude Code
+.claude/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Debug
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*

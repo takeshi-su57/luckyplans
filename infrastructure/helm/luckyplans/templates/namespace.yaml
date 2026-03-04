@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.labels" . | nindent 4 }}
+  annotations:
+    # Prevents "helm uninstall" from deleting the namespace and any PVCs/secrets inside it.
+    helm.sh/resource-policy: keep

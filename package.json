@@ -1,0 +1,28 @@
+{
+  "name": "luckyplans",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "bash infrastructure/scripts/setup.sh",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "type-check": "turbo run type-check",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "deploy:local": "bash infrastructure/scripts/deploy-local.sh",
+    "deploy:teardown": "bash infrastructure/scripts/teardown.sh",
+    "deploy:status": "bash infrastructure/scripts/status.sh"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "turbo": "^2.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.4"
+}

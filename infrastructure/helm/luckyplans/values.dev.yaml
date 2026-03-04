@@ -1,0 +1,43 @@
+# Overrides for: dev (k3d on VPS)
+# Usage:
+#   helm upgrade --install luckyplans ./infrastructure/helm/luckyplans \
+#     -f infrastructure/helm/luckyplans/values.yaml \
+#     -f infrastructure/helm/luckyplans/values.dev.yaml \
+#     --namespace luckyplans --create-namespace --atomic --timeout 3m
+
+image:
+  registry: "docker.io"
+  pullPolicy: Always
+
+config:
+  nodeEnv: development
+  corsOrigin: "http://dev.luckyplans.com"
+
+ingress:
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+  host: "dev.luckyplans.com"
+  tls:
+    enabled: false
+
+apiGateway:
+  image:
+    repository: luckyplans/api-gateway
+    tag: dev
+
+serviceAuth:
+  image:
+    repository: luckyplans/service-auth
+    tag: dev
+
+serviceCore:
+  image:
+    repository: luckyplans/service-core
+    tag: dev
+
+web:
+  image:
+    repository: luckyplans/web
+    tag: dev
+  buildArgs:
+    graphqlUrl: "http://dev.luckyplans.com/graphql"

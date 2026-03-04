@@ -1,0 +1,40 @@
+{{- $component := "web" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+  annotations:
+    # NEXT_PUBLIC_GRAPHQL_URL is baked into the Next.js bundle at Docker build time.
+    # Helm cannot inject it at runtime. The deploy script reads web.buildArgs.graphqlUrl
+    # from values.yaml and passes it as --build-arg when building the image.
+    # This annotation records what URL was baked into the currently deployed image.
+    luckyplans/baked-graphql-url: {{ .Values.web.buildArgs.graphqlUrl | quote }}
+spec:
+  replicas: {{ .Values.web.replicas }}
+  selector:
+    matchLabels:
+      {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ $component }}
+          image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.web.image.repository "tag" .Values.web.image.tag) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+          # web reads no runtime env vars — all config is baked at build time.
+          resources:
+            {{- toYaml .Values.web.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.web.probes.readiness.path }}
+              port: {{ .Values.web.probes.readiness.port }}
+            initialDelaySeconds: {{ .Values.web.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.probes.readiness.periodSeconds }}
+            failureThreshold: {{ .Values.web.probes.readiness.failureThreshold }}

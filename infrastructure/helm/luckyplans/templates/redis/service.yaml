@@ -1,0 +1,17 @@
+{{- $component := "redis" }}
+apiVersion: v1
+kind: Service
+metadata:
+  # Service name must stay "redis" to match REDIS_HOST=redis in the ConfigMap.
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: 6379
+      protocol: TCP
+  selector:
+    {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 4 }}

@@ -1,0 +1,16 @@
+{{- $component := "web" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+  selector:
+    {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 4 }}

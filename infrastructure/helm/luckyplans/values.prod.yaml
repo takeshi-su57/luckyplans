@@ -1,0 +1,86 @@
+# Overrides for: prod (k3d on-premises)
+# Usage:
+#   helm upgrade --install luckyplans ./infrastructure/helm/luckyplans \
+#     -f infrastructure/helm/luckyplans/values.yaml \
+#     -f infrastructure/helm/luckyplans/values.prod.yaml \
+#     --namespace luckyplans --create-namespace --atomic --timeout 5m
+
+image:
+  registry: "docker.io"
+  pullPolicy: IfNotPresent
+
+config:
+  nodeEnv: production
+  corsOrigin: "https://luckyplans.com"
+
+ingress:
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  host: "luckyplans.com"
+  tls:
+    enabled: true
+    secretName: luckyplans-tls
+
+redis:
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+apiGateway:
+  image:
+    repository: luckyplans/api-gateway
+    tag: "1.0.0"
+  replicas: 2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+serviceAuth:
+  image:
+    repository: luckyplans/service-auth
+    tag: "1.0.0"
+  replicas: 2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+serviceCore:
+  image:
+    repository: luckyplans/service-core
+    tag: "1.0.0"
+  replicas: 2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+web:
+  image:
+    repository: luckyplans/web
+    tag: "1.0.0"
+  replicas: 2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  buildArgs:
+    graphqlUrl: "https://luckyplans.com/graphql"

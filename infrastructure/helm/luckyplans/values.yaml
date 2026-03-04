@@ -1,0 +1,153 @@
+# ============================================================
+# Global / shared
+# ============================================================
+namespace: luckyplans
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Registry prefix. For local k3d (images imported via k3d image import),
+# leave as "" so image names are bare: luckyplans/web:latest
+# For Docker Hub: set to "docker.io"
+image:
+  registry: ""
+  pullPolicy: IfNotPresent
+
+# ============================================================
+# Application config (rendered into ConfigMap)
+# ============================================================
+config:
+  nodeEnv: development
+  redisHost: redis
+  redisPort: "6379"
+  apiGatewayPort: "3001"
+  corsOrigin: "http://localhost"
+
+# ============================================================
+# Secrets — empty by default (rendered as a k8s Secret).
+# Add sensitive key-value pairs here. Values are plain strings;
+# Kubernetes handles base64 encoding via stringData.
+# For production, use an external secrets manager instead.
+# ============================================================
+secrets: {}
+# Example:
+#   JWT_SECRET: "changeme"
+#   DB_PASSWORD: "changeme"
+
+# ============================================================
+# Ingress (Traefik)
+# ============================================================
+ingress:
+  enabled: true
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+  # Empty host = match all hostnames (correct for local k3d)
+  host: ""
+  tls:
+    enabled: false
+    secretName: ""
+
+# ============================================================
+# Redis
+# ============================================================
+redis:
+  image: redis:7-alpine
+  replicas: 1
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+  probes:
+    readiness:
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    liveness:
+      initialDelaySeconds: 10
+      periodSeconds: 30
+
+# ============================================================
+# API Gateway
+# ============================================================
+apiGateway:
+  image:
+    repository: luckyplans/api-gateway
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  probes:
+    readiness:
+      path: /health
+      port: 3001
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      failureThreshold: 6
+
+# ============================================================
+# service-auth (Redis transport microservice — no HTTP port)
+# ============================================================
+serviceAuth:
+  image:
+    repository: luckyplans/service-auth
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# ============================================================
+# service-core (Redis transport microservice — no HTTP port)
+# ============================================================
+serviceCore:
+  image:
+    repository: luckyplans/service-core
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# ============================================================
+# Web (Next.js)
+# ============================================================
+web:
+  image:
+    repository: luckyplans/web
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  probes:
+    readiness:
+      path: /
+      port: 3000
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      failureThreshold: 6
+  # IMPORTANT: graphqlUrl is a Docker BUILD ARG baked into the Next.js bundle.
+  # It is NOT injected at runtime by Helm. The deploy script reads this value
+  # and passes it as --build-arg NEXT_PUBLIC_GRAPHQL_URL=<value> at image build time.
+  # Changing this value here only takes effect after rebuilding the web image.
+  buildArgs:
+    graphqlUrl: "http://localhost/graphql"

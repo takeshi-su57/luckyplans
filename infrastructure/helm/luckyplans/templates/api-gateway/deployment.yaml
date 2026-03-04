@@ -1,0 +1,39 @@
+{{- $component := "api-gateway" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+spec:
+  replicas: {{ .Values.apiGateway.replicas }}
+  selector:
+    matchLabels:
+      {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ $component }}
+          image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.apiGateway.image.repository "tag" .Values.apiGateway.image.tag) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - configMapRef:
+                name: luckyplans-config
+            - secretRef:
+                name: luckyplans-secrets
+                optional: true
+          resources:
+            {{- toYaml .Values.apiGateway.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.apiGateway.probes.readiness.path }}
+              port: {{ .Values.apiGateway.probes.readiness.port }}
+            initialDelaySeconds: {{ .Values.apiGateway.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.apiGateway.probes.readiness.periodSeconds }}
+            failureThreshold: {{ .Values.apiGateway.probes.readiness.failureThreshold }}

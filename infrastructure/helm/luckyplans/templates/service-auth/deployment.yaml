@@ -1,0 +1,31 @@
+{{- $component := "service-auth" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+spec:
+  replicas: {{ .Values.serviceAuth.replicas }}
+  selector:
+    matchLabels:
+      {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ $component }}
+          image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.serviceAuth.image.repository "tag" .Values.serviceAuth.image.tag) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # No HTTP port — communicates via Redis transport only.
+          envFrom:
+            - configMapRef:
+                name: luckyplans-config
+            - secretRef:
+                name: luckyplans-secrets
+                optional: true
+          resources:
+            {{- toYaml .Values.serviceAuth.resources | nindent 12 }}
