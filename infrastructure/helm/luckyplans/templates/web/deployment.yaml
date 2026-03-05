@@ -22,10 +22,22 @@ spec:
       labels:
         {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
     spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
       containers:
         - name: {{ $component }}
           image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.web.image.repository "tag" .Values.web.image.tag) }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: 3000
           # web reads no runtime env vars — all config is baked at build time.
@@ -38,3 +50,10 @@ spec:
             initialDelaySeconds: {{ .Values.web.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.web.probes.readiness.periodSeconds }}
             failureThreshold: {{ .Values.web.probes.readiness.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.web.probes.liveness.path }}
+              port: {{ .Values.web.probes.liveness.port }}
+            initialDelaySeconds: {{ .Values.web.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.web.probes.liveness.periodSeconds }}
+            failureThreshold: {{ .Values.web.probes.liveness.failureThreshold }}

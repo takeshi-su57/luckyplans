@@ -1,0 +1,91 @@
+name: Docker Build & Push
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to build (branch, tag, or SHA). Defaults to the default branch.'
+        required: false
+        type: string
+        default: ''
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    name: Build ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    # Only run after successful CI or on manual dispatch
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [web, api-gateway, service-auth, service-core]
+
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ matrix.service }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          ref: ${{ inputs.ref || github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate short SHA
+        id: sha
+        env:
+          COMMIT: ${{ inputs.ref || github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          echo "short=$(echo "$COMMIT" | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - name: Set NEXT_PUBLIC_GRAPHQL_URL for web
+        if: matrix.service == 'web'
+        id: graphql-url
+        run: |
+          # Use relative URL so a single image works on any domain (dev, prod, local)
+          echo "url=/graphql" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push image
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          file: apps/${{ matrix.service }}/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:sha-${{ steps.sha.outputs.short }}
+            ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,scope=${{ matrix.service }},mode=max
+          provenance: true
+          sbom: true
+          build-args: |
+            ${{ matrix.service == 'web' && format('NEXT_PUBLIC_GRAPHQL_URL={0}', steps.graphql-url.outputs.url) || '' }}
+
+      - name: Output image digest
+        run: echo "Pushed ${{ env.IMAGE_NAME }}:sha-${{ steps.sha.outputs.short }}"

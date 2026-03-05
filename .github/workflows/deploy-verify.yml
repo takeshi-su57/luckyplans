@@ -1,0 +1,96 @@
+name: Deploy & Verify
+
+on:
+  workflow_run:
+    workflows: [Docker Build & Push]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: 'Image tag to deploy (e.g. sha-abc1234)'
+        required: true
+        type: string
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+          - both
+        default: dev
+
+concurrency:
+  group: deploy-verify-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Resolve the image tag to deploy
+  # ---------------------------------------------------------------------------
+  resolve-tag:
+    name: Resolve image tag
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.value }}
+      ref: ${{ steps.tag.outputs.ref }}
+    steps:
+      - name: Determine tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.image-tag }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          CURRENT_SHA: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "value=$INPUT_TAG" >> "$GITHUB_OUTPUT"
+            echo "ref=$CURRENT_SHA" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=sha-$(echo "$HEAD_SHA" | cut -c1-7)" >> "$GITHUB_OUTPUT"
+            echo "ref=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Deploy to Dev
+  # ---------------------------------------------------------------------------
+  deploy-dev:
+    name: Deploy to Dev
+    needs: resolve-tag
+    if: >
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.environment == 'dev' || inputs.environment == 'both'))
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      environment: dev
+      image-tag: ${{ needs.resolve-tag.outputs.tag }}
+      deploy-host: dev.luckyplans.xyz
+      values-file: values.dev.yaml
+      checkout-ref: ${{ needs.resolve-tag.outputs.ref }}
+    secrets:
+      KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DEV }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+  # ---------------------------------------------------------------------------
+  # Deploy to Prod (requires manual approval via GitHub Environment)
+  # ---------------------------------------------------------------------------
+  deploy-prod:
+    name: Deploy to Prod
+    needs: [resolve-tag]
+    if: >
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.environment == 'prod' || inputs.environment == 'both'))
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      environment: prod
+      image-tag: ${{ needs.resolve-tag.outputs.tag }}
+      deploy-host: luckyplans.xyz
+      values-file: values.prod.yaml
+      checkout-ref: ${{ needs.resolve-tag.outputs.ref }}
+    secrets:
+      KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_PROD }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}

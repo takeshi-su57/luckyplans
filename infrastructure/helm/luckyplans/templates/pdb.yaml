@@ -1,0 +1,23 @@
+{{- $services := dict
+  "api-gateway" .Values.apiGateway.replicas
+  "service-auth" .Values.serviceAuth.replicas
+  "service-core" .Values.serviceCore.replicas
+  "web" .Values.web.replicas
+}}
+{{- range $component, $replicas := $services }}
+{{- if gt (int $replicas) 1 }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" $ }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" $) | nindent 4 }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" $) | nindent 6 }}
+{{- end }}
+{{- end }}

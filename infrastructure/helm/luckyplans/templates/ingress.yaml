@@ -23,6 +23,13 @@ spec:
       {{- end }}
       http:
         paths:
+          - path: /health
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 3001
           - path: /graphql
             pathType: Prefix
             backend:
