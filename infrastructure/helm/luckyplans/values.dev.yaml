@@ -3,23 +3,36 @@
 #   helm upgrade --install luckyplans ./infrastructure/helm/luckyplans \
 #     -f infrastructure/helm/luckyplans/values.yaml \
 #     -f infrastructure/helm/luckyplans/values.dev.yaml \
-#     --namespace luckyplans --create-namespace --atomic --timeout 3m
+#     --namespace luckyplans --create-namespace --rollback-on-failure --timeout 5m
 
 image:
-  registry: "docker.io"
+  registry: 'ghcr.io'
   pullPolicy: Always
 
 config:
-  nodeEnv: development
-  corsOrigin: "http://dev.luckyplans.com"
+  # "production" is intentional — dev runs production-built images from GHCR
+  # (not source-mode with hot reload). Only local k3d uses development.
+  nodeEnv: production
+  corsOrigin: 'https://dev.luckyplans.xyz'
 
 ingress:
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
-  host: "dev.luckyplans.com"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: 'true'
+    traefik.ingress.kubernetes.io/router.middlewares: luckyplans-redirect-https@kubernetescrd,luckyplans-hsts-header@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  host: 'dev.luckyplans.xyz'
   tls:
-    enabled: false
+    enabled: true
+    secretName: luckyplans-dev-tls
 
+certManager:
+  enabled: true
+  email: 'takeshisuz57@gmail.com'
+  issuer: letsencrypt-prod
+
+# CI overrides repository and tag via --set flags.
+# These defaults are for manual deployment only.
 apiGateway:
   image:
     repository: luckyplans/api-gateway
@@ -40,4 +53,4 @@ web:
     repository: luckyplans/web
     tag: dev
   buildArgs:
-    graphqlUrl: "http://dev.luckyplans.com/graphql"
+    graphqlUrl: '/graphql'

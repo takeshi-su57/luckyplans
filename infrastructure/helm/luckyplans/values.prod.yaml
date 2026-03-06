@@ -3,21 +3,23 @@
 #   helm upgrade --install luckyplans ./infrastructure/helm/luckyplans \
 #     -f infrastructure/helm/luckyplans/values.yaml \
 #     -f infrastructure/helm/luckyplans/values.prod.yaml \
-#     --namespace luckyplans --create-namespace --atomic --timeout 5m
+#     --namespace luckyplans --create-namespace --rollback-on-failure --timeout 5m
 
 image:
-  registry: "docker.io"
-  pullPolicy: IfNotPresent
+  registry: 'ghcr.io'
+  pullPolicy: Always
 
 config:
   nodeEnv: production
-  corsOrigin: "https://luckyplans.com"
+  corsOrigin: 'https://luckyplans.xyz'
 
 ingress:
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-  host: "luckyplans.com"
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: 'true'
+    traefik.ingress.kubernetes.io/router.middlewares: luckyplans-redirect-https@kubernetescrd,luckyplans-hsts-header@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  host: 'luckyplans.xyz'
   tls:
     enabled: true
     secretName: luckyplans-tls
@@ -25,62 +27,67 @@ ingress:
 redis:
   resources:
     requests:
-      memory: "128Mi"
-      cpu: "100m"
+      memory: '128Mi'
+      cpu: '100m'
     limits:
-      memory: "256Mi"
-      cpu: "200m"
+      memory: '256Mi'
+      cpu: '200m'
 
 apiGateway:
   image:
     repository: luckyplans/api-gateway
-    tag: "1.0.0"
+    tag: '1.0.0'
   replicas: 2
   resources:
     requests:
-      memory: "256Mi"
-      cpu: "200m"
+      memory: '256Mi'
+      cpu: '200m'
     limits:
-      memory: "512Mi"
-      cpu: "500m"
+      memory: '512Mi'
+      cpu: '500m'
 
 serviceAuth:
   image:
     repository: luckyplans/service-auth
-    tag: "1.0.0"
+    tag: '1.0.0'
   replicas: 2
   resources:
     requests:
-      memory: "256Mi"
-      cpu: "200m"
+      memory: '256Mi'
+      cpu: '200m'
     limits:
-      memory: "512Mi"
-      cpu: "500m"
+      memory: '512Mi'
+      cpu: '500m'
 
 serviceCore:
   image:
     repository: luckyplans/service-core
-    tag: "1.0.0"
+    tag: '1.0.0'
   replicas: 2
   resources:
     requests:
-      memory: "256Mi"
-      cpu: "200m"
+      memory: '256Mi'
+      cpu: '200m'
     limits:
-      memory: "512Mi"
-      cpu: "500m"
+      memory: '512Mi'
+      cpu: '500m'
 
 web:
   image:
     repository: luckyplans/web
-    tag: "1.0.0"
+    tag: '1.0.0'
   replicas: 2
   resources:
     requests:
-      memory: "256Mi"
-      cpu: "200m"
+      memory: '256Mi'
+      cpu: '200m'
     limits:
-      memory: "512Mi"
-      cpu: "500m"
+      memory: '512Mi'
+      cpu: '500m'
   buildArgs:
-    graphqlUrl: "https://luckyplans.com/graphql"
+    graphqlUrl: '/graphql'
+
+certManager:
+  enabled: true
+  email: 'takeshisuz57@gmail.com'
+  issuer: letsencrypt-prod

@@ -1,0 +1,29 @@
+{{- if .Values.ingress.tls.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.labels" . | nindent 4 }}
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+# HSTS (HTTP Strict Transport Security) — tells browsers to always use HTTPS.
+# Increase stsSeconds to 31536000 (1 year) after verifying TLS works correctly.
+# Only set stsPreload: true if submitting to https://hstspreload.org/.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: hsts-header
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.labels" . | nindent 4 }}
+spec:
+  headers:
+    stsSeconds: 300
+    stsIncludeSubdomains: true
+    stsPreload: false
+{{- end }}

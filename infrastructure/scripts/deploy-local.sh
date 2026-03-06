@@ -26,8 +26,8 @@ done
 # inject it at runtime. We extract it here so .env is not required for deploys.
 # ---------------------------------------------------------------------------
 WEB_GRAPHQL_URL=$(grep 'graphqlUrl:' "$HELM_CHART/values.yaml" \
-  | head -1 | sed 's/.*graphqlUrl:[[:space:]]*//' | tr -d '"')
-WEB_GRAPHQL_URL="${WEB_GRAPHQL_URL:-http://localhost/graphql}"
+  | head -1 | sed 's/.*graphqlUrl:[[:space:]]*//' | tr -d "\"'")
+WEB_GRAPHQL_URL="${WEB_GRAPHQL_URL:-/graphql}"
 
 echo "NEXT_PUBLIC_GRAPHQL_URL (baked into web image): $WEB_GRAPHQL_URL"
 
@@ -55,7 +55,7 @@ echo ""
 echo "--- Building Docker images ---"
 cd "$ROOT_DIR"
 
-docker build \
+MSYS_NO_PATHCONV=1 docker build \
   --build-arg NEXT_PUBLIC_GRAPHQL_URL="$WEB_GRAPHQL_URL" \
   -t luckyplans/web:latest \
   -f apps/web/Dockerfile .
@@ -90,8 +90,7 @@ helm upgrade --install "$RELEASE_NAME" "$HELM_CHART" \
   --create-namespace \
   -f "$HELM_CHART/values.yaml" \
   --rollback-on-failure \
-  --timeout 5m \
-  --wait
+  --timeout 5m
 
 # ---------------------------------------------------------------------------
 # Post-deploy summary

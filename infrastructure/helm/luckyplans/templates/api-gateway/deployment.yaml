@@ -16,10 +16,22 @@ spec:
       labels:
         {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
     spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
       containers:
         - name: {{ $component }}
           image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.apiGateway.image.repository "tag" .Values.apiGateway.image.tag) }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: 3001
           envFrom:
@@ -37,3 +49,10 @@ spec:
             initialDelaySeconds: {{ .Values.apiGateway.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.apiGateway.probes.readiness.periodSeconds }}
             failureThreshold: {{ .Values.apiGateway.probes.readiness.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.apiGateway.probes.liveness.path }}
+              port: {{ .Values.apiGateway.probes.liveness.port }}
+            initialDelaySeconds: {{ .Values.apiGateway.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.apiGateway.probes.liveness.periodSeconds }}
+            failureThreshold: {{ .Values.apiGateway.probes.liveness.failureThreshold }}

@@ -3,15 +3,19 @@
 # ============================================================
 namespace: luckyplans
 
-nameOverride: ""
-fullnameOverride: ""
+nameOverride: ''
+fullnameOverride: ''
 
 # Registry prefix. For local k3d (images imported via k3d image import),
 # leave as "" so image names are bare: luckyplans/web:latest
 # For Docker Hub: set to "docker.io"
 image:
-  registry: ""
+  registry: ''
   pullPolicy: IfNotPresent
+  pullSecrets: []
+  # Example for private GHCR repos:
+  #   pullSecrets:
+  #     - name: ghcr-pull-secret
 
 # ============================================================
 # Application config (rendered into ConfigMap)
@@ -19,9 +23,9 @@ image:
 config:
   nodeEnv: development
   redisHost: redis
-  redisPort: "6379"
-  apiGatewayPort: "3001"
-  corsOrigin: "http://localhost"
+  redisPort: '6379'
+  apiGatewayPort: '3001'
+  corsOrigin: 'http://localhost'
 
 # ============================================================
 # Secrets — empty by default (rendered as a k8s Secret).
@@ -42,10 +46,21 @@ ingress:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
   # Empty host = match all hostnames (correct for local k3d)
-  host: ""
+  host: ''
   tls:
     enabled: false
-    secretName: ""
+    secretName: ''
+
+# ============================================================
+# cert-manager (Let's Encrypt automatic TLS)
+# ============================================================
+certManager:
+  enabled: false
+  # REQUIRED when enabled: must be a valid email address. Let's Encrypt uses it
+  # for expiry notifications and account recovery. Use a team distribution list
+  # (e.g. ops@luckyplans.xyz) rather than a personal email.
+  email: ''
+  issuer: letsencrypt-prod
 
 # ============================================================
 # Redis
@@ -55,11 +70,11 @@ redis:
   replicas: 1
   resources:
     requests:
-      memory: "64Mi"
-      cpu: "50m"
+      memory: '64Mi'
+      cpu: '50m'
     limits:
-      memory: "128Mi"
-      cpu: "100m"
+      memory: '128Mi'
+      cpu: '100m'
   probes:
     readiness:
       initialDelaySeconds: 5
@@ -78,11 +93,11 @@ apiGateway:
   replicas: 1
   resources:
     requests:
-      memory: "256Mi"
-      cpu: "100m"
+      memory: '256Mi'
+      cpu: '100m'
     limits:
-      memory: "512Mi"
-      cpu: "500m"
+      memory: '512Mi'
+      cpu: '500m'
   probes:
     readiness:
       path: /health
@@ -90,6 +105,12 @@ apiGateway:
       initialDelaySeconds: 20
       periodSeconds: 10
       failureThreshold: 6
+    liveness:
+      path: /health
+      port: 3001
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
 
 # ============================================================
 # service-auth (Redis transport microservice — no HTTP port)
@@ -101,11 +122,16 @@ serviceAuth:
   replicas: 1
   resources:
     requests:
-      memory: "128Mi"
-      cpu: "100m"
+      memory: '128Mi'
+      cpu: '100m'
     limits:
-      memory: "256Mi"
-      cpu: "200m"
+      memory: '256Mi'
+      cpu: '200m'
+  probes:
+    liveness:
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      failureThreshold: 3
 
 # ============================================================
 # service-core (Redis transport microservice — no HTTP port)
@@ -117,11 +143,16 @@ serviceCore:
   replicas: 1
   resources:
     requests:
-      memory: "128Mi"
-      cpu: "100m"
+      memory: '128Mi'
+      cpu: '100m'
     limits:
-      memory: "256Mi"
-      cpu: "200m"
+      memory: '256Mi'
+      cpu: '200m'
+  probes:
+    liveness:
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      failureThreshold: 3
 
 # ============================================================
 # Web (Next.js)
@@ -133,11 +164,11 @@ web:
   replicas: 1
   resources:
     requests:
-      memory: "128Mi"
-      cpu: "100m"
+      memory: '128Mi'
+      cpu: '100m'
     limits:
-      memory: "256Mi"
-      cpu: "200m"
+      memory: '256Mi'
+      cpu: '200m'
   probes:
     readiness:
       path: /
@@ -145,9 +176,15 @@ web:
       initialDelaySeconds: 20
       periodSeconds: 10
       failureThreshold: 6
+    liveness:
+      path: /
+      port: 3000
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
   # IMPORTANT: graphqlUrl is a Docker BUILD ARG baked into the Next.js bundle.
   # It is NOT injected at runtime by Helm. The deploy script reads this value
   # and passes it as --build-arg NEXT_PUBLIC_GRAPHQL_URL=<value> at image build time.
   # Changing this value here only takes effect after rebuilding the web image.
   buildArgs:
-    graphqlUrl: "http://localhost/graphql"
+    graphqlUrl: '/graphql'

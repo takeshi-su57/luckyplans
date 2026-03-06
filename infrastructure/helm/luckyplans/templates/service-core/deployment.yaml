@@ -16,10 +16,22 @@ spec:
       labels:
         {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
     spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
       containers:
         - name: {{ $component }}
           image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.serviceCore.image.repository "tag" .Values.serviceCore.image.tag) }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
           # No HTTP port — communicates via Redis transport only.
           envFrom:
             - configMapRef:
@@ -29,3 +41,9 @@ spec:
                 optional: true
           resources:
             {{- toYaml .Values.serviceCore.resources | nindent 12 }}
+          livenessProbe:
+            exec:
+              command: ["node", "-e", "process.exit(0)"]
+            initialDelaySeconds: {{ .Values.serviceCore.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.serviceCore.probes.liveness.periodSeconds }}
+            failureThreshold: {{ .Values.serviceCore.probes.liveness.failureThreshold }}
