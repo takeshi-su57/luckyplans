@@ -17,7 +17,7 @@
     "@nestjs/common": "^10.3.0",
     "@nestjs/core": "^11.1.16",
     "@nestjs/graphql": "^13.2.4",
-    "@nestjs/microservices": "^10.3.0",
+    "@nestjs/microservices": "^11.1.16",
     "@nestjs/platform-express": "^10.3.0",
     "@luckyplans/shared": "workspace:*",
     "graphql": "^16.8.0",
