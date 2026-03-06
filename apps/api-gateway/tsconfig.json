@@ -1,8 +1,7 @@
 {
   "extends": "@luckyplans/config/tsconfig.nestjs.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "baseUrl": "./"
+    "outDir": "./dist"
   },
   "include": ["src"]
 }
