@@ -25,6 +25,7 @@
     "@nestjs/schematics": "^11.0.9",
     "@luckyplans/config": "workspace:*",
     "@types/node": "^25.3.5",
+    "eslint": "^8.57.0",
     "typescript": "^5.4.0"
   }
 }
