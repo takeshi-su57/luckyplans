@@ -1,0 +1,13 @@
+# Traefik Middleware for ArgoCD HTTPS redirect.
+# Applied by install-argocd.sh after ArgoCD Helm install.
+# Referenced by: infrastructure/argocd/values-prod.yaml
+#   annotation: traefik.ingress.kubernetes.io/router.middlewares: argocd-redirect-https@kubernetescrd
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: argocd
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true

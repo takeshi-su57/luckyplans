@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: luckyplans-prod
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/takeshi-su57/platform-clients.git
+    targetRevision: main
+    path: infrastructure/helm/luckyplans
+    helm:
+      valueFiles:
+        - values.prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: luckyplans
+  # Ignore Secret diffs — Helm lookup() returns nil in ArgoCD's repo server
+  # (no cluster access), so the rendered Secret always shows a new random
+  # JWT_SECRET. RespectIgnoreDifferences prevents ArgoCD from overwriting the
+  # live Secret on sync.
+  ignoreDifferences:
+    - group: ''
+      kind: Secret
+      name: luckyplans-secrets
+      jsonPointers:
+        - /stringData
+        - /data
+  syncPolicy:
+    automated:
+      prune: true # remove resources no longer in Git
+      selfHeal: true # revert manual cluster changes back to Git state
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true

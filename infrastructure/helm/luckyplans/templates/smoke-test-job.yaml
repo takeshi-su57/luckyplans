@@ -1,0 +1,97 @@
+{{- if .Values.smokeTest.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: smoke-test
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: smoke-test
+        {{- include "luckyplans.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      containers:
+        - name: smoke-test
+          image: curlimages/curl:8.12.1
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ['ALL']
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi
+          command: ['/bin/sh', '-c']
+          args:
+            - |
+              set -e
+              NS="{{ include "luckyplans.namespace" . }}"
+              RETRIES=5
+              DELAY=10
+
+              # ----------------------------------------------------------
+              # Test 1: API Gateway health
+              # ----------------------------------------------------------
+              echo "==> Testing api-gateway health"
+              for i in $(seq 1 $RETRIES); do
+                BODY=$(curl -sf "http://api-gateway.${NS}.svc:3001/health" 2>/dev/null || true)
+                if echo "$BODY" | grep -q '"status":"ok"'; then
+                  echo "    PASS: $BODY"
+                  break
+                fi
+                echo "    Attempt $i failed, retrying in ${DELAY}s..."
+                sleep $DELAY
+                [ "$i" -eq "$RETRIES" ] && { echo "FAIL: health check"; exit 1; }
+              done
+
+              # ----------------------------------------------------------
+              # Test 2: Web frontend
+              # ----------------------------------------------------------
+              echo "==> Testing web frontend"
+              for i in $(seq 1 $RETRIES); do
+                STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "http://web.${NS}.svc:3000/" || true)
+                if [ "$STATUS" = "200" ]; then
+                  echo "    PASS: HTTP 200"
+                  break
+                fi
+                echo "    Attempt $i: HTTP $STATUS, retrying in ${DELAY}s..."
+                sleep $DELAY
+                [ "$i" -eq "$RETRIES" ] && { echo "FAIL: web check"; exit 1; }
+              done
+
+              # ----------------------------------------------------------
+              # Test 3: GraphQL endpoint
+              # ----------------------------------------------------------
+              echo "==> Testing GraphQL endpoint"
+              for i in $(seq 1 $RETRIES); do
+                BODY=$(curl -sf -X POST "http://api-gateway.${NS}.svc:3001/graphql" \
+                  -H "Content-Type: application/json" \
+                  -d '{"query":"{ health }"}' 2>/dev/null || true)
+                if echo "$BODY" | grep -q "API Gateway is running"; then
+                  echo "    PASS: $BODY"
+                  break
+                fi
+                echo "    Attempt $i failed, retrying in ${DELAY}s..."
+                sleep $DELAY
+                [ "$i" -eq "$RETRIES" ] && { echo "FAIL: GraphQL check"; exit 1; }
+              done
+
+              echo ""
+              echo "==> All smoke tests passed"
+{{- end }}

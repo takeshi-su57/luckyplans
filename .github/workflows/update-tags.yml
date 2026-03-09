@@ -1,0 +1,97 @@
+name: Update Image Tags
+
+on:
+  workflow_run:
+    workflows: [Docker Build & Push]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: 'Image tag to set (e.g. sha-abc1234)'
+        required: true
+        type: string
+
+concurrency:
+  group: update-tags
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-tags:
+    name: Update Helm values with new image tags
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    # Only run after successful Docker build or on manual dispatch
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: main
+          fetch-depth: 0
+          # CD_PUSH_TOKEN (a PAT with repo write access) is REQUIRED when branch
+          # protection is enabled on main — GITHUB_TOKEN cannot bypass protection
+          # rules. Create a fine-grained PAT with Contents: read+write scope and
+          # store it as a repository secret named CD_PUSH_TOKEN.
+          token: ${{ secrets.CD_PUSH_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Resolve image tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.image-tag }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "value=$INPUT_TAG" >> "$GITHUB_OUTPUT"
+          else
+            # HEAD_SHA comes from the Docker Build workflow_run event.
+            # This matches the tag Docker Build generates via git rev-parse.
+            # Note: if Docker Build was triggered by workflow_dispatch with a
+            # custom ref, head_sha may differ — use manual Update Tags instead.
+            echo "value=sha-$(echo "$HEAD_SHA" | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install yq
+        uses: mikefarah/yq@d2f1ae9db722ac6b0702dd7f8a08dd22722d8c2d # v4.44.3
+
+      - name: Update image tags in values files
+        env:
+          TAG: ${{ steps.tag.outputs.value }}
+        run: |
+          echo "==> Updating image tags to: $TAG"
+
+          VALUES_FILE="infrastructure/helm/luckyplans/values.prod.yaml"
+          echo "    Updating $VALUES_FILE"
+          yq -i ".apiGateway.image.tag = \"$TAG\"" "$VALUES_FILE"
+          yq -i ".serviceAuth.image.tag = \"$TAG\"" "$VALUES_FILE"
+          yq -i ".serviceCore.image.tag = \"$TAG\"" "$VALUES_FILE"
+          yq -i ".web.image.tag = \"$TAG\"" "$VALUES_FILE"
+
+          echo "==> Done. Changes:"
+          git diff --stat
+
+      - name: Commit and push
+        env:
+          TAG: ${{ steps.tag.outputs.value }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add infrastructure/helm/luckyplans/values.prod.yaml
+
+          # Only commit if there are actual changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit — tags already up to date."
+            exit 0
+          fi
+
+          git commit -m "chore: update image tags to ${TAG} [skip ci]"
+          git push origin main

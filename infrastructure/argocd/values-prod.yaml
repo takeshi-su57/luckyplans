@@ -1,0 +1,20 @@
+# ArgoCD overrides for: prod (k3d on-premises)
+# Accessible at https://luckyplans.xyz/argocd
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      traefik.ingress.kubernetes.io/router.tls: 'true'
+      traefik.ingress.kubernetes.io/router.middlewares: argocd-redirect-https@kubernetescrd
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hostname: luckyplans.xyz
+    path: /argocd
+    pathType: Prefix
+    tls: true
+    extraTls:
+      - secretName: argocd-prod-tls
+        hosts:
+          - luckyplans.xyz

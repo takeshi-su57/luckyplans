@@ -14,12 +14,15 @@ on:
         default: ''
 
 concurrency:
-  group: docker-${{ github.ref }}
+  # For workflow_run triggers github.ref is always the default branch, so this
+  # group is effectively a singleton queue that serialises all Docker builds.
+  group: docker-build-main
   cancel-in-progress: false
 
 permissions:
   contents: read
   packages: write
+  security-events: write
 
 jobs:
   build-and-push:
@@ -59,10 +62,11 @@ jobs:
 
       - name: Generate short SHA
         id: sha
-        env:
-          COMMIT: ${{ inputs.ref || github.event.workflow_run.head_sha || github.sha }}
         run: |
-          echo "short=$(echo "$COMMIT" | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          # Always resolve from the actual checked-out commit to handle branch
+          # names, tags, and SHAs uniformly (inputs.ref could be a branch name
+          # like "main" which cut -c1-7 would mangle).
+          echo "short=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Set NEXT_PUBLIC_GRAPHQL_URL for web
         if: matrix.service == 'web'
@@ -86,6 +90,32 @@ jobs:
           sbom: true
           build-args: |
             ${{ matrix.service == 'web' && format('NEXT_PUBLIC_GRAPHQL_URL={0}', steps.graphql-url.outputs.url) || '' }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a3 # v0.30.0
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:sha-${{ steps.sha.outputs.short }}
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+          timeout: '10m'
+
+      - name: Generate Trivy SARIF report
+        if: always()
+        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a3 # v0.30.0
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:sha-${{ steps.sha.outputs.short }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          timeout: '10m'
+
+      - name: Upload Trivy results to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
 
       - name: Output image digest
         run: echo "Pushed ${{ env.IMAGE_NAME }}:sha-${{ steps.sha.outputs.short }}"

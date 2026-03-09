@@ -2,25 +2,24 @@
 
 ## Overview
 
-The platform uses a single Helm chart (`infrastructure/helm/luckyplans/`) to deploy all services across three k3d environments. Docker Compose has been removed — Helm + k3d is the only deployment approach.
+The platform uses a single Helm chart (`infrastructure/helm/luckyplans/`) to deploy all services across two k3d environments. Docker Compose has been removed — Helm + k3d is the only deployment approach.
 
-| Environment | Cluster | Image Registry | Image Tag |
-|---|---|---|---|
-| **local** | k3d on laptop | none (k3d import) | `latest` |
-| **dev** | k3d on VPS | `docker.io` | `dev` |
-| **prod** | k3d on-premises | `docker.io` | semver e.g. `1.0.0` |
+| Environment | Cluster                  | Image Registry    | Image Tag                    |
+| ----------- | ------------------------ | ----------------- | ---------------------------- |
+| **local**   | k3d on laptop            | none (k3d import) | `latest`                     |
+| **prod**    | k3d on VPS / on-premises | `ghcr.io`         | `sha-<commit>` (CI) / semver |
 
 ---
 
 ## Services
 
-| Service | Type | Port | Transport |
-|---|---|---|---|
-| `web` | Next.js frontend | 3000 | HTTP |
-| `api-gateway` | NestJS GraphQL | 3001 | HTTP |
-| `service-auth` | NestJS microservice | — | Redis RPC |
-| `service-core` | NestJS microservice | — | Redis RPC |
-| `redis` | Message broker / cache | 6379 | Redis protocol |
+| Service        | Type                   | Port | Transport      |
+| -------------- | ---------------------- | ---- | -------------- |
+| `web`          | Next.js frontend       | 3000 | HTTP           |
+| `api-gateway`  | NestJS GraphQL         | 3001 | HTTP           |
+| `service-auth` | NestJS microservice    | —    | Redis RPC      |
+| `service-core` | NestJS microservice    | —    | Redis RPC      |
+| `redis`        | Message broker / cache | 6379 | Redis protocol |
 
 `service-auth` and `service-core` have no Kubernetes Service resources — they communicate exclusively via Redis message patterns and are not reachable over HTTP.
 
@@ -32,17 +31,21 @@ The platform uses a single Helm chart (`infrastructure/helm/luckyplans/`) to dep
 infrastructure/helm/luckyplans/
   Chart.yaml
   values.yaml             # defaults + local k3d config
-  values.dev.yaml         # dev VPS overrides (merged on top of values.yaml)
-  values.prod.yaml        # prod on-prem overrides
+  values.prod.yaml        # prod overrides (merged on top of values.yaml)
   templates/
     _helpers.tpl          # shared label/selector/fullname helpers
     namespace.yaml
     configmap.yaml        # luckyplans-config (NODE_ENV, REDIS_HOST, etc.)
-    secret.yaml           # luckyplans-secrets (empty skeleton by default)
+    secret.yaml           # luckyplans-secrets (auto-generates JWT_SECRET)
     ingress.yaml          # Traefik ingress
+    cluster-issuer.yaml   # cert-manager ClusterIssuer (prod only)
+    middleware-redirect.yaml  # Traefik HTTPS redirect + HSTS (prod only)
+    pdb.yaml              # PodDisruptionBudgets
+    smoke-test-job.yaml   # ArgoCD post-sync smoke tests (prod only)
     redis/
       deployment.yaml
       service.yaml
+      networkpolicy.yaml  # restricts Redis access to app pods
     api-gateway/
       deployment.yaml
       service.yaml
@@ -83,8 +86,6 @@ The chart creates the `luckyplans` namespace annotated with `helm.sh/resource-po
 
 `templates/secret.yaml` renders a `luckyplans-secrets` Secret even when `secrets: {}` in values. This ensures CI/CD pipelines can reference the secret name reliably before any sensitive values are added. Use `stringData` in values (not base64) — Kubernetes handles encoding on apply.
 
-For production, inject secrets via an external secrets manager (Vault, External Secrets Operator) rather than storing them in values files.
-
 ### 5. Image registry prefix is conditional
 
 Every Deployment template uses:
@@ -93,28 +94,27 @@ Every Deployment template uses:
 image: {{ if .Values.image.registry }}{{ .Values.image.registry }}/{{ end }}{{ $img.repository }}:{{ $img.tag }}
 ```
 
-| env | `image.registry` | rendered |
-|---|---|---|
-| local | `""` | `luckyplans/api-gateway:latest` |
-| dev | `docker.io` | `docker.io/luckyplans/api-gateway:dev` |
-| prod | `docker.io` | `docker.io/luckyplans/api-gateway:1.0.0` |
+| env   | `image.registry` | rendered                                       |
+| ----- | ---------------- | ---------------------------------------------- |
+| local | `""`             | `luckyplans/api-gateway:latest`                |
+| prod  | `ghcr.io`        | `ghcr.io/takeshi-su57/api-gateway:sha-abc1234` |
 
 ---
 
 ## Environment Differences
 
-| Key | local | dev | prod |
-|---|---|---|---|
-| `config.nodeEnv` | `development` | `development` | `production` |
-| `config.corsOrigin` | `http://localhost` | `http://dev.luckyplans.com` | `https://luckyplans.com` |
-| `ingress.host` | `""` (any) | `dev.luckyplans.com` | `luckyplans.com` |
-| `ingress.tls.enabled` | `false` | `false` | `true` |
-| `image.registry` | `""` | `docker.io` | `docker.io` |
-| `image.pullPolicy` | `IfNotPresent` | `Always` | `IfNotPresent` |
-| image tags | `latest` | `dev` | `1.0.0` |
-| replicas | `1` | `1` | `2` |
-| resources | small | small | doubled |
-| `web.buildArgs.graphqlUrl` | `http://localhost/graphql` | `http://dev.luckyplans.com/graphql` | `https://luckyplans.com/graphql` |
+| Key                        | local              | prod                     |
+| -------------------------- | ------------------ | ------------------------ |
+| `config.nodeEnv`           | `development`      | `production`             |
+| `config.corsOrigin`        | `http://localhost` | `https://luckyplans.xyz` |
+| `ingress.host`             | `""` (any)         | `luckyplans.xyz`         |
+| `ingress.tls.enabled`      | `false`            | `true`                   |
+| `image.registry`           | `""`               | `ghcr.io`                |
+| `image.pullPolicy`         | `IfNotPresent`     | `Always`                 |
+| image tags                 | `latest`           | `sha-<commit>`           |
+| replicas                   | `1`                | `2`                      |
+| resources                  | small              | doubled                  |
+| `web.buildArgs.graphqlUrl` | `/graphql`         | `/graphql`               |
 
 ---
 
@@ -127,30 +127,10 @@ pnpm deploy:local
 # Builds images, imports into k3d, helm upgrade --install with values.yaml
 ```
 
-### Dev (VPS)
+### Prod (ArgoCD GitOps)
 
-```bash
-# Build and push images first
-docker build --build-arg NEXT_PUBLIC_GRAPHQL_URL=http://dev.luckyplans.com/graphql \
-  -t docker.io/luckyplans/web:dev -f apps/web/Dockerfile .
-docker push docker.io/luckyplans/web:dev
-# ... repeat for other services ...
-
-# Deploy
-helm upgrade --install luckyplans infrastructure/helm/luckyplans \
-  -f infrastructure/helm/luckyplans/values.yaml \
-  -f infrastructure/helm/luckyplans/values.dev.yaml \
-  --namespace luckyplans --create-namespace --atomic --timeout 3m
-```
-
-### Prod (on-prem)
-
-```bash
-helm upgrade --install luckyplans infrastructure/helm/luckyplans \
-  -f infrastructure/helm/luckyplans/values.yaml \
-  -f infrastructure/helm/luckyplans/values.prod.yaml \
-  --namespace luckyplans --create-namespace --atomic --timeout 5m
-```
+Prod is managed by **ArgoCD** — do not run `helm upgrade` directly.
+See [argocd.md](argocd.md) for the operational guide and [../guides/how-to-deploy.md](../guides/how-to-deploy.md) for first-time setup.
 
 ### Teardown (local only)
 

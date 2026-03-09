@@ -37,16 +37,12 @@ export class CoreResolver {
     @Args('page', { defaultValue: 1 }) page: number,
     @Args('limit', { defaultValue: 10 }) limit: number,
   ): Promise<ItemsResponse> {
-    return firstValueFrom(
-      this.coreClient.send(CoreMessagePattern.GET_ITEMS, { page, limit }),
-    );
+    return firstValueFrom(this.coreClient.send(CoreMessagePattern.GET_ITEMS, { page, limit }));
   }
 
   @Query(() => Item, { nullable: true })
   async getItem(@Args('id') id: string): Promise<Item> {
-    return firstValueFrom(
-      this.coreClient.send(CoreMessagePattern.GET_ITEM, { id }),
-    );
+    return firstValueFrom(this.coreClient.send(CoreMessagePattern.GET_ITEM, { id }));
   }
 
   @Mutation(() => Item)

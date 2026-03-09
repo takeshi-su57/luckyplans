@@ -20,16 +20,16 @@ Browser → Next.js (Apollo Client)
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 14 (App Router) |
-| GraphQL Client | Apollo Client |
-| API Gateway | NestJS + Apollo Server (code-first) |
-| Microservices | NestJS Microservices |
-| Inter-service | Redis transport (pub/sub) |
-| Monorepo | Turborepo + pnpm workspaces |
-| Containerization | Docker (multi-stage builds) |
-| Local K8s | k3s via k3d |
+| Layer            | Technology                          |
+| ---------------- | ----------------------------------- |
+| Frontend         | Next.js 14 (App Router)             |
+| GraphQL Client   | Apollo Client                       |
+| API Gateway      | NestJS + Apollo Server (code-first) |
+| Microservices    | NestJS Microservices                |
+| Inter-service    | Redis transport (pub/sub)           |
+| Monorepo         | Turborepo + pnpm workspaces         |
+| Containerization | Docker (multi-stage builds)         |
+| Local K8s        | k3s via k3d                         |
 
 ## Project Structure
 
@@ -101,6 +101,7 @@ See [docs/guides/how-to-develop.md](docs/guides/how-to-develop.md) and [docs/gui
 ## Adding a New Microservice
 
 1. Create a new directory under `apps/`:
+
    ```
    apps/service-<name>/
    ```
@@ -121,30 +122,30 @@ See [docs/guides/how-to-develop.md](docs/guides/how-to-develop.md) and [docs/gui
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `REDIS_HOST` | `localhost` | Redis hostname |
-| `REDIS_PORT` | `6379` | Redis port |
-| `API_GATEWAY_PORT` | `4000` | API Gateway listen port |
+| Variable                  | Default                         | Description                   |
+| ------------------------- | ------------------------------- | ----------------------------- |
+| `REDIS_HOST`              | `localhost`                     | Redis hostname                |
+| `REDIS_PORT`              | `6379`                          | Redis port                    |
+| `API_GATEWAY_PORT`        | `4000`                          | API Gateway listen port       |
 | `NEXT_PUBLIC_GRAPHQL_URL` | `http://localhost:4000/graphql` | GraphQL endpoint for frontend |
-| `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
-| `NODE_ENV` | `development` | Node environment |
+| `CORS_ORIGIN`             | `http://localhost:3000`         | Allowed CORS origin           |
+| `NODE_ENV`                | `development`                   | Node environment              |
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm setup` | First-time project setup |
-| `pnpm dev:start` | Start Redis + all services (hot reload) |
-| `pnpm dev:stop` | Stop the Redis container |
-| `pnpm dev` | Start services only (assumes Redis running) |
-| `pnpm build` | Build all packages and apps |
-| `pnpm lint` | Lint all packages and apps |
-| `pnpm type-check` | Type-check all packages and apps |
-| `pnpm format` | Format all files with Prettier |
-| `pnpm clean` | Clean all build artifacts |
-| `pnpm docker:up` | Build and start via docker-compose |
-| `pnpm docker:down` | Stop docker-compose services |
-| `pnpm deploy:k3s` | Build + deploy to local k3s |
-| `pnpm deploy:teardown` | Destroy k3s cluster |
-| `pnpm status` | Check status of all services |
+| Command                | Description                                 |
+| ---------------------- | ------------------------------------------- |
+| `pnpm setup`           | First-time project setup                    |
+| `pnpm dev:start`       | Start Redis + all services (hot reload)     |
+| `pnpm dev:stop`        | Stop the Redis container                    |
+| `pnpm dev`             | Start services only (assumes Redis running) |
+| `pnpm build`           | Build all packages and apps                 |
+| `pnpm lint`            | Lint all packages and apps                  |
+| `pnpm type-check`      | Type-check all packages and apps            |
+| `pnpm format`          | Format all files with Prettier              |
+| `pnpm clean`           | Clean all build artifacts                   |
+| `pnpm docker:up`       | Build and start via docker-compose          |
+| `pnpm docker:down`     | Stop docker-compose services                |
+| `pnpm deploy:k3s`      | Build + deploy to local k3s                 |
+| `pnpm deploy:teardown` | Destroy k3s cluster                         |
+| `pnpm status`          | Check status of all services                |
