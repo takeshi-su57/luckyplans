@@ -9,11 +9,11 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist .turbo"
+    "clean": "node -e \"const fs=require('fs');['dist','.turbo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\""
   },
   "dependencies": {
     "@as-integrations/express5": "^1.1.0",
-    "@apollo/server": "^4.10.0",
+    "@apollo/server": "^5.4.0",
     "@nestjs/apollo": "^13.2.4",
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
@@ -31,8 +31,8 @@
     "@nestjs/schematics": "^11.0.0",
     "@luckyplans/config": "workspace:*",
     "@types/express": "^5.0.0",
-    "@types/node": "^25.3.5",
-    "eslint": "^8.57.0",
+    "@types/node": "^25.4.0",
+    "eslint": "^10.0.3",
     "typescript": "^5.7.0"
   }
 }
