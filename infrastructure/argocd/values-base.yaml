@@ -33,8 +33,8 @@ configs:
       password: ''
 
   repositories:
-    platform-clients:
-      url: https://github.com/takeshi-su57/platform-clients.git
+    luckyplans:
+      url: https://github.com/takeshi-su57/luckyplans.git
       type: git
 
 # ------------------------------------------------------------------

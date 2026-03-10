@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/takeshi-su57/platform-clients.git
+    repoURL: https://github.com/takeshi-su57/luckyplans.git
     targetRevision: main
     path: infrastructure/helm/luckyplans
     helm:

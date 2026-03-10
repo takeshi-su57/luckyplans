@@ -12,7 +12,9 @@ Automated pipeline using GitHub Actions + ArgoCD for the LuckyPlans monorepo.
   │ lint         │      │ build 4 images    │      │ commit new tags   │
   │ type-check   │      │ push to ghcr.io   │      │ to values files   │
   │ test         │      │ tag: sha + latest │      │ [skip ci]         │
-  │ build        │      │                   │      │                   │
+  │ build        │      │ Trivy image scan  │      │                   │
+  │ Trivy scans  │      │                   │      │                   │
+  │ Helm lint    │      │                   │      │                   │
   └──────────────┘      └───────────────────┘      └───────────────────┘
                                                             │
                                                             ▼
@@ -30,6 +32,16 @@ Runs lint, type-check, test, and build using Turborepo. On PRs, only affected
 packages are checked via `--filter=...[origin/main]`.
 
 Concurrency groups cancel superseded PR runs automatically.
+
+**Security scanning** is integrated into CI via [Trivy](https://trivy.dev/):
+
+- **Dependency scan** (`fs` mode): Scans `pnpm-lock.yaml` and other dependency
+  manifests for known CRITICAL/HIGH vulnerabilities. Fails the build if found.
+- **IaC/Dockerfile config scan** (`config` mode): Checks Dockerfiles, Helm
+  templates, and Kubernetes manifests for misconfigurations (e.g. missing
+  `readOnlyRootFilesystem`, running as root). Fails on CRITICAL/HIGH.
+- **SARIF upload**: A vulnerability report is uploaded to GitHub Security tab
+  (Advanced Security → Code Scanning) for persistent tracking.
 
 Additionally validates Helm chart templates by piping `helm template` output
 through `kubeconform` for all environment variants (base, prod) to catch
@@ -63,10 +75,13 @@ pushes — if two pushes to `main` happen in quick succession, the first build
 completes before the second starts, ensuring all 4 images share the same SHA tag.
 
 Images are pushed with **SBOM** and **provenance** attestations enabled via
-`docker/build-push-action`, providing supply chain transparency. Each image
-is scanned with Trivy after push — builds fail on CRITICAL/HIGH
+`docker/build-push-action`, providing supply chain transparency.
+
+**Post-push security scanning:** Each image is scanned with
+[Trivy](https://trivy.dev/) after push. Builds fail on CRITICAL/HIGH
 vulnerabilities, which prevents the Update Tags workflow from triggering
-(it requires `conclusion == 'success'`), so vulnerable images are never deployed.
+(it requires `conclusion == 'success'`), so vulnerable images are never
+deployed. A SARIF report is also uploaded to GitHub Security for each image.
 
 ### 3. Update Image Tags (`.github/workflows/update-tags.yml`)
 
