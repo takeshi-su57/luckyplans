@@ -36,7 +36,7 @@ redis:
 apiGateway:
   image:
     repository: takeshi-su57/api-gateway
-    tag: 'sha-f054095'
+    tag: 'sha-e5420bb'
   replicas: 2
   resources:
     requests:
@@ -48,7 +48,7 @@ apiGateway:
 serviceAuth:
   image:
     repository: takeshi-su57/service-auth
-    tag: 'sha-f054095'
+    tag: 'sha-e5420bb'
   replicas: 2
   resources:
     requests:
@@ -60,7 +60,7 @@ serviceAuth:
 serviceCore:
   image:
     repository: takeshi-su57/service-core
-    tag: 'sha-f054095'
+    tag: 'sha-e5420bb'
   replicas: 2
   resources:
     requests:
@@ -72,7 +72,7 @@ serviceCore:
 web:
   image:
     repository: takeshi-su57/web
-    tag: 'sha-f054095'
+    tag: 'sha-e5420bb'
   replicas: 2
   resources:
     requests:
