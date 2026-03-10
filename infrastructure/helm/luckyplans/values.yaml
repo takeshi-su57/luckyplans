@@ -43,6 +43,7 @@ secrets: {}
 # ============================================================
 ingress:
   enabled: true
+  className: traefik
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
   # Empty host = match all hostnames (correct for local k3d)
@@ -188,3 +189,9 @@ web:
   # Changing this value here only takes effect after rebuilding the web image.
   buildArgs:
     graphqlUrl: '/graphql'
+
+# ============================================================
+# Smoke tests (ArgoCD post-sync hook)
+# ============================================================
+smokeTest:
+  enabled: false

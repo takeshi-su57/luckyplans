@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-| Tool | Version | Install |
-|------|---------|---------|
-| Node.js | >= 20.0.0 | [nodejs.org](https://nodejs.org) |
-| pnpm | >= 9.0.0 | `npm install -g pnpm@9.15.4` |
-| Docker | Latest | [docker.com](https://www.docker.com) |
+| Tool    | Version   | Install                              |
+| ------- | --------- | ------------------------------------ |
+| Node.js | >= 20.0.0 | [nodejs.org](https://nodejs.org)     |
+| pnpm    | >= 9.0.0  | `npm install -g pnpm@9.15.4`         |
+| Docker  | Latest    | [docker.com](https://www.docker.com) |
 
 ---
 
@@ -78,22 +78,24 @@ pnpm dev
 
 Turborepo starts everything in parallel with hot reload:
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| Frontend | http://localhost:3000 | Next.js app |
-| API Gateway | http://localhost:3001/graphql | GraphQL Playground |
-| service-auth | — (Redis transport) | No HTTP endpoint |
-| service-core | — (Redis transport) | No HTTP endpoint |
+| Service      | URL                           | Description        |
+| ------------ | ----------------------------- | ------------------ |
+| Frontend     | http://localhost:3000         | Next.js app        |
+| API Gateway  | http://localhost:3001/graphql | GraphQL Playground |
+| service-auth | — (Redis transport)           | No HTTP endpoint   |
+| service-core | — (Redis transport)           | No HTTP endpoint   |
 
 ### 6. Verify everything works
 
 1. Open http://localhost:3001/graphql — you should see the GraphQL Playground
 2. Run a health check query:
+
    ```graphql
    query {
      health
    }
    ```
+
    Expected: `"API Gateway is running"`
 
 3. Open http://localhost:3000 — the frontend should load and show the API connection status
@@ -143,6 +145,7 @@ pnpm symlinks them into `node_modules` — no publishing to npm required.
 Location: `packages/shared/`
 
 Exports:
+
 - **Types**: `User`, `ServiceResponse`, `PaginatedResponse`, etc.
 - **Enums**: `AuthMessagePattern`, `CoreMessagePattern` (Redis message patterns)
 - **Utilities**: `generateId()`, `getRedisConfig()`, `getEnvVar()`
@@ -160,6 +163,7 @@ After making changes to shared packages, Turborepo picks them up automatically i
 Location: `packages/config/`
 
 Shared presets that apps extend:
+
 - `tsconfig.nextjs.json` — for Next.js apps
 - `tsconfig.nestjs.json` — for NestJS services
 - `tsconfig.base.json` — for shared packages
@@ -211,6 +215,7 @@ export enum NewServiceMessagePattern {
 ### 6. Register in the API Gateway
 
 Create a new module in `apps/api-gateway/src/<name>/`:
+
 - `<name>.module.ts` — Register `ClientsModule` with Redis transport
 - `<name>.resolver.ts` — GraphQL resolvers
 
@@ -233,23 +238,23 @@ pnpm dev
 
 ## All Commands
 
-| Command | Description |
-|---------|-------------|
-| **Setup** | |
-| `pnpm setup` | First-time project setup (deps, .env, build shared pkgs) |
-| **Development** | |
-| `pnpm dev` | Start all services with hot reload (Redis must be running) |
-| **Build & Quality** | |
-| `pnpm build` | Build all packages and apps |
-| `pnpm lint` | Lint all packages |
-| `pnpm type-check` | Type-check all packages |
-| `pnpm format` | Format all files with Prettier |
-| `pnpm format:check` | Check formatting without modifying |
-| `pnpm clean` | Remove all build artifacts and node_modules |
-| **Deployment (k3d + Helm)** | |
-| `pnpm deploy:local` | Build images and deploy to local k3d cluster via Helm |
-| `pnpm deploy:teardown` | Destroy the local k3d cluster |
-| `pnpm deploy:status` | Show cluster, Helm release, and pod status |
+| Command                     | Description                                                |
+| --------------------------- | ---------------------------------------------------------- |
+| **Setup**                   |                                                            |
+| `pnpm setup`                | First-time project setup (deps, .env, build shared pkgs)   |
+| **Development**             |                                                            |
+| `pnpm dev`                  | Start all services with hot reload (Redis must be running) |
+| **Build & Quality**         |                                                            |
+| `pnpm build`                | Build all packages and apps                                |
+| `pnpm lint`                 | Lint all packages                                          |
+| `pnpm type-check`           | Type-check all packages                                    |
+| `pnpm format`               | Format all files with Prettier                             |
+| `pnpm format:check`         | Check formatting without modifying                         |
+| `pnpm clean`                | Remove all build artifacts and node_modules                |
+| **Deployment (k3d + Helm)** |                                                            |
+| `pnpm deploy:local`         | Build images and deploy to local k3d cluster via Helm      |
+| `pnpm deploy:teardown`      | Destroy the local k3d cluster                              |
+| `pnpm deploy:status`        | Show cluster, Helm release, and pod status                 |
 
 ---
 

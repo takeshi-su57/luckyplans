@@ -34,7 +34,9 @@ export class AuthService {
     };
   }
 
-  async getProfile(userId: string): Promise<ServiceResponse<{ id: string; email: string; name: string }>> {
+  async getProfile(
+    userId: string,
+  ): Promise<ServiceResponse<{ id: string; email: string; name: string }>> {
     // Placeholder: Replace with real profile lookup
     return {
       success: true,

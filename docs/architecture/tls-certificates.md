@@ -49,7 +49,7 @@ To enable automatic HTTP → HTTPS redirect, the Helm chart includes a Traefik
 ingress:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    traefik.ingress.kubernetes.io/router.middlewares: luckyplans-redirect-https@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: luckyplans-redirect-https@kubernetescrd,luckyplans-hsts-header@kubernetescrd
 ```
 
 If you prefer to handle the redirect at the Traefik level (global redirect for
@@ -66,31 +66,6 @@ certManager:
   enabled: false # Disabled for local k3d
   email: ''
   issuer: letsencrypt-prod
-```
-
-### Dev environment (`values.dev.yaml`)
-
-The dev environment uses `letsencrypt-staging` to preserve Let's Encrypt
-production rate limits during development iteration. Staging certificates are
-not browser-trusted but are sufficient for CI smoke tests. Only prod uses the
-`letsencrypt-prod` issuer.
-
-```yaml
-ingress:
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    traefik.ingress.kubernetes.io/router.tls: 'true'
-    traefik.ingress.kubernetes.io/router.middlewares: luckyplans-redirect-https@kubernetescrd
-    cert-manager.io/cluster-issuer: letsencrypt-staging
-  host: 'dev.luckyplans.xyz'
-  tls:
-    enabled: true
-    secretName: luckyplans-dev-tls
-
-certManager:
-  enabled: true
-  email: 'takeshisuz57@gmail.com'
-  issuer: letsencrypt-staging
 ```
 
 ### Production environment (`values.prod.yaml`)
@@ -140,10 +115,9 @@ for the pinned version and installation commands.
 For HTTP-01 challenges to succeed, the domain must resolve to the cluster's
 public IP **before** deploying with TLS enabled:
 
-| Record | Name  | Value           |
-| ------ | ----- | --------------- |
-| A      | `@`   | `<your-vps-ip>` |
-| A      | `dev` | `<your-vps-ip>` |
+| Record | Name | Value              |
+| ------ | ---- | ------------------ |
+| A      | `@`  | `<your-server-ip>` |
 
 Port **80** must be reachable from the internet (Let's Encrypt verifies via HTTP).
 
@@ -164,7 +138,6 @@ kubectl -n cert-manager logs deploy/cert-manager --tail=50
 
 # 5. Test HTTPS
 curl -v https://luckyplans.xyz
-curl -v https://dev.luckyplans.xyz
 ```
 
 ## Troubleshooting
@@ -240,7 +213,6 @@ kubectl -n cert-manager get secret letsencrypt-prod -o yaml > acme-account-key-b
 ```bash
 # Back up the TLS secrets
 kubectl -n luckyplans get secret luckyplans-tls -o yaml > luckyplans-tls-backup.yaml
-kubectl -n luckyplans get secret luckyplans-dev-tls -o yaml > luckyplans-dev-tls-backup.yaml
 ```
 
 ### Restore after cluster recreation
@@ -277,7 +249,6 @@ spec:
                 - -c
                 - |
                   kubectl -n luckyplans get secret luckyplans-tls -o yaml > /backup/luckyplans-tls.yaml
-                  kubectl -n luckyplans get secret luckyplans-dev-tls -o yaml > /backup/luckyplans-dev-tls.yaml
                   kubectl -n cert-manager get secret letsencrypt-prod -o yaml > /backup/acme-account-key.yaml
               volumeMounts:
                 - name: backup-vol
@@ -310,7 +281,6 @@ Switch to `letsencrypt-prod` once the staging certificate is issued successfully
 | File                                                                | Purpose                                      |
 | ------------------------------------------------------------------- | -------------------------------------------- |
 | `infrastructure/helm/luckyplans/values.yaml`                        | Base cert-manager config (disabled)          |
-| `infrastructure/helm/luckyplans/values.dev.yaml`                    | Dev TLS + cert-manager config                |
 | `infrastructure/helm/luckyplans/values.prod.yaml`                   | Prod TLS + cert-manager config               |
 | `infrastructure/helm/luckyplans/templates/cluster-issuer.yaml`      | ClusterIssuer template                       |
 | `infrastructure/helm/luckyplans/templates/ingress.yaml`             | Ingress with TLS + annotation passthrough    |

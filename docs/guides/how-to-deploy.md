@@ -2,6 +2,8 @@
 
 All environments use the same Helm chart at `infrastructure/helm/luckyplans/` with per-environment values files. See [architecture/helm-deployment.md](../architecture/helm-deployment.md) for full design decisions.
 
+Continuous delivery is handled by **ArgoCD** (pull-based GitOps). See [architecture/argocd.md](../architecture/argocd.md) for the operational guide.
+
 ---
 
 ## Architecture Overview
@@ -29,13 +31,13 @@ All services run in the `luckyplans` Kubernetes namespace.
 
 ## Prerequisites
 
-| Tool | Version | Install |
-|------|---------|---------|
-| Docker | Latest | [docker.com](https://www.docker.com) |
-| k3d | Latest | [k3d.io](https://k3d.io) |
-| kubectl | Latest | [kubernetes.io](https://kubernetes.io/docs/tasks/tools/) |
-| Helm | >= 3.0 | [helm.sh](https://helm.sh/docs/intro/install/) |
-| cert-manager | v1.17.1 | See [Install cert-manager](#install-cert-manager) (dev/prod only) |
+| Tool         | Version | Install                                                       |
+| ------------ | ------- | ------------------------------------------------------------- |
+| Docker       | Latest  | [docker.com](https://www.docker.com)                          |
+| k3d          | Latest  | [k3d.io](https://k3d.io)                                      |
+| kubectl      | Latest  | [kubernetes.io](https://kubernetes.io/docs/tasks/tools/)      |
+| Helm         | >= 3.0  | [helm.sh](https://helm.sh/docs/intro/install/)                |
+| cert-manager | v1.17.1 | See [Install cert-manager](#install-cert-manager) (prod only) |
 
 ### Install k3d
 
@@ -63,7 +65,7 @@ helm version
 
 ### Install cert-manager
 
-Required for dev and prod deployments (automatic TLS via Let's Encrypt).
+Required for prod deployment (automatic TLS via Let's Encrypt).
 Not needed for local development.
 
 ```bash
@@ -89,20 +91,17 @@ See [architecture/tls-certificates.md](../architecture/tls-certificates.md) for 
 
 ## Environments
 
-| | local | dev | prod |
-|---|---|---|---|
-| Cluster | k3d on laptop | k3d on VPS | k3d on-premises |
-| Values file | `values.yaml` | `values.yaml` + `values.dev.yaml` | `values.yaml` + `values.prod.yaml` |
-| Image registry | none (k3d import) | `ghcr.io` | `ghcr.io` |
-| Image tags | `latest` | `sha-<commit>` (CI) / `dev` (manual) | `sha-<commit>` (CI) / semver (manual) |
-| Replicas | 1 | 1 | 2 |
-| Ingress host | any (localhost) | `dev.luckyplans.xyz` | `luckyplans.xyz` |
-| TLS | off | on (cert-manager) | on (cert-manager) |
-
-> **Note:** During early development, both dev and prod share the same VPS
-> (`<your-vps-ip>`). When prod moves to dedicated on-premises hardware, update
-> the DNS A record for `luckyplans.xyz` and the `KUBECONFIG_PROD` secret to
-> point to the new cluster.
+|                | local             | prod                                  |
+| -------------- | ----------------- | ------------------------------------- |
+| Cluster        | k3d on laptop     | k3d on VPS / on-premises              |
+| CD method      | Direct Helm       | ArgoCD (auto-sync)                    |
+| Values file    | `values.yaml`     | `values.yaml` + `values.prod.yaml`    |
+| Image registry | none (k3d import) | `ghcr.io`                             |
+| Image tags     | `latest`          | `sha-<commit>` (CI) / semver (manual) |
+| Replicas       | 1                 | 2                                     |
+| Ingress host   | any (localhost)   | `luckyplans.xyz`                      |
+| TLS            | off               | on (cert-manager)                     |
+| ArgoCD UI      | n/a               | https://luckyplans.xyz/argocd         |
 
 ---
 
@@ -117,6 +116,7 @@ pnpm deploy:local
 This handles everything: cluster creation, image builds, k3d import, and `helm upgrade --install`.
 
 After completion:
+
 - **Frontend**: http://localhost
 - **GraphQL Playground**: http://localhost/graphql
 
@@ -180,14 +180,14 @@ helm upgrade --install luckyplans infrastructure/helm/luckyplans \
 
 > **Note:** Helm automatically loads `values.yaml` from the chart directory,
 > so there is no need to pass `-f values.yaml` explicitly. Only overlay files
-> (e.g. `values.dev.yaml`, `values.prod.yaml`) need an explicit `-f` flag.
+> (e.g. `values.prod.yaml`) need an explicit `-f` flag.
 
 ---
 
-## CI/CD Automated Deployment (recommended)
+## CI/CD with ArgoCD (recommended)
 
-Dev and prod deployments are handled automatically by GitHub Actions.
-See [architecture/ci-cd-pipeline.md](../architecture/ci-cd-pipeline.md) for full pipeline documentation.
+Prod deployments are handled by **ArgoCD GitOps**.
+See [architecture/argocd.md](../architecture/argocd.md) for the full operational guide and [architecture/ci-cd-pipeline.md](../architecture/ci-cd-pipeline.md) for pipeline documentation.
 
 ### How it works
 
@@ -201,180 +201,73 @@ CI (lint, type-check, test, build)
 Docker Build & Push (4 images → ghcr.io, tagged sha-<commit>)
   │ ✅
   ▼
-Deploy & Verify
-  ├── Dev  → auto-deploy → smoke tests
-  └── Prod → manual approval → deploy → smoke tests
+Update Tags (commits new tags to values.prod.yaml) [skip ci]
+  │
+  ▼
+ArgoCD detects Git change → auto-syncs → post-sync smoke tests
 ```
 
-- **Dev** deploys automatically after every successful CI + Docker build on `main`
-- **Prod** requires manual approval via the GitHub Environment protection rule
+- **Prod** auto-syncs automatically when ArgoCD detects the tag update in Git
 
-### Manual dispatch
+### Manual tag deployment
 
-To deploy a specific image tag manually, see [ci-cd-pipeline.md — Manual Deployment](../architecture/ci-cd-pipeline.md#manual-deployment).
+To deploy a specific image tag:
 
-### Required GitHub configuration
+1. Go to **Actions → Update Image Tags → Run workflow**
+2. Enter the image tag (e.g. `sha-abc1234`)
+3. Click **Run workflow**
 
-See [architecture/ci-cd-pipeline.md](../architecture/ci-cd-pipeline.md#secrets) for the full secrets reference and [Environments](../architecture/ci-cd-pipeline.md#environments) for environment setup.
+This commits the tag to `values.prod.yaml`. ArgoCD will auto-sync the new tag.
 
-#### Generating `KUBECONFIG_DEV` / `KUBECONFIG_PROD`
-
-SSH into the VPS and extract the kubeconfig from k3d:
+Alternatively, edit the values file directly and push:
 
 ```bash
-# 1. List clusters to find the exact name
-k3d cluster list
-
-# 2. Export the kubeconfig (replace "luckyplans-dev" with your cluster name)
-k3d kubeconfig get luckyplans-dev > /tmp/kubeconfig-dev.yaml
-
-# 3. IMPORTANT: Replace the local address with the VPS public IP.
-#    k3d outputs server: https://0.0.0.0:6443 which is unreachable from
-#    a GitHub Actions runner. Replace it with the VPS public IP:
-sed -i 's|server: https://0.0.0.0:|server: https://<your-vps-ip>:|' /tmp/kubeconfig-dev.yaml
-
-# 4. Verify the server address looks correct
-grep server /tmp/kubeconfig-dev.yaml
-# Expected: server: https://<your-vps-ip>:6443
-
-# 5. Base64-encode (single line, no wrapping)
-# Linux:
-base64 -w 0 < /tmp/kubeconfig-dev.yaml
-# macOS (BSD base64 does not support -w):
-# base64 -i /tmp/kubeconfig-dev.yaml
-# Copy this output — it becomes the KUBECONFIG_DEV secret value
-
-# 6. Clean up
-rm /tmp/kubeconfig-dev.yaml
+# Edit tags in values.prod.yaml
+git add infrastructure/helm/luckyplans/values.prod.yaml
+git commit -m "chore: update image tags to sha-abc1234 [skip ci]"
+git push origin main
 ```
-
-Then in GitHub: **Settings → Secrets and variables → Actions → New repository secret**,
-paste the base64 string as the value for `KUBECONFIG_DEV`. Repeat the same process
-for `KUBECONFIG_PROD`.
-
-> **Security:** For CI, create a dedicated service account with RBAC scoped to the `luckyplans` namespace rather than encoding your full admin kubeconfig. This limits blast radius if the secret is compromised.
->
-> **Creating a scoped service account:**
->
-> First, pre-create the namespace (required because `--create-namespace` is a
-> cluster-level operation that a namespace-scoped Role cannot grant):
->
-> ```bash
-> kubectl create namespace luckyplans
-> ```
->
-> Then create the service account, Role, and RoleBinding:
->
-> ```bash
-> kubectl -n luckyplans create serviceaccount github-actions
-> kubectl -n luckyplans create role deployer \
->   --verb=get,list,watch,create,update,patch,delete \
->   --resource=deployments,replicasets,services,pods,secrets,configmaps,ingresses,networkpolicies,poddisruptionbudgets
-> kubectl -n luckyplans create rolebinding deployer \
->   --role=deployer --serviceaccount=luckyplans:github-actions
-> ```
->
-> The chart also creates Traefik `Middleware` and cert-manager `ClusterIssuer`
-> CRDs. These are cluster-scoped or custom resources, so they need a
-> `ClusterRole`:
->
-> ```bash
-> kubectl create clusterrole github-actions-crd-access \
->   --verb=get,list,watch,create,update,patch,delete \
->   --resource=middlewares.traefik.io,clusterissuers.cert-manager.io
-> kubectl create clusterrolebinding github-actions-crd-access \
->   --clusterrole=github-actions-crd-access \
->   --serviceaccount=luckyplans:github-actions
-> ```
->
-> **Note:** Remove `--create-namespace` from the `helm upgrade` command when
-> using this scoped service account — the namespace must already exist.
-> Alternatively, add a ClusterRole with `create` on `namespaces`, but
-> pre-creating the namespace is simpler and more secure.
->
-> Then generate a kubeconfig using that ServiceAccount's token instead of the
-> cluster-admin credentials.
-
-#### Firewall: securing the Kubernetes API port
-
-The kubeconfig lets the GitHub Actions runner connect to port **6443** on your VPS.
-Without firewall rules, this port would be open to the entire internet.
-
-**Recommended approach:** Use a **self-hosted GitHub Actions runner** on the VPS
-itself, or set up a **WireGuard/Tailscale tunnel** between the runner and the VPS.
-Both approaches eliminate the need to maintain IP allowlists entirely and avoid
-the fragility of tracking GitHub's rotating runner IP ranges.
-
-<details>
-<summary>Fallback: IP-based allowlisting with ufw (fragile)</summary>
-
-If you cannot use a self-hosted runner or tunnel, lock down port 6443 by IP:
-
-```bash
-# On the VPS (ufw example)
-# IMPORTANT: UFW evaluates rules in order. Add allow rules BEFORE the deny rule,
-# otherwise the deny will shadow all subsequent allows.
-
-# Allow your own IP (for local kubectl access)
-sudo ufw allow from <your-ip>/32 to any port 6443 proto tcp
-
-# Allow GitHub Actions runner IP ranges.
-# Fetch the current list from GitHub's meta API:
-curl -s https://api.github.com/meta | jq -r '.actions[]' > /tmp/gh-actions-cidrs.txt
-
-# Add each CIDR:
-while IFS= read -r cidr; do
-  sudo ufw allow from "$cidr" to any port 6443 proto tcp
-done < /tmp/gh-actions-cidrs.txt
-
-# Deny all other access to 6443 (added last so allow rules take precedence)
-sudo ufw deny 6443/tcp
-
-# Verify rules (allow rules should appear before deny)
-sudo ufw status | grep 6443
-```
-
-> **Warning:** GitHub's runner IPs change periodically. Check
-> `https://api.github.com/meta` and update the firewall rules if deployments
-> start timing out. Consider a cron job on the VPS that refreshes rules daily.
-
-</details>
-
-Ports that must remain open on the VPS:
-
-| Port | Purpose | Open to |
-|------|---------|---------|
-| 22 | SSH | Your IP only |
-| 80 | HTTP (Let's Encrypt ACME + redirect) | `0.0.0.0` (required by Let's Encrypt) |
-| 443 | HTTPS (Traefik ingress) | `0.0.0.0` (public traffic) |
-| 6443 | Kubernetes API | Your IP + GitHub Actions IPs only |
 
 ### Smoke tests
 
-Each deployment automatically runs smoke tests:
-- API Gateway health check: `https://dev.luckyplans.xyz/health` (dev) / `https://luckyplans.xyz/health` (prod)
-- Web frontend check: `https://dev.luckyplans.xyz/` (dev) / `https://luckyplans.xyz/` (prod)
-- GraphQL endpoint check: `POST /graphql` with `{"query":"{ health }"}` — verifies backend connectivity
+Each deployment automatically runs smoke tests as **ArgoCD post-sync hooks** (Kubernetes Jobs running inside the cluster):
 
-Tests retry 5 times with 10-second intervals. Results are reported to the GitHub Actions step summary.
+- API Gateway health: `http://api-gateway.luckyplans.svc:3001/health`
+- Web frontend: `http://web.luckyplans.svc:3000/`
+- GraphQL endpoint: `POST http://api-gateway.luckyplans.svc:3001/graphql` with `{"query":"{ health }"}`
 
-### Rolling back a CI deployment
-
-To rollback to a previous version deployed by CI:
-
-1. Find the previous image tag in the **Actions → Docker Build & Push** run history (e.g. `sha-abc1234`)
-2. Go to **Actions → Deploy & Verify → Run workflow**
-3. Enter the previous image tag
-4. Select the target environment (`dev`, `prod`, or `both`)
-5. Click **Run workflow**
-
-This deploys the older image tag. Helm will create a new release revision, so
-`helm rollback` is also available as a fallback:
+Tests retry 5 times with 10-second intervals. Results are visible in the ArgoCD UI (sync status shows Healthy or Degraded).
 
 ```bash
-# From the cluster directly:
-helm -n luckyplans rollback luckyplans
+# Check smoke test logs
+kubectl -n luckyplans logs job/smoke-test
 ```
+
+### Rolling back a deployment
+
+**Option 1: Git revert** (recommended — permanent)
+
+```bash
+# Find the tag update commit
+git log --oneline -5
+
+# Revert it
+git revert <commit-sha>
+git push origin main
+```
+
+ArgoCD detects the revert and auto-syncs back to the previous image tags.
+
+**Option 2: ArgoCD UI** (temporary — auto-sync will immediately re-sync to Git state)
+
+1. Open the Application in ArgoCD UI
+2. Click **History and Rollback**
+3. Select a previous revision → **Rollback**
+
+> **Warning:** With auto-sync enabled, ArgoCD UI rollbacks are overridden
+> almost immediately. Use git revert for permanent rollbacks.
+
+> **Note:** Direct `helm rollback` no longer works since ArgoCD manages the Helm release. ArgoCD self-heal would immediately revert any manual Helm changes.
 
 ### Private registry pull secrets
 
@@ -396,190 +289,39 @@ image:
     - name: ghcr-pull-secret
 ```
 
-Or pass it at deploy time:
+### Firewall
 
-```bash
-helm upgrade --install luckyplans ... \
-  --set image.pullSecrets[0].name=ghcr-pull-secret
-```
+Ports that must remain open on the VPS:
 
----
+| Port | Purpose                              | Open to                               |
+| ---- | ------------------------------------ | ------------------------------------- |
+| 22   | SSH                                  | Your IP only                          |
+| 80   | HTTP (Let's Encrypt ACME + redirect) | `0.0.0.0` (required by Let's Encrypt) |
+| 443  | HTTPS (Traefik ingress + ArgoCD UI)  | `0.0.0.0` (public traffic)            |
 
-## Dev Deployment (VPS) — manual
-
-> **Note:** This is only needed for first-time cluster setup or if CI/CD is unavailable.
-> Normal dev deployments happen automatically via GitHub Actions (see above).
-
-### Prerequisites
-
-- DNS A record: `dev.luckyplans.xyz → <your-vps-ip>`
-- Ports open on VPS firewall: 22 (SSH), 80 (HTTP/ACME), 443 (HTTPS), 6443 (k8s API)
-- A GitHub Personal Access Token (PAT) with `read:packages` and `write:packages` scope
-
-### Part A: VPS setup (first time only)
-
-SSH into the VPS to create the cluster and export the kubeconfig.
-
-#### 1. Create the k3d cluster
-
-```bash
-ssh your-user@<your-vps-ip>
-
-# Install k3d if not already installed
-curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-
-# Create cluster with port mappings and TLS SAN for external access
-k3d cluster create luckyplans-dev \
-  --port "80:80@loadbalancer" \
-  --port "443:443@loadbalancer" \
-  --api-port 6443 \
-  --k3s-arg "--tls-san=<your-vps-ip>@server:0" \
-  --agents 1
-
-# Verify
-kubectl get nodes
-```
-
-#### 2. Install cert-manager
-
-```bash
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
-
-# Wait for all components to be ready
-kubectl -n cert-manager rollout status deploy/cert-manager
-kubectl -n cert-manager rollout status deploy/cert-manager-webhook
-kubectl -n cert-manager rollout status deploy/cert-manager-cainjector
-```
-
-#### 3. Export the kubeconfig
-
-```bash
-# Export kubeconfig from k3d
-k3d kubeconfig get luckyplans-dev > /tmp/kubeconfig-dev.yaml
-
-# Replace the local address with the VPS public IP
-# (k3d outputs server: https://0.0.0.0:6443 which is unreachable from outside)
-sed -i 's|server: https://0.0.0.0:|server: https://<your-vps-ip>:|' /tmp/kubeconfig-dev.yaml
-
-# Verify the server address
-grep server /tmp/kubeconfig-dev.yaml
-# Expected: server: https://<your-vps-ip>:6443
-
-# Base64-encode (single line, no wrapping) and print
-base64 -w 0 < /tmp/kubeconfig-dev.yaml && echo
-
-# Copy the base64 string output — you'll decode it on your local machine
-rm /tmp/kubeconfig-dev.yaml
-```
-
-On your **local machine**, decode the base64 string and save it:
-
-```bash
-mkdir -p ~/.kube
-echo "<paste-base64-string-here>" | base64 -d > ~/.kube/luckyplans-dev.yaml
-chmod 600 ~/.kube/luckyplans-dev.yaml
-```
-
-> **macOS note:** Use `base64 -D` instead of `base64 -d` if decoding fails.
-
-You can now disconnect from the VPS. All remaining steps run on your local machine.
-
-### Part B: Deploy from local machine
-
-#### 4. Build and push images to GHCR
-
-```bash
-# Authenticate with GitHub Container Registry
-docker login ghcr.io -u <your-github-username> -p <your-github-pat>
-
-# Build images (use MSYS_NO_PATHCONV=1 on Windows/Git Bash to prevent path expansion)
-MSYS_NO_PATHCONV=1 docker build \
-  --build-arg NEXT_PUBLIC_GRAPHQL_URL="/graphql" \
-  -t ghcr.io/<your-github-username>/web:dev \
-  -f apps/web/Dockerfile .
-
-docker build -t ghcr.io/<your-github-username>/api-gateway:dev   -f apps/api-gateway/Dockerfile .
-docker build -t ghcr.io/<your-github-username>/service-auth:dev  -f apps/service-auth/Dockerfile .
-docker build -t ghcr.io/<your-github-username>/service-core:dev  -f apps/service-core/Dockerfile .
-
-# Push all images
-docker push ghcr.io/<your-github-username>/web:dev
-docker push ghcr.io/<your-github-username>/api-gateway:dev
-docker push ghcr.io/<your-github-username>/service-auth:dev
-docker push ghcr.io/<your-github-username>/service-core:dev
-```
-
-#### 5. Deploy with Helm
-
-Run this from your local machine (where the repo is checked out). The
-`--kubeconfig` flag tells Helm to target the remote VPS cluster:
-
-```bash
-OWNER="<your-github-username>"
-
-helm upgrade --install luckyplans infrastructure/helm/luckyplans \
-  --kubeconfig ~/.kube/luckyplans-dev.yaml \
-  -f infrastructure/helm/luckyplans/values.yaml \
-  -f infrastructure/helm/luckyplans/values.dev.yaml \
-  --set image.registry=ghcr.io \
-  --set "apiGateway.image.repository=$OWNER/api-gateway" \
-  --set "serviceAuth.image.repository=$OWNER/service-auth" \
-  --set "serviceCore.image.repository=$OWNER/service-core" \
-  --set "web.image.repository=$OWNER/web" \
-  --namespace luckyplans --create-namespace \
-  --rollback-on-failure --timeout 5m
-```
-
-> **Note:** Image tags default to `dev` in `values.dev.yaml`. To deploy a
-> specific version, add `--set apiGateway.image.tag=sha-abc1234` (and the
-> same for the other 3 services).
-
-On first deploy, cert-manager will automatically:
-1. Create a `ClusterIssuer` for Let's Encrypt
-2. Request a TLS certificate for `dev.luckyplans.xyz`
-3. Store it in the `luckyplans-dev-tls` Secret
-4. Traefik starts serving HTTPS
-
-#### 6. Verify
-
-```bash
-# Check all pods are Running
-kubectl --kubeconfig ~/.kube/luckyplans-dev.yaml -n luckyplans get pods
-
-# Check certificate status (may take 1-2 minutes on first deploy)
-kubectl --kubeconfig ~/.kube/luckyplans-dev.yaml -n luckyplans get certificate
-
-# Test endpoints
-curl -s https://dev.luckyplans.xyz/health
-curl -s https://dev.luckyplans.xyz/ | head -20
-
-# Test GraphQL
-curl -s https://dev.luckyplans.xyz/graphql \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"{ health }"}' | jq .
-```
-
-> **Tip:** To avoid passing `--kubeconfig` every time, set the environment variable:
-> ```bash
-> export KUBECONFIG=~/.kube/luckyplans-dev.yaml
-> ```
+> **Note:** The Kubernetes API (port 6443) does not need to be exposed.
+> ArgoCD runs in-cluster, and operators access kubectl via SSH to the server.
 
 ---
 
-## Prod Deployment (on-premises) — manual
+## Prod Deployment — first-time setup
 
-> **Note:** This is only needed for first-time cluster setup or if CI/CD is unavailable.
-> Normal prod deployments happen via GitHub Actions with manual approval (see above).
+> **Note:** This section covers **one-time cluster setup**. After ArgoCD is
+> installed, all subsequent deployments happen automatically via ArgoCD auto-sync.
 
 ### Prerequisites
 
-- DNS A record: `luckyplans.xyz → <your-vps-ip>` *(currently shares the dev VPS — update when on-premises cluster is ready)*
-- Ports open on firewall: 22 (SSH), 80 (HTTP/ACME), 443 (HTTPS), 6443 (k8s API)
-- A GitHub Personal Access Token (PAT) with `read:packages` and `write:packages` scope
+- DNS A record: `luckyplans.xyz → <your-server-ip>`
+- Ports open on firewall: 22 (SSH), 80 (HTTP/ACME), 443 (HTTPS)
+- A GitHub Personal Access Token (PAT) with `read:packages` and repo read access
+- **CD push token:** If branch protection is enabled on `main`, create a fine-grained
+  PAT with **Contents: read+write** scope and store it as a repository secret named
+  `CD_PUSH_TOKEN`. The `update-tags` workflow needs this to push tag commits directly
+  to `main`. Without it, the CD pipeline silently breaks.
 
-### Part A — VPS setup (first time only)
+### Part A: Server setup
 
-SSH into the prod server to create the cluster and export the kubeconfig.
+SSH into the prod server to create the cluster and install dependencies.
 
 #### 1. Create the k3d cluster
 
@@ -587,8 +329,6 @@ SSH into the prod server to create the cluster and export the kubeconfig.
 k3d cluster create luckyplans-prod \
   --port "80:80@loadbalancer" \
   --port "443:443@loadbalancer" \
-  --api-port 6443 \
-  --k3s-arg "--tls-san=<your-server-ip>@server:0" \
   --agents 1
 ```
 
@@ -601,125 +341,55 @@ kubectl -n cert-manager rollout status deploy/cert-manager-webhook
 kubectl -n cert-manager rollout status deploy/cert-manager-cainjector
 ```
 
-#### 3. Export the kubeconfig
+#### 3. Install ArgoCD
 
 ```bash
-# Export kubeconfig and replace the internal IP with the VPS public IP
-k3d kubeconfig get luckyplans-prod > /tmp/luckyplans-prod.yaml
-sed -i 's|0\.0\.0\.0|<your-server-ip>|g' /tmp/luckyplans-prod.yaml
+git clone https://github.com/takeshi-su57/platform-clients.git
+cd platform-clients
 
-# Verify the server address
-grep server /tmp/luckyplans-prod.yaml
-# Expected: server: https://<your-server-ip>:6443
-
-# Base64-encode (single line, no wrapping) and print
-base64 -w 0 < /tmp/luckyplans-prod.yaml && echo
-
-# Copy the base64 string output — you'll decode it on your local machine
-rm /tmp/luckyplans-prod.yaml
+./infrastructure/scripts/install-argocd.sh --github-token <your-github-pat>
 ```
 
-On your **local machine**, decode the base64 string and save it:
+#### 4. Bootstrap secrets
 
 ```bash
-mkdir -p ~/.kube
-echo "<paste-base64-string-here>" | base64 -d > ~/.kube/luckyplans-prod.yaml
-chmod 600 ~/.kube/luckyplans-prod.yaml
+kubectl create namespace luckyplans 2>/dev/null || true
+
+kubectl -n luckyplans create secret generic luckyplans-secrets \
+  --from-literal=JWT_SECRET="$(openssl rand -base64 48)" \
+  --from-literal=DB_PASSWORD="your-db-password"
 ```
 
-> **macOS note:** Use `base64 -D` instead of `base64 -d` if decoding fails.
+#### 5. Pin initial image tags
 
-Verify connectivity from your local machine:
+Before the first ArgoCD sync, ensure `values.prod.yaml` has pinned image tags
+(not `latest`). Either wait for the CI pipeline to complete after your first
+merge to `main`, or run the **Update Image Tags** workflow manually:
 
-```bash
-kubectl --kubeconfig ~/.kube/luckyplans-prod.yaml get nodes
-```
+1. Go to **Actions → Update Image Tags → Run workflow**
+2. Enter the tag of your latest Docker build (e.g. `sha-abc1234`)
+3. Click **Run workflow**
 
-### Part B — Deploy from local machine
+This commits deterministic `sha-<commit>` tags to `values.prod.yaml`, ensuring
+the first prod deployment is reproducible.
 
-All remaining steps run on your **local machine** (where the repo is checked out).
+#### 6. Wait for auto-sync
 
-#### 4. Build and push images with a semver tag
-
-```bash
-VERSION="1.0.0"
-
-# Authenticate with GitHub Container Registry
-docker login ghcr.io -u <your-github-username> -p <your-github-pat>
-
-# Build images (run from repo root)
-MSYS_NO_PATHCONV=1 docker build \
-  --build-arg NEXT_PUBLIC_GRAPHQL_URL="/graphql" \
-  -t ghcr.io/<your-github-username>/web:$VERSION \
-  -f apps/web/Dockerfile .
-
-docker build -t ghcr.io/<your-github-username>/api-gateway:$VERSION   -f apps/api-gateway/Dockerfile .
-docker build -t ghcr.io/<your-github-username>/service-auth:$VERSION  -f apps/service-auth/Dockerfile .
-docker build -t ghcr.io/<your-github-username>/service-core:$VERSION  -f apps/service-core/Dockerfile .
-
-# Push all images
-docker push ghcr.io/<your-github-username>/web:$VERSION
-docker push ghcr.io/<your-github-username>/api-gateway:$VERSION
-docker push ghcr.io/<your-github-username>/service-auth:$VERSION
-docker push ghcr.io/<your-github-username>/service-core:$VERSION
-```
-
-#### 5. Deploy with Helm
-
-Run this from your local machine. The `--kubeconfig` flag tells Helm to target
-the remote prod cluster:
-
-```bash
-OWNER="<your-github-username>"
-VERSION="1.0.0"
-
-helm upgrade --install luckyplans infrastructure/helm/luckyplans \
-  --kubeconfig ~/.kube/luckyplans-prod.yaml \
-  -f infrastructure/helm/luckyplans/values.yaml \
-  -f infrastructure/helm/luckyplans/values.prod.yaml \
-  --set image.registry=ghcr.io \
-  --set "apiGateway.image.repository=$OWNER/api-gateway" \
-  --set "apiGateway.image.tag=$VERSION" \
-  --set "serviceAuth.image.repository=$OWNER/service-auth" \
-  --set "serviceAuth.image.tag=$VERSION" \
-  --set "serviceCore.image.repository=$OWNER/service-core" \
-  --set "serviceCore.image.tag=$VERSION" \
-  --set "web.image.repository=$OWNER/web" \
-  --set "web.image.tag=$VERSION" \
-  --namespace luckyplans --create-namespace \
-  --rollback-on-failure --timeout 5m
-```
-
-> **Note:** Passing image tags via `--set` avoids manually editing
-> `values.prod.yaml` for each release. The values file keeps sensible defaults;
-> the deploy command overrides them.
+ArgoCD will automatically detect the Application and sync the Helm chart.
+Monitor progress in the ArgoCD UI at `https://luckyplans.xyz/argocd`.
 
 On first deploy, cert-manager will automatically provision a TLS certificate
 for `luckyplans.xyz` and store it in the `luckyplans-tls` Secret.
 
-#### 6. Verify
+#### 7. Verify
 
 ```bash
-# Check all pods are Running
-kubectl --kubeconfig ~/.kube/luckyplans-prod.yaml -n luckyplans get pods
-
-# Check certificate status
-kubectl --kubeconfig ~/.kube/luckyplans-prod.yaml -n luckyplans get certificate
-
-# Test endpoints
+kubectl -n luckyplans get pods
 curl -s https://luckyplans.xyz/health
-curl -s https://luckyplans.xyz/ | head -20
-
-# Test GraphQL
 curl -s https://luckyplans.xyz/graphql \
   -H 'Content-Type: application/json' \
   -d '{"query":"{ health }"}' | jq .
 ```
-
-> **Tip:** To avoid passing `--kubeconfig` every time, set the environment variable:
-> ```bash
-> export KUBECONFIG=~/.kube/luckyplans-prod.yaml
-> ```
 
 ---
 
@@ -740,9 +410,14 @@ kubectl -n luckyplans get pods
 kubectl -n luckyplans get svc
 kubectl -n luckyplans get ingress
 
-# Test the GraphQL health endpoint (use your environment's URL)
+# Test the REST health endpoint (use your environment's URL)
+# Local:   http://localhost/health
+# Prod:    https://luckyplans.xyz/health
+curl -s http://localhost/health | jq .
+# Expected: {"status":"ok"}
+
+# Test the GraphQL health endpoint
 # Local:   http://localhost/graphql
-# Dev:     https://dev.luckyplans.xyz/graphql
 # Prod:    https://luckyplans.xyz/graphql
 curl -s http://localhost/graphql \
   -H 'Content-Type: application/json' \
@@ -754,29 +429,23 @@ curl -s http://localhost/graphql \
 
 ## Updating Configuration
 
-All config lives in the values files. To change env vars, edit the relevant values file and re-run `helm upgrade`:
+All config lives in the values files. To make changes:
+
+**Local** (no ArgoCD — direct Helm):
 
 ```bash
-# Local:
 helm upgrade luckyplans infrastructure/helm/luckyplans \
   --namespace luckyplans
-
-# Dev:
-helm upgrade luckyplans infrastructure/helm/luckyplans \
-  --namespace luckyplans \
-  -f infrastructure/helm/luckyplans/values.dev.yaml
-
-# Prod:
-helm upgrade luckyplans infrastructure/helm/luckyplans \
-  --namespace luckyplans \
-  -f infrastructure/helm/luckyplans/values.prod.yaml
 ```
 
-> **Warning:** Do not use `--reuse-values`. It merges the previous release's values
-> with the new chart, which silently preserves stale defaults when the chart changes.
-> Always pass the full set of `-f` values files explicitly.
+**Prod** (ArgoCD GitOps):
 
-Helm automatically triggers rolling restarts of affected deployments.
+1. Edit `values.prod.yaml`
+2. Commit and push to `main`
+3. ArgoCD auto-syncs the change
+
+> **Warning:** Do not use `helm upgrade` directly on the prod cluster managed
+> by ArgoCD — ArgoCD self-heal will revert manual Helm changes.
 
 > **Note on `NEXT_PUBLIC_GRAPHQL_URL`**: This is baked into the Next.js bundle at image build time — changing `web.buildArgs.graphqlUrl` in a values file only takes effect after rebuilding the web image. See [architecture/helm-deployment.md](../architecture/helm-deployment.md).
 
@@ -789,29 +458,30 @@ Secrets are rendered into a Kubernetes `Secret` (type `Opaque`) and injected int
 ### Auto-generated secrets
 
 **`JWT_SECRET`** is automatically generated by the Helm chart on first install
-(64 random alphanumeric characters) and reused across upgrades. No manual
-configuration is needed — each cluster gets its own unique secret.
+(64 random alphanumeric characters) and reused across upgrades via Helm's
+`lookup` function. No manual configuration is needed — each cluster gets its
+own unique secret.
 
 ### Manual secrets
 
-**Never commit real secrets to values files or version control.** Pass them via `--set` flags at deploy time from environment variables:
+**Never commit real secrets to values files or version control.** Secrets are
+managed directly in the cluster and preserved across ArgoCD syncs via Helm's
+`lookup` function.
+
+**First-time setup** (before first ArgoCD sync):
 
 ```bash
-# Set secrets as environment variables (e.g. from a password manager or CI secret store)
-export DB_PASSWORD="your-password-here"
-
-# Pass them to Helm at deploy time
-helm upgrade --install luckyplans infrastructure/helm/luckyplans \
-  --namespace luckyplans \
-  -f infrastructure/helm/luckyplans/values.prod.yaml \
-  --set secrets.DB_PASSWORD="$DB_PASSWORD"
+kubectl -n luckyplans create secret generic luckyplans-secrets \
+  --from-literal=JWT_SECRET="$(openssl rand -base64 48)" \
+  --from-literal=DB_PASSWORD="your-db-password"
 ```
 
-For production, prefer an external secrets manager (e.g. Sealed Secrets, External Secrets Operator) to avoid manual `--set` flags entirely.
+Once created, ArgoCD's Helm rendering detects the existing secret via `lookup`
+and preserves the values — no `--set` flags or CI secrets needed.
 
 > **Note:** `DB_PASSWORD` is reserved for future database use. The current
-> architecture uses only Redis for inter-service transport. The secret is passed
-> through the pipeline to avoid workflow changes when a database is introduced.
+> architecture uses only Redis for inter-service transport. The secret is
+> provisioned now to avoid workflow changes when a database is introduced.
 
 ### Rotating secrets
 
@@ -824,35 +494,34 @@ Kubernetes Secret. To rotate it:
    ```bash
    kubectl -n luckyplans delete secret luckyplans-secrets
    ```
-2. **Re-deploy** to regenerate:
-   ```bash
-   helm upgrade luckyplans infrastructure/helm/luckyplans \
-     --namespace luckyplans \
-     -f infrastructure/helm/luckyplans/values.prod.yaml
-   ```
+2. **Trigger a sync** in ArgoCD. ArgoCD will re-render the Helm chart,
+   generating a new `JWT_SECRET`.
 3. **Verify** the deployment is healthy (all existing JWTs will be invalidated).
 
 #### Rotating `DB_PASSWORD` and other manual secrets
 
 1. **Generate the new secret value** using a cryptographically secure method:
+
    ```bash
    openssl rand -base64 32
    ```
 
-2. **Update the GitHub Actions secret** in **Settings → Secrets and variables → Actions**.
+2. **Update the Kubernetes Secret directly**:
 
-3. **Re-deploy** via the Deploy & Verify workflow (manual dispatch) to propagate
-   the new value. Helm will update the Kubernetes Secret and trigger a rolling
-   restart of affected pods.
+   ```bash
+   kubectl -n luckyplans patch secret luckyplans-secrets \
+     -p '{"stringData":{"DB_PASSWORD":"new-password-here"}}'
+   ```
 
-4. **Verify** the deployment is healthy after rotation (check smoke tests in the
-   workflow run).
+3. **Restart affected pods** to pick up the new value:
 
-#### Rotating `KUBECONFIG_DEV` / `KUBECONFIG_PROD`
+   ```bash
+   kubectl -n luckyplans rollout restart deployment/api-gateway
+   kubectl -n luckyplans rollout restart deployment/service-auth
+   kubectl -n luckyplans rollout restart deployment/service-core
+   ```
 
-1. Regenerate the kubeconfig on the VPS (see [Generating KUBECONFIG](#generating-kubeconfig_dev--kubeconfig_prod))
-2. Update the GitHub Actions secret
-3. Trigger a test deployment to verify connectivity
+4. **Verify** the deployment is healthy.
 
 > **Tip:** Rotate secrets on a regular schedule (e.g. quarterly) and immediately
 > after any team member departure or suspected compromise.
@@ -861,7 +530,7 @@ Kubernetes Secret. To rotate it:
 
 ## Scaling
 
-Update `replicas` in the values file and run `helm upgrade`:
+Update `replicas` in the values file, commit, and push:
 
 ```yaml
 # values.prod.yaml
@@ -873,16 +542,20 @@ web:
 ```
 
 ```bash
-helm upgrade luckyplans infrastructure/helm/luckyplans \
-  --namespace luckyplans \
-  -f infrastructure/helm/luckyplans/values.prod.yaml
+git add infrastructure/helm/luckyplans/values.prod.yaml
+git commit -m "scale: increase api-gateway to 3 replicas"
+git push origin main
+# ArgoCD auto-syncs the change
 ```
 
-Or scale imperatively (not persisted across Helm upgrades):
-
-```bash
-kubectl -n luckyplans scale deployment/api-gateway --replicas=3
-```
+> **Warning:** Do not use `kubectl scale` on ArgoCD-managed clusters — ArgoCD
+> self-heal will revert the change back to the Git-defined replica count
+> within seconds.
+> For local clusters (no ArgoCD), imperative scaling still works:
+>
+> ```bash
+> kubectl -n luckyplans scale deployment/api-gateway --replicas=3
+> ```
 
 ---
 
@@ -945,12 +618,43 @@ helm upgrade luckyplans infrastructure/helm/luckyplans \
   --dry-run --debug
 ```
 
+### Check ArgoCD sync status
+
+```bash
+# Via ArgoCD UI: https://luckyplans.xyz/argocd
+
+# Via kubectl (check Application resource):
+kubectl -n argocd get application luckyplans-prod -o wide
+```
+
 ---
 
 ## Rollback
 
+### ArgoCD-managed environment (prod)
+
+**Git revert** (recommended — permanent):
+
 ```bash
-# Roll back to the previous release
+git log --oneline -5
+git revert <commit-sha>
+git push origin main
+```
+
+ArgoCD auto-syncs the revert to the previous state.
+
+**ArgoCD UI** (temporary — auto-sync overrides immediately):
+
+1. Open the Application in ArgoCD UI → **History and Rollback**
+2. Select a previous revision → **Rollback**
+
+> **Warning:** With auto-sync + self-heal enabled, UI rollbacks are reverted
+> almost immediately. Use git revert for permanent rollbacks.
+
+### Local environment (no ArgoCD)
+
+```bash
+# Roll back to the previous Helm release
 helm -n luckyplans rollback luckyplans
 
 # Roll back to a specific revision
@@ -968,6 +672,13 @@ helm uninstall luckyplans -n luckyplans
 ```
 
 The `luckyplans` namespace is annotated with `helm.sh/resource-policy: keep` and survives `helm uninstall`.
+
+### Uninstall ArgoCD
+
+```bash
+helm uninstall argocd -n argocd
+kubectl delete namespace argocd
+```
 
 ### Destroy the entire k3d cluster (local only)
 
@@ -989,13 +700,12 @@ k3d cluster delete luckyplans-local
 ### TLS (HTTPS)
 
 TLS certificates are managed automatically by **cert-manager + Let's Encrypt**.
-Both dev and prod environments use the `letsencrypt-prod` ClusterIssuer with
-HTTP-01 challenges. Certificates auto-renew ~30 days before expiry.
+The prod environment uses the `letsencrypt-prod` ClusterIssuer with HTTP-01
+challenges. Certificates auto-renew ~30 days before expiry.
 
-| Environment | Domain | Secret | Issuer |
-|-------------|--------|--------|--------|
-| dev | `dev.luckyplans.xyz` | `luckyplans-dev-tls` | `letsencrypt-prod` |
-| prod | `luckyplans.xyz` | `luckyplans-tls` | `letsencrypt-prod` |
+| Environment | Domain           | Secret           | Issuer             |
+| ----------- | ---------------- | ---------------- | ------------------ |
+| prod        | `luckyplans.xyz` | `luckyplans-tls` | `letsencrypt-prod` |
 
 ```bash
 # Check certificate status
@@ -1034,16 +744,16 @@ Adjust CPU/memory in the values files for your server capacity:
 apiGateway:
   resources:
     requests:
-      memory: "512Mi"
-      cpu: "500m"
+      memory: '512Mi'
+      cpu: '500m'
     limits:
-      memory: "1Gi"
-      cpu: "1000m"
+      memory: '1Gi'
+      cpu: '1000m'
 ```
 
 Consider adding a `ResourceQuota` and `LimitRange` for the `luckyplans`
 namespace to prevent any single deployment from consuming all node resources.
-This is especially important when dev and prod share the same VPS:
+This is especially important on resource-constrained servers:
 
 ```bash
 # Example: cap the namespace at 4 CPU and 8Gi memory
@@ -1063,3 +773,5 @@ For production, set up monitoring to catch issues before users do:
   to catch crash loops early.
 - **Uptime monitoring:** Use an external service (e.g. UptimeRobot, Pingdom)
   to monitor `https://luckyplans.xyz/health` from outside the cluster.
+- **ArgoCD sync alerts:** Monitor ArgoCD Application health status for
+  Degraded or OutOfSync states that persist beyond expected sync intervals.

@@ -1,0 +1,80 @@
+# ============================================================
+# ArgoCD — shared base configuration
+# ============================================================
+# Install:
+#   helm repo add argo https://argoproj.github.io/argo-helm
+#   helm upgrade --install argocd argo/argo-cd \
+#     -n argocd --create-namespace \
+#     -f infrastructure/argocd/values-base.yaml \
+#     -f infrastructure/argocd/values-<env>.yaml
+
+# ------------------------------------------------------------------
+# Server — TLS is terminated at Traefik, so ArgoCD runs insecure
+# ------------------------------------------------------------------
+server:
+  insecure: true
+
+configs:
+  params:
+    # Run behind reverse proxy (Traefik) — no TLS inside the cluster
+    server.insecure: true
+    server.basehref: /argocd
+    server.rootpath: /argocd
+
+  # ------------------------------------------------------------------
+  # Git repository access — credential template for GitHub
+  # ------------------------------------------------------------------
+  credentialTemplates:
+    github:
+      url: https://github.com/takeshi-su57
+      username: x-access-token
+      # password is injected at install time via:
+      #   --set configs.credentialTemplates.github.password=$GITHUB_TOKEN
+      password: ''
+
+  repositories:
+    platform-clients:
+      url: https://github.com/takeshi-su57/platform-clients.git
+      type: git
+
+# ------------------------------------------------------------------
+# Disable components not needed at current scale
+# ------------------------------------------------------------------
+dex:
+  enabled: false
+
+notifications:
+  enabled: false
+
+applicationSet:
+  enabled: false
+
+# ------------------------------------------------------------------
+# Resource limits — keep low for k3d / small VPS
+# ------------------------------------------------------------------
+controller:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+redis:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi

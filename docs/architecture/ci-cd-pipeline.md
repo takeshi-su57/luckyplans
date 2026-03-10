@@ -1,35 +1,43 @@
 # CI/CD Pipeline
 
-Automated pipeline using GitHub Actions for the LuckyPlans monorepo.
+Automated pipeline using GitHub Actions + ArgoCD for the LuckyPlans monorepo.
 
 ## Pipeline Overview
 
 ```
   PR / Push to main          Merge to main             After Docker push
   ┌──────────────┐      ┌───────────────────┐      ┌───────────────────┐
-  │     CI       │──ok──│  Docker Build     │──ok──│  Deploy & Verify  │
+  │     CI       │──ok──│  Docker Build     │──ok──│  Update Tags      │
   │              │      │  & Push           │      │                   │
-  │ lint         │      │ build 4 images    │      │ Dev  → smoke test │
-  │ type-check   │      │ push to ghcr.io   │      │ Prod → approval   │
-  │ test         │      │ tag: sha + latest │      │      → smoke test │
+  │ lint         │      │ build 4 images    │      │ commit new tags   │
+  │ type-check   │      │ push to ghcr.io   │      │ to values files   │
+  │ test         │      │ tag: sha + latest │      │ [skip ci]         │
   │ build        │      │                   │      │                   │
   └──────────────┘      └───────────────────┘      └───────────────────┘
+                                                            │
+                                                            ▼
+                                                   ArgoCD detects change
+                                                   └── Prod: auto-sync
 ```
 
 ## Workflows
 
 ### 1. CI (`.github/workflows/ci.yml`)
 
-**Triggers:** Push to `main`, pull requests to `main`.
+**Triggers:** Push to `main` (excluding values file changes), pull requests to `main`.
 
 Runs lint, type-check, test, and build using Turborepo. On PRs, only affected
 packages are checked via `--filter=...[origin/main]`.
 
 Concurrency groups cancel superseded PR runs automatically.
 
-Additionally validates Helm chart templates with `helm template --validate` for
-all environment variants (base, dev, prod) to catch Kubernetes schema errors
-that `helm lint` alone would miss.
+Additionally validates Helm chart templates by piping `helm template` output
+through `kubeconform` for all environment variants (base, prod) to catch
+Kubernetes schema errors that `helm lint` alone would miss.
+
+> **Note:** `ci.yml` has `paths-ignore` for `values.prod.yaml`
+> to prevent CI from re-triggering when the Update Tags workflow commits image
+> tag changes.
 
 ### 2. Docker Build & Push (`.github/workflows/docker-build.yml`)
 
@@ -56,59 +64,44 @@ completes before the second starts, ensuring all 4 images share the same SHA tag
 
 Images are pushed with **SBOM** and **provenance** attestations enabled via
 `docker/build-push-action`, providing supply chain transparency. Each image
-is scanned with Trivy before push — builds fail on CRITICAL/HIGH
-vulnerabilities.
+is scanned with Trivy after push — builds fail on CRITICAL/HIGH
+vulnerabilities, which prevents the Update Tags workflow from triggering
+(it requires `conclusion == 'success'`), so vulnerable images are never deployed.
 
-### Supply Chain Security (TODO)
+### 3. Update Image Tags (`.github/workflows/update-tags.yml`)
 
-Images are currently built with SBOM and provenance attestations, and scanned
-with Trivy before push. To further harden the supply chain:
+**Triggers:** After Docker build completes on `main`, or manual dispatch with a
+specific image tag.
 
-1. **Sign images with cosign** after push in the Docker Build workflow:
-   ```yaml
-   - name: Sign image
-     run: cosign sign --yes "$IMAGE_NAME:sha-$SHORT_SHA"
-   ```
-2. **Verify signatures at deploy time** in the reusable deploy workflow before
-   `helm upgrade`:
-   ```yaml
-   - name: Verify image signature
-     run: cosign verify "$IMAGE_NAME:$IMAGE_TAG"
-   ```
+This workflow replaces the previous push-based `deploy-verify.yml` and
+`deploy-reusable.yml` workflows (decommissioned as part of the ArgoCD migration).
 
-This ensures only images built by the CI pipeline can be deployed, even if an
-attacker gains write access to the container registry.
+The workflow:
 
-### 3. Deploy & Verify (`.github/workflows/deploy-verify.yml` + `deploy-reusable.yml`)
+1. Computes the image tag (`sha-<7char>` from the triggering commit)
+2. Uses `yq` to update all 4 service image tags in `values.prod.yaml`
+3. Commits with `[skip ci]` to prevent re-triggering CI
+4. Pushes to `main`
 
-**Triggers:** After Docker build completes, or manual dispatch with image tag and
-target environment.
+ArgoCD then detects the change:
 
-**Dev deployment** runs automatically. **Prod deployment** requires manual
-approval via the GitHub Environment protection rule.
+- **Prod:** ArgoCD auto-syncs the new image tags to the cluster
 
-**Prod deployment** runs independently of dev (no dependency on dev succeeding)
-and can be dispatched on its own via manual workflow dispatch.
+A concurrency group (`update-tags`) prevents race conditions between concurrent
+tag update runs.
 
-> **Trade-off:** Prod independence means a broken change can reach prod without
-> being caught in dev first. This is intentional — it allows hotfixes to bypass
-> dev and enables manual prod-only deploys. The GitHub Environment protection
-> rule (required reviewer) is the safety net instead. If you want dev-first
-> gating, add `needs: [deploy-dev]` to the `deploy-prod` job.
+### 4. ArgoCD Sync & Post-Sync Hooks
 
-The shared deployment logic lives in a **reusable workflow** (`deploy-reusable.yml`)
-called by both dev and prod jobs with environment-specific inputs and secrets.
+ArgoCD is not a GitHub Actions workflow but the final stage of the CD pipeline.
+See [argocd.md](argocd.md) for full operational documentation.
 
-Each deployment:
+After ArgoCD syncs the Helm chart, **post-sync hooks** run as Kubernetes Jobs:
 
-1. Applies Helm chart with `--atomic` (waits for readiness, auto-rolls back on Helm failure)
-2. Runs smoke tests via shared script (`.github/scripts/smoke-test.sh`):
-   health endpoint, frontend HTTP 200, GraphQL connectivity, and deployed image tag verification
-3. Automatically rolls back via `helm rollback` if smoke tests fail
-   (on first deploy, the failed release is uninstalled instead)
-4. Verifies rollback health after a rollback occurs
-5. Cleans up kubeconfig from the runner filesystem
-6. Reports status to the GitHub Actions step summary
+- **Smoke tests** verify API Gateway health, web frontend, and GraphQL endpoint
+  via in-cluster service DNS
+- Job results are visible in the ArgoCD UI (sync status: Healthy or Degraded)
+- Failed smoke tests mark the sync as Degraded but do not auto-rollback
+  (use `git revert` or ArgoCD UI rollback)
 
 > **Tip — initial setup:** When first configuring TLS, use the Let's Encrypt
 > staging issuer (`certManager.issuer: letsencrypt-staging`) to avoid hitting
@@ -118,73 +111,35 @@ Each deployment:
 
 > **First deploy TLS delay:** On the very first deployment to a new environment,
 > cert-manager needs 1-2 minutes to complete the ACME HTTP-01 challenge and
-> provision the TLS certificate. The smoke test script includes a TLS readiness
-> pre-check that waits up to 120 seconds before running assertions. If smoke
-> tests still fail on first deploy, re-run the Deploy & Verify workflow — the
-> certificate will already be provisioned.
+> provision the TLS certificate. The post-sync smoke test retries 5 times with
+> 10-second intervals, which usually covers this delay.
 
 ## Required GitHub Configuration
 
 ### Secrets
 
-| Secret            | Scope | Description                                    |
-| ----------------- | ----- | ---------------------------------------------- |
-| `KUBECONFIG_DEV`  | Environment (`dev`) | Base64-encoded kubeconfig for the dev cluster  |
-| `KUBECONFIG_PROD` | Environment (`prod`) | Base64-encoded kubeconfig for the prod cluster |
-| `DB_PASSWORD`     | Environment (each) | Reserved for future database use. Passed to the Helm secrets template but not yet consumed by any service. |
+| Secret          | Scope      | Description                                                                                                                                                                              |
+| --------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GITHUB_TOKEN`  | Automatic  | Provided by GitHub Actions. Used for ghcr.io auth.                                                                                                                                       |
+| `CD_PUSH_TOKEN` | Repository | **Required with branch protection.** Fine-grained PAT with Contents: read+write scope. Used by `update-tags.yml` to push tag commits to `main`. Falls back to `GITHUB_TOKEN` if not set. |
 
-> **Note — `JWT_SECRET` is auto-generated:** The Helm chart automatically
-> generates a random 64-character `JWT_SECRET` on first install and reuses it
-> across upgrades (via `lookup`). No GitHub Actions secret is needed. Each
-> cluster gets its own unique secret, ensuring environment isolation.
+> **Note — no kubeconfig secrets needed:** ArgoCD runs in-cluster and manages
+> deployments directly. The previous `KUBECONFIG_DEV` and `KUBECONFIG_PROD`
+> secrets are no longer required.
 
-> **Important — environment-scoped secrets:** `DB_PASSWORD`
-> must be configured as an **environment-scoped secret** (set separately on the
-> `dev` and `prod` environments in **Settings → Environments → [env] → Secrets**),
-> not as a repository-level secret.
+> **Note — `JWT_SECRET` and `DB_PASSWORD` are cluster-managed:** These secrets
+> are created directly in the Kubernetes cluster (not in GitHub Actions) and
+> preserved across ArgoCD syncs via Helm's `lookup` function. See
+> [how-to-deploy.md — Adding Secrets](../guides/how-to-deploy.md#adding-secrets).
 
-> **Note:** `GITHUB_TOKEN` is provided automatically by GitHub Actions and does
-> not need to be created manually. It is used for ghcr.io authentication.
-
-> **Security — secrets visibility in Helm releases:** Secrets passed via
-> `--set-string` are stored in the Helm release metadata (in etcd). Anyone with
-> `helm get values luckyplans` access can read them in plaintext. For production,
-> migrate to an external secrets operator (e.g. [External Secrets Operator](https://external-secrets.io/),
-> [Sealed Secrets](https://sealed-secrets.netlify.app/)) that injects secrets
-> directly into Kubernetes without exposing them in Helm values.
-
-#### Secrets migration path
-
-The current `--set-string` approach exposes secrets in Helm release metadata.
-Migrate to an external secrets operator when moving to production:
-
-1. Install [External Secrets Operator](https://external-secrets.io/) on the cluster
-2. Create a `SecretStore` pointing to your secrets backend (e.g. AWS SSM,
-   HashiCorp Vault, or GitHub Actions OIDC-federated provider)
-3. Create `ExternalSecret` resources that sync into the Kubernetes `Secret`
-   the Helm chart already references
-4. Remove `--set-string secrets.*` flags from the deploy workflow
-5. Secrets are now injected directly into Kubernetes without passing through
-   Helm values or CI environment variables
-
-To encode a kubeconfig:
-
-```bash
-# Linux
-base64 -w 0 < ~/.kube/config
-
-# macOS (BSD base64 does not support -w)
-base64 -i ~/.kube/config
-```
-
-> **Security:** Use a dedicated service account with RBAC scoped to the `luckyplans` namespace, not a full cluster-admin kubeconfig.
+> **Note — ArgoCD repo access:** ArgoCD needs a GitHub token to read the
+> repository. This is configured during ArgoCD installation via
+> `install-argocd.sh --github-token <token>`, not as a GitHub Actions secret.
 
 ### Environments
 
-Create two environments in **Settings → Environments**:
-
-- **dev** — no protection rules (auto-deploy)
-- **prod** — enable "Required reviewers" and add maintainers
+GitHub Environments are no longer used for deployment approval (ArgoCD handles
+this via auto-sync). However, you may keep them for organizational purposes.
 
 ### Branch Protection (recommended)
 
@@ -195,34 +150,11 @@ Configure on the `main` branch under **Settings → Branches**:
 - [x] Require status checks to pass (select the `ci` job)
 - [x] Do not allow bypassing the above settings
 
-## Helm Chart Versioning
-
-The chart at `infrastructure/helm/luckyplans/Chart.yaml` has a `version` field,
-but there is no automated enforcement that it is bumped when chart templates or
-values change. This makes it difficult to track which chart version is deployed
-and to distinguish image-only deployments from chart-structure changes.
-
-**Recommendation:** Add a CI check that fails if files under
-`infrastructure/helm/` have changed but `Chart.yaml` version has not been bumped.
-Example using a simple shell check in the CI workflow:
-
-```yaml
-- name: Check Helm chart version bump
-  if: github.event_name == 'pull_request'
-  run: |
-    CHART_CHANGED=$(git diff origin/main --name-only -- infrastructure/helm/ | grep -v Chart.yaml || true)
-    if [ -z "$CHART_CHANGED" ]; then
-      echo "No Helm chart files changed — skipping version check"
-      exit 0
-    fi
-    OLD_VERSION=$(git show origin/main:infrastructure/helm/luckyplans/Chart.yaml | grep '^version:' | awk '{print $2}')
-    NEW_VERSION=$(grep '^version:' infrastructure/helm/luckyplans/Chart.yaml | awk '{print $2}')
-    if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
-      echo "ERROR: Helm chart files changed but Chart.yaml version was not bumped (still $OLD_VERSION)"
-      exit 1
-    fi
-    echo "Chart version bumped: $OLD_VERSION → $NEW_VERSION"
-```
+> **Important:** With branch protection enabled, `GITHUB_TOKEN` cannot push
+> tag update commits to `main`. You **must** create a `CD_PUSH_TOKEN` secret
+> (fine-grained PAT with Contents: read+write scope) so the `update-tags`
+> workflow can bypass protection rules. See
+> [ArgoCD troubleshooting](argocd.md#update-tags-workflow-fails-to-push-to-main).
 
 ## Turborepo Caching
 
@@ -235,39 +167,16 @@ most recent cache for the same OS.
 
 ## Manual Deployment
 
-To deploy a specific image tag to an environment:
+To deploy a specific image tag:
 
-1. Go to **Actions → Deploy & Verify → Run workflow**
+1. Go to **Actions → Update Image Tags → Run workflow**
 2. Enter the image tag (e.g. `sha-abc1234`)
-3. Select the target environment (`dev`, `prod`, or `both`)
-4. Click **Run workflow**
+3. Click **Run workflow**
 
-For prod, you will receive an approval prompt before deployment proceeds.
+This commits the tag to `values.prod.yaml`. ArgoCD will auto-sync the new tag.
 
-## Notifications (TODO)
-
-The pipeline currently reports results to the GitHub Actions step summary but
-does not send external notifications. For production, add failure alerts so the
-team is notified immediately when deployments fail or rollbacks occur.
-
-**Option A — Slack via GitHub Action:**
-
-```yaml
-- name: Notify Slack on failure
-  if: failure()
-  uses: slackapi/slack-github-action@v2
-  with:
-    webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-    webhook-type: incoming-webhook
-    payload: |
-      { "text": "Deployment to ${{ inputs.environment }} FAILED for tag ${{ inputs.image-tag }}" }
-```
-
-**Option B — GitHub native notifications:**
-
-Enable "Required status checks" on the `main` branch and subscribe to workflow
-failure notifications in **Settings → Notifications**. This provides email
-alerts without additional secrets or integrations.
+Alternatively, edit `values.prod.yaml` directly, commit with `[skip ci]`,
+and push.
 
 ## Troubleshooting
 
@@ -289,33 +198,37 @@ Rebuild locally:
 docker build -f apps/<service>/Dockerfile .
 ```
 
-### Deployment fails with Helm timeout
+### ArgoCD sync fails or shows Degraded
 
-The workflow's rollback step automatically reverts on failure. On the very first
-deployment (no previous revision), the failed release is uninstalled instead. Check:
+Check the ArgoCD UI for sync error details, then investigate:
 
 ```bash
+# Check pod status
 kubectl -n luckyplans get pods
 kubectl -n luckyplans describe pod <pod-name>
 kubectl -n luckyplans logs <pod-name>
+
+# Check ArgoCD Application status
+kubectl -n argocd get application luckyplans-prod -o yaml
 ```
 
-### Improving smoke test coverage
+Common causes:
 
-The current smoke tests verify the API Gateway health endpoint, web frontend,
-and GraphQL connectivity. They do **not** verify that downstream microservices
-(service-auth, service-core) are connected via Redis. Consider adding:
+- **Image pull errors:** Wrong tag or registry auth issues
+- **Resource limits:** Pod OOMKilled — increase memory limits in values file
+- **Probe failures:** Service not starting in time — check logs and increase `initialDelaySeconds`
 
-- A `/ready` endpoint on the API Gateway that checks Redis connectivity and
-  confirms all expected microservices have registered their message handlers
-- Including this check in `smoke-test.sh` to catch partial-deployment failures
-  where the gateway is healthy but microservices are unreachable
+### Smoke tests fail (post-sync hook)
 
-### Smoke tests fail
+The post-sync smoke test Job runs inside the cluster. Check its logs:
 
-Health endpoints may take time to become available. The tests retry 5 times
-with 10-second intervals. If they still fail, check:
+```bash
+kubectl -n luckyplans logs job/smoke-test
+```
 
-- Pod readiness probes (`kubectl -n luckyplans get pods`)
-- Ingress routing (`kubectl -n luckyplans get ingress`)
-- Service endpoints (`kubectl -n luckyplans get endpoints`)
+If tests fail, the ArgoCD sync shows as Degraded. The smoke tests retry 5 times
+with 10-second intervals. Common causes:
+
+- Pod readiness probes not passing (`kubectl -n luckyplans get pods`)
+- Service DNS not resolving (check service exists: `kubectl -n luckyplans get svc`)
+- API Gateway not returning expected response (check logs)

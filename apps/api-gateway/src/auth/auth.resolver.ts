@@ -22,9 +22,7 @@ export class AuthResolver {
 
   @Query(() => AuthResponse)
   async validateToken(@Args('token') token: string): Promise<AuthResponse> {
-    return firstValueFrom(
-      this.authClient.send(AuthMessagePattern.VALIDATE, { token }),
-    );
+    return firstValueFrom(this.authClient.send(AuthMessagePattern.VALIDATE, { token }));
   }
 
   @Mutation(() => AuthResponse)
@@ -32,9 +30,7 @@ export class AuthResolver {
     @Args('email') email: string,
     @Args('password') password: string,
   ): Promise<AuthResponse> {
-    return firstValueFrom(
-      this.authClient.send(AuthMessagePattern.LOGIN, { email, password }),
-    );
+    return firstValueFrom(this.authClient.send(AuthMessagePattern.LOGIN, { email, password }));
   }
 
   @Mutation(() => AuthResponse)
