@@ -195,10 +195,11 @@ See [architecture/argocd.md](../architecture/argocd.md) for the full operational
 Push/merge to main
   │
   ▼
-CI (lint, type-check, test, build)
+CI (lint, type-check, test, build, Trivy vuln + config scan, Helm lint)
   │ ✅
   ▼
 Docker Build & Push (4 images → ghcr.io, tagged sha-<commit>)
+  │ + Trivy image scan per image (CRITICAL/HIGH → fail)
   │ ✅
   ▼
 Update Tags (commits new tags to values.prod.yaml) [skip ci]
@@ -344,8 +345,8 @@ kubectl -n cert-manager rollout status deploy/cert-manager-cainjector
 #### 3. Install ArgoCD
 
 ```bash
-git clone https://github.com/takeshi-su57/platform-clients.git
-cd platform-clients
+git clone https://github.com/takeshi-su57/luckyplans.git
+cd luckyplans
 
 ./infrastructure/scripts/install-argocd.sh --github-token <your-github-pat>
 ```
