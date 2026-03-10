@@ -27,7 +27,8 @@ RUN pnpm --filter=@luckyplans/service-auth deploy --prod /deploy
 
 # --- Production runner ---
 FROM node:25-alpine AS runner
-RUN apk upgrade --no-cache
+RUN apk upgrade --no-cache && \
+    rm -rf /usr/local/lib/node_modules/npm /opt/yarn-v*
 WORKDIR /app
 
 ENV NODE_ENV=production
