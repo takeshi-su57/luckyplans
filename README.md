@@ -22,14 +22,18 @@ Browser → Next.js (Apollo Client)
 
 | Layer            | Technology                          |
 | ---------------- | ----------------------------------- |
-| Frontend         | Next.js 14 (App Router)             |
+| Frontend         | Next.js 16 (App Router)             |
 | GraphQL Client   | Apollo Client                       |
 | API Gateway      | NestJS + Apollo Server (code-first) |
 | Microservices    | NestJS Microservices                |
 | Inter-service    | Redis transport (pub/sub)           |
 | Monorepo         | Turborepo + pnpm workspaces         |
 | Containerization | Docker (multi-stage builds)         |
-| Local K8s        | k3s via k3d                         |
+| Deployment       | ArgoCD + Helm on Kubernetes         |
+
+## AI Engineering
+
+This project uses an AI-assisted development framework with documented rules to ensure consistent code quality. See [AI_ENGINEERING.md](AI_ENGINEERING.md) for details. AI tool context and rules are in the `.claude/` directory.
 
 ## Project Structure
 
@@ -42,14 +46,17 @@ luckyplans/
 │   └── service-core/        # Core domain microservice (NestJS)
 ├── packages/
 │   ├── config/              # Shared ESLint + TypeScript configs
-│   ├── shared/              # Shared types and utilities
-│   └── ui/                  # Shared React UI components
+│   └── shared/              # Shared types and utilities
 ├── infrastructure/
-│   ├── k8s/                 # Kubernetes manifests
-│   └── scripts/             # Deployment scripts
+│   ├── helm/                # Helm charts for Kubernetes deployment
+│   ├── argocd/              # ArgoCD application configs
+│   └── scripts/             # Setup, deploy, and teardown scripts
 ├── docs/
-│   └── architecture/        # Architecture documentation
-├── docker-compose.yml       # Local development with Docker
+│   ├── architecture/        # Architecture overview and ADRs
+│   │   └── decisions/       # Architecture Decision Records (ADRs)
+│   ├── system/              # API reference and configuration docs
+│   └── guides/              # Development and deployment guides
+├── .claude/                 # AI tool context and rules
 ├── turbo.json               # Turborepo configuration
 └── pnpm-workspace.yaml      # pnpm workspace definition
 ```
@@ -58,7 +65,7 @@ luckyplans/
 
 - **Node.js** >= 20.0.0
 - **pnpm** >= 9.0.0 (`corepack enable && corepack prepare pnpm@9.15.4 --activate`)
-- **Docker** (for containerized development)
+- **Docker** (for containerized builds and deployment)
 - **k3d** (for local Kubernetes — [install](https://k3d.io))
 
 ## Quick Start
@@ -67,36 +74,24 @@ luckyplans/
 # First time — install deps, create .env, build shared packages:
 pnpm setup
 
-# Start everything (Redis + all services with hot reload):
-pnpm dev:start
+# Start all services with hot reload:
+pnpm dev
 ```
 
 - **Frontend**: http://localhost:3000
 - **GraphQL Playground**: http://localhost:4000/graphql
 
-## Docker Compose
+## Kubernetes Deployment
 
 ```bash
-pnpm docker:up       # Build and start all containers
-pnpm docker:down     # Stop everything
-```
-
-## Kubernetes (k3s)
-
-```bash
-pnpm deploy:k3s      # Build images → create cluster → deploy
+pnpm deploy:local     # Build images → create cluster → deploy via Helm + ArgoCD
+pnpm deploy:status    # Check deployment status
 pnpm deploy:teardown  # Destroy the cluster
 ```
 
 After deployment: http://localhost (frontend), http://localhost/graphql (API)
 
-## Check Status
-
-```bash
-pnpm status           # Shows dev, docker, and k3s service status
-```
-
-See [docs/guides/how-to-develop.md](docs/guides/how-to-develop.md) and [docs/guides/how-to-deploy.md](docs/guides/how-to-deploy.md) for detailed guides.
+See [docs/guides/deployment.md](docs/guides/deployment.md) for detailed deployment instructions.
 
 ## Adding a New Microservice
 
@@ -114,11 +109,9 @@ See [docs/guides/how-to-develop.md](docs/guides/how-to-develop.md) and [docs/gui
 
 5. Register the service client in `apps/api-gateway` with a new module
 
-6. Add Docker and K8s manifests:
+6. Add Docker and Helm manifests:
    - `apps/service-<name>/Dockerfile`
-   - `infrastructure/k8s/service-<name>/deployment.yaml`
-
-7. Add to `docker-compose.yml`
+   - `infrastructure/helm/luckyplans/templates/service-<name>/deployment.yaml`
 
 ## Environment Variables
 
@@ -133,19 +126,19 @@ See [docs/guides/how-to-develop.md](docs/guides/how-to-develop.md) and [docs/gui
 
 ## Scripts
 
-| Command                | Description                                 |
-| ---------------------- | ------------------------------------------- |
-| `pnpm setup`           | First-time project setup                    |
-| `pnpm dev:start`       | Start Redis + all services (hot reload)     |
-| `pnpm dev:stop`        | Stop the Redis container                    |
-| `pnpm dev`             | Start services only (assumes Redis running) |
-| `pnpm build`           | Build all packages and apps                 |
-| `pnpm lint`            | Lint all packages and apps                  |
-| `pnpm type-check`      | Type-check all packages and apps            |
-| `pnpm format`          | Format all files with Prettier              |
-| `pnpm clean`           | Clean all build artifacts                   |
-| `pnpm docker:up`       | Build and start via docker-compose          |
-| `pnpm docker:down`     | Stop docker-compose services                |
-| `pnpm deploy:k3s`      | Build + deploy to local k3s                 |
-| `pnpm deploy:teardown` | Destroy k3s cluster                         |
-| `pnpm status`          | Check status of all services                |
+| Command                | Description                          |
+| ---------------------- | ------------------------------------ |
+| `pnpm setup`           | First-time project setup             |
+| `pnpm dev`             | Start all services with hot reload   |
+| `pnpm build`           | Build all packages and apps          |
+| `pnpm lint`            | Lint all packages and apps           |
+| `pnpm test`            | Run tests across all packages        |
+| `pnpm type-check`      | Type-check all packages and apps     |
+| `pnpm format`          | Format all files with Prettier       |
+| `pnpm format:check`    | Check formatting without writing     |
+| `pnpm clean`           | Clean all build artifacts            |
+| `pnpm deploy:local`    | Build + deploy to local Kubernetes   |
+| `pnpm deploy:status`   | Check deployment status              |
+| `pnpm deploy:teardown` | Destroy local Kubernetes cluster     |
+
+See [docs/guides/developer.md](docs/guides/developer.md) for the full development guide.

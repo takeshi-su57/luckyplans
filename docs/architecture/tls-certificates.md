@@ -107,7 +107,7 @@ testing.
 ## Prerequisites
 
 cert-manager must be installed **before** deploying the Helm chart.
-See [how-to-deploy.md — Install cert-manager](../guides/how-to-deploy.md#install-cert-manager)
+See [deployment.md — Install cert-manager](../guides/deployment.md#install-cert-manager)
 for the pinned version and installation commands.
 
 ## DNS Requirements
