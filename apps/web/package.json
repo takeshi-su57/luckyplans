@@ -21,10 +21,10 @@
   "devDependencies": {
     "@luckyplans/config": "workspace:*",
     "@next/eslint-plugin-next": "^16.1.0",
-    "@types/node": "^25.3.5",
+    "@types/node": "^25.4.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "eslint": "^10.0.2",
+    "eslint": "^10.0.3",
     "typescript": "^5.7.0"
   }
 }
