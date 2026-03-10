@@ -3,12 +3,12 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
 
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
     groups:
       dev-dependencies:
         dependency-type: 'development'
@@ -16,19 +16,19 @@ updates:
   - package-ecosystem: 'docker'
     directory: '/apps/web'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/apps/api-gateway'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/apps/service-auth'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
 
   - package-ecosystem: 'docker'
     directory: '/apps/service-core'
     schedule:
-      interval: 'weekly'
+      interval: 'monthly'
