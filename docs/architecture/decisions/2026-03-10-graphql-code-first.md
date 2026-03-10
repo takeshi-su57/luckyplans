@@ -1,0 +1,28 @@
+# GraphQL Code-First via API Gateway
+
+**Date:** 2026-03-10
+**Status:** accepted
+
+## Context
+
+The frontend needs an API layer. Options:
+
+1. **REST** — familiar, but requires versioning, multiple endpoints, over/under-fetching
+2. **GraphQL schema-first** — write `.graphql` files, generate resolvers
+3. **GraphQL code-first** — define schema via TypeScript decorators, auto-generate schema
+
+The API gateway is the single entry point for the frontend — microservices are not directly exposed.
+
+## Decision
+
+We chose GraphQL code-first via NestJS + Apollo Server. The API gateway is the only service that exposes GraphQL to the frontend. Resolvers use `@ObjectType()`, `@Field()`, `@Query()`, `@Mutation()` decorators. Schema is auto-generated via `autoSchemaFile: true`.
+
+Microservices do not serve GraphQL — they only handle Redis message patterns.
+
+## Consequences
+
+- **Easier:** No schema files to maintain — TypeScript decorators are the source of truth.
+- **Easier:** Type safety flows from decorators to generated schema.
+- **Easier:** Single GraphQL endpoint simplifies frontend development.
+- **Harder:** GraphQL types in resolvers must manually mirror shared entity interfaces from `packages/shared`.
+- **Harder:** No schema-level validation tooling (like GraphQL Inspector) without generating the schema file.

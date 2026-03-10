@@ -56,7 +56,7 @@ Resolves https://github.com/takeshi-su57/lucky-plan/issues/123
 <!-- Steps for reviewers to verify the changes -->
 
 1. Checkout this branch
-2. Run `npm install`
+2. Run `pnpm install`
 3. Navigate to `/login`
 4. Click "Sign in with Google"
 5. Verify redirect and token storage

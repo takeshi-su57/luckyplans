@@ -130,7 +130,7 @@ pnpm deploy:local
 ### Prod (ArgoCD GitOps)
 
 Prod is managed by **ArgoCD** — do not run `helm upgrade` directly.
-See [argocd.md](argocd.md) for the operational guide and [../guides/how-to-deploy.md](../guides/how-to-deploy.md) for first-time setup.
+See [argocd.md](argocd.md) for the operational guide and [../guides/deployment.md](../guides/deployment.md) for first-time setup.
 
 ### Teardown (local only)
 

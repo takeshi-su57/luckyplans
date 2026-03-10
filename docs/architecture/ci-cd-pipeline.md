@@ -145,7 +145,7 @@ After ArgoCD syncs the Helm chart, **post-sync hooks** run as Kubernetes Jobs:
 > **Note — `JWT_SECRET` and `DB_PASSWORD` are cluster-managed:** These secrets
 > are created directly in the Kubernetes cluster (not in GitHub Actions) and
 > preserved across ArgoCD syncs via Helm's `lookup` function. See
-> [how-to-deploy.md — Adding Secrets](../guides/how-to-deploy.md#adding-secrets).
+> [deployment.md — Adding Secrets](../guides/deployment.md#adding-secrets).
 
 > **Note — ArgoCD repo access:** ArgoCD needs a GitHub token to read the
 > repository. This is configured during ArgoCD installation via

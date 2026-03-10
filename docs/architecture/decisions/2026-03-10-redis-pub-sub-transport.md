@@ -1,0 +1,26 @@
+# Redis Pub/Sub for Inter-Service Communication
+
+**Date:** 2026-03-10
+**Status:** accepted
+
+## Context
+
+Microservices need a communication mechanism. Options considered:
+
+1. **HTTP/REST** — simple, synchronous, but tight coupling and no built-in pub/sub
+2. **gRPC** — fast binary protocol, but adds protobuf build step and complexity
+3. **Redis pub/sub** — lightweight, already available as infrastructure, supported by NestJS microservices
+4. **RabbitMQ/Kafka** — full message brokers, but overkill at current scale
+
+## Decision
+
+We chose Redis pub/sub via NestJS `@nestjs/microservices` Transport.REDIS. The API gateway sends messages to microservices using `ClientProxy.send()` with enum-based message patterns. Services respond through the same Redis channel.
+
+## Consequences
+
+- **Easier:** Redis is already deployed for caching — no additional infrastructure needed.
+- **Easier:** NestJS has first-class support via `@MessagePattern` decorators and `ClientsModule`.
+- **Easier:** Message patterns are type-safe enums in `packages/shared`.
+- **Harder:** Redis pub/sub has no message persistence — if a service is down, messages are lost.
+- **Harder:** No built-in dead letter queue or retry mechanism.
+- **Future:** May need to migrate to RabbitMQ or Kafka when reliability requirements increase.

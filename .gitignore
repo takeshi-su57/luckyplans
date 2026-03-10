@@ -44,7 +44,7 @@ infrastructure/helm/luckyplans/values.secrets.yaml
 infrastructure/helm/luckyplans/values.*.secrets.yaml
 
 # Claude Code
-.claude/
+.claude/settings.local.json
 
 # TypeScript build info
 *.tsbuildinfo
@@ -54,5 +54,3 @@ npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-vps.yaml
