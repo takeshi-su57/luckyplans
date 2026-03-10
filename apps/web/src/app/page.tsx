@@ -1,6 +1,7 @@
 'use client';
 
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 const HEALTH_QUERY = gql`
   query Health {
@@ -8,8 +9,12 @@ const HEALTH_QUERY = gql`
   }
 `;
 
+interface HealthData {
+  health: string;
+}
+
 export default function Home() {
-  const { data, loading, error } = useQuery(HEALTH_QUERY);
+  const { data, loading, error } = useQuery<HealthData>(HEALTH_QUERY);
 
   return (
     <main style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>

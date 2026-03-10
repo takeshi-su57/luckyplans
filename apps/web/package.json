@@ -8,10 +8,10 @@
     "start": "next start",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf .next .turbo"
+    "clean": "node -e \"const fs=require('fs');['.next','.turbo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\""
   },
   "dependencies": {
-    "@apollo/client": "^3.9.0",
+    "@apollo/client": "^4.1.6",
     "@luckyplans/shared": "workspace:*",
     "graphql": "^16.8.0",
     "next": "^16.1.0",
