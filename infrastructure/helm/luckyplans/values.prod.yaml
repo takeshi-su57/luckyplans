@@ -12,11 +12,9 @@
 image:
   registry: 'ghcr.io'
   pullPolicy: Always
-
 config:
   nodeEnv: production
   corsOrigin: 'https://luckyplans.xyz'
-
 ingress:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
@@ -27,7 +25,6 @@ ingress:
   tls:
     enabled: true
     secretName: luckyplans-tls
-
 redis:
   resources:
     requests:
@@ -36,11 +33,10 @@ redis:
     limits:
       memory: '256Mi'
       cpu: '200m'
-
 apiGateway:
   image:
     repository: takeshi-su57/api-gateway
-    tag: 'latest'
+    tag: 'sha-6f9ac76'
   replicas: 2
   resources:
     requests:
@@ -49,11 +45,10 @@ apiGateway:
     limits:
       memory: '512Mi'
       cpu: '500m'
-
 serviceAuth:
   image:
     repository: takeshi-su57/service-auth
-    tag: 'latest'
+    tag: 'sha-6f9ac76'
   replicas: 2
   resources:
     requests:
@@ -62,11 +57,10 @@ serviceAuth:
     limits:
       memory: '512Mi'
       cpu: '500m'
-
 serviceCore:
   image:
     repository: takeshi-su57/service-core
-    tag: 'latest'
+    tag: 'sha-6f9ac76'
   replicas: 2
   resources:
     requests:
@@ -75,11 +69,10 @@ serviceCore:
     limits:
       memory: '512Mi'
       cpu: '500m'
-
 web:
   image:
     repository: takeshi-su57/web
-    tag: 'latest'
+    tag: 'sha-6f9ac76'
   replicas: 2
   resources:
     requests:
@@ -90,11 +83,9 @@ web:
       cpu: '500m'
   buildArgs:
     graphqlUrl: '/graphql'
-
 certManager:
   enabled: true
   email: 'takeshisuz57@gmail.com'
   issuer: letsencrypt-prod
-
 smokeTest:
   enabled: true
