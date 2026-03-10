@@ -5,6 +5,7 @@
   "main": "index.js",
   "files": [
     "eslint-preset.js",
+    "eslint-preset.mjs",
     "tsconfig.base.json",
     "tsconfig.nextjs.json",
     "tsconfig.nestjs.json"
