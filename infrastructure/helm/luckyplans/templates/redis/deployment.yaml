@@ -26,10 +26,14 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
           ports:
             - containerPort: 6379
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
           resources:
             {{- toYaml .Values.redis.resources | nindent 12 }}
           readinessProbe:
@@ -42,3 +46,6 @@ spec:
               command: ["redis-cli", "ping"]
             initialDelaySeconds: {{ .Values.redis.probes.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.redis.probes.liveness.periodSeconds }}
+      volumes:
+        - name: redis-data
+          emptyDir: {}

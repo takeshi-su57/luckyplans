@@ -28,6 +28,7 @@ RUN pnpm turbo run build --filter=@luckyplans/web
 
 # --- Production runner ---
 FROM node:25-alpine AS runner
+RUN apk upgrade --no-cache
 WORKDIR /app
 
 ENV NODE_ENV=production
