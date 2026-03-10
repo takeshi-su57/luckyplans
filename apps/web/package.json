@@ -13,7 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.9.0",
     "@luckyplans/shared": "workspace:*",
-    "graphql": "^16.8.0",
+    "graphql": "^16.13.1",
     "next": "^16.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
