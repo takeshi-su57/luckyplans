@@ -27,6 +27,7 @@ RUN pnpm --filter=@luckyplans/api-gateway deploy --prod /deploy
 
 # --- Production runner ---
 FROM node:25-alpine AS runner
+RUN apk upgrade --no-cache
 WORKDIR /app
 
 ENV NODE_ENV=production
