@@ -60,7 +60,7 @@ jobs:
           fi
 
       - name: Install yq
-        uses: mikefarah/yq@d2f1ae9db722ac6b0702dd7f8a08dd22722d8c2d # v4.44.3
+        uses: mikefarah/yq@5a7e72a743649b1b3a47d1a1d8214f3453173c51 # v4.44.3
 
       - name: Update image tags in values files
         env:
