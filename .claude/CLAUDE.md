@@ -1,5 +1,9 @@
 # LuckyPlans — Project Context
 
+**Project name:** LuckyPlans
+**GitHub repo:** https://github.com/takeshi-su57/luckyplans
+> The working directory name (`platform-clients`) does NOT reflect the project name. Always use the name and repo URL above — never derive them from the folder name.
+
 LuckyPlans is a TypeScript monorepo (Turborepo + pnpm) containing a Next.js frontend, NestJS GraphQL API gateway, and NestJS microservices communicating over Redis pub/sub.
 
 ## Tech Stack
@@ -25,9 +29,7 @@ apps/service-core/         → Core domain microservice (Redis transport, CoreMe
 packages/shared/           → Shared types (ServiceResponse<T>, message pattern enums) and utils (getEnvVar, getRedisConfig, generateId)
 packages/config/           → Shared ESLint preset (eslint-preset.mjs) and TypeScript configs
 infrastructure/            → Helm charts, K8s manifests, ArgoCD config, deployment scripts
-docs/architecture/         → Living architecture overview, ADRs (decisions/), and design docs
-docs/system/               → API reference (api.md) and configuration reference (configuration.md)
-docs/guides/               → Developer guide (developer.md) and deployment guide (deployment.md)
+apps/web/content/          → Public docs source (MDX): architecture, ADRs, guides, system reference — served at /docs
 ```
 
 ## Architecture Patterns
@@ -50,7 +52,7 @@ docs/guides/               → Developer guide (developer.md) and deployment gui
 
 ```bash
 pnpm install          # Install all dependencies
-pnpm dev              # Start all services with hot reload
+pnpm dev              # Start all services with hot reload (loads root .env via dotenv-cli)
 pnpm build            # Build all packages and apps
 pnpm lint             # Lint all packages
 pnpm type-check       # TypeScript type checking

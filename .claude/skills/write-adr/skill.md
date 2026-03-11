@@ -13,9 +13,10 @@ Create an Architecture Decision Record when a significant architectural decision
 ## Steps
 
 1. Determine the date and a short kebab-case name
-2. Create `docs/architecture/decisions/yyyy-mm-dd-<name>.md` using the template
-3. Update `docs/architecture/overview.md` if the decision changes the current architecture
-4. Follow sync protocol in `.claude/rules/ai-framework.md` for any `.claude/` file updates
+2. Create `apps/web/content/architecture/decisions/yyyy-mm-dd-<name>.mdx` using the template (add frontmatter `title:` and `description:` at the top)
+3. Add the new key to `apps/web/content/architecture/decisions/_meta.ts`
+4. Update `apps/web/content/architecture/overview.mdx` if the decision changes the current architecture
+5. Follow sync protocol in `.claude/rules/ai-framework.md` for any `.claude/` file updates
 
 ## Reference
 

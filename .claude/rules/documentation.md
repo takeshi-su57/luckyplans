@@ -2,34 +2,44 @@
 
 How to structure, maintain, and keep documentation in sync with the evolving system.
 
-## Docs Folder Structure
+## Docs Location
+
+All documentation lives in `apps/web/content/` — this is the single source of truth. It is served publicly at `luckyplans.xyz/docs` via Nextra v4. There is no separate `docs/` directory.
 
 ```
-docs/
+apps/web/content/
+├── index.mdx                        ← Docs landing page (/docs)
+├── _meta.ts                         ← Top-level sidebar order
 ├── architecture/
-│   ├── overview.md              ← Current system architecture (living doc, always up to date)
-│   ├── decisions/               ← ADRs: why we chose X over Y (append-only)
-│   │   └── yyyy-mm-dd-<name>.md
-│   └── <topic>.md               ← Deep dives on specific infrastructure/patterns
+│   ├── _meta.ts
+│   ├── overview.mdx                 ← Current system architecture (living doc)
+│   ├── ci-cd-pipeline.mdx
+│   ├── argocd.mdx
+│   ├── helm-deployment.mdx
+│   ├── tls-certificates.mdx
+│   └── decisions/                   ← ADRs: why we chose X over Y (append-only)
+│       ├── _meta.ts
+│       └── yyyy-mm-dd-<name>.mdx
 ├── guides/
-│   ├── developer.md             ← How to develop (setup, commands, workflows)
-│   ├── deployment.md            ← How to deploy (Docker, K8s, ArgoCD)
-│   └── operations.md            ← How to operate (monitoring, troubleshooting)
+│   ├── _meta.ts
+│   ├── developer.mdx                ← How to develop (setup, commands, workflows)
+│   └── deployment.mdx               ← How to deploy (Docker, K8s, ArgoCD)
 └── system/
-    ├── api.md                   ← API reference (GraphQL schema, message patterns)
-    └── configuration.md         ← All env vars, Helm values, feature flags
+    ├── _meta.ts
+    ├── api.mdx                      ← API reference (GraphQL schema, message patterns)
+    └── configuration.mdx            ← All env vars, Helm values, feature flags
 ```
 
 ## Document Audiences
 
-| Folder | Audience | Update frequency |
-|--------|----------|-----------------|
-| `docs/architecture/` | Developers, AI tools | When architecture changes |
-| `docs/architecture/decisions/` | Developers, AI tools | Append-only on significant decisions |
-| `docs/guides/` | Developers, operators | When workflows or tooling change |
-| `docs/system/` | Developers, operators | When APIs, config, or env vars change |
+| Path | Audience | Update frequency |
+|------|----------|-----------------|
+| `content/architecture/` | Developers, AI tools | When architecture changes |
+| `content/architecture/decisions/` | Developers, AI tools | Append-only on significant decisions |
+| `content/guides/` | Developers, operators | When workflows or tooling change |
+| `content/system/` | Developers, operators | When APIs, config, or env vars change |
 
-## Architecture Overview (`docs/architecture/overview.md`)
+## Architecture Overview (`content/architecture/overview.mdx`)
 
 This is the **living document** — the single source of truth for "what does the system look like right now."
 
@@ -47,24 +57,29 @@ Update rules:
 
 ## Architecture Decision Records (ADRs)
 
-ADRs capture **why** architectural decisions were made. They are append-only — never deleted, only superseded.
+ADRs capture **why** architectural decisions were made. They are append-only — never deleted, only superseded. ADRs are fully public at `/docs/architecture/decisions/`.
 
 ### File naming
 
 ```
-docs/architecture/decisions/yyyy-mm-dd-<name>.md
+apps/web/content/architecture/decisions/yyyy-mm-dd-<name>.mdx
 ```
 
 Examples:
 ```
-2026-03-10-functional-decomposition.md
-2026-03-10-redis-pub-sub-transport.md
-2026-03-15-add-trading-service.md
+2026-03-10-functional-decomposition.mdx
+2026-03-10-redis-pub-sub-transport.mdx
+2026-03-15-add-trading-service.mdx
 ```
 
 ### ADR template
 
 ```markdown
+---
+title: <Title>
+description: <One-line summary>
+---
+
 # <Title>
 
 **Date:** yyyy-mm-dd
@@ -83,6 +98,16 @@ What did we decide and why?
 What are the trade-offs? What becomes easier? What becomes harder?
 ```
 
+### After creating an ADR
+
+Add the new key to `apps/web/content/architecture/decisions/_meta.ts`:
+```ts
+export default {
+  // existing entries...
+  'yyyy-mm-dd-<name>': '<Human-Readable Title>',
+};
+```
+
 ### When to write an ADR
 
 - Adding or removing a microservice
@@ -98,55 +123,55 @@ What are the trade-offs? What becomes easier? What becomes harder?
 - Updating dependencies
 - Minor refactors within existing patterns
 
-## Deep Dive Docs (`docs/architecture/<topic>.md`)
+## Deep Dive Docs (`content/architecture/<topic>.mdx`)
 
 Detailed documentation for specific infrastructure or architectural topics.
 
 Current topics:
-- `argocd.md` — GitOps CD flow
-- `ci-cd-pipeline.md` — GitHub Actions pipeline
-- `helm-deployment.md` — Helm chart structure
-- `tls-certificates.md` — TLS/cert-manager setup
+- `argocd.mdx` — GitOps CD flow
+- `ci-cd-pipeline.mdx` — GitHub Actions pipeline
+- `helm-deployment.mdx` — Helm chart structure
+- `tls-certificates.mdx` — TLS/cert-manager setup
 
 Add new deep dives when:
 - A topic is too detailed for the overview
 - A topic requires step-by-step explanation
 - Multiple team members need to understand a complex subsystem
 
-## Guides (`docs/guides/`)
+## Guides (`content/guides/`)
 
 Practical how-to documents:
-- `developer.md` — setup, local dev, commands, adding features
-- `deployment.md` — Docker builds, K8s deployment, ArgoCD
-- `operations.md` — monitoring, debugging, runbooks (create when needed)
+- `developer.mdx` — setup, local dev, commands, adding features
+- `deployment.mdx` — Docker builds, K8s deployment, ArgoCD
+- `operations.mdx` — monitoring, debugging, runbooks (create when needed)
 
-## System Reference (`docs/system/`)
+## System Reference (`content/system/`)
 
 Technical reference for the running system:
-- `api.md` — GraphQL queries/mutations, message patterns, response formats
-- `configuration.md` — all env vars, Helm values, defaults, descriptions
+- `api.mdx` — GraphQL queries/mutations, message patterns, response formats
+- `configuration.mdx` — all env vars, Helm values, defaults, descriptions
 
 ## Sync Protocol
 
 ### When architecture changes
 
-1. Update `docs/architecture/overview.md`
-2. Write an ADR if the decision is significant
+1. Update `apps/web/content/architecture/overview.mdx`
+2. Write an ADR if the decision is significant (add to `decisions/_meta.ts`)
 3. Update relevant deep dive doc if affected
-4. Follow the sync protocol in `.claude/rules/ai-framework.md` for `.claude/` files
+4. Follow the sync protocol in `.claude/rules/ai-framework.md` for `.claude/` file updates
 
 ### When adding a new service or major feature
 
 1. Write an ADR
-2. Update `docs/architecture/overview.md`
-3. Update `docs/guides/developer.md` if dev workflow changes
-4. Update `docs/system/api.md` with new endpoints/patterns
-5. Update `docs/system/configuration.md` with new env vars
+2. Update `apps/web/content/architecture/overview.mdx`
+3. Update `apps/web/content/guides/developer.mdx` if dev workflow changes
+4. Update `apps/web/content/system/api.mdx` with new endpoints/patterns
+5. Update `apps/web/content/system/configuration.mdx` with new env vars
 
 ### When changing deployment or infrastructure
 
 1. Update relevant deep dive doc
-2. Update `docs/guides/deployment.md`
+2. Update `apps/web/content/guides/deployment.mdx`
 3. Write an ADR if it's a significant change
 
 ## Anti-Patterns
@@ -155,3 +180,4 @@ Technical reference for the running system:
 - Aspirational docs — don't document what you plan to build, document what exists
 - Duplicating content across docs — link instead of copy
 - Leaving stale docs — outdated docs are worse than no docs
+- Creating a `docs/` directory at the repo root — all docs live in `apps/web/content/`

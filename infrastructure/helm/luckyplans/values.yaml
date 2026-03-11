@@ -21,7 +21,7 @@ image:
 # Application config (rendered into ConfigMap)
 # ============================================================
 config:
-  nodeEnv: development
+  nodeEnv: production
   redisHost: redis
   redisPort: '6379'
   apiGatewayPort: '3001'

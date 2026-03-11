@@ -1,10 +1,15 @@
+---
+title: API Reference
+description: GraphQL endpoint, message patterns, and response formats.
+---
+
 # API Reference
 
 ## GraphQL Endpoint
 
 - **URL:** `/graphql` (via API gateway)
-- **Playground:** Available in development at `http://localhost:4000/graphql`
-- **Schema:** Auto-generated (code-first), not committed to repo
+- **Playground:** Available in development at `http://localhost:3001/graphql`
+- **Schema:** Auto-generated (code-first via NestJS + Apollo Server)
 
 ## Message Patterns
 
@@ -50,5 +55,46 @@ Paginated endpoints accept `page` and `limit` parameters and return:
 {
   items: T[];
   total: number;
+}
+```
+
+## GraphQL Examples
+
+### Health check
+
+```graphql
+query {
+  health
+}
+```
+
+Expected: `"API Gateway is running"`
+
+### Get items
+
+```graphql
+query GetItems($page: Float = 1, $limit: Float = 10) {
+  getItems(page: $page, limit: $limit) {
+    items {
+      id
+      name
+      description
+      createdAt
+    }
+    total
+  }
+}
+```
+
+### Create item
+
+```graphql
+mutation CreateItem($name: String!, $description: String) {
+  createItem(name: $name, description: $description) {
+    id
+    name
+    description
+    createdAt
+  }
 }
 ```
