@@ -1,0 +1,142 @@
+---
+title: CI/CD Pipeline
+description: Automated pipeline using GitHub Actions and ArgoCD for the LuckyPlans monorepo.
+---
+
+# CI/CD Pipeline
+
+Automated pipeline using GitHub Actions + ArgoCD for the LuckyPlans monorepo.
+
+## Pipeline Overview
+
+```
+  PR / Push to main          Merge to main             After Docker push
+  ┌──────────────┐      ┌───────────────────┐      ┌───────────────────┐
+  │     CI       │──ok──│  Docker Build     │──ok──│  Update Tags      │
+  │              │      │  & Push           │      │                   │
+  │ lint         │      │ build 4 images    │      │ commit new tags   │
+  │ type-check   │      │ push to ghcr.io   │      │ to values files   │
+  │ test         │      │ tag: sha + latest │      │ [skip ci]         │
+  │ build        │      │ Trivy image scan  │      │                   │
+  │ Trivy scans  │      │                   │      │                   │
+  │ Helm lint    │      │                   │      │                   │
+  └──────────────┘      └───────────────────┘      └───────────────────┘
+                                                            │
+                                                            ▼
+                                                   ArgoCD detects change
+                                                   └── Prod: auto-sync
+```
+
+## Workflows
+
+### 1. CI (`.github/workflows/ci.yml`)
+
+**Triggers:** Push to `main` (excluding values file changes), pull requests to `main`.
+
+Runs lint, type-check, test, and build using Turborepo. On PRs, only affected
+packages are checked via `--filter=...[origin/main]`.
+
+Concurrency groups cancel superseded PR runs automatically.
+
+**Security scanning** is integrated into CI via [Trivy](https://trivy.dev/):
+
+- **Dependency scan** (`fs` mode): Scans `pnpm-lock.yaml` and other dependency
+  manifests for known CRITICAL/HIGH vulnerabilities. Fails the build if found.
+- **IaC/Dockerfile config scan** (`config` mode): Checks Dockerfiles, Helm
+  templates, and Kubernetes manifests for misconfigurations. Fails on CRITICAL/HIGH.
+- **SARIF upload**: A vulnerability report is uploaded to GitHub Security tab for persistent tracking.
+
+Additionally validates Helm chart templates by piping `helm template` output
+through `kubeconform` for all environment variants.
+
+### 2. Docker Build & Push (`.github/workflows/docker-build.yml`)
+
+**Triggers:** After CI passes on `main`, or manual dispatch.
+
+Builds Docker images for all four services in parallel via a matrix strategy:
+
+| Service      | Dockerfile                     | Image                          |
+| ------------ | ------------------------------ | ------------------------------ |
+| web          | `apps/web/Dockerfile`          | `ghcr.io/<owner>/web`          |
+| api-gateway  | `apps/api-gateway/Dockerfile`  | `ghcr.io/<owner>/api-gateway`  |
+| service-auth | `apps/service-auth/Dockerfile` | `ghcr.io/<owner>/service-auth` |
+| service-core | `apps/service-core/Dockerfile` | `ghcr.io/<owner>/service-core` |
+
+Images are tagged with:
+
+- `sha-<7-char-commit-sha>` — immutable, used for deployments
+- `latest` — convenience pointer to the most recent build
+
+Images are pushed with **SBOM** and **provenance** attestations enabled, providing supply chain transparency.
+
+### 3. Update Image Tags (`.github/workflows/update-tags.yml`)
+
+**Triggers:** After Docker build completes on `main`, or manual dispatch with a specific image tag.
+
+The workflow:
+
+1. Computes the image tag (`sha-<7char>` from the triggering commit)
+2. Uses `yq` to update all 4 service image tags in `values.prod.yaml`
+3. Commits with `[skip ci]` to prevent re-triggering CI
+4. Pushes to `main`
+
+ArgoCD then detects the change and auto-syncs the new image tags.
+
+### 4. ArgoCD Sync & Post-Sync Hooks
+
+After ArgoCD syncs the Helm chart, **post-sync hooks** run as Kubernetes Jobs:
+
+- **Smoke tests** verify API Gateway health, web frontend, and GraphQL endpoint
+- Job results are visible in the ArgoCD UI (sync status: Healthy or Degraded)
+- Failed smoke tests mark the sync as Degraded but do not auto-rollback
+
+See [ArgoCD](/docs/architecture/argocd) for full operational documentation.
+
+## Required GitHub Configuration
+
+### Secrets
+
+| Secret          | Scope      | Description |
+| --------------- | ---------- | ----------- |
+| `GITHUB_TOKEN`  | Automatic  | Provided by GitHub Actions. Used for ghcr.io auth. |
+| `CD_PUSH_TOKEN` | Repository | **Required with branch protection.** Fine-grained PAT with Contents: read+write scope. Used by `update-tags.yml` to push tag commits to `main`. |
+
+### Branch Protection (recommended)
+
+Configure on the `main` branch:
+
+- Require a pull request before merging
+- Require at least 1 approval
+- Require status checks to pass (select the `ci` job)
+
+> **Important:** With branch protection enabled, `GITHUB_TOKEN` cannot push
+> tag update commits to `main`. You **must** create a `CD_PUSH_TOKEN` secret.
+
+## Turborepo Caching
+
+The CI workflow caches Turborepo artifacts in `.turbo/` using `actions/cache`.
+On PRs, the `--filter=...[origin/main]` flag limits execution to packages
+affected by the changes, significantly reducing CI time.
+
+## Troubleshooting
+
+### CI fails on lint/type-check
+
+```bash
+pnpm turbo run lint --filter=<package-name>
+pnpm turbo run type-check --filter=<package-name>
+```
+
+### Docker build fails
+
+```bash
+docker build -f apps/<service>/Dockerfile .
+```
+
+### ArgoCD sync fails or shows Degraded
+
+```bash
+kubectl -n luckyplans get pods
+kubectl -n luckyplans describe pod <pod-name>
+kubectl -n argocd get application luckyplans-prod -o yaml
+```

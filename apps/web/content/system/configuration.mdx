@@ -1,3 +1,8 @@
+---
+title: Configuration Reference
+description: All environment variables, Helm values, and production overrides.
+---
+
 # Configuration Reference
 
 ## Environment Variables
@@ -7,11 +12,13 @@
 | `REDIS_HOST` | `localhost` | Redis hostname |
 | `REDIS_PORT` | `6379` | Redis port |
 | `API_GATEWAY_PORT` | `4000` | API Gateway listen port |
-| `NEXT_PUBLIC_GRAPHQL_URL` | `http://localhost:4000/graphql` | GraphQL endpoint for frontend |
+| `NEXT_PUBLIC_GRAPHQL_URL` | `http://localhost:4000/graphql` | GraphQL endpoint for frontend (baked in at build time) |
 | `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
 | `NODE_ENV` | `development` | Node environment |
 
-Environment variables are accessed via `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. See `.env.example` for the full template.
+Environment variables are accessed via `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. This throws on missing required variables. See `.env.example` for the full template.
+
+> **Note:** `NEXT_PUBLIC_GRAPHQL_URL` is a Next.js build-time variable. Changing it in Helm values only takes effect after rebuilding the web Docker image. See [Helm Deployment](/docs/architecture/helm-deployment#nextpublic_graphql_url-is-a-build-time-constraint).
 
 ## Helm Values
 
@@ -35,3 +42,23 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 ### Production Overrides
 
 Production-specific values are in `infrastructure/helm/luckyplans/values.prod.yaml`. Image tags are automatically updated by the CI/CD pipeline via `.github/workflows/update-tags.yml`.
+
+### Example: scaling in production
+
+```yaml
+# values.prod.yaml
+apiGateway:
+  replicas: 3
+  resources:
+    requests:
+      memory: '512Mi'
+      cpu: '500m'
+    limits:
+      memory: '1Gi'
+      cpu: '1000m'
+
+web:
+  replicas: 2
+```
+
+Commit and push — ArgoCD auto-syncs the change.

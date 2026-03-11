@@ -1,0 +1,254 @@
+---
+title: Deployment Guide
+description: Deploy LuckyPlans to local k3d or production Kubernetes with ArgoCD GitOps.
+---
+
+# How to Deploy
+
+All environments use the same Helm chart at `infrastructure/helm/luckyplans/` with per-environment values files. See [Helm Deployment](/docs/architecture/helm-deployment) for full design decisions.
+
+Continuous delivery is handled by **ArgoCD** (pull-based GitOps). See [ArgoCD](/docs/architecture/argocd) for the operational guide.
+
+## Architecture Overview
+
+```
+                     Traefik Ingress (k3d built-in)
+                      │              │
+                      │ /            │ /graphql, /health
+                      ▼              ▼
+                    web:3000    api-gateway:3001
+                                     │
+                                     │ Redis transport
+                                ┌────┴────┐
+                                ▼         ▼
+                          service-auth  service-core
+                                │         │
+                                └────┬────┘
+                                     ▼
+                                  Redis:6379
+```
+
+All services run in the `luckyplans` Kubernetes namespace.
+
+## Prerequisites
+
+| Tool         | Version | Install                                                       |
+| ------------ | ------- | ------------------------------------------------------------- |
+| Docker       | Latest  | [docker.com](https://www.docker.com)                          |
+| k3d          | Latest  | [k3d.io](https://k3d.io)                                      |
+| kubectl      | Latest  | [kubernetes.io](https://kubernetes.io/docs/tasks/tools/)      |
+| Helm         | >= 3.0  | [helm.sh](https://helm.sh/docs/intro/install/)                |
+| cert-manager | v1.17.1 | See [Install cert-manager](#install-cert-manager) (prod only) |
+
+### Install k3d
+
+```bash
+# Linux/Mac
+curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+# Windows (via Chocolatey)
+choco install k3d
+```
+
+### Install cert-manager
+
+Required for prod deployment (automatic TLS via Let's Encrypt). Not needed for local development.
+
+```bash
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
+kubectl -n cert-manager rollout status deploy/cert-manager
+kubectl -n cert-manager rollout status deploy/cert-manager-webhook
+kubectl -n cert-manager rollout status deploy/cert-manager-cainjector
+```
+
+See [TLS Certificates](/docs/architecture/tls-certificates) for full documentation.
+
+## Environments
+
+|                | local             | prod                                  |
+| -------------- | ----------------- | ------------------------------------- |
+| Cluster        | k3d on laptop     | k3d on VPS / on-premises              |
+| CD method      | Direct Helm       | ArgoCD (auto-sync)                    |
+| Values file    | `values.yaml`     | `values.yaml` + `values.prod.yaml`    |
+| Image registry | none (k3d import) | `ghcr.io`                             |
+| Image tags     | `latest`          | `sha-<commit>` (CI) / semver (manual) |
+| Replicas       | 1                 | 2                                     |
+| TLS            | off               | on (cert-manager)                     |
+
+## Local Deployment (laptop)
+
+### Single command
+
+```bash
+pnpm deploy:local
+```
+
+This handles everything: cluster creation, image builds, k3d import, and `helm upgrade --install`.
+
+After completion:
+
+- **Frontend**: http://localhost
+- **GraphQL Playground**: http://localhost/graphql
+
+### Teardown
+
+```bash
+pnpm deploy:teardown
+```
+
+### Status
+
+```bash
+pnpm deploy:status
+```
+
+### Manual step-by-step
+
+```bash
+# 1. Create the k3d cluster
+k3d cluster create luckyplans-local \
+  --port "80:80@loadbalancer" \
+  --port "443:443@loadbalancer" \
+  --agents 1
+
+kubectl config use-context k3d-luckyplans-local
+
+# 2. Build Docker images
+docker build \
+  --build-arg NEXT_PUBLIC_GRAPHQL_URL="/graphql" \
+  -t luckyplans/web:latest -f apps/web/Dockerfile .
+docker build -t luckyplans/api-gateway:latest  -f apps/api-gateway/Dockerfile .
+docker build -t luckyplans/service-auth:latest  -f apps/service-auth/Dockerfile .
+docker build -t luckyplans/service-core:latest  -f apps/service-core/Dockerfile .
+
+# 3. Import images into k3d
+docker pull redis:7-alpine
+k3d image import redis:7-alpine              -c luckyplans-local
+k3d image import luckyplans/web:latest       -c luckyplans-local
+k3d image import luckyplans/api-gateway:latest  -c luckyplans-local
+k3d image import luckyplans/service-auth:latest -c luckyplans-local
+k3d image import luckyplans/service-core:latest -c luckyplans-local
+
+# 4. Deploy with Helm
+helm upgrade --install luckyplans infrastructure/helm/luckyplans \
+  --namespace luckyplans \
+  --create-namespace \
+  --rollback-on-failure --timeout 3m
+```
+
+## CI/CD with ArgoCD (recommended)
+
+Prod deployments are handled by **ArgoCD GitOps**. See [ArgoCD](/docs/architecture/argocd) for the full operational guide.
+
+### How it works
+
+```
+Push/merge to main → CI → Docker Build & Push → Update Tags → ArgoCD auto-sync → smoke tests
+```
+
+### Manual tag deployment
+
+1. Go to **Actions → Update Image Tags → Run workflow**
+2. Enter the image tag (e.g. `sha-abc1234`)
+3. Click **Run workflow**
+
+ArgoCD will auto-sync the new tag.
+
+## Prod Deployment — first-time setup
+
+### Prerequisites
+
+- DNS A record: `yourdomain.xyz → <your-server-ip>`
+- Ports open on firewall: 22 (SSH), 80 (HTTP/ACME), 443 (HTTPS)
+- A GitHub PAT with `read:packages` and repo read access
+- `CD_PUSH_TOKEN`: fine-grained PAT with Contents: read+write scope (required with branch protection)
+
+### Setup steps
+
+```bash
+# SSH into the prod server
+
+# 1. Create the k3d cluster
+k3d cluster create luckyplans-prod \
+  --port "80:80@loadbalancer" \
+  --port "443:443@loadbalancer" \
+  --agents 1
+
+# 2. Install cert-manager
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
+kubectl -n cert-manager rollout status deploy/cert-manager
+
+# 3. Install ArgoCD
+git clone https://github.com/takeshi-su57/luckyplans.git
+cd luckyplans
+./infrastructure/scripts/install-argocd.sh --github-token <your-github-pat>
+
+# 4. Bootstrap secrets
+kubectl create namespace luckyplans 2>/dev/null || true
+kubectl -n luckyplans create secret generic luckyplans-secrets \
+  --from-literal=JWT_SECRET="$(openssl rand -base64 48)"
+
+# 5. Wait for ArgoCD auto-sync
+# Monitor progress at https://yourdomain.xyz/argocd
+```
+
+## Adding Secrets
+
+### Auto-generated secrets
+
+**`JWT_SECRET`** is automatically generated by the Helm chart on first install and reused across upgrades. No manual configuration needed.
+
+### Manual secrets
+
+```bash
+kubectl -n luckyplans create secret generic luckyplans-secrets \
+  --from-literal=JWT_SECRET="$(openssl rand -base64 48)" \
+  --from-literal=DB_PASSWORD="your-db-password"
+```
+
+### Rotating `JWT_SECRET`
+
+```bash
+kubectl -n luckyplans delete secret luckyplans-secrets
+# Trigger an ArgoCD sync — Helm will generate a new JWT_SECRET
+```
+
+## Scaling
+
+```yaml
+# values.prod.yaml
+apiGateway:
+  replicas: 3
+web:
+  replicas: 2
+```
+
+Commit and push — ArgoCD auto-syncs.
+
+> **Warning:** Do not use `kubectl scale` on ArgoCD-managed clusters — ArgoCD self-heal will revert the change immediately.
+
+## Viewing Logs
+
+```bash
+kubectl -n luckyplans logs -f deployment/api-gateway
+kubectl -n luckyplans logs -f deployment/web
+kubectl -n luckyplans logs <pod-name> --previous  # after crash
+```
+
+## Rollback
+
+### ArgoCD-managed (prod)
+
+**Git revert** (recommended):
+
+```bash
+git log --oneline -5
+git revert <commit-sha>
+git push origin main
+```
+
+### Local (no ArgoCD)
+
+```bash
+helm -n luckyplans rollback luckyplans
+```

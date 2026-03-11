@@ -1,3 +1,8 @@
+---
+title: System Architecture Overview
+description: Current system architecture, service map, data flow, and infrastructure overview.
+---
+
 # System Architecture Overview
 
 Last updated: 2026-03-10
@@ -36,7 +41,7 @@ service-auth         service-core       ← NestJS microservices
 
 ## Architectural Decisions
 
-Services are split by **functionality**, not by domain (see [ADR: Functional Decomposition](decisions/2026-03-10-functional-decomposition.md)):
+Services are split by **functionality**, not by domain:
 - `service-core` handles CRUD for all entities (items, orders, etc.)
 - New microservices are only created for complex business logic (e.g., trading engine)
 - Domain types live in `packages/shared`, not in individual services
@@ -63,13 +68,14 @@ Services are split by **functionality**, not by domain (see [ADR: Functional Dec
 - **Containers:** Multi-stage Docker builds (Alpine, non-root, turbo prune)
 - **CI/CD:** GitHub Actions → Docker build → ArgoCD sync
 - **Deployment:** Helm charts on Kubernetes (k3s locally, any K8s in production)
+- **Docs:** Nextra v4 integrated at `/docs` within `apps/web`
 - **Inter-service:** Redis (pub/sub transport for NestJS microservices)
 
 See deep dives:
-- [CI/CD Pipeline](ci-cd-pipeline.md)
-- [ArgoCD](argocd.md)
-- [Helm Deployment](helm-deployment.md)
-- [TLS Certificates](tls-certificates.md)
+- [CI/CD Pipeline](/docs/architecture/ci-cd-pipeline)
+- [ArgoCD](/docs/architecture/argocd)
+- [Helm Deployment](/docs/architecture/helm-deployment)
+- [TLS Certificates](/docs/architecture/tls-certificates)
 
 ## Current State and Known Limitations
 

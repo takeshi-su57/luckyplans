@@ -10,7 +10,8 @@ import { CoreModule } from './core/core.module';
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'schema.graphql'),
+      autoSchemaFile:
+        process.env.NODE_ENV === 'production' ? true : join(process.cwd(), 'schema.graphql'),
       playground: true,
       introspection: true,
       context: ({ req, res }: { req: unknown; res: unknown }) => ({ req, res }),

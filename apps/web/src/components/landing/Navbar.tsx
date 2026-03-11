@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
 
@@ -11,6 +12,7 @@ const navItems = [
   { label: "Artifacts", href: "#proof" },
   { label: "Team", href: "#team" },
   { label: "Lab Notes", href: "#lab-notes" },
+  { label: "Docs", href: "/docs" },
 ];
 
 export function Navbar() {
@@ -27,15 +29,25 @@ export function Navbar() {
         </a>
 
         <div className="hidden items-center gap-5 lg:flex">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900"
-            >
-              {item.label}
-            </a>
-          ))}
+          {navItems.map((item) =>
+            item.href.startsWith('/') ? (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900"
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <a
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900"
+              >
+                {item.label}
+              </a>
+            )
+          )}
           <a
             href="https://github.com/takeshi-su57/lucky-plan"
             target="_blank"
@@ -69,16 +81,27 @@ export function Navbar() {
       {isMenuOpen && (
         <div className="border-t border-neutral-200 bg-white/95 px-6 pb-6 pt-4 backdrop-blur-md lg:hidden">
           <div className="flex flex-col gap-4">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-lg text-neutral-700 transition-colors hover:text-neutral-900"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
+            {navItems.map((item) =>
+              item.href.startsWith('/') ? (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-lg text-neutral-700 transition-colors hover:text-neutral-900"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="text-lg text-neutral-700 transition-colors hover:text-neutral-900"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              )
+            )}
             <a
               href="https://github.com/takeshi-su57/lucky-plan"
               target="_blank"

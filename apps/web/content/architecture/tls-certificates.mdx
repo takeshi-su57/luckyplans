@@ -1,0 +1,141 @@
+---
+title: TLS Certificates — cert-manager + Let's Encrypt
+description: Automatic TLS provisioning and renewal using cert-manager with Let's Encrypt ACME HTTP-01.
+---
+
+# TLS Certificates — cert-manager + Let's Encrypt
+
+## Overview
+
+TLS termination happens at the **Traefik ingress controller**. Certificates are
+automatically provisioned and renewed by **cert-manager** using **Let's Encrypt**
+ACME HTTP-01 challenges.
+
+## Architecture
+
+```
+Browser (HTTPS :443)
+  │
+  ▼
+Traefik (reads TLS cert from K8s Secret)
+  │  ← cert-manager creates & renews the Secret automatically
+  │
+  ▼  (plain HTTP internally)
+Pods (api-gateway :3001, web :3000)
+```
+
+## How It Works
+
+1. Helm deploys an `Ingress` with annotation `cert-manager.io/cluster-issuer: letsencrypt-prod`
+2. cert-manager detects the annotation and creates a `Certificate` resource
+3. cert-manager requests a certificate from Let's Encrypt via ACME HTTP-01:
+   - Let's Encrypt sends a challenge token
+   - cert-manager creates a temporary Ingress to serve the token at `http://<domain>/.well-known/acme-challenge/<token>`
+   - Let's Encrypt verifies ownership and issues the certificate
+4. cert-manager stores the certificate in the Kubernetes Secret referenced by `ingress.tls.secretName`
+5. Traefik picks up the Secret and serves HTTPS
+6. cert-manager **auto-renews** ~30 days before expiry (certs last 90 days)
+
+## Configuration
+
+### Base values (`values.yaml`)
+
+```yaml
+certManager:
+  enabled: false # Disabled for local k3d
+  email: ''
+  issuer: letsencrypt-prod
+```
+
+### Production environment (`values.prod.yaml`)
+
+```yaml
+ingress:
+  tls:
+    enabled: true
+    secretName: luckyplans-tls
+
+certManager:
+  enabled: true
+  email: 'ops@yourdomain.com'
+  issuer: letsencrypt-prod
+```
+
+> **Warning:** Use a team/ops email address rather than a personal email for continuity.
+
+## Prerequisites
+
+cert-manager must be installed **before** deploying the Helm chart.
+
+```bash
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.17.1/cert-manager.yaml
+kubectl -n cert-manager rollout status deploy/cert-manager
+kubectl -n cert-manager rollout status deploy/cert-manager-webhook
+```
+
+## DNS Requirements
+
+For HTTP-01 challenges to succeed, the domain must resolve to the cluster's public IP **before** deploying with TLS enabled:
+
+| Record | Name | Value              |
+| ------ | ---- | ------------------ |
+| A      | `@`  | `<your-server-ip>` |
+
+Port **80** must be reachable from the internet.
+
+## Verification
+
+```bash
+# 1. Check ClusterIssuer is ready
+kubectl get clusterissuer letsencrypt-prod
+
+# 2. Check certificate status
+kubectl -n luckyplans get certificate
+
+# 3. Check certificate details
+kubectl -n luckyplans describe certificate luckyplans-tls
+
+# 4. Test HTTPS
+curl -v https://luckyplans.xyz
+```
+
+## Troubleshooting
+
+| Symptom                            | Likely Cause                   | Fix                                                          |
+| ---------------------------------- | ------------------------------ | ------------------------------------------------------------ |
+| Certificate stuck at `Issuing`     | DNS not pointing to cluster IP | Verify A records with `dig <domain>`                         |
+| HTTP-01 challenge fails            | Port 80 blocked by firewall    | Open port 80 on VPS firewall                                 |
+| `ClusterIssuer not found`          | cert-manager not installed     | Install cert-manager (see Prerequisites)                     |
+| Rate limit exceeded                | Too many cert requests         | Use `letsencrypt-staging` issuer for testing                 |
+
+## Let's Encrypt Rate Limits
+
+- **50 certificates per registered domain per week**
+- **5 duplicate certificates per week**
+- Staging server has much higher limits
+- To use staging: set `certManager.issuer: letsencrypt-staging`
+
+## HSTS
+
+HSTS headers are deployed by default when TLS is enabled. Default settings (conservative):
+
+| Setting                | Value | Description                                |
+| ---------------------- | ----- | ------------------------------------------ |
+| `stsSeconds`           | 300   | Browser remembers HTTPS-only for 5 minutes |
+| `stsIncludeSubdomains` | true  | Applies to all subdomains                  |
+
+For production, increase `stsSeconds` to `31536000` (1 year) after verifying TLS works.
+
+## Backup & Disaster Recovery
+
+If you destroy and recreate a cluster, cert-manager will re-request certificates and may hit rate limits. Back up the ACME account key and issued certificates:
+
+```bash
+# Back up the ACME account key
+kubectl -n cert-manager get secret letsencrypt-prod -o yaml > acme-account-key-backup.yaml
+
+# Back up the TLS secret
+kubectl -n luckyplans get secret luckyplans-tls -o yaml > luckyplans-tls-backup.yaml
+```
+
+> **Security:** Backup files contain private keys. Store them in an encrypted location — never commit to version control.

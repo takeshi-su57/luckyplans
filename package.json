@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "setup": "bash infrastructure/scripts/setup.sh",
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "type-check": "turbo run type-check",
+    "dev": "dotenv -e .env -- turbo run dev",
+    "build": "dotenv -e .env -- turbo run build",
+    "lint": "dotenv -e .env -- turbo run lint",
+    "test": "dotenv -e .env -- turbo run test",
+    "type-check": "dotenv -e .env -- turbo run type-check",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
     "clean": "turbo run clean && node -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\"",
@@ -17,6 +17,7 @@
     "deploy:status": "bash infrastructure/scripts/status.sh"
   },
   "devDependencies": {
+    "dotenv-cli": "^11.0.0",
     "prettier": "^3.2.5",
     "turbo": "^2.8.15"
   },

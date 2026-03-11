@@ -1,3 +1,8 @@
+---
+title: Switch GraphQL Codegen to client-preset with Inline Operations
+description: Replaced three separate codegen plugins and .graphql files with client-preset and inline graphql() calls.
+---
+
 # Switch GraphQL Codegen to client-preset with Inline Operations
 
 **Date:** 2026-03-11
@@ -38,6 +43,7 @@ export function useItems(variables?: { page?: number; limit?: number }) {
 ```
 
 Key changes:
+
 - **Removed** `src/graphql/` directory (all `.graphql` files and fragments)
 - **Replaced** three codegen plugins with `client-preset`
 - **Codegen output** changed from a single `src/generated/graphql.ts` to a `src/generated/` directory
@@ -47,16 +53,19 @@ Key changes:
 ## Consequences
 
 **What becomes easier:**
+
 - Adding a new query/mutation is a single file change (the hook file)
 - No need to manage separate `.graphql` files or fragment dependencies
 - Type inference is automatic — less boilerplate, fewer places for type mismatches
 - Codegen scans `.ts`/`.tsx` files directly, so operations and their types stay co-located
 
 **What becomes harder:**
+
 - Operations are no longer centralized in one directory — they're spread across hook files (mitigated by keeping all hooks in `src/hooks/`)
 - Fragment reuse across operations requires more deliberate coordination (not currently needed at this scale)
-- The `graphql()` function uses string literal type matching, which means the exact string must match between source and generated overloads — re-run codegen after any operation change
+- The `graphql()` function uses string literal type matching — re-run codegen after any operation change
 
 **Trade-offs:**
-- Disabled fragment masking to keep Apollo Client's `useQuery`/`useMutation` return types simple. If fragment masking becomes valuable at larger scale, this can be revisited
-- The generated `gql.ts` includes a string map of all operations, which is not tree-shakeable without the babel/swc plugin (acceptable at current scale, add plugin if bundle size becomes a concern)
+
+- Disabled fragment masking to keep Apollo Client's `useQuery`/`useMutation` return types simple. If fragment masking becomes valuable at larger scale, this can be revisited.
+- The generated `gql.ts` includes a string map of all operations, which is not tree-shakeable without the babel/swc plugin (acceptable at current scale).

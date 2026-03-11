@@ -1,3 +1,8 @@
+---
+title: ArgoCD — GitOps Continuous Delivery
+description: Pull-based GitOps continuous delivery using ArgoCD for LuckyPlans.
+---
+
 # ArgoCD — GitOps Continuous Delivery
 
 ## Overview
@@ -54,11 +59,7 @@ ArgoCD is used **only for prod**. Local development uses direct Helm (`pnpm depl
 - Helm 3.x installed
 - kubectl configured for the target cluster
 - GitHub personal access token (PAT) with repo read access
-- **CD push token (required with branch protection):** If branch protection is
-  enabled on `main`, create a fine-grained PAT with **Contents: read+write** scope
-  and store it as the `CD_PUSH_TOKEN` repository secret. The `update-tags` workflow
-  uses this to push tag commits directly to `main`. Without it, the CD pipeline
-  silently breaks after Docker builds complete.
+- **CD push token (required with branch protection):** Fine-grained PAT with Contents: read+write scope stored as the `CD_PUSH_TOKEN` repository secret
 
 ### Install ArgoCD
 
@@ -93,47 +94,25 @@ URL: **https://luckyplans.xyz/argocd**
 
 ### Check Sync Status
 
-In ArgoCD UI, the Application tile shows sync status (Synced/OutOfSync) and health (Healthy/Degraded/Progressing).
-
-Via CLI:
-
 ```bash
-# Install ArgoCD CLI (optional)
-# https://argo-cd.readthedocs.io/en/stable/cli_installation/
-
 argocd app get luckyplans-prod --server <argocd-url> --grpc-web
 ```
-
-### Prod Auto-Sync
-
-Prod auto-syncs automatically. After CI updates image tags, ArgoCD detects the
-Git change and syncs within its polling interval (default ~3 minutes). Monitor
-sync progress in the ArgoCD UI → `luckyplans-prod` application.
 
 ### Rollback
 
 **Option 1: Git revert** (recommended)
 
 ```bash
-# Find the tag update commit
 git log --oneline -5
-
-# Revert it
 git revert <commit-sha>
 git push origin main
 ```
 
-ArgoCD will detect the revert and sync back to the previous image tags.
-
-**Option 2: ArgoCD UI rollback** (temporary)
+**Option 2: ArgoCD UI rollback** (temporary — auto-sync overrides immediately)
 
 1. Open the Application in ArgoCD UI
 2. Click **History and Rollback**
-3. Select a previous revision
-4. Click **Rollback**
-
-> **Warning:** With auto-sync enabled, UI rollbacks are reverted almost immediately.
-> Use git revert for permanent rollbacks.
+3. Select a previous revision → **Rollback**
 
 ### Smoke Tests
 
@@ -143,8 +122,6 @@ Smoke tests run automatically as ArgoCD post-sync hooks. They verify:
 2. Web frontend (HTTP 200 on `/`)
 3. GraphQL endpoint (`{ health }` query returns expected response)
 
-If smoke tests fail, the sync is marked as **Degraded** in ArgoCD UI. Check the Job logs:
-
 ```bash
 kubectl -n luckyplans logs job/smoke-test
 ```
@@ -153,7 +130,7 @@ kubectl -n luckyplans logs job/smoke-test
 
 Secrets (JWT_SECRET, DB_PASSWORD) are **not stored in Git**. They use Helm's `lookup` function to preserve existing values from the cluster across ArgoCD syncs.
 
-**First-time setup** (before first ArgoCD sync):
+**First-time setup:**
 
 ```bash
 kubectl -n luckyplans create secret generic luckyplans-secrets \
@@ -161,40 +138,23 @@ kubectl -n luckyplans create secret generic luckyplans-secrets \
   --from-literal=DB_PASSWORD="your-db-password"
 ```
 
-After creation, ArgoCD's Helm rendering will detect the existing secret via `lookup` and preserve the values.
-
 ## Troubleshooting
 
 ### Application stuck in "Progressing"
 
-- Check pod status: `kubectl -n luckyplans get pods`
-- Check pod events: `kubectl -n luckyplans describe pod <pod-name>`
-- Common cause: image pull errors (wrong tag or registry auth)
+```bash
+kubectl -n luckyplans get pods
+kubectl -n luckyplans describe pod <pod-name>
+```
 
 ### Application shows "OutOfSync" after sync
 
-- Helm's `lookup` function does not work in ArgoCD's repo server (no cluster access), so the Secret template always renders a new random `JWT_SECRET`
-- This is handled by `ignoreDifferences` + `RespectIgnoreDifferences=true` in the Application manifests, which tells ArgoCD to skip diffing the Secret resource
-- If the Secret still shows as OutOfSync, verify the Application has `ignoreDifferences` configured for the `luckyplans-secrets` Secret
-
-### Smoke test Job failed
-
-- View logs: `kubectl -n luckyplans logs job/smoke-test`
-- The Job is recreated on each sync (`BeforeHookCreation` delete policy)
+Handled by `ignoreDifferences` + `RespectIgnoreDifferences=true` in the Application manifests — tells ArgoCD to skip diffing the Secret resource since Helm's `lookup` function renders a different value each time in the repo server.
 
 ### CI tag update commit conflicts
 
-- The `update-tags` workflow uses a concurrency group to prevent races
-- If a conflict occurs, re-run the workflow manually
-
-### ArgoCD cannot access Git repository
-
-- Verify the GitHub token is valid and has repo read access
-- Check ArgoCD repo credentials: ArgoCD UI → Settings → Repositories
+The `update-tags` workflow uses a concurrency group to prevent races. If a conflict occurs, re-run the workflow manually.
 
 ### `update-tags` workflow fails to push to main
 
-- The `Update Image Tags` workflow pushes directly to `main`
-- If branch protection rules require PR reviews or status checks, `GITHUB_TOKEN` cannot bypass them and the push is rejected — the CD pipeline breaks silently
-- **Fix (recommended):** Create a fine-grained PAT with **Contents: read+write** scope, store it as the `CD_PUSH_TOKEN` repository secret. The workflow already uses `CD_PUSH_TOKEN` with a `GITHUB_TOKEN` fallback
-- **Alternative:** In GitHub repo settings → Branches → `main` protection rule, add `github-actions[bot]` to the "Bypass list" for push restrictions (less secure — allows all bot pushes)
+Create a fine-grained PAT with **Contents: read+write** scope and store it as the `CD_PUSH_TOKEN` repository secret.

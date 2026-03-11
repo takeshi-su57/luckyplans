@@ -51,11 +51,7 @@ luckyplans/
 │   ├── helm/                # Helm charts for Kubernetes deployment
 │   ├── argocd/              # ArgoCD application configs
 │   └── scripts/             # Setup, deploy, and teardown scripts
-├── docs/
-│   ├── architecture/        # Architecture overview and ADRs
-│   │   └── decisions/       # Architecture Decision Records (ADRs)
-│   ├── system/              # API reference and configuration docs
-│   └── guides/              # Development and deployment guides
+├── apps/web/content/        # Public docs source (MDX) — served at /docs
 ├── .claude/                 # AI tool context and rules
 ├── turbo.json               # Turborepo configuration
 └── pnpm-workspace.yaml      # pnpm workspace definition
@@ -91,7 +87,7 @@ pnpm deploy:teardown  # Destroy the cluster
 
 After deployment: http://localhost (frontend), http://localhost/graphql (API)
 
-See [docs/guides/deployment.md](docs/guides/deployment.md) for detailed deployment instructions.
+See [apps/web/content/guides/deployment.mdx](apps/web/content/guides/deployment.mdx) for detailed deployment instructions.
 
 ## Adding a New Microservice
 
@@ -141,4 +137,4 @@ See [docs/guides/deployment.md](docs/guides/deployment.md) for detailed deployme
 | `pnpm deploy:status`   | Check deployment status              |
 | `pnpm deploy:teardown` | Destroy local Kubernetes cluster     |
 
-See [docs/guides/developer.md](docs/guides/developer.md) for the full development guide.
+See [apps/web/content/guides/developer.mdx](apps/web/content/guides/developer.mdx) for the full development guide.

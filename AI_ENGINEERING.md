@@ -26,9 +26,7 @@ This repository uses AI-assisted development with structured guidelines to ensur
 | `.claude/skills/scaffold-submodule/` | AI tools | Scaffold a submodule within a gateway or microservice |
 | `.claude/skills/scaffold-microservice/` | AI tools | Scaffold a new functional microservice (app + gateway + Docker + Helm + CI) |
 | `.claude/skills/write-adr/` | AI tools | Write an Architecture Decision Record |
-| `docs/architecture/` | Both | Living architecture overview and ADRs |
-| `docs/system/` | Developers | API reference and configuration docs |
-| `docs/guides/` | Developers | Development and deployment guides |
+| `apps/web/content/` | Both | Public docs source (MDX): architecture, ADRs, guides, system reference — served at `/docs` |
 
 ## Core Engineering Principles
 
@@ -74,8 +72,8 @@ When AI generates code for this repository, it must:
 
 ## Related Documentation
 
-- [Development Guide](docs/guides/developer.md) — Setup, commands, adding services
-- [Deployment Guide](docs/guides/deployment.md) — Docker, Kubernetes, ArgoCD
+- [Development Guide](apps/web/content/guides/developer.mdx) — Setup, commands, adding services
+- [Deployment Guide](apps/web/content/guides/deployment.mdx) — Docker, Kubernetes, ArgoCD
 - [Git Commit Conventions](.claude/rules/git-commit.md)
 - [PR Conventions](.claude/rules/pull-request.md)
 - [Issue Conventions](.claude/rules/gh-issue.md)
