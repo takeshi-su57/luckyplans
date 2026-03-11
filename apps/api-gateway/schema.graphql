@@ -1,0 +1,39 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  success: Boolean!
+  message: String
+  token: String
+}
+
+type Item {
+  id: ID!
+  name: String!
+  description: String
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type ItemsResponse {
+  items: [Item!]!
+  total: Float!
+}
+
+type Query {
+  health: String!
+  validateToken(token: String!): AuthResponse!
+  getItems(page: Float! = 1, limit: Float! = 10): ItemsResponse!
+  getItem(id: String!): Item
+}
+
+type Mutation {
+  login(email: String!, password: String!): AuthResponse!
+  register(email: String!, password: String!, name: String!): AuthResponse!
+  createItem(name: String!, description: String): Item!
+}

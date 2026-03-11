@@ -22,6 +22,7 @@ This repository uses AI-assisted development with structured guidelines to ensur
 | `.claude/rules/gh-issue.md` | Both | GitHub issue conventions and templates |
 | `.claude/rules/ai-framework.md` | Both | How to maintain this framework: sync protocol, design principles, evolution |
 | `.claude/rules/documentation.md` | Both | Docs folder structure, ADR conventions, sync protocol |
+| `.claude/rules/frontend.md` | AI tools (on-demand) | Apollo Client, GraphQL Codegen, hooks, component patterns, anti-patterns |
 | `.claude/skills/scaffold-submodule/` | AI tools | Scaffold a submodule within a gateway or microservice |
 | `.claude/skills/scaffold-microservice/` | AI tools | Scaffold a new functional microservice (app + gateway + Docker + Helm + CI) |
 | `.claude/skills/write-adr/` | AI tools | Write an Architecture Decision Record |

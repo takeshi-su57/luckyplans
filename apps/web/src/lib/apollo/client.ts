@@ -8,6 +8,7 @@ export function createApolloClient() {
       uri: GRAPHQL_URL,
     }),
     cache: new InMemoryCache(),
+    dataMasking: false,
     defaultOptions: {
       watchQuery: {
         fetchPolicy: 'cache-and-network',
