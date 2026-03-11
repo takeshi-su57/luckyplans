@@ -2,7 +2,7 @@
 
 import { ApolloProvider } from '@apollo/client/react';
 import { useMemo } from 'react';
-import { createApolloClient } from './apollo-client';
+import { createApolloClient } from './client';
 
 export function ApolloWrapper({ children }: { children: React.ReactNode }) {
   const client = useMemo(() => createApolloClient(), []);

@@ -108,11 +108,15 @@ Only when business logic justifies a separate service:
 
 ## Frontend (`apps/web`)
 
-- Next.js App Router with `'use client'` directive for interactive components
-- Apollo Client configured in `apps/web/src/lib/apollo-client.ts`
-- ApolloProvider wrapper in `apps/web/src/lib/apollo-provider.tsx`
-- GraphQL queries use `gql` tagged templates with typed response interfaces
+- Next.js 16 App Router with `'use client'` directive for interactive components
+- Apollo Client 4 configured in `apps/web/src/lib/apollo/client.ts` (dataMasking disabled)
+- ApolloWrapper in `apps/web/src/lib/apollo/provider.tsx`
+- GraphQL Codegen with `client-preset` — config at `apps/web/codegen.ts`, output at `apps/web/src/generated/`
+- Operations written inline using `graphql()` from `@/generated` in hook files (no separate `.graphql` files)
+- Custom hooks in `apps/web/src/hooks/` use `graphql()` + `useQuery`/`useMutation` with automatic type inference
+- Components consume hooks — never import `useQuery`, `useMutation`, or `graphql` directly
 - Fetch policy: `cache-and-network` (configured in Apollo Client defaults)
+- See `.claude/rules/frontend.md` for full details
 
 ## Dependency Injection
 
@@ -133,3 +137,6 @@ Only when business logic justifies a separate service:
 - Use `any` without a comment explaining the justification
 - Use `console.log` — use `console.warn` or `console.error` only
 - Import from one app into another — apps communicate only via Redis messages
+- Create separate `.graphql` operation files — use inline `graphql()` calls in hook files
+- Define GraphQL response types manually in frontend — use codegen-generated types
+- Call `useQuery`/`useMutation` directly in page components — wrap in custom hooks in `src/hooks/`

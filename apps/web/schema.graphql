@@ -1,0 +1,37 @@
+# Auto-generated schema from API gateway code-first resolvers.
+# This file is used by GraphQL Codegen when the gateway is not running.
+# To regenerate: start the gateway and run introspection, or update manually
+# to match the resolvers in apps/api-gateway/src/
+
+type Query {
+  health: String!
+  getItems(page: Float = 1, limit: Float = 10): ItemsResponse!
+  getItem(id: String!): Item
+  validateToken(token: String!): AuthResponse!
+}
+
+type Mutation {
+  createItem(name: String!, description: String): Item!
+  login(email: String!, password: String!): AuthResponse!
+  register(email: String!, password: String!, name: String!): AuthResponse!
+}
+
+type Item {
+  id: ID!
+  name: String!
+  description: String
+  createdAt: DateTime!
+}
+
+type ItemsResponse {
+  items: [Item!]!
+  total: Float!
+}
+
+type AuthResponse {
+  success: Boolean!
+  message: String
+  token: String
+}
+
+scalar DateTime

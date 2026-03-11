@@ -58,6 +58,7 @@ pnpm format           # Format with Prettier
 pnpm format:check     # Check formatting
 pnpm clean            # Clean build artifacts
 pnpm --filter @luckyplans/<name> dev   # Run single package
+pnpm --filter @luckyplans/web codegen # Generate GraphQL types from schema
 ```
 
 ## CI Pipeline
@@ -86,6 +87,7 @@ CI (`.github/workflows/ci.yml`) runs on push to main and PRs:
 - `.claude/rules/gh-issue.md` — Issue title format, templates for bugs/features/chores
 - `.claude/rules/ai-framework.md` — How to maintain this framework: sync protocol, skill/rule design, evolution guidelines
 - `.claude/rules/documentation.md` — Docs folder structure, ADR conventions, sync protocol for docs
+- `.claude/rules/frontend.md` — Apollo Client, GraphQL Codegen (`client-preset` + inline `graphql()`), hooks, component patterns, anti-patterns
 
 ## Known Gaps
 
