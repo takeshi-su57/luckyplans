@@ -50,7 +50,7 @@ service-core         ← NestJS microservice
 
 | Service | Purpose | Communication |
 |---------|---------|---------------|
-| Keycloak | Identity Provider — user management, roles | ROPC + Admin API (gateway ↔ Keycloak server-side) |
+| Keycloak | Identity Provider — user management, roles (PostgreSQL-backed) | ROPC + Admin API (gateway ↔ Keycloak server-side) |
 | `apps/web` | Next.js frontend, App Router, Apollo Client, custom auth pages | GraphQL → API gateway (via Next.js rewrites / K8s ingress) |
 | `apps/api-gateway` | GraphQL API, REST auth endpoints, Redis session management | GraphQL in, Redis out |
 | `apps/service-core` | Generic CRUD for all domain entities | Redis transport |
@@ -96,11 +96,11 @@ Registration: custom `/register` page → `POST /auth/register` → gateway crea
 ## Infrastructure
 
 - **Build:** Turborepo for monorepo orchestration, pnpm workspaces
-- **Local dev:** `docker compose up -d` (Redis, Keycloak), then `pnpm dev`
+- **Local dev:** `docker compose up -d` (Redis, PostgreSQL, Keycloak), then `pnpm dev`
 - **Containers:** Multi-stage Docker builds (Alpine, non-root, turbo prune)
 - **CI/CD:** GitHub Actions → Docker build → ArgoCD sync
 - **Deployment:** Helm charts on Kubernetes (k3s locally, any K8s in production)
-- **Auth:** Keycloak (self-hosted), gateway-managed sessions with Redis store
+- **Auth:** Keycloak (self-hosted, PostgreSQL-backed), gateway-managed sessions with Redis store
 - **Docs:** Nextra v4 integrated at `/docs` within `apps/web`
 - **Inter-service:** Redis (pub/sub transport for NestJS microservices + session store)
 
@@ -115,5 +115,5 @@ See deep dives:
 - **No database** — services use in-memory storage as placeholder
 - **No tests** — CI test step exists but is a no-op
 - **No message persistence** — Redis pub/sub drops messages if a service is down
-- **Keycloak required** — local development needs `docker compose up -d` before `pnpm dev`
+- **Keycloak + PostgreSQL required** — local development needs `docker compose up -d` before `pnpm dev`
 - **Gateway stateful** — session store depends on Redis; Redis data loss invalidates all sessions

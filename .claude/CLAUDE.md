@@ -29,7 +29,7 @@ packages/shared/           → Shared types (ServiceResponse<T>, message pattern
 packages/config/           → Shared ESLint preset (eslint-preset.mjs) and TypeScript configs
 infrastructure/            → Helm charts, K8s manifests, ArgoCD config, Keycloak realm, deploy scripts
 apps/web/content/          → Public docs source (MDX): architecture, ADRs, guides, system reference — served at /docs
-docker-compose.yml         → Local dev infrastructure: Redis, Keycloak
+docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL, Keycloak
 ```
 
 ## Architecture Patterns
@@ -44,7 +44,7 @@ docker-compose.yml         → Local dev infrastructure: Redis, Keycloak
 
 **Authentication** — Gateway-managed sessions via Keycloak. Browser gets an opaque `session_id` HttpOnly cookie — no tokens exposed to the client. `POST /auth/login` (ROPC), `POST /auth/register` (Admin API + auto-login), `POST /auth/logout`. Custom login/register pages in Next.js under `(public)` route group. Sessions stored in Redis. `SessionGuard` protects GraphQL resolvers. See `.claude/rules/security.md`.
 
-**Local development infrastructure** — `docker-compose.yml` provides Redis and Keycloak. Next.js runs on port 3000 (default) with `rewrites` in `next.config.ts` proxying `/auth/*` and `/graphql` to the gateway (port 3001). All browser traffic goes through `localhost:3000`.
+**Local development infrastructure** — `docker-compose.yml` provides Redis, PostgreSQL, and Keycloak. Keycloak uses PostgreSQL for persistent storage across all environments (local dev, local deploy, prod). Next.js runs on port 3000 (default) with `rewrites` in `next.config.ts` proxying `/auth/*` and `/graphql` to the gateway (port 3001). All browser traffic goes through `localhost:3000`.
 
 **Inter-service communication** — Redis pub/sub. Message patterns as enums in `packages/shared/src/types/index.ts`.
 

@@ -161,8 +161,10 @@ if ! $HELM_ONLY; then
     echo ""
     echo "--- Importing infrastructure images ---"
     docker pull redis:7-alpine
+    docker pull postgres:17-alpine
     docker pull quay.io/keycloak/keycloak:26.0
     k3d image import redis:7-alpine                  -c "$CLUSTER_NAME"
+    k3d image import postgres:17-alpine              -c "$CLUSTER_NAME"
     k3d image import quay.io/keycloak/keycloak:26.0  -c "$CLUSTER_NAME"
   else
     for svc in "${SERVICES[@]}"; do

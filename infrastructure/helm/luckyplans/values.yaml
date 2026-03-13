@@ -183,9 +183,24 @@ smokeTest:
   enabled: false
 
 # ============================================================
+# PostgreSQL (Keycloak database)
+# ============================================================
+postgresql:
+  image: postgres:17-alpine
+  database: keycloak
+  username: keycloak
+  storage: 1Gi
+  resources:
+    requests:
+      memory: '128Mi'
+      cpu: '100m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
+
+# ============================================================
 # Keycloak (official image — quay.io/keycloak/keycloak)
-# Runs in start-dev mode with H2 in-memory DB (no PostgreSQL needed).
-# For production, replace with a managed Keycloak instance backed by a real DB.
+# Runs in production mode backed by PostgreSQL.
 # ============================================================
 keycloak:
   enabled: true
