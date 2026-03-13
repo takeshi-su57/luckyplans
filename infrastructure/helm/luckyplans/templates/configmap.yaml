@@ -4,6 +4,8 @@ metadata:
   name: luckyplans-config
   namespace: {{ include "luckyplans.namespace" . }}
   labels: {{- include "luckyplans.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 data:
   NODE_ENV: {{ .Values.config.nodeEnv | quote }}
   REDIS_HOST: {{ .Values.config.redisHost | quote }}
