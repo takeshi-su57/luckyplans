@@ -17,12 +17,38 @@ spec:
       labels:
         app: keycloak
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: copy-realm
+          image: {{ .Values.keycloak.image | quote }}
+          command: ["sh", "-c", "cp /realm-source/*.json /opt/keycloak/data/import/"]
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: realm-source
+              mountPath: /realm-source
+              readOnly: true
+            - name: keycloak-data
+              mountPath: /opt/keycloak/data
       containers:
         - name: keycloak
           image: {{ .Values.keycloak.image | quote }}
           args:
             - start-dev
             - --import-realm
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: KEYCLOAK_ADMIN
               value: {{ .Values.keycloak.adminUser | quote }}
@@ -37,9 +63,10 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - name: realm-config
-              mountPath: /opt/keycloak/data/import
-              readOnly: true
+            - name: keycloak-data
+              mountPath: /opt/keycloak/data
+            - name: keycloak-tmp
+              mountPath: /tmp
           resources:
             {{- toYaml .Values.keycloak.resources | nindent 12 }}
           readinessProbe:
@@ -57,7 +84,11 @@ spec:
             periodSeconds: 30
             failureThreshold: 10
       volumes:
-        - name: realm-config
+        - name: realm-source
           configMap:
             name: keycloak-realm-config
+        - name: keycloak-data
+          emptyDir: {}
+        - name: keycloak-tmp
+          emptyDir: {}
 {{- end }}
