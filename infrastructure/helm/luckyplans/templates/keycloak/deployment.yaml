@@ -41,12 +41,17 @@ spec:
               value: {{ .Values.keycloak.adminUser | quote }}
             - name: KEYCLOAK_ADMIN_PASSWORD
               value: {{ .Values.keycloak.adminPassword | quote }}
-            - name: KC_PROXY
-              value: edge
-            - name: KC_HOSTNAME_STRICT
-              value: "false"
             - name: KC_HTTP_ENABLED
               value: "true"
+            - name: KC_PROXY_HEADERS
+              value: xforwarded
+            {{- if .Values.ingress.host }}
+            - name: KC_HOSTNAME
+              value: {{ printf "https://%s" .Values.ingress.host | quote }}
+            {{- else }}
+            - name: KC_HOSTNAME_STRICT
+              value: "false"
+            {{- end }}
           ports:
             - containerPort: 8080
           volumeMounts:
