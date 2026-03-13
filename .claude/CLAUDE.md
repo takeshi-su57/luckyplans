@@ -18,6 +18,7 @@ LuckyPlans is a TypeScript monorepo (Turborepo + pnpm) containing a Next.js fron
 | Linting | ESLint 10 (flat config) + Prettier |
 | Containers | Docker multi-stage builds (Alpine) |
 | Deployment | ArgoCD + Helm on Kubernetes (k3s) |
+| Secrets | Bitnami Sealed Secrets (prod), plain values (dev) |
 
 ## Repository Layout
 
@@ -51,6 +52,8 @@ docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL, Keyc
 **Service responses** — `ServiceResponse<T>` from `@luckyplans/shared` (fields: `success`, `data?`, `error?`, `message?`).
 
 **Environment config** — Always use `getEnvVar()` from `@luckyplans/shared`. Never use raw `process.env`.
+
+**Secrets management** — Production uses Bitnami Sealed Secrets (encrypted in git, decrypted by in-cluster controller). Local dev uses plain defaults in `values.yaml`. Helm chart conditionally renders `SealedSecret` (prod) or plain `Secret` (dev) based on `sealedSecrets.enabled`. See `.claude/rules/security.md`.
 
 ## Key Commands
 

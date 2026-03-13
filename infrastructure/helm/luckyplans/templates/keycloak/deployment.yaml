@@ -40,7 +40,10 @@ spec:
             - name: KEYCLOAK_ADMIN
               value: {{ .Values.keycloak.adminUser | quote }}
             - name: KEYCLOAK_ADMIN_PASSWORD
-              value: {{ .Values.keycloak.adminPassword | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: luckyplans-secrets
+                  key: KEYCLOAK_ADMIN_PASSWORD
             - name: KC_HTTP_ENABLED
               value: "true"
             - name: KC_PROXY_HEADERS

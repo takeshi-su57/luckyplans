@@ -7,6 +7,7 @@
 - `.env` is in `.gitignore` — never commit it
 - `.env.example` documents all variables without real values — keep it updated
 - Sensitive values (DB passwords, JWT secrets, API keys) must come from Kubernetes Secrets in production, never from code or ConfigMaps
+- Production secrets use Bitnami Sealed Secrets — encrypted values in `values.prod.yaml`, decrypted by the in-cluster controller. Never commit plain-text secrets to git.
 
 ## CI Security Scanning
 
@@ -62,7 +63,7 @@ Authentication uses Keycloak with gateway-managed server-side sessions. The gate
 - Never expose access tokens, refresh tokens, or id tokens to the browser
 - Never send `Authorization: Bearer` headers from the frontend — auth is cookie-based
 - Never implement auth logic on the frontend (no next-auth, no token storage, no token refresh)
-- Session secrets (`SESSION_SECRET`) must come from K8s Secrets in production
+- Session secrets (`SESSION_SECRET`) must come from Sealed Secrets in production
 - id_token verification uses jose JWKS (`createRemoteJWKSet`) — never skip signature verification
 - Cookie must use `Secure` flag in production (HTTPS only)
 - Failed auth attempts should be rate-limited (not yet implemented)

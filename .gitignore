@@ -43,6 +43,9 @@ infrastructure/helm/luckyplans/charts/
 infrastructure/helm/luckyplans/values.secrets.yaml
 infrastructure/helm/luckyplans/values.*.secrets.yaml
 
+# Sealed Secrets key backups — NEVER commit these
+.sealed-secrets-backup/
+
 # Claude Code
 .claude/settings.local.json
 
