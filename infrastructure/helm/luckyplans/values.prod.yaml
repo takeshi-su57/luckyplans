@@ -71,6 +71,14 @@ web:
       cpu: '500m'
   buildArgs:
     graphqlUrl: '/graphql'
+keycloak:
+  # In production the Keycloak admin password must be overridden via
+  # --set keycloak.adminPassword=<value> or an external secrets manager.
+  adminPassword: 'changeme'
+secrets:
+  # REQUIRED: override via --set secrets.KEYCLOAK_CLIENT_SECRET=<value>
+  # or use an external secrets manager. The dev default is NOT safe for prod.
+  KEYCLOAK_CLIENT_SECRET: 'changeme'
 certManager:
   enabled: true
   email: 'takeshisuz57@gmail.com'
