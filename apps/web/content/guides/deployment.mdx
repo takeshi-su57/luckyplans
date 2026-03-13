@@ -195,7 +195,7 @@ cd luckyplans
 ./infrastructure/scripts/install-argocd.sh --github-token <your-github-pat>
 
 # 4. Configure Keycloak client secret
-#    Log into Keycloak admin at https://yourdomain.xyz/realms/master
+#    Log into Keycloak admin at https://yourdomain.xyz/admin
 #    → Clients → luckyplans-frontend → Credentials → Regenerate Secret
 #    Copy the new client secret for the next step.
 
@@ -241,7 +241,7 @@ kubectl -n luckyplans create secret generic luckyplans-secrets \
 
 The Keycloak client secret is configured in the `luckyplans-frontend` client:
 
-1. Open Keycloak Admin Console (`https://yourdomain.xyz/realms/master` or `http://localhost:8080/admin` for local dev)
+1. Open Keycloak Admin Console (`https://yourdomain.xyz/admin` or `http://localhost:8080/admin` for local dev)
 2. Sign in with admin credentials
 3. Select the **luckyplans** realm (top-left dropdown)
 4. Go to **Clients** → **luckyplans-frontend**

@@ -55,6 +55,20 @@ spec:
                 name: keycloak
                 port:
                   number: 80
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 80
+          - path: /js
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 80
           {{- end }}
           - path: /auth
             pathType: Prefix
