@@ -41,8 +41,12 @@ config:
 # For production, use an external secrets manager instead.
 # ============================================================
 secrets:
+  JWT_SECRET: 'dev-jwt-secret-do-not-use-in-production'
+  SESSION_SECRET: 'dev-session-secret-do-not-use-in-production'
   KEYCLOAK_CLIENT_SECRET: 'dev-client-secret'
-# For production, use an external secrets manager. Add more secrets as needed:
+  POSTGRES_PASSWORD: 'dev-postgres-password'
+# For production, override ALL secrets via values.prod.yaml or --set.
+# Add more secrets as needed:
 #   DB_PASSWORD: "changeme"
 
 # ============================================================

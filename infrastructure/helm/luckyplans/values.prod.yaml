@@ -85,9 +85,17 @@ keycloak:
   # --set keycloak.adminPassword=<value> or an external secrets manager.
   adminPassword: 'changeme'
 secrets:
-  # REQUIRED: override via --set secrets.KEYCLOAK_CLIENT_SECRET=<value>
-  # or use an external secrets manager. The dev default is NOT safe for prod.
+  # IMPORTANT: All secrets must be explicit for ArgoCD (helm template cannot
+  # use lookup or randAlphaNum reliably). Override these via --set or a sealed
+  # secrets solution. The values below are PLACEHOLDERS — replace them.
+  #
+  # To generate secure values:
+  #   openssl rand -base64 48   (for JWT_SECRET, SESSION_SECRET)
+  #   openssl rand -base64 24   (for POSTGRES_PASSWORD)
+  JWT_SECRET: 'CHANGE-ME-generate-with-openssl-rand-base64-48'
+  SESSION_SECRET: 'CHANGE-ME-generate-with-openssl-rand-base64-48'
   KEYCLOAK_CLIENT_SECRET: 'changeme'
+  POSTGRES_PASSWORD: 'CHANGE-ME-generate-with-openssl-rand-base64-24'
 certManager:
   enabled: true
   email: 'takeshisuz57@gmail.com'
