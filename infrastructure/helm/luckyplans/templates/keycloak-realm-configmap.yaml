@@ -6,6 +6,8 @@ metadata:
   namespace: {{ include "luckyplans.namespace" . }}
   labels:
     {{- include "luckyplans.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 data:
   realm-export.json: |
     {{- .Files.Get "files/realm-export.json" | nindent 4 }}
