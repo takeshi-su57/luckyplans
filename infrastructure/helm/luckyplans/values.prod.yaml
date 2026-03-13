@@ -71,6 +71,15 @@ web:
       cpu: '500m'
   buildArgs:
     graphqlUrl: '/graphql'
+postgresql:
+  storage: 5Gi
+  resources:
+    requests:
+      memory: '256Mi'
+      cpu: '200m'
+    limits:
+      memory: '512Mi'
+      cpu: '500m'
 keycloak:
   # In production the Keycloak admin password must be overridden via
   # --set keycloak.adminPassword=<value> or an external secrets manager.

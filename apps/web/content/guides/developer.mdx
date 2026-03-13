@@ -53,16 +53,17 @@ Paste the output into `SESSION_SECRET=` in your `.env` file.
 
 ### 3. Start infrastructure
 
-Docker Compose provides two services needed for local dev:
+Docker Compose provides the infrastructure services needed for local dev:
 
 ```bash
 docker compose up -d
 ```
 
-| Container  | Port  | Purpose                                        |
-| ---------- | ----- | ---------------------------------------------- |
-| redis      | 6379  | Inter-service communication + sessions         |
-| keycloak   | 8080  | Identity provider                              |
+| Container    | Port  | Purpose                                        |
+| ------------ | ----- | ---------------------------------------------- |
+| redis        | 6379  | Inter-service communication + sessions         |
+| postgresql   | 5432  | Keycloak database (persistent)                 |
+| keycloak     | 8080  | Identity provider                              |
 
 Verify everything is healthy:
 
@@ -75,8 +76,8 @@ Wait for Keycloak to show `healthy` status (takes ~30 seconds on first start).
 To stop infrastructure:
 
 ```bash
-docker compose down        # stop containers
-docker compose down -v     # stop and reset all data (Keycloak realm, Redis)
+docker compose down        # stop containers (PostgreSQL data preserved)
+docker compose down -v     # stop and remove volumes (reset Keycloak DB, Redis)
 ```
 
 ### 4. Build shared packages
@@ -126,7 +127,7 @@ Access the Keycloak admin console at http://localhost:8080:
 - **Admin password:** `admin`
 - **Realm:** `luckyplans`
 
-The `luckyplans` realm is auto-imported from `infrastructure/keycloak/realm-export.json` on first start. It includes the `luckyplans-frontend` client (ROPC enabled, service account with `manage-users` role) and a test user.
+The `luckyplans` realm is auto-imported from `infrastructure/keycloak/realm-export.json` on first start. It includes the `luckyplans-frontend` client (ROPC enabled, service account with `manage-users` role) and a test user. Keycloak data is persisted in PostgreSQL — restarts preserve users and realm configuration.
 
 ## How Authentication Works Locally
 

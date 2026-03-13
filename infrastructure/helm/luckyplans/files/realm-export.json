@@ -41,21 +41,26 @@
     {
       "clientId": "luckyplans-frontend",
       "name": "LuckyPlans Frontend",
-      "description": "Confidential OIDC client for the API Gateway (Authorization Code + PKCE)",
+      "description": "Confidential OIDC client for the API Gateway (ROPC + service account)",
       "enabled": true,
-      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
       "secret": "dev-client-secret",
-      "standardFlowEnabled": true,
+      "publicClient": false,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": false,
       "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
-      "serviceAccountsEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": false,
+      "surrogateAuthRequired": false,
+      "frontchannelLogout": false,
       "attributes": {
-        "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "http://localhost:3000/+https://luckyplans.xyz/"
       },
       "redirectUris": [
-        "http://localhost:3000/auth/callback",
-        "https://luckyplans.xyz/auth/callback"
+        "http://localhost:3000/*",
+        "https://luckyplans.xyz/*"
       ],
       "webOrigins": [
         "http://localhost:3000",
@@ -110,6 +115,14 @@
         }
       ],
       "realmRoles": ["user", "admin"]
+    },
+    {
+      "username": "service-account-luckyplans-frontend",
+      "enabled": true,
+      "serviceAccountClientId": "luckyplans-frontend",
+      "clientRoles": {
+        "realm-management": ["manage-users"]
+      }
     }
   ]
 }

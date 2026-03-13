@@ -49,14 +49,14 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 | Section | Purpose |
 |---------|---------|
 | `config.*` | Application config rendered into ConfigMap (incl. Keycloak vars, session TTL) |
-| `secrets` | Sensitive values rendered into K8s Secret (SESSION_SECRET, KEYCLOAK_CLIENT_SECRET) |
+| `secrets` | Sensitive values rendered into K8s Secret (SESSION_SECRET, KEYCLOAK_CLIENT_SECRET, POSTGRES_PASSWORD) |
 | `image.*` | Container registry and pull policy |
 | `ingress.*` | Traefik ingress configuration (routes `/auth/*`, `/graphql`, `/realms/*`) |
 | `certManager.*` | Let's Encrypt TLS automation |
 | `redis.*` | Redis deployment config |
+| `postgresql.*` | PostgreSQL deployment config (Keycloak database) |
 | `keycloak.*` | Keycloak deployment config (enabled by default) |
 | `apiGateway.*` | API gateway deployment config |
-| `serviceAuth.*` | Auth service deployment config |
 | `serviceCore.*` | Core service deployment config |
 | `web.*` | Frontend deployment config |
 
