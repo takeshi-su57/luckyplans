@@ -67,12 +67,14 @@ export class OrderModule {}
 ### `order.resolver.ts`
 
 ```typescript
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Int, Query, Mutation, Resolver, ObjectType, Field, ID } from '@nestjs/graphql';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { CoreMessagePattern } from '@luckyplans/shared';
-import type { Order, CreateOrderDto } from '@luckyplans/shared';
+import type { Order, CreateOrderDto, AuthUser } from '@luckyplans/shared';
+import { SessionGuard } from '../auth/session.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 
 // GraphQL types — mirror the shared Order interface
 @ObjectType()
@@ -112,27 +114,29 @@ class OrdersResponse {
 export class OrderResolver {
   constructor(@Inject('CORE_SERVICE') private readonly coreClient: ClientProxy) {}
 
+  @UseGuards(SessionGuard)
   @Query(() => OrdersResponse)
   async getOrders(
-    @Args('userId') userId: string,
     @Args('page', { type: () => Int, defaultValue: 1 }) page: number,
     @Args('limit', { type: () => Int, defaultValue: 10 }) limit: number,
+    @CurrentUser() user: AuthUser,
   ): Promise<OrdersResponse> {
     return firstValueFrom(
-      this.coreClient.send(CoreMessagePattern.GET_ORDERS, { userId, page, limit }),
+      this.coreClient.send(CoreMessagePattern.GET_ORDERS, { userId: user.userId, page, limit }),
     );
   }
 
+  @UseGuards(SessionGuard)
   @Mutation(() => OrderType)
   async createOrder(
-    @Args('userId') userId: string,
     @Args('symbol') symbol: string,
     @Args('quantity', { type: () => Int }) quantity: number,
     @Args('price') price: number,
+    @CurrentUser() user: AuthUser,
   ): Promise<Order> {
     return firstValueFrom(
       this.coreClient.send(CoreMessagePattern.CREATE_ORDER, {
-        userId,
+        userId: user.userId,
         symbol,
         quantity,
         price,
@@ -141,6 +145,8 @@ export class OrderResolver {
   }
 }
 ```
+
+> **Auth:** `userId` comes from the authenticated session via `@CurrentUser()` — never accept it as a client argument. This prevents users from accessing or creating orders on behalf of others.
 
 ## Step 3: Register
 

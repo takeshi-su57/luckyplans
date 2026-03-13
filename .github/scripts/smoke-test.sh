@@ -80,7 +80,7 @@ done
 # Verify deployed pods are running the expected image tag (requires kubectl access)
 if [ -n "$IMAGE_TAG" ] && command -v kubectl &>/dev/null; then
   echo "==> Smoke test: Image tag verification (expected: $IMAGE_TAG)"
-  DEPLOYMENTS="api-gateway service-auth service-core web"
+  DEPLOYMENTS="api-gateway service-core web"
   ALL_MATCH=true
   for DEPLOY in $DEPLOYMENTS; do
     ACTUAL=$(kubectl -n luckyplans get deployment "$DEPLOY" \

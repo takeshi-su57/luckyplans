@@ -14,7 +14,7 @@ Automated pipeline using GitHub Actions + ArgoCD for the LuckyPlans monorepo.
   ┌──────────────┐      ┌───────────────────┐      ┌───────────────────┐
   │     CI       │──ok──│  Docker Build     │──ok──│  Update Tags      │
   │              │      │  & Push           │      │                   │
-  │ lint         │      │ build 4 images    │      │ commit new tags   │
+  │ lint         │      │ build 3 images    │      │ commit new tags   │
   │ type-check   │      │ push to ghcr.io   │      │ to values files   │
   │ test         │      │ tag: sha + latest │      │ [skip ci]         │
   │ build        │      │ Trivy image scan  │      │                   │
@@ -53,13 +53,12 @@ through `kubeconform` for all environment variants.
 
 **Triggers:** After CI passes on `main`, or manual dispatch.
 
-Builds Docker images for all four services in parallel via a matrix strategy:
+Builds Docker images for all three services in parallel via a matrix strategy:
 
 | Service      | Dockerfile                     | Image                          |
 | ------------ | ------------------------------ | ------------------------------ |
 | web          | `apps/web/Dockerfile`          | `ghcr.io/<owner>/web`          |
 | api-gateway  | `apps/api-gateway/Dockerfile`  | `ghcr.io/<owner>/api-gateway`  |
-| service-auth | `apps/service-auth/Dockerfile` | `ghcr.io/<owner>/service-auth` |
 | service-core | `apps/service-core/Dockerfile` | `ghcr.io/<owner>/service-core` |
 
 Images are tagged with:
@@ -76,7 +75,7 @@ Images are pushed with **SBOM** and **provenance** attestations enabled, providi
 The workflow:
 
 1. Computes the image tag (`sha-<7char>` from the triggering commit)
-2. Uses `yq` to update all 4 service image tags in `values.prod.yaml`
+2. Uses `yq` to update all 3 service image tags in `values.prod.yaml`
 3. Commits with `[skip ci]` to prevent re-triggering CI
 4. Pushes to `main`
 

@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [web, api-gateway, service-auth, service-core]
+        service: [web, api-gateway, service-core]
 
     env:
       REGISTRY: ghcr.io

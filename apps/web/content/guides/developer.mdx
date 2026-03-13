@@ -7,11 +7,11 @@ description: How to set up and run LuckyPlans locally for development.
 
 ## Prerequisites
 
-| Tool    | Version   | Install                              |
-| ------- | --------- | ------------------------------------ |
-| Node.js | >= 20.0.0 | [nodejs.org](https://nodejs.org)     |
-| pnpm    | >= 9.0.0  | `npm install -g pnpm@9.15.4`         |
-| Docker  | Latest    | [docker.com](https://www.docker.com) |
+| Tool           | Version   | Install                              |
+| -------------- | --------- | ------------------------------------ |
+| Node.js        | >= 20.0.0 | [nodejs.org](https://nodejs.org)     |
+| pnpm           | >= 9.0.0  | `npm install -g pnpm@9.15.4`        |
+| Docker Compose | Latest    | [docker.com](https://www.docker.com) |
 
 ## Quick Start
 
@@ -19,14 +19,14 @@ description: How to set up and run LuckyPlans locally for development.
 # First time — installs deps, sets up .env, builds shared packages:
 pnpm setup
 
-# Start Redis (required for inter-service communication):
-docker run -d --name luckyplans-redis -p 6379:6379 redis:7-alpine
+# Start infrastructure (Redis, Keycloak):
+docker compose up -d
 
 # Start all services with hot reload:
 pnpm dev
 ```
 
-Frontend at http://localhost:3000, GraphQL at http://localhost:3001/graphql.
+Open http://localhost:3000 — Next.js rewrites proxy `/auth/*` and `/graphql` to the gateway.
 
 ## Step-by-Step Setup
 
@@ -42,27 +42,41 @@ pnpm install
 cp .env.example .env
 ```
 
-Default values work out of the box for local development.
-
-### 3. Start Redis
-
-Redis is required for inter-service communication:
+Default values work for local development. The only value you must fill in is `SESSION_SECRET`:
 
 ```bash
-docker run -d --name luckyplans-redis -p 6379:6379 redis:7-alpine
+# Generate a session secret:
+openssl rand -base64 32
 ```
 
-Verify it's running:
+Paste the output into `SESSION_SECRET=` in your `.env` file.
+
+### 3. Start infrastructure
+
+Docker Compose provides two services needed for local dev:
 
 ```bash
-docker exec luckyplans-redis redis-cli ping
-# Should return: PONG
+docker compose up -d
 ```
 
-To start it again after a machine restart:
+| Container  | Port  | Purpose                                        |
+| ---------- | ----- | ---------------------------------------------- |
+| redis      | 6379  | Inter-service communication + sessions         |
+| keycloak   | 8080  | Identity provider                              |
+
+Verify everything is healthy:
 
 ```bash
-docker start luckyplans-redis
+docker compose ps
+```
+
+Wait for Keycloak to show `healthy` status (takes ~30 seconds on first start).
+
+To stop infrastructure:
+
+```bash
+docker compose down        # stop containers
+docker compose down -v     # stop and reset all data (Keycloak realm, Redis)
 ```
 
 ### 4. Build shared packages
@@ -79,25 +93,57 @@ pnpm dev
 
 Turborepo starts everything in parallel with hot reload:
 
-| Service      | URL                           | Description        |
-| ------------ | ----------------------------- | ------------------ |
-| Frontend     | http://localhost:3000         | Next.js app        |
-| API Gateway  | http://localhost:3001/graphql | GraphQL Playground |
-| service-auth | — (Redis transport)           | No HTTP endpoint   |
-| service-core | — (Redis transport)           | No HTTP endpoint   |
+| Service      | Internal Port | Access URL                     | Description                            |
+| ------------ | ------------- | ------------------------------ | -------------------------------------- |
+| Frontend     | 3000          | http://localhost:3000          | Next.js app (rewrites proxy to gateway)|
+| API Gateway  | 3001          | http://localhost:3000/graphql  | GraphQL (via Next.js rewrite)          |
+| service-core | —             | — (Redis transport)            | Core domain microservice               |
+
+> **Note:** The browser talks to `localhost:3000`. Next.js rewrites in `next.config.ts` proxy `/auth/*` and `/graphql` to the API Gateway (port 3001). This same-domain routing is what allows the `session_id` cookie to be shared between the frontend and the gateway.
 
 ### 6. Verify everything works
 
-1. Open http://localhost:3001/graphql — you should see the GraphQL Playground
-2. Run a health check query:
+1. Open http://localhost:3000 — you should see the landing page
+2. Navigate to any protected route (e.g., `/dashboard`) — you should be redirected to `/login`
+3. Register a new account or log in with the test user:
+   - **Email:** `testuser@luckyplans.xyz`
+   - **Password:** `password`
+4. After login, you should be redirected back to the app with a valid session
 
-   ```graphql
-   query {
-     health
-   }
-   ```
+You can also verify the GraphQL endpoint directly:
 
-   Expected: `"API Gateway is running"`
+```bash
+# Health check (no auth required):
+curl http://localhost:3001/graphql -H 'Content-Type: application/json' \
+  -d '{"query":"{ health }"}'
+```
+
+### 7. Keycloak admin console (optional)
+
+Access the Keycloak admin console at http://localhost:8080:
+
+- **Admin user:** `admin`
+- **Admin password:** `admin`
+- **Realm:** `luckyplans`
+
+The `luckyplans` realm is auto-imported from `infrastructure/keycloak/realm-export.json` on first start. It includes the `luckyplans-frontend` client (ROPC enabled, service account with `manage-users` role) and a test user.
+
+## How Authentication Works Locally
+
+The auth flow uses gateway-managed sessions — no tokens are exposed to the browser:
+
+1. Browser navigates to a protected route
+2. Next.js middleware checks for a `session_id` cookie — if absent, redirects to `/login`
+3. User enters credentials on the custom login page (`/login`)
+4. Form submits `POST /auth/login` with `{ email, password }` (proxied to gateway via Next.js rewrite)
+5. Gateway authenticates with Keycloak using ROPC grant, creates a Redis session, sets an HttpOnly `session_id` cookie
+6. Frontend redirects to the original protected route
+7. All subsequent GraphQL requests include the cookie automatically (`credentials: 'include'`)
+8. The gateway's `SessionGuard` validates the session and injects the user into the request context
+
+Registration works similarly: the custom `/register` page submits to `POST /auth/register`, which creates the user via Keycloak Admin API, then auto-logs in.
+
+To log out, click the "Log out" button — it sends `POST /auth/logout`, which clears the session and cookie.
 
 ## Working on Specific Services
 
@@ -106,9 +152,10 @@ Turborepo starts everything in parallel with hot reload:
 ```bash
 pnpm --filter @luckyplans/web dev
 pnpm --filter @luckyplans/api-gateway dev
-pnpm --filter @luckyplans/service-auth dev
 pnpm --filter @luckyplans/service-core dev
 ```
+
+> Infrastructure (Redis, Keycloak) must be running via `docker compose up -d` regardless of which app services you start.
 
 ### Build a single service
 
@@ -116,6 +163,26 @@ pnpm --filter @luckyplans/service-core dev
 pnpm --filter @luckyplans/web build
 pnpm --filter @luckyplans/api-gateway build
 ```
+
+## Working with GraphQL
+
+### Regenerate frontend types
+
+After modifying a `graphql()` call in any hook file or updating the schema:
+
+```bash
+pnpm --filter @luckyplans/web codegen
+```
+
+This reads `apps/web/schema.graphql` and regenerates typed helpers in `apps/web/src/generated/`.
+
+### Update the local schema file
+
+The frontend uses a local `schema.graphql` for codegen (so CI works without a running gateway). When the gateway schema changes:
+
+1. Copy the updated schema from `apps/api-gateway/schema.graphql` to `apps/web/schema.graphql`
+2. Run codegen: `pnpm --filter @luckyplans/web codegen`
+3. Commit both files
 
 ## Working with Shared Packages
 
@@ -126,11 +193,11 @@ Shared packages are in `packages/` and used as workspace dependencies (`workspac
 Exports:
 
 - **Types**: `User`, `ServiceResponse`, `PaginatedResponse`, etc.
-- **Enums**: `AuthMessagePattern`, `CoreMessagePattern` (Redis message patterns)
+- **Enums**: `CoreMessagePattern` (Redis message patterns)
 - **Utilities**: `generateId()`, `getRedisConfig()`, `getEnvVar()`
 
 ```typescript
-import { AuthMessagePattern, ServiceResponse, getRedisConfig } from '@luckyplans/shared';
+import { CoreMessagePattern, ServiceResponse, getRedisConfig } from '@luckyplans/shared';
 ```
 
 After making changes to shared packages, Turborepo picks them up automatically in dev mode.
@@ -211,18 +278,45 @@ pnpm dev
 | `pnpm format`               | Format all files with Prettier                             |
 | `pnpm format:check`         | Check formatting without modifying                         |
 | `pnpm clean`                | Remove all build artifacts                                 |
-| `pnpm deploy:local`         | Build images and deploy to local k3d cluster via Helm      |
+| `pnpm deploy:local`         | Full deploy to local k3d cluster (build all + Helm)        |
+| `deploy-local.sh web`       | Rebuild and redeploy a single service                      |
+| `deploy-local.sh --helm-only` | Helm upgrade only (config/secret changes, no builds)     |
 | `pnpm deploy:teardown`      | Destroy the local k3d cluster                              |
 | `pnpm deploy:status`        | Show cluster, Helm release, and pod status                 |
 
 ## Troubleshooting
 
-### Redis connection refused
+### Infrastructure not starting
 
 ```bash
-docker ps | grep luckyplans-redis
-docker start luckyplans-redis
+docker compose ps          # check container status
+docker compose logs keycloak  # check Keycloak logs
 ```
+
+### Redis connection refused
+
+Make sure infrastructure is running:
+
+```bash
+docker compose up -d
+docker compose exec redis redis-cli ping
+# Should return: PONG
+```
+
+### Keycloak not ready
+
+Keycloak takes ~30 seconds to start and import the realm. Check status:
+
+```bash
+docker compose ps keycloak   # wait for "healthy"
+curl -sf http://localhost:8080/realms/luckyplans  # should return realm JSON
+```
+
+### Login redirect loop
+
+- Ensure the gateway is running (`pnpm --filter @luckyplans/api-gateway dev`)
+- Check that `SESSION_SECRET` is set in `.env`
+- Check browser DevTools > Application > Cookies for `session_id`
 
 ### Port already in use
 

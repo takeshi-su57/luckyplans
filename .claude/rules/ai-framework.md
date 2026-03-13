@@ -47,10 +47,55 @@ When the project evolves, multiple files must stay in sync. Follow this order:
 2. Check if `.claude/rules/architecture.md` examples still match
 3. Check if skill examples still match
 
+### When authentication or session management changes
+
+1. Update `.claude/rules/security.md` — Authentication section (source of truth for auth rules)
+2. Update `.claude/rules/architecture.md` — Gateway auth section
+3. Update `.claude/rules/frontend.md` — if frontend auth patterns change (middleware, hooks, Apollo config)
+4. Update `.claude/CLAUDE.md` — Architecture Patterns summary
+5. Update `apps/web/content/system/api.mdx` — auth endpoints reference
+6. Update `apps/web/content/system/configuration.mdx` — if env vars change
+
+### When infrastructure or local dev setup changes (docker-compose, nginx, Keycloak)
+
+1. Update `apps/web/content/guides/developer.mdx` — developer setup instructions
+2. Update `.claude/CLAUDE.md` — Repository Layout and Architecture Patterns if new services/containers
+3. Update `apps/web/content/system/configuration.mdx` — if new env vars or ports
+4. Update `apps/web/content/architecture/overview.mdx` — if it changes the system diagram
+
+### When environment variables change
+
+1. Update `.env.example` — add/remove variables with descriptions
+2. Update `apps/web/content/system/configuration.mdx` — env var reference table
+3. Update `infrastructure/helm/luckyplans/values.yaml` + `configmap.yaml` — if applicable to K8s
+4. Update `apps/web/content/guides/developer.mdx` — if it affects local dev setup
+
 ### When scripts or commands change
 
 1. Update `README.md` Scripts table
 2. Update `.claude/CLAUDE.md` Key Commands section
+3. Update `apps/web/content/guides/developer.mdx` — All Commands table
+
+### Automatic Sync Enforcement (Mandatory)
+
+After completing any implementation task that changes architecture, APIs, configuration, infrastructure, or developer workflows, you **MUST**:
+
+1. Identify which sync protocol(s) above apply to the changes you made
+2. Update **all** affected files before considering the task complete
+3. If unsure whether a file needs updating, read it and compare to the code you changed
+
+**This is not optional.** A task is NOT complete until all affected documentation and rules are updated. Do not wait for the user to ask — sync proactively as the final step of every implementation task.
+
+Common triggers and their affected files:
+
+| Change type | Files to update |
+|-------------|----------------|
+| New/changed env vars | `.env.example`, `configuration.mdx`, `configmap.yaml`, `values.yaml` |
+| New/changed endpoints | `api.mdx`, `architecture/overview.mdx` |
+| Auth/session changes | `security.md`, `frontend.md`, `architecture.md`, `CLAUDE.md` |
+| Infrastructure changes | `developer.mdx`, `deployment.mdx`, `CLAUDE.md`, `README.md` |
+| New deploy modes/scripts | `README.md`, `CLAUDE.md`, `developer.mdx`, `deployment.mdx` |
+| New service or major feature | Write ADR, update `overview.mdx`, `developer.mdx`, `api.mdx` |
 
 ## CLAUDE.md Principles
 
@@ -138,3 +183,7 @@ To check if the framework is healthy:
 - Every skill folder has `skill.md`, `templates/`, and `examples/`
 - No rule references files or patterns that no longer exist
 - Architecture rules match the actual code patterns in the repository
+- Security rules reflect the current auth implementation (not aspirational)
+- Frontend rules match the current Apollo Client config and auth pattern
+- Developer guide (`apps/web/content/guides/developer.mdx`) matches the current local dev setup
+- Known Gaps in `CLAUDE.md` are accurate — remove items that have been implemented

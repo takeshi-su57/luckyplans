@@ -24,11 +24,6 @@ updates:
       interval: 'monthly'
 
   - package-ecosystem: 'docker'
-    directory: '/apps/service-auth'
-    schedule:
-      interval: 'monthly'
-
-  - package-ecosystem: 'docker'
     directory: '/apps/service-core'
     schedule:
       interval: 'monthly'

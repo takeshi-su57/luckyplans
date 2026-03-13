@@ -174,6 +174,19 @@ Technical reference for the running system:
 2. Update `apps/web/content/guides/deployment.mdx`
 3. Write an ADR if it's a significant change
 
+### When auth or security patterns change
+
+1. Update `apps/web/content/system/api.mdx` — auth endpoints reference
+2. Update `apps/web/content/system/configuration.mdx` — env vars
+3. Update `apps/web/content/guides/developer.mdx` — local auth setup/testing
+4. Update `apps/web/content/architecture/overview.mdx` — auth flow in architecture diagram
+5. Follow the sync protocol in `.claude/rules/ai-framework.md` for `.claude/` file updates
+
+### When environment variables change
+
+1. Update `apps/web/content/system/configuration.mdx` — add/remove from env var tables
+2. Update `apps/web/content/guides/developer.mdx` — if it affects local setup
+
 ## Anti-Patterns
 
 - Writing docs after the fact in a separate PR — update docs in the same PR as the code change

@@ -1,0 +1,77 @@
+---
+title: Keycloak OIDC + next-auth v5 for Authentication
+description: Adopt Keycloak as the IdP with Authorization Code Flow + PKCE via next-auth v5; validate tokens in the API Gateway using JWKS.
+---
+
+# Keycloak OIDC + next-auth v5 for Authentication
+
+**Date:** 2026-03-11
+**Status:** superseded by [Gateway-Managed Sessions](/docs/architecture/decisions/2026-03-12-gateway-managed-sessions)
+
+## Context
+
+LuckyPlans required a production-grade authentication system. The previous placeholder used mock tokens (`mock-token-{email}-{timestamp}`) with no real validation. The system needed:
+
+- Centralised identity management (users, roles, credentials) without building it from scratch
+- OIDC compliance and modern security practices (PKCE, HTTP-only cookies, token refresh)
+- No JWT token swapping — a common anti-pattern where a backend re-issues its own tokens after receiving a user's token
+- A solution compatible with the existing Next.js App Router + NestJS API Gateway architecture
+
+## Decision
+
+**Identity Provider:** Self-hosted [Keycloak](https://www.keycloak.org/) deployed as a Bitnami Helm subchart.
+
+**Frontend auth:** [next-auth v5](https://authjs.dev/) (Auth.js) with the built-in Keycloak provider, handling:
+- Authorization Code Flow + PKCE (handled automatically by next-auth)
+- Tokens stored in HTTP-only encrypted cookies (never localStorage)
+- Token refresh via the `jwt` callback using Keycloak's token endpoint
+- Route protection via `middleware.ts` + server-side session check in `(app)/layout.tsx`
+
+**API Gateway validation:** The gateway validates Keycloak-issued Bearer tokens directly using [`jose`](https://github.com/panva/jose) (`createRemoteJWKSet` + `jwtVerify`). JWKS keys are cached internally by `jose`. The `JwksGuard` is applied per-resolver.
+
+**No token swapping:** The gateway does NOT mint internal JWTs. It extracts `{ userId, email, name, roles }` from the validated token claims and passes this identity payload in Redis messages — never the raw token.
+
+**service-auth repurposed:** No longer handles authentication. It is now a user profile service (`auth.profile` pattern only) for supplementary user metadata, to be backed by a database when one is added.
+
+**Roles:** `user` (default) and `admin`, defined as Keycloak realm roles and included in the `realm_access.roles` JWT claim.
+
+### Why Keycloak over managed services (Auth0, Cognito)?
+
+- Self-hosted: no vendor lock-in, no per-user pricing at scale
+- Full control over realm configuration, token lifetimes, and user attributes
+- OIDC-compliant — interoperable standard, not a proprietary API
+- Bitnami Helm chart makes k8s deployment straightforward
+
+### Why next-auth v5 over a custom OIDC client?
+
+- Native Next.js App Router support (server-side `auth()`, route handler, middleware)
+- PKCE handled automatically — no manual code_challenge/verifier implementation
+- HTTP-only encrypted cookie session out of the box
+- Token refresh handled in a single JWT callback
+- Actively maintained with a Keycloak provider included
+
+### Why `jose` over `passport-jwt` + `jwks-rsa`?
+
+- Lighter dependency: `jose` is a single pure-JS/TS package with no transitive deps
+- Built-in JWKS key caching with automatic refresh on new `kid`
+- Does not require Passport.js strategy setup, which adds boilerplate for a GraphQL context
+
+## Consequences
+
+**What becomes easier:**
+- User management (registration, password reset, MFA) handled by Keycloak admin console
+- Adding social login providers is a Keycloak configuration change
+- Role-based access control scales via Keycloak role assignments
+- Token refresh and session expiry are handled automatically
+
+**What becomes harder:**
+- Local development requires Keycloak running (`docker compose up -d`)
+- Keycloak must be healthy before the app can authenticate
+- `NEXT_PUBLIC_*` vars are build-time in Next.js — the Keycloak issuer URL for the frontend must be set at image build time for k8s deployments
+- Keycloak version upgrades must be coordinated with realm config migration
+
+**Removed:**
+- `auth.login` and `auth.register` message patterns — Keycloak owns registration and login
+- `auth.validate` message pattern — gateway validates via JWKS directly
+- `login`, `register`, `validateToken` GraphQL operations
+- Mock token generation in service-auth

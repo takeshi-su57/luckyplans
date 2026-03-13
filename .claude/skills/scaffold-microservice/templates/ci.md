@@ -7,7 +7,7 @@ Add `service-<name>` to the matrix:
 ```yaml
 strategy:
   matrix:
-    service: [web, api-gateway, service-auth, service-core, service-<name>]
+    service: [web, api-gateway, service-core, service-<name>]
 ```
 
 ## Update Tags (`.github/workflows/update-tags.yml`)

@@ -9,8 +9,12 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@luckyplans/shared', '@heroui/react', '@heroui/styles'],
   output: 'standalone',
-  env: {
-    NEXT_PUBLIC_GRAPHQL_URL: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:3001/graphql',
+  async rewrites() {
+    const gatewayUrl = process.env.API_GATEWAY_URL || 'http://localhost:3001';
+    return [
+      { source: '/auth/:path*', destination: `${gatewayUrl}/auth/:path*` },
+      { source: '/graphql', destination: `${gatewayUrl}/graphql` },
+    ];
   },
 };
 

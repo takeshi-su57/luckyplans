@@ -1,6 +1,5 @@
 {{- $services := dict
   "api-gateway" .Values.apiGateway.replicas
-  "service-auth" .Values.serviceAuth.replicas
   "service-core" .Values.serviceCore.replicas
   "web" .Values.web.replicas
 }}

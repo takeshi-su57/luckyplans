@@ -2,10 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AuthResponse {
-  success: Boolean!
-  message: String
-  token: String
+type UserProfile {
+  userId: String!
+  email: String!
+  name: String
+  roles: [String!]!
 }
 
 type Item {
@@ -27,13 +28,11 @@ type ItemsResponse {
 
 type Query {
   health: String!
-  validateToken(token: String!): AuthResponse!
+  me: UserProfile!
   getItems(page: Float! = 1, limit: Float! = 10): ItemsResponse!
   getItem(id: String!): Item
 }
 
 type Mutation {
-  login(email: String!, password: String!): AuthResponse!
-  register(email: String!, password: String!, name: String!): AuthResponse!
   createItem(name: String!, description: String): Item!
 }

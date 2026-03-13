@@ -1,28 +1,37 @@
 ---
 title: API Reference
-description: GraphQL endpoint, message patterns, and response formats.
+description: GraphQL endpoint, authentication, REST auth endpoints, message patterns, and response formats.
 ---
 
 # API Reference
 
 ## GraphQL Endpoint
 
-- **URL:** `/graphql` (via API gateway)
+- **URL:** `/graphql` (via API gateway, routed by Next.js rewrites locally or K8s ingress in production)
 - **Playground:** Available in development at `http://localhost:3001/graphql`
 - **Schema:** Auto-generated (code-first via NestJS + Apollo Server)
+
+## Authentication
+
+All protected GraphQL operations require a valid `session_id` cookie. The cookie is set automatically by `POST /auth/login` or `POST /auth/register` after successful authentication. The browser sends it on every request via `credentials: 'include'`.
+
+The API Gateway's `SessionGuard` looks up the session in Redis, verifies it is still valid, refreshes the access token if near expiry, and injects `{ userId, roles }` into the GraphQL context. Requests without a valid session receive a `401 Unauthorized` response.
+
+**No `Authorization` header is needed.** Authentication is fully cookie-based.
+
+## REST Auth Endpoints
+
+These endpoints are served by the API Gateway at `/auth/*`. The gateway authenticates against Keycloak server-side using ROPC (login) and the Admin REST API (registration). No browser redirect to Keycloak occurs.
+
+| Endpoint | Method | Request Body | Description |
+|----------|--------|-------------|-------------|
+| `/auth/login` | POST | `{ email, password }` | Authenticates via Keycloak ROPC, creates Redis session, sets `session_id` cookie. Returns `{ success, user }`. |
+| `/auth/register` | POST | `{ email, password, firstName?, lastName? }` | Creates user via Keycloak Admin API, auto-logs in via ROPC, sets cookie. Returns `{ success, user }` (201). |
+| `/auth/logout` | POST | — | Clears Redis session and cookie. Returns `{ success: true }`. |
 
 ## Message Patterns
 
 All message patterns are defined in `packages/shared/src/types/index.ts`.
-
-### Auth Service (`service-auth`)
-
-| Pattern | Description |
-|---------|-------------|
-| `auth.login` | Authenticate user with email/password |
-| `auth.register` | Register new user |
-| `auth.validate` | Validate a token |
-| `auth.profile` | Get user profile by ID |
 
 ### Core Service (`service-core`)
 
@@ -69,6 +78,19 @@ query {
 ```
 
 Expected: `"API Gateway is running"`
+
+### Current user (requires session cookie)
+
+```graphql
+query Me {
+  me {
+    userId
+    email
+    name
+    roles
+  }
+}
+```
 
 ### Get items
 

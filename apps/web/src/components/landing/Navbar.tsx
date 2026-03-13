@@ -56,6 +56,18 @@ export function Navbar() {
           >
             <GitHubIcon size={20} />
           </a>
+          <Link
+            href="/login"
+            className="text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900"
+          >
+            Log in
+          </Link>
+          <Link
+            href="/register"
+            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+          >
+            Sign up
+          </Link>
         </div>
 
         <button
@@ -111,6 +123,22 @@ export function Navbar() {
               <GitHubIcon size={20} />
               GitHub
             </a>
+            <div className="mt-2 flex flex-col gap-3 border-t border-neutral-200 pt-4">
+              <Link
+                href="/login"
+                className="text-lg font-medium text-neutral-700 transition-colors hover:text-neutral-900"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Log in
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-lg bg-green-600 px-4 py-3 text-center text-lg font-medium text-white transition-colors hover:bg-green-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sign up
+              </Link>
+            </div>
           </div>
         </div>
       )}

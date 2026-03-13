@@ -22,25 +22,29 @@ LuckyPlans is a TypeScript monorepo (Turborepo + pnpm) containing a Next.js fron
 ## Repository Layout
 
 ```
-apps/web/                  → Next.js frontend (App Router, Apollo Client)
-apps/api-gateway/          → GraphQL gateway (resolvers forward to microservices via ClientProxy)
-apps/service-auth/         → Auth microservice (Redis transport, AuthMessagePattern)
+apps/web/                  → Next.js frontend (App Router, Apollo Client, cookie-based auth)
+apps/api-gateway/          → GraphQL gateway + auth controller (ROPC login, Admin API registration, session management)
 apps/service-core/         → Core domain microservice (Redis transport, CoreMessagePattern)
 packages/shared/           → Shared types (ServiceResponse<T>, message pattern enums) and utils (getEnvVar, getRedisConfig, generateId)
 packages/config/           → Shared ESLint preset (eslint-preset.mjs) and TypeScript configs
-infrastructure/            → Helm charts, K8s manifests, ArgoCD config, deployment scripts
+infrastructure/            → Helm charts, K8s manifests, ArgoCD config, Keycloak realm, deploy scripts
 apps/web/content/          → Public docs source (MDX): architecture, ADRs, guides, system reference — served at /docs
+docker-compose.yml         → Local dev infrastructure: Redis, Keycloak
 ```
 
 ## Architecture Patterns
 
-**Functional decomposition** — Services are split by functionality, not domain. `service-core` handles generic CRUD for all entities. `service-auth` handles authentication. New services are only created for distinct complex logic (e.g., trading engine). Domain entities and types live in `packages/shared`.
+**Functional decomposition** — Services are split by functionality, not domain. `service-core` handles generic CRUD for all entities. Authentication is handled directly by the API gateway (not a separate microservice). New services are only created for distinct complex logic (e.g., trading engine). Domain entities and types live in `packages/shared`.
 
 **Adding a new entity** — Define type in `packages/shared`, add message patterns to `CoreMessagePattern`, extend `service-core` controller/service, add gateway resolver. Do NOT create a new microservice for it.
 
 **Microservice structure** — 4-file pattern: `main.ts`, `app.module.ts`, `<name>.controller.ts` (thin), `<name>.service.ts` (all logic). Canonical example: `apps/service-core/src/`.
 
-**API Gateway** — Only service exposed to frontend. Resolvers inject `ClientProxy`, forward via `firstValueFrom(client.send(Pattern, payload))`. Code-first GraphQL. Canonical example: `apps/api-gateway/src/core/core.resolver.ts`.
+**API Gateway** — Only service exposed to frontend. Handles auth (REST controller + session guard) and GraphQL (resolvers forward to microservices via `ClientProxy`). Code-first GraphQL.
+
+**Authentication** — Gateway-managed sessions via Keycloak. Browser gets an opaque `session_id` HttpOnly cookie — no tokens exposed to the client. `POST /auth/login` (ROPC), `POST /auth/register` (Admin API + auto-login), `POST /auth/logout`. Custom login/register pages in Next.js under `(public)` route group. Sessions stored in Redis. `SessionGuard` protects GraphQL resolvers. See `.claude/rules/security.md`.
+
+**Local development infrastructure** — `docker-compose.yml` provides Redis and Keycloak. Next.js runs on port 3000 (default) with `rewrites` in `next.config.ts` proxying `/auth/*` and `/graphql` to the gateway (port 3001). All browser traffic goes through `localhost:3000`.
 
 **Inter-service communication** — Redis pub/sub. Message patterns as enums in `packages/shared/src/types/index.ts`.
 
@@ -61,6 +65,9 @@ pnpm format:check     # Check formatting
 pnpm clean            # Clean build artifacts
 pnpm --filter @luckyplans/<name> dev   # Run single package
 pnpm --filter @luckyplans/web codegen # Generate GraphQL types from schema
+pnpm deploy:local                     # Full deploy to local k3d cluster
+./infrastructure/scripts/deploy-local.sh web          # Rebuild + redeploy one service
+./infrastructure/scripts/deploy-local.sh --helm-only  # Helm upgrade only (config changes)
 ```
 
 ## CI Pipeline
@@ -95,4 +102,3 @@ CI (`.github/workflows/ci.yml`) runs on push to main and PRs:
 
 - No tests exist yet (CI test step is a no-op)
 - No database — services use in-memory storage as placeholder
-- Auth service uses mock tokens — not production-ready

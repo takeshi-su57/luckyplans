@@ -134,23 +134,66 @@ export default function DashboardPage() {
 
 ## Environment Variables
 
-`NEXT_PUBLIC_*` variables are inlined at build time by Next.js. Using `process.env.NEXT_PUBLIC_GRAPHQL_URL` directly is acceptable — `getEnvVar()` from `@luckyplans/shared` is for server-side Node.js only.
-
-Canonical example: `apps/web/src/lib/apollo/client.ts`
+The frontend requires no auth-related environment variables. Apollo Client uses a relative `/graphql` URL and session cookies are managed entirely by the gateway. `getEnvVar()` from `@luckyplans/shared` is for server-side Node.js only.
 
 ## Apollo Client Setup
 
 The Apollo Client is configured at `apps/web/src/lib/apollo/client.ts`:
 - `InMemoryCache` with default type policies
-- `HttpLink` pointing to `NEXT_PUBLIC_GRAPHQL_URL`
+- `HttpLink` with `uri: '/graphql'` (relative URL, routed by nginx proxy / K8s ingress)
+- `credentials: 'include'` — sends `session_id` cookie with every request
 - Default fetch policy: `cache-and-network`
 - `dataMasking: false` (fragment masking disabled)
+- No auth link or Bearer token headers — authentication is entirely cookie-based
 - Wrapped by `ApolloWrapper` in `apps/web/src/lib/apollo/provider.tsx`
 
 Provider order in `apps/web/src/providers/app-providers.tsx`:
 ```
 QueryProvider > ApolloWrapper > RouterProvider
 ```
+
+## Authentication on the Frontend
+
+The frontend has no auth logic — the gateway owns the entire auth lifecycle. The frontend's role is limited to:
+
+### Route Protection (Middleware)
+
+`apps/web/middleware.ts` checks for `session_id` cookie presence. If absent, redirects to `/login?returnTo=<path>`. This is UX-only protection — the gateway's `SessionGuard` is the real auth authority.
+
+Matcher excludes: `_next/*`, `favicon.ico`, `docs`, `auth`, `login`, `register`, landing page (`/`).
+
+### Current User Hook
+
+`apps/web/src/hooks/use-current-user.ts` uses the GraphQL `me` query to get the authenticated user:
+
+```typescript
+import { useQuery } from '@apollo/client/react';
+import { graphql } from '@/generated';
+
+const MeQuery = graphql(`
+  query Me {
+    me { userId email name roles }
+  }
+`);
+
+export function useCurrentUser() {
+  const { data, loading, error } = useQuery(MeQuery);
+  return {
+    user: data?.me ?? null,
+    isLoading: loading,
+    isAuthenticated: !!data?.me,
+    error,
+  };
+}
+```
+
+### Login / Register / Logout
+
+- **Login:** Custom Next.js page at `/login` (`apps/web/src/app/(public)/login/page.tsx`). Submits email + password via `fetch('/auth/login', { method: 'POST', credentials: 'include' })`. On success, `router.push(returnTo)`.
+- **Register:** Custom Next.js page at `/register` (`apps/web/src/app/(public)/register/page.tsx`). Submits email, password, firstName, lastName via `fetch('/auth/register', { method: 'POST', credentials: 'include' })`.
+- **Logout:** Button with `fetch('/auth/logout', { method: 'POST', credentials: 'include' })` then `window.location.href = '/'`.
+- Login/Register links use Next.js `<Link>` components (e.g., `<Link href="/login">`)
+- No frontend auth state management — session is server-side in Redis
 
 ## Anti-Patterns (Do NOT)
 
@@ -163,3 +206,7 @@ QueryProvider > ApolloWrapper > RouterProvider
 - Skip `id` fields in queries — breaks Apollo cache normalization
 - Import from `@apollo/client` for hooks — use `@apollo/client/react`
 - Pass explicit generic type parameters to `useQuery`/`useMutation` — `graphql()` provides inference
+- Use `NEXT_PUBLIC_GRAPHQL_URL` or any hardcoded GraphQL endpoint — use relative `/graphql`
+- Add auth libraries to the frontend (next-auth, etc.) — the gateway manages auth
+- Send `Authorization: Bearer` headers — auth is cookie-based via `credentials: 'include'`
+- Store tokens in localStorage, sessionStorage, or cookies from the frontend

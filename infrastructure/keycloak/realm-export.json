@@ -1,0 +1,122 @@
+{
+  "id": "luckyplans",
+  "realm": "luckyplans",
+  "displayName": "LuckyPlans",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "accessTokenLifespan": 300,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionMaxLifespanEnabled": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "Standard authenticated user",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "admin",
+        "description": "Platform administrator",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  },
+  "defaultRole": {
+    "name": "user",
+    "description": "Default role for new users",
+    "composite": true,
+    "composites": {
+      "realm": ["user"]
+    },
+    "clientRole": false
+  },
+  "clients": [
+    {
+      "clientId": "luckyplans-frontend",
+      "name": "LuckyPlans Frontend",
+      "description": "Confidential OIDC client for the API Gateway (ROPC + service account)",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "dev-client-secret",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:3000/+https://luckyplans.xyz/"
+      },
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "https://luckyplans.xyz/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "https://luckyplans.xyz"
+      ],
+      "protocol": "openid-connect",
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "testuser",
+      "email": "testuser@luckyplans.xyz",
+      "firstName": "Test",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["user"]
+    },
+    {
+      "username": "testadmin",
+      "email": "testadmin@luckyplans.xyz",
+      "firstName": "Test",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["user", "admin"]
+    },
+    {
+      "username": "service-account-luckyplans-frontend",
+      "enabled": true,
+      "serviceAccountClientId": "luckyplans-frontend",
+      "clientRoles": {
+        "realm-management": ["manage-users"]
+      }
+    }
+  ]
+}
