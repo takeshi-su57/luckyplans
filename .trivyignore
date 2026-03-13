@@ -1,0 +1,6 @@
+# Keycloak writes to /opt/keycloak/data, /opt/keycloak/lib/quarkus, and other
+# paths at startup. readOnlyRootFilesystem is not feasible for this third-party
+# image without extensive volume mounts that would break on version upgrades.
+# Pod and container security context are hardened (runAsNonRoot, drop ALL caps,
+# no privilege escalation).
+KSV-0014
