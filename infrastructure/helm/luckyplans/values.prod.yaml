@@ -36,7 +36,7 @@ redis:
 apiGateway:
   image:
     repository: takeshi-su57/api-gateway
-    tag: 'sha-3db817c'
+    tag: 'sha-73a85e3'
   replicas: 2
   resources:
     requests:
@@ -48,7 +48,7 @@ apiGateway:
 serviceCore:
   image:
     repository: takeshi-su57/service-core
-    tag: 'sha-3db817c'
+    tag: 'sha-73a85e3'
   replicas: 2
   resources:
     requests:
@@ -60,7 +60,7 @@ serviceCore:
 web:
   image:
     repository: takeshi-su57/web
-    tag: 'sha-3db817c'
+    tag: 'sha-73a85e3'
   replicas: 2
   resources:
     requests:
