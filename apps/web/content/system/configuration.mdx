@@ -26,7 +26,7 @@ description: All environment variables, Helm values, and production overrides.
 | `KEYCLOAK_ISSUER` | — | Keycloak realm issuer URL. Must match the `iss` claim in tokens. e.g. `http://localhost:8080/realms/luckyplans` |
 | `KEYCLOAK_JWKS_URI` | — | Keycloak JWKS endpoint for verifying id_tokens. e.g. `http://localhost:8080/realms/luckyplans/protocol/openid-connect/certs` |
 | `KEYCLOAK_CLIENT_ID` | `luckyplans-frontend` | Keycloak client ID (confidential, ROPC + service account enabled) |
-| `KEYCLOAK_CLIENT_SECRET` | — | Client secret. Dev default: `dev-client-secret` |
+| `KEYCLOAK_CLIENT_SECRET` | — | Client secret from Keycloak Admin → Clients → `luckyplans-frontend` → Credentials. Local dev uses `dev-client-secret` (pre-configured in realm export). See [Deployment Guide](/docs/guides/deployment#obtaining-keycloak_client_secret). |
 | `KEYCLOAK_ADMIN_URL` | `http://localhost:8080` | Keycloak base URL for Admin REST API (user registration) |
 
 ### Session Management (api-gateway)
