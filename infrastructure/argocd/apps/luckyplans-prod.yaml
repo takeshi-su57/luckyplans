@@ -17,21 +17,19 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: luckyplans
-  # Ignore Secret diffs — Helm lookup() returns nil in ArgoCD's repo server
-  # (no cluster access), so the rendered Secret always shows a new random
-  # JWT_SECRET. RespectIgnoreDifferences prevents ArgoCD from overwriting the
-  # live Secret on sync.
+  # The sealed-secrets-controller creates and owns the plain Secret from the
+  # SealedSecret CRD. ArgoCD must not diff or overwrite the controller-managed
+  # Secret — ignore its data entirely.
   ignoreDifferences:
     - group: ''
       kind: Secret
       name: luckyplans-secrets
       jsonPointers:
-        - /stringData
         - /data
+        - /metadata
   syncPolicy:
     automated:
       prune: true # remove resources no longer in Git
       selfHeal: true # revert manual cluster changes back to Git state
     syncOptions:
       - CreateNamespace=true
-      - RespectIgnoreDifferences=true

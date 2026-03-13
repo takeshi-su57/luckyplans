@@ -80,22 +80,22 @@ postgresql:
     limits:
       memory: '512Mi'
       cpu: '500m'
-keycloak:
-  # In production the Keycloak admin password must be overridden via
-  # --set keycloak.adminPassword=<value> or an external secrets manager.
-  adminPassword: 'changeme'
-secrets:
-  # IMPORTANT: All secrets must be explicit for ArgoCD (helm template cannot
-  # use lookup or randAlphaNum reliably). Override these via --set or a sealed
-  # secrets solution. The values below are PLACEHOLDERS — replace them.
-  #
-  # To generate secure values:
-  #   openssl rand -base64 48   (for JWT_SECRET, SESSION_SECRET)
-  #   openssl rand -base64 24   (for POSTGRES_PASSWORD)
-  JWT_SECRET: 'CHANGE-ME-generate-with-openssl-rand-base64-48'
-  SESSION_SECRET: 'CHANGE-ME-generate-with-openssl-rand-base64-48'
-  KEYCLOAK_CLIENT_SECRET: 'changeme'
-  POSTGRES_PASSWORD: 'CHANGE-ME-generate-with-openssl-rand-base64-24'
+# ============================================================
+# Sealed Secrets — all prod secrets are encrypted via kubeseal.
+# The sealed-secrets-controller in the cluster decrypts them.
+# Run: ./infrastructure/scripts/seal-secrets.sh
+# ============================================================
+sealedSecrets:
+  enabled: true
+  # Paste output from seal-secrets.sh here.
+  # Each value is encrypted by kubeseal and safe to commit to git.
+  encryptedData: {}
+  # Example (replace with real sealed values):
+  #   JWT_SECRET: "AgBy3i4OJSWK+PiT..."
+  #   SESSION_SECRET: "AgCE8fj2K+9sLm..."
+  #   KEYCLOAK_CLIENT_SECRET: "AgDx7kR3mN+pQw..."
+  #   POSTGRES_PASSWORD: "AgFh4nT1bW+xZv..."
+  #   KEYCLOAK_ADMIN_PASSWORD: "AgGi5oU2cX+yAw..."
 certManager:
   enabled: true
   email: 'takeshisuz57@gmail.com'

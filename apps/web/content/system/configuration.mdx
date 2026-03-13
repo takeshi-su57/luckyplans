@@ -49,7 +49,8 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 | Section | Purpose |
 |---------|---------|
 | `config.*` | Application config rendered into ConfigMap (incl. Keycloak vars, session TTL) |
-| `secrets` | Sensitive values rendered into K8s Secret (SESSION_SECRET, KEYCLOAK_CLIENT_SECRET, POSTGRES_PASSWORD) |
+| `secrets` | Plain-text dev secrets rendered into K8s Secret (local dev only) |
+| `sealedSecrets.*` | Encrypted production secrets rendered as SealedSecret CRD (prod only) |
 | `image.*` | Container registry and pull policy |
 | `ingress.*` | Traefik ingress configuration (routes `/auth/*`, `/graphql`, `/realms/*`) |
 | `certManager.*` | Let's Encrypt TLS automation |
@@ -63,6 +64,10 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 ### Production Overrides
 
 Production-specific values are in `infrastructure/helm/luckyplans/values.prod.yaml`. Image tags are automatically updated by the CI/CD pipeline via `.github/workflows/update-tags.yml`.
+
+### Production Secrets (Sealed Secrets)
+
+Production secrets are encrypted via Bitnami Sealed Secrets and stored in `values.prod.yaml` under `sealedSecrets.encryptedData`. The `sealed-secrets-controller` in the cluster decrypts them at runtime. See [Deployment Guide](/docs/guides/deployment#secrets-management-sealed-secrets) for setup and rotation.
 
 ### Example: scaling in production
 
