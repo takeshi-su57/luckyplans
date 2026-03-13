@@ -1,5 +1,22 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "NODE_ENV",
+    "REDIS_HOST",
+    "REDIS_PORT",
+    "API_GATEWAY_PORT",
+    "CORS_ORIGIN",
+    "WEB_PORT",
+    "API_GATEWAY_URL",
+    "WEB_GRAPHQL_URL",
+    "KEYCLOAK_ISSUER",
+    "KEYCLOAK_JWKS_URI",
+    "KEYCLOAK_CLIENT_ID",
+    "KEYCLOAK_CLIENT_SECRET",
+    "KEYCLOAK_ADMIN_URL",
+    "SESSION_SECRET",
+    "SESSION_TTL_SECONDS"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

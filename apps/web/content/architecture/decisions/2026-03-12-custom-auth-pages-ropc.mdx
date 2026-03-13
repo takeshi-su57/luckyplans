@@ -1,0 +1,76 @@
+---
+title: Custom Login/Register Pages with ROPC + Keycloak Admin API
+description: Replace Keycloak UI redirects and nginx proxy with custom Next.js auth pages, gateway ROPC login, Admin API registration, and Next.js rewrites.
+---
+
+# Custom Login/Register Pages with ROPC + Keycloak Admin API
+
+**Date:** 2026-03-12
+**Status:** accepted (supersedes [Keycloak OIDC + next-auth v5](/docs/architecture/decisions/2026-03-11-keycloak-oidc-nextauth) and [Gateway-Managed Sessions](/docs/architecture/decisions/2026-03-12-gateway-managed-sessions))
+
+## Context
+
+The previous authentication architecture used Keycloak's OIDC Authorization Code Flow + PKCE, which redirected users to Keycloak's built-in login/registration UI. This created several problems:
+
+1. **No control over the auth UI** — Keycloak's theme system is limited and hard to customize to match the app's design
+2. **Redirect-based flow** — Users were bounced between the app and Keycloak, creating a disjointed experience
+3. **nginx dependency** — A reverse proxy was required to route `/auth/*` and `/graphql` requests, adding complexity to local development
+4. **next-auth complexity** — The OIDC client library added a layer of abstraction that wasn't needed since the gateway already managed sessions
+
+The team wanted custom login and registration pages that matched the app's design, with the gateway handling all Keycloak interaction server-side.
+
+## Decision
+
+### Custom auth pages in Next.js
+
+Created custom `/login` and `/register` pages under the `(public)` route group. These are standard React forms that submit credentials via `fetch` POST to the gateway's REST endpoints. No auth libraries are used on the frontend.
+
+### Gateway authenticates via ROPC
+
+The gateway's `POST /auth/login` endpoint accepts `{ email, password }` and exchanges credentials with Keycloak using the Resource Owner Password Credentials (ROPC) grant (`grant_type=password`). On success, it creates a Redis session, sets an HttpOnly `session_id` cookie, and returns the user profile.
+
+### Gateway registers via Keycloak Admin REST API
+
+The gateway's `POST /auth/register` endpoint accepts `{ email, password, firstName?, lastName? }`. It obtains an admin token via `client_credentials` grant (service account with `manage-users` role), creates the user via Keycloak's Admin REST API, then auto-logs in via ROPC.
+
+### Next.js rewrites replace nginx
+
+`next.config.ts` rewrites proxy `/auth/*` and `/graphql` to the gateway, eliminating the nginx container from the development stack. In production, K8s ingress handles routing.
+
+### Why ROPC over Authorization Code Flow?
+
+- Custom login UI requires the app to collect credentials — ROPC is the standard grant for this
+- No browser redirects to Keycloak — seamless UX
+- Gateway remains the confidential client — tokens never reach the browser
+- Simpler flow: no PKCE, no authorization codes, no callback endpoints
+
+### Why Admin REST API for registration?
+
+- Keycloak has no "register user" grant type — the Admin API is the official programmatic method
+- Service account with scoped `manage-users` role follows least-privilege
+- Allows custom validation before user creation
+
+### Why remove nginx?
+
+- Next.js rewrites handle the same proxying for local development
+- One fewer container to manage in `docker-compose.yml`
+- K8s ingress already handles routing in production — nginx was only needed locally
+
+## Consequences
+
+**What becomes easier:**
+- Full control over login/register UI — matches app design, no Keycloak theming
+- Simpler local dev — `docker compose up -d` starts only Redis and Keycloak
+- No frontend auth library — no next-auth, no OIDC client, no token management
+- Easier to add features like "remember me", social login buttons, or MFA prompts
+
+**What becomes harder:**
+- ROPC is considered a legacy grant in OAuth 2.1 — if Keycloak removes support, we'd need to switch to a different approach (e.g., Direct Access Grants API or custom Keycloak SPI)
+- Registration error handling is more manual — we must parse Admin API error responses
+- Password policy enforcement must be configured in Keycloak — the gateway doesn't validate password strength
+
+**Removed:**
+- nginx service from `docker-compose.yml` and `infrastructure/nginx/` directory
+- OIDC Authorization Code Flow + PKCE (no callback endpoint, no state/verifier storage)
+- next-auth dependency and configuration
+- `KEYCLOAK_REDIRECT_URI` and `KEYCLOAK_POST_LOGOUT_URI` environment variables

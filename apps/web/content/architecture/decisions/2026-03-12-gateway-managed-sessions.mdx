@@ -1,0 +1,70 @@
+---
+title: Gateway-Managed Sessions (replacing next-auth)
+description: Move OAuth token management from the Next.js frontend into the API Gateway with Redis-backed server-side sessions.
+---
+
+# Gateway-Managed Sessions (replacing next-auth)
+
+**Date:** 2026-03-12
+**Status:** accepted — supersedes [Keycloak OIDC + next-auth v5](/docs/architecture/decisions/2026-03-11-keycloak-oidc-nextauth)
+
+## Context
+
+The previous architecture used next-auth v5 on the frontend to handle the Keycloak OIDC flow. Tokens were stored in encrypted HTTP-only cookies managed by next-auth, then extracted by the Apollo Client auth link and forwarded as `Authorization: Bearer` headers to the API Gateway. While functional, this approach had issues:
+
+- **Token exposure to JavaScript** — the `session.accessToken` was readable by client-side code, making it vulnerable to XSS-based token theft
+- **Frontend auth coupling** — Next.js was responsible for token refresh, session management, and route protection via next-auth, making it more than a pure renderer
+- **Bearer header overhead** — every GraphQL request required the frontend to read the session and construct an auth header
+
+The goal was to move all token management to the API Gateway, making the browser see only an opaque session cookie.
+
+## Decision
+
+**Remove next-auth entirely.** The API Gateway becomes the sole OIDC Relying Party:
+
+1. **Gateway OAuth endpoints** — `GET /auth/login`, `GET /auth/callback`, `GET /auth/logout` handle the full Authorization Code + PKCE flow against Keycloak
+2. **Confidential client** — the Keycloak client is now confidential (has a client secret), adding defense beyond PKCE since the code exchange happens server-side
+3. **Redis session store** — after code exchange, the gateway stores `{ accessToken, refreshToken, idToken, expiresAt, userId, email, roles }` in Redis keyed by a cryptographically random session ID
+4. **Opaque session cookie** — the browser receives only `session_id` (HttpOnly, Secure, SameSite=Lax) — no tokens
+5. **Session guard** — replaces `JwksGuard`; reads the session cookie, looks up the session in Redis, refreshes the token if near expiry, injects `{ userId, roles }` into GQL context
+6. **Same-domain routing** — a reverse proxy (nginx locally, K8s ingress in production) routes `/auth/*` and `/graphql` to the gateway, everything else to Next.js, so cookies are shared
+
+**Frontend simplification:**
+- Apollo Client uses `credentials: 'include'` with a relative `/graphql` URL — no auth link
+- Next.js middleware checks cookie presence for UX routing only (not security)
+- `useCurrentUser()` calls the `me` GraphQL query via Apollo instead of `useSession()`
+
+### Why move auth to the gateway?
+
+- **No token exposure** — JavaScript never sees access or refresh tokens
+- **Simpler frontend** — no token management, no auth link, no session provider
+- **Instant revocation** — deleting the Redis session immediately invalidates the user
+- **BFF pattern** — aligns with the OAuth 2.0 for Browser-Based Apps recommendation (Backend-for-Frontend)
+
+### Why confidential client?
+
+With the gateway exchanging codes server-side, a client secret adds a layer of defense. Even if an attacker intercepts the authorization code (e.g., via a compromised redirect), they cannot exchange it without the secret. PKCE is retained as defense-in-depth.
+
+## Consequences
+
+**What becomes easier:**
+- Frontend is a pure renderer — no auth logic beyond cookie presence checks
+- Token refresh is fully server-side and transparent
+- Session revocation is immediate (clear Redis key)
+- No next-auth dependency or version management
+- CSRF protection via SameSite=Lax cookies on same domain
+
+**What becomes harder:**
+- Gateway is now stateful (depends on Redis for sessions, not just for microservice transport)
+- Local development requires an nginx reverse proxy for same-domain cookie sharing
+- Token refresh failures require careful error handling to avoid silent session loss
+- Gateway restart doesn't lose sessions (stored in Redis), but Redis data loss does
+
+**Removed:**
+- `next-auth` dependency from `apps/web`
+- `src/auth.ts`, `src/app/api/auth/[...nextauth]/route.ts`, `src/types/next-auth.d.ts`
+- `SessionProvider` from provider chain
+- `Authorization: Bearer` header from Apollo Client
+- `JwksGuard` from API Gateway (replaced by `SessionGuard`)
+- `NEXT_PUBLIC_GRAPHQL_URL` env var (Apollo uses relative `/graphql`)
+- All `AUTH_*` env vars (next-auth specific)

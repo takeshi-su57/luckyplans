@@ -1,6 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 import { GitHubIcon } from "@/components/icons/GitHubIcon";
-import { ExternalLinkIcon } from "@/components/icons/ExternalLinkIcon";
+
 import { GnsIcon } from "@/components/icons/protocols/GnsIcon";
 import { GmxIcon } from "@/components/icons/protocols/GmxIcon";
 import { AvntIcon } from "@/components/icons/protocols/AvntIcon";
@@ -82,21 +83,20 @@ export function HeroSection() {
       </p>
 
       <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
+        <Link
+          href="/register"
+          className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-green-700"
+        >
+          Get Started
+        </Link>
         <a
           href="https://github.com/takeshi-su57/lucky-plan"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-green-700"
+          className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 px-6 py-3 text-sm font-medium text-neutral-700 transition-colors hover:border-neutral-400 hover:text-neutral-900"
         >
           <GitHubIcon size={18} />
           View on GitHub
-        </a>
-        <a
-          href="#infrastructure"
-          className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 px-6 py-3 text-sm font-medium text-neutral-700 transition-colors hover:border-neutral-400 hover:text-neutral-900"
-        >
-          <ExternalLinkIcon size={18} />
-          Explore the Platform
         </a>
       </div>
 

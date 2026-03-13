@@ -1,0 +1,36 @@
+# Local development infrastructure only.
+# Apps run via `pnpm dev` (Turborepo). This file provides Redis and Keycloak.
+# Next.js rewrites proxy /auth/* and /graphql to the gateway — no nginx needed.
+#
+# Usage:
+#   docker compose up -d          # start infrastructure
+#   docker compose down           # stop infrastructure
+#   docker compose down -v        # stop and remove volumes (reset Keycloak data)
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: start-dev --import-realm
+    ports:
+      - '8080:8080'
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - ./infrastructure/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -sf http://localhost:8080/realms/luckyplans || exit 1']
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s

@@ -1,6 +1,8 @@
 {
   "extends": "@luckyplans/config/tsconfig.nextjs.json",
   "compilerOptions": {
+    "declaration": false,
+    "declarationMap": false,
     "paths": {
       "@/*": ["./src/*"]
     }

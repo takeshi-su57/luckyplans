@@ -157,12 +157,14 @@ export class TradingModule {}
 ### `trading.resolver.ts`
 
 ```typescript
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Query, Resolver, ObjectType, Field, ID } from '@nestjs/graphql';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { TradingMessagePattern } from '@luckyplans/shared';
-import type { Trade } from '@luckyplans/shared';
+import type { Trade, AuthUser } from '@luckyplans/shared';
+import { SessionGuard } from '../auth/session.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 
 @ObjectType()
 class TradeType {
@@ -204,16 +206,17 @@ class TradeResponse {
 export class TradingResolver {
   constructor(@Inject('TRADING_SERVICE') private readonly tradingClient: ClientProxy) {}
 
+  @UseGuards(SessionGuard)
   @Mutation(() => TradeResponse)
   async executeTrade(
-    @Args('userId') userId: string,
     @Args('symbol') symbol: string,
     @Args('side') side: string,
     @Args('quantity', { type: () => Int }) quantity: number,
+    @CurrentUser() user: AuthUser,
   ): Promise<TradeResponse> {
     return firstValueFrom(
       this.tradingClient.send(TradingMessagePattern.EXECUTE_TRADE, {
-        userId,
+        userId: user.userId,
         symbol,
         side,
         quantity,
@@ -222,6 +225,8 @@ export class TradingResolver {
   }
 }
 ```
+
+> **Note:** The `userId` comes from the authenticated session via `@CurrentUser()` — never accept it as a client argument. This prevents users from executing trades on behalf of others.
 
 ### Register in `apps/api-gateway/src/app.module.ts`
 
@@ -266,5 +271,5 @@ In `.github/workflows/docker-build.yml`, add `service-trading` to the matrix:
 
 ```yaml
 matrix:
-  service: [web, api-gateway, service-auth, service-core, service-trading]
+  service: [web, api-gateway, service-core, service-trading]
 ```

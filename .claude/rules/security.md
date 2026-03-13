@@ -35,14 +35,37 @@ Rules:
 - Do not add `--privileged` or `SYS_ADMIN` capabilities
 - Pin base image versions (e.g., `node:25-alpine`, not `node:latest`)
 
-## Authentication (Current and Future)
+## Authentication — Gateway-Managed Sessions
 
-Current state: Auth service uses placeholder logic (mock tokens). When implementing real authentication:
-- Use bcrypt or argon2 for password hashing — never store plaintext passwords
-- JWT tokens must have expiration (`exp` claim)
-- Refresh tokens must be stored server-side and revocable
-- API gateway must validate tokens before forwarding requests to services
-- Failed auth attempts should be rate-limited
+Authentication uses Keycloak with gateway-managed server-side sessions. The gateway accepts credentials via REST endpoints, authenticates with Keycloak server-side, and issues opaque `session_id` cookies. No tokens are exposed to the browser.
+
+### Architecture
+
+- **Identity provider:** Keycloak
+- **Login:** Gateway accepts `{ email, password }` via `POST /auth/login`, authenticates using ROPC grant (`grant_type=password`)
+- **Registration:** Gateway accepts `{ email, password, firstName?, lastName? }` via `POST /auth/register`, creates user via Keycloak Admin REST API (`client_credentials` grant + service account with `manage-users` role), then auto-logs in via ROPC
+- **Logout:** `POST /auth/logout` — deletes Redis session, clears cookie
+- **Session storage:** Redis — `SessionData` contains userId, email, roles, accessToken, refreshToken, idToken, expiresAt
+- **Session cookie:** `session_id` — HttpOnly, Secure (production), SameSite=Lax, Path=/
+- **Token refresh:** Gateway transparently refreshes access tokens when within 60s of expiry
+- **Frontend pages:** Custom login/register pages in Next.js at `/login` and `/register` (not Keycloak UI)
+
+### Key files
+
+- `apps/api-gateway/src/auth/oidc.controller.ts` — `POST /auth/login`, `POST /auth/register`, `POST /auth/logout`
+- `apps/api-gateway/src/auth/session.service.ts` — Redis session CRUD + token refresh
+- `apps/api-gateway/src/auth/session.guard.ts` — Reads cookie, validates session, injects `AuthUser`
+- `infrastructure/keycloak/realm-export.json` — Keycloak realm config (ROPC enabled, service account with `manage-users`)
+
+### Rules
+
+- Never expose access tokens, refresh tokens, or id tokens to the browser
+- Never send `Authorization: Bearer` headers from the frontend — auth is cookie-based
+- Never implement auth logic on the frontend (no next-auth, no token storage, no token refresh)
+- Session secrets (`SESSION_SECRET`) must come from K8s Secrets in production
+- id_token verification uses jose JWKS (`createRemoteJWKSet`) — never skip signature verification
+- Cookie must use `Secure` flag in production (HTTPS only)
+- Failed auth attempts should be rate-limited (not yet implemented)
 
 ## Input Validation (Future)
 

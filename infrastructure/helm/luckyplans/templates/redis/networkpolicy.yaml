@@ -19,9 +19,6 @@ spec:
               app.kubernetes.io/name: api-gateway
         - podSelector:
             matchLabels:
-              app.kubernetes.io/name: service-auth
-        - podSelector:
-            matchLabels:
               app.kubernetes.io/name: service-core
       ports:
         - protocol: TCP

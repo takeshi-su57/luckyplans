@@ -20,11 +20,10 @@ The platform uses a single Helm chart (`infrastructure/helm/luckyplans/`) to dep
 | -------------- | ---------------------- | ---- | -------------- |
 | `web`          | Next.js frontend       | 3000 | HTTP           |
 | `api-gateway`  | NestJS GraphQL         | 3001 | HTTP           |
-| `service-auth` | NestJS microservice    | —    | Redis RPC      |
 | `service-core` | NestJS microservice    | —    | Redis RPC      |
 | `redis`        | Message broker / cache | 6379 | Redis protocol |
 
-`service-auth` and `service-core` communicate exclusively via Redis message patterns and have no Kubernetes Service resources.
+`service-core` communicates exclusively via Redis message patterns and has no Kubernetes Service resource.
 
 ## Chart Structure
 
@@ -45,7 +44,6 @@ infrastructure/helm/luckyplans/
     smoke-test-job.yaml   # ArgoCD post-sync smoke tests (prod only)
     redis/
     api-gateway/
-    service-auth/
     service-core/
     web/
 ```

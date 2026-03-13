@@ -5,7 +5,7 @@
 Microservices are split by **functionality**, not by domain:
 
 - `service-core` — generic CRUD operations for all domain entities
-- `service-auth` — authentication and authorization
+- Authentication is handled directly by the API gateway (Keycloak OIDC + Redis sessions), not a separate microservice
 - Future services for specific business logic (e.g., `service-trading` for trading engine)
 
 **When to add a new entity:** Add it to `service-core`. Define the entity type in `packages/shared`, add message patterns, and extend the core controller/service.
@@ -52,12 +52,13 @@ As a service grows, it may have multiple controllers/services organized by conce
 
 ## API Gateway
 
-The gateway (`apps/api-gateway/`) is the only service that communicates with the frontend via GraphQL.
+The gateway (`apps/api-gateway/`) is the only service exposed to the frontend. It handles both GraphQL (resolvers) and authentication (REST OIDC controller).
 
 ### Resolvers
 - Inject `ClientProxy` via `@Inject('SERVICE_NAME')` (e.g., `@Inject('CORE_SERVICE')`)
 - Convert Observable to Promise with `firstValueFrom()` from `rxjs`
 - Define GraphQL types in the resolver file using code-first decorators
+- Protected resolvers use `@UseGuards(SessionGuard)` + `@CurrentUser()` decorator
 
 ### Gateway Modules
 - Register microservice clients using `ClientsModule.register()` with `Transport.REDIS`
@@ -67,6 +68,23 @@ The gateway (`apps/api-gateway/`) is the only service that communicates with the
 - Code-first approach only — use `@ObjectType()`, `@Field()`, `@Resolver()`, `@Query()`, `@Mutation()`
 - Schema auto-generated via `autoSchemaFile: true` in `GraphQLModule.forRoot()`
 - Do not create `.graphql` schema files manually
+
+### Authentication (Gateway-Managed Sessions)
+
+The gateway manages the full OIDC lifecycle — the browser never sees tokens:
+
+- **`OidcController`** (`@Controller('auth')`) — REST endpoints for `/auth/login`, `/auth/callback`, `/auth/logout`. This is the only REST exception in the project.
+- **`SessionService`** — Redis-backed session CRUD. Stores `SessionData` (userId, email, roles, tokens, expiry). Handles transparent token refresh when access tokens near expiry.
+- **`SessionGuard`** — NestJS `CanActivate` guard. Reads `session_id` cookie from `req.cookies`, looks up session in Redis, calls `refreshIfNeeded()`, sets `req['user']` as `AuthUser`.
+- **Cookie**: `session_id` — HttpOnly, Secure (prod), SameSite=Lax, Path=/. Set by gateway on successful OIDC callback.
+- **PKCE**: Authorization code flow with S256 code challenge. Code verifier stored in Redis (`oidc_state:<state>`) with 10-min TTL.
+- **Keycloak**: Confidential client (`luckyplans-frontend`). Gateway uses `client_secret` when exchanging codes. id_token verified via jose JWKS.
+
+Key files:
+- `apps/api-gateway/src/auth/oidc.controller.ts` — OIDC flow
+- `apps/api-gateway/src/auth/session.service.ts` — Redis session management
+- `apps/api-gateway/src/auth/session.guard.ts` — GraphQL request guard
+- `apps/api-gateway/src/auth/current-user.decorator.ts` — `@CurrentUser()` param decorator
 
 ## Shared Package (`packages/shared`)
 
@@ -109,13 +127,16 @@ Only when business logic justifies a separate service:
 ## Frontend (`apps/web`)
 
 - Next.js 16 App Router with `'use client'` directive for interactive components
-- Apollo Client 4 configured in `apps/web/src/lib/apollo/client.ts` (dataMasking disabled)
+- Apollo Client 4 configured in `apps/web/src/lib/apollo/client.ts` — uses relative `/graphql` URI with `credentials: 'include'` (cookie-based auth)
 - ApolloWrapper in `apps/web/src/lib/apollo/provider.tsx`
 - GraphQL Codegen with `client-preset` — config at `apps/web/codegen.ts`, output at `apps/web/src/generated/`
 - Operations written inline using `graphql()` from `@/generated` in hook files (no separate `.graphql` files)
 - Custom hooks in `apps/web/src/hooks/` use `graphql()` + `useQuery`/`useMutation` with automatic type inference
 - Components consume hooks — never import `useQuery`, `useMutation`, or `graphql` directly
 - Fetch policy: `cache-and-network` (configured in Apollo Client defaults)
+- Route protection via Next.js middleware (`apps/web/middleware.ts`) — checks `session_id` cookie presence, redirects to `/auth/login` if absent. This is UX-only protection; the gateway `SessionGuard` is the real auth authority.
+- `useCurrentUser()` hook uses the GraphQL `me` query to get the authenticated user from the session
+- No auth-related environment variables needed on the frontend — Apollo uses relative URL, cookies are automatic
 - See `.claude/rules/frontend.md` for full details
 
 ## Dependency Injection
@@ -132,7 +153,7 @@ Only when business logic justifies a separate service:
 - Put business logic in controllers or resolvers
 - Define entity types in individual services — put them in `packages/shared`
 - Use `process.env` directly — use `getEnvVar()` from `@luckyplans/shared`
-- Create REST endpoints — the project uses GraphQL exclusively via the API gateway
+- Create REST endpoints — the project uses GraphQL exclusively via the API gateway (sole exception: `/auth/*` OIDC endpoints)
 - Duplicate types across apps — put shared types in `packages/shared`
 - Use `any` without a comment explaining the justification
 - Use `console.log` — use `console.warn` or `console.error` only
@@ -140,3 +161,7 @@ Only when business logic justifies a separate service:
 - Create separate `.graphql` operation files — use inline `graphql()` calls in hook files
 - Define GraphQL response types manually in frontend — use codegen-generated types
 - Call `useQuery`/`useMutation` directly in page components — wrap in custom hooks in `src/hooks/`
+- Expose tokens (access/refresh/id) to the browser — all tokens stay server-side in Redis sessions
+- Use `Authorization: Bearer` headers from the frontend — auth is cookie-based (`session_id`)
+- Add auth logic to the frontend (next-auth, custom token handling) — the gateway owns the entire auth lifecycle
+- Use `NEXT_PUBLIC_GRAPHQL_URL` — Apollo Client uses relative `/graphql` routed by the proxy

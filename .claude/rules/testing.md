@@ -36,9 +36,8 @@ No tests exist yet. The Turborepo `test` task is configured in `turbo.json` and 
 
 1. **`packages/shared/src/utils/index.ts`** — Pure functions (`generateId`, `getEnvVar`, `getRedisConfig`), easiest to test
 2. **`apps/service-core/src/core.service.ts`** — Core business logic (CRUD operations)
-3. **`apps/service-auth/src/auth.service.ts`** — Auth business logic
-4. **`apps/service-core/src/core.controller.ts`** — Message pattern routing with mocked service
-5. **`apps/api-gateway/src/core/core.resolver.ts`** — GraphQL resolver with mocked `ClientProxy`
+3. **`apps/service-core/src/core.controller.ts`** — Message pattern routing with mocked service
+4. **`apps/api-gateway/src/core/core.resolver.ts`** — GraphQL resolver with mocked `ClientProxy`
 
 ## Mocking Patterns
 

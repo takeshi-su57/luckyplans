@@ -32,7 +32,7 @@ This repository uses AI-assisted development with structured guidelines to ensur
 
 These rules apply to all code in this repository, whether written by humans or AI:
 
-1. **Functional decomposition** — Services are split by functionality (CRUD, auth, trading), not by domain. `service-core` handles CRUD for all entities. New microservices are only created for distinct complex logic. Do not create a microservice per domain.
+1. **Functional decomposition** — Services are split by functionality (CRUD, trading), not by domain. `service-core` handles CRUD for all entities. Authentication is handled directly by the API gateway. New microservices are only created for distinct complex logic. Do not create a microservice per domain.
 
 2. **Domain models in shared packages** — All entity types, interfaces, and enums live in `packages/shared`. Services import from `@luckyplans/shared`, never define their own domain types.
 
@@ -50,6 +50,8 @@ These rules apply to all code in this repository, whether written by humans or A
 
 9. **No cross-app imports** — Apps never import from other apps. All shared code goes through `packages/shared` or `packages/config`. Inter-app communication is exclusively via Redis messages.
 
+10. **Gateway-managed authentication** — The API Gateway owns the entire auth lifecycle (Keycloak OIDC + server-side Redis sessions). The browser only sees an opaque `session_id` HttpOnly cookie — no tokens are exposed to the client. The frontend has no auth logic, no token storage, and no `Authorization` headers. See `.claude/rules/security.md`.
+
 ## AI Coding Expectations
 
 When AI generates code for this repository, it must:
@@ -61,6 +63,7 @@ When AI generates code for this repository, it must:
 - Update documentation when changing public interfaces or adding services
 - Never break existing message pattern contracts between services
 - Follow security rules in `.claude/rules/security.md`
+- Never expose tokens to the browser or add auth libraries to the frontend — the gateway manages auth
 
 ## Maintaining This Framework
 

@@ -2,8 +2,16 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  roles: string[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface AuthUser {
+  userId: string;
+  email: string;
+  name?: string;
+  roles: string[];
 }
 
 export interface ServiceResponse<T = unknown> {
@@ -27,16 +35,8 @@ export interface PaginatedResponse<T = unknown> {
 }
 
 export enum ServiceName {
-  AUTH = 'service-auth',
   CORE = 'service-core',
   API_GATEWAY = 'api-gateway',
-}
-
-export enum AuthMessagePattern {
-  VALIDATE = 'auth.validate',
-  LOGIN = 'auth.login',
-  REGISTER = 'auth.register',
-  PROFILE = 'auth.profile',
 }
 
 export enum CoreMessagePattern {

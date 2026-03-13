@@ -26,6 +26,13 @@ config:
   redisPort: '6379'
   apiGatewayPort: '3001'
   corsOrigin: 'http://localhost'
+  # Keycloak / OIDC — internal cluster URL used by api-gateway for JWKS verification
+  keycloakIssuer: 'http://keycloak/realms/luckyplans'
+  keycloakJwksUri: 'http://keycloak/realms/luckyplans/protocol/openid-connect/certs'
+  keycloakClientId: 'luckyplans-frontend'
+  keycloakAdminUrl: 'http://keycloak'
+  apiGatewayUrl: 'http://api-gateway:3001'
+  sessionTtlSeconds: '36000'
 
 # ============================================================
 # Secrets — empty by default (rendered as a k8s Secret).
@@ -33,9 +40,9 @@ config:
 # Kubernetes handles base64 encoding via stringData.
 # For production, use an external secrets manager instead.
 # ============================================================
-secrets: {}
-# Example:
-#   JWT_SECRET: "changeme"
+secrets:
+  KEYCLOAK_CLIENT_SECRET: 'dev-client-secret'
+# For production, use an external secrets manager. Add more secrets as needed:
 #   DB_PASSWORD: "changeme"
 
 # ============================================================
@@ -114,27 +121,6 @@ apiGateway:
       failureThreshold: 3
 
 # ============================================================
-# service-auth (Redis transport microservice — no HTTP port)
-# ============================================================
-serviceAuth:
-  image:
-    repository: luckyplans/service-auth
-    tag: latest
-  replicas: 1
-  resources:
-    requests:
-      memory: '128Mi'
-      cpu: '100m'
-    limits:
-      memory: '256Mi'
-      cpu: '200m'
-  probes:
-    liveness:
-      initialDelaySeconds: 15
-      periodSeconds: 20
-      failureThreshold: 3
-
-# ============================================================
 # service-core (Redis transport microservice — no HTTP port)
 # ============================================================
 serviceCore:
@@ -195,3 +181,22 @@ web:
 # ============================================================
 smokeTest:
   enabled: false
+
+# ============================================================
+# Keycloak (official image — quay.io/keycloak/keycloak)
+# Runs in start-dev mode with H2 in-memory DB (no PostgreSQL needed).
+# For production, replace with a managed Keycloak instance backed by a real DB.
+# ============================================================
+keycloak:
+  enabled: true
+  image: quay.io/keycloak/keycloak:26.0
+  adminUser: admin
+  # Local dev default — override in production via --set or external secret
+  adminPassword: 'admin'
+  resources:
+    requests:
+      memory: '512Mi'
+      cpu: '250m'
+    limits:
+      memory: '1Gi'
+      cpu: '500m'

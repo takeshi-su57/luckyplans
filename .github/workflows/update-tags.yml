@@ -71,7 +71,6 @@ jobs:
           VALUES_FILE="infrastructure/helm/luckyplans/values.prod.yaml"
           echo "    Updating $VALUES_FILE"
           yq -i ".apiGateway.image.tag = \"$TAG\"" "$VALUES_FILE"
-          yq -i ".serviceAuth.image.tag = \"$TAG\"" "$VALUES_FILE"
           yq -i ".serviceCore.image.tag = \"$TAG\"" "$VALUES_FILE"
           yq -i ".web.image.tag = \"$TAG\"" "$VALUES_FILE"
 

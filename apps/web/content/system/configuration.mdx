@@ -7,18 +7,38 @@ description: All environment variables, Helm values, and production overrides.
 
 ## Environment Variables
 
+### Core
+
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `REDIS_HOST` | `localhost` | Redis hostname |
 | `REDIS_PORT` | `6379` | Redis port |
-| `API_GATEWAY_PORT` | `4000` | API Gateway listen port |
-| `NEXT_PUBLIC_GRAPHQL_URL` | `http://localhost:4000/graphql` | GraphQL endpoint for frontend (baked in at build time) |
+| `API_GATEWAY_PORT` | `3001` | API Gateway listen port |
 | `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
 | `NODE_ENV` | `development` | Node environment |
+| `WEB_PORT` | `3000` | Next.js dev server port |
+| `API_GATEWAY_URL` | `http://localhost:3001` | Gateway URL used by Next.js rewrites to proxy `/auth/*` and `/graphql` |
+
+### Keycloak (api-gateway)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `KEYCLOAK_ISSUER` | — | Keycloak realm issuer URL. Must match the `iss` claim in tokens. e.g. `http://localhost:8080/realms/luckyplans` |
+| `KEYCLOAK_JWKS_URI` | — | Keycloak JWKS endpoint for verifying id_tokens. e.g. `http://localhost:8080/realms/luckyplans/protocol/openid-connect/certs` |
+| `KEYCLOAK_CLIENT_ID` | `luckyplans-frontend` | Keycloak client ID (confidential, ROPC + service account enabled) |
+| `KEYCLOAK_CLIENT_SECRET` | — | Client secret. Dev default: `dev-client-secret` |
+| `KEYCLOAK_ADMIN_URL` | `http://localhost:8080` | Keycloak base URL for Admin REST API (user registration) |
+
+### Session Management (api-gateway)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SESSION_SECRET` | — | Secret for signing session cookies. Generate with `openssl rand -base64 32` |
+| `SESSION_TTL_SECONDS` | `36000` | Session time-to-live in seconds (default: 10 hours) |
 
 Environment variables are accessed via `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. This throws on missing required variables. See `.env.example` for the full template.
 
-> **Note:** `NEXT_PUBLIC_GRAPHQL_URL` is a Next.js build-time variable. Changing it in Helm values only takes effect after rebuilding the web Docker image. See [Helm Deployment](/docs/architecture/helm-deployment#nextpublic_graphql_url-is-a-build-time-constraint).
+> **Note:** The frontend no longer requires any auth-related environment variables. Apollo Client uses a relative `/graphql` URL and session cookies are managed entirely by the gateway.
 
 ## Helm Values
 
@@ -28,12 +48,13 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 
 | Section | Purpose |
 |---------|---------|
-| `config.*` | Application config rendered into ConfigMap |
-| `secrets` | Sensitive values rendered into K8s Secret |
+| `config.*` | Application config rendered into ConfigMap (incl. Keycloak vars, session TTL) |
+| `secrets` | Sensitive values rendered into K8s Secret (SESSION_SECRET, KEYCLOAK_CLIENT_SECRET) |
 | `image.*` | Container registry and pull policy |
-| `ingress.*` | Traefik ingress configuration |
+| `ingress.*` | Traefik ingress configuration (routes `/auth/*`, `/graphql`, `/realms/*`) |
 | `certManager.*` | Let's Encrypt TLS automation |
 | `redis.*` | Redis deployment config |
+| `keycloak.*` | Keycloak deployment config (enabled by default) |
 | `apiGateway.*` | API gateway deployment config |
 | `serviceAuth.*` | Auth service deployment config |
 | `serviceCore.*` | Core service deployment config |

@@ -5,18 +5,18 @@ Monorepo for the LuckyPlans application — frontend, API gateway, and backend m
 ## Architecture
 
 ```
-Browser → Next.js (Apollo Client)
+Browser → Next.js (port 3000, rewrites /auth/* + /graphql)
               │
-              │ GraphQL
+              │ GraphQL + REST auth
               ▼
-         API Gateway (NestJS + Apollo Server)
+         API Gateway (NestJS, port 3001)
               │
-              │ Redis pub/sub
-              ├──────────────────┐
-              ▼                  ▼
-        service-auth       service-core
-        (NestJS µsvc)      (NestJS µsvc)
+              ├── Redis pub/sub ──── service-core (NestJS µsvc)
+              ├── Redis (sessions)
+              └── Keycloak (OIDC / ROPC)
 ```
+
+Authentication is gateway-managed: the browser only sees an opaque `session_id` HttpOnly cookie. Login uses ROPC grant, registration uses the Keycloak Admin API. Custom login/register pages live in the Next.js app.
 
 ## Tech Stack
 
@@ -27,6 +27,7 @@ Browser → Next.js (Apollo Client)
 | API Gateway      | NestJS + Apollo Server (code-first) |
 | Microservices    | NestJS Microservices                |
 | Inter-service    | Redis transport (pub/sub)           |
+| Auth             | Keycloak (ROPC + Admin API)         |
 | Monorepo         | Turborepo + pnpm workspaces         |
 | Containerization | Docker (multi-stage builds)         |
 | Deployment       | ArgoCD + Helm on Kubernetes         |
@@ -40,18 +41,19 @@ This project uses an AI-assisted development framework with documented rules to 
 ```
 luckyplans/
 ├── apps/
-│   ├── web/                 # Next.js frontend
-│   ├── api-gateway/         # GraphQL gateway (NestJS)
-│   ├── service-auth/        # Auth microservice (NestJS)
-│   └── service-core/        # Core domain microservice (NestJS)
+│   ├── web/                 # Next.js frontend (custom login/register pages)
+│   ├── api-gateway/         # GraphQL gateway + auth controller (NestJS)
+│   └── service-core/        # Core domain microservice (NestJS, Redis transport)
 ├── packages/
 │   ├── config/              # Shared ESLint + TypeScript configs
 │   └── shared/              # Shared types and utilities
 ├── infrastructure/
 │   ├── helm/                # Helm charts for Kubernetes deployment
+│   ├── keycloak/            # Keycloak realm config (realm-export.json)
 │   ├── argocd/              # ArgoCD application configs
-│   └── scripts/             # Setup, deploy, and teardown scripts
+│   └── scripts/             # Deploy scripts (deploy-local.sh with targeted deploy)
 ├── apps/web/content/        # Public docs source (MDX) — served at /docs
+├── docker-compose.yml       # Local dev infrastructure (Redis + Keycloak)
 ├── .claude/                 # AI tool context and rules
 ├── turbo.json               # Turborepo configuration
 └── pnpm-workspace.yaml      # pnpm workspace definition
@@ -61,7 +63,7 @@ luckyplans/
 
 - **Node.js** >= 20.0.0
 - **pnpm** >= 9.0.0 (`corepack enable && corepack prepare pnpm@9.15.4 --activate`)
-- **Docker** (for containerized builds and deployment)
+- **Docker** (for containerized builds and local Keycloak/Redis)
 - **k3d** (for local Kubernetes — [install](https://k3d.io))
 
 ## Quick Start
@@ -70,19 +72,31 @@ luckyplans/
 # First time — install deps, create .env, build shared packages:
 pnpm setup
 
+# Start local infrastructure (Redis + Keycloak):
+docker compose up -d
+
 # Start all services with hot reload:
 pnpm dev
 ```
 
 - **Frontend**: http://localhost:3000
-- **GraphQL Playground**: http://localhost:4000/graphql
+- **GraphQL Playground**: http://localhost:3001/graphql
+- **Keycloak Admin**: http://localhost:8080 (admin / admin)
 
 ## Kubernetes Deployment
 
 ```bash
-pnpm deploy:local     # Build images → create cluster → deploy via Helm + ArgoCD
-pnpm deploy:status    # Check deployment status
-pnpm deploy:teardown  # Destroy the cluster
+# Full deploy — build all images, create cluster, Helm install:
+pnpm deploy:local
+
+# Rebuild and redeploy a single service:
+./infrastructure/scripts/deploy-local.sh web
+
+# Rebuild multiple services:
+./infrastructure/scripts/deploy-local.sh api-gateway web
+
+# Helm upgrade only (config/secret changes, no image builds):
+./infrastructure/scripts/deploy-local.sh --helm-only
 ```
 
 After deployment: http://localhost (frontend), http://localhost/graphql (API)
@@ -111,14 +125,20 @@ See [apps/web/content/guides/deployment.mdx](apps/web/content/guides/deployment.
 
 ## Environment Variables
 
-| Variable                  | Default                         | Description                   |
-| ------------------------- | ------------------------------- | ----------------------------- |
-| `REDIS_HOST`              | `localhost`                     | Redis hostname                |
-| `REDIS_PORT`              | `6379`                          | Redis port                    |
-| `API_GATEWAY_PORT`        | `4000`                          | API Gateway listen port       |
-| `NEXT_PUBLIC_GRAPHQL_URL` | `http://localhost:4000/graphql` | GraphQL endpoint for frontend |
-| `CORS_ORIGIN`             | `http://localhost:3000`         | Allowed CORS origin           |
-| `NODE_ENV`                | `development`                   | Node environment              |
+| Variable                  | Default                                   | Description                          |
+| ------------------------- | ----------------------------------------- | ------------------------------------ |
+| `REDIS_HOST`              | `localhost`                               | Redis hostname                       |
+| `REDIS_PORT`              | `6379`                                    | Redis port                           |
+| `API_GATEWAY_PORT`        | `3001`                                    | API Gateway listen port              |
+| `CORS_ORIGIN`             | `http://localhost:3000`                   | Allowed CORS origin                  |
+| `API_GATEWAY_URL`         | `http://localhost:3001`                   | Gateway URL (used by Next.js rewrites) |
+| `KEYCLOAK_ISSUER`         | `http://localhost:8080/realms/luckyplans` | Keycloak realm issuer URL            |
+| `KEYCLOAK_CLIENT_ID`      | `luckyplans-frontend`                     | Keycloak OIDC client ID              |
+| `KEYCLOAK_CLIENT_SECRET`  | —                                         | Keycloak client secret (confidential) |
+| `KEYCLOAK_ADMIN_URL`      | `http://localhost:8080`                   | Keycloak base URL for Admin API      |
+| `SESSION_SECRET`          | —                                         | Secret for session signing           |
+| `SESSION_TTL_SECONDS`     | `36000`                                   | Session TTL (default 10 hours)       |
+| `NODE_ENV`                | `development`                             | Node environment                     |
 
 ## Scripts
 
@@ -133,7 +153,7 @@ See [apps/web/content/guides/deployment.mdx](apps/web/content/guides/deployment.
 | `pnpm format`          | Format all files with Prettier       |
 | `pnpm format:check`    | Check formatting without writing     |
 | `pnpm clean`           | Clean all build artifacts            |
-| `pnpm deploy:local`    | Build + deploy to local Kubernetes   |
+| `pnpm deploy:local`    | Full deploy to local Kubernetes      |
 | `pnpm deploy:status`   | Check deployment status              |
 | `pnpm deploy:teardown` | Destroy local Kubernetes cluster     |
 

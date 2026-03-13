@@ -1,6 +1,6 @@
 apiVersion: v2
 name: luckyplans
-description: LuckyPlans platform — web, api-gateway, service-auth, service-core, redis
+description: LuckyPlans platform — web, api-gateway, service-core, redis
 type: application
 version: 0.1.0
 appVersion: '0.1.0'

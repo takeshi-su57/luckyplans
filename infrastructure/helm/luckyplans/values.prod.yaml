@@ -45,18 +45,6 @@ apiGateway:
     limits:
       memory: '512Mi'
       cpu: '500m'
-serviceAuth:
-  image:
-    repository: takeshi-su57/service-auth
-    tag: 'sha-e5be1fb'
-  replicas: 2
-  resources:
-    requests:
-      memory: '256Mi'
-      cpu: '200m'
-    limits:
-      memory: '512Mi'
-      cpu: '500m'
 serviceCore:
   image:
     repository: takeshi-su57/service-core

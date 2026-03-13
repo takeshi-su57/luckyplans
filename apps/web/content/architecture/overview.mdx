@@ -5,38 +5,54 @@ description: Current system architecture, service map, data flow, and infrastruc
 
 # System Architecture Overview
 
-Last updated: 2026-03-10
+Last updated: 2026-03-12
 
 ## Architecture Diagram
 
 ```
-Browser
+Keycloak (IdP — self-hosted, Helm subchart)
+  ▲   │
+  │   │ ROPC grant (login) + Admin REST API (registration)
+  │   ▼
+API Gateway (apps/api-gateway)          ← Handles auth server-side
+  │  POST /auth/login    → ROPC grant, create Redis session, set cookie
+  │  POST /auth/register → Admin API user creation, auto-login via ROPC
+  │  POST /auth/logout   → clear Redis session + cookie
   │
-  │ HTTP
+  │  session_id cookie (HttpOnly, Secure, SameSite=Lax)
+  │
+Browser ─── cookie sent automatically on every request ─────────┐
+  │                                                               │
+  │ GraphQL (Apollo Client, credentials: 'include')               │
+  ▼                                                               │
+Next.js Frontend (apps/web)  ◄────────────────────────────────────┘
+  │  Custom /login and /register pages (fetch POST to gateway)
+  │  middleware.ts: cookie presence check only
+  │
+  │ Next.js rewrites (locally), K8s ingress (prod)
+  │ routes /auth/* + /graphql → Gateway
+  │
   ▼
-Next.js Frontend (apps/web)
+API Gateway
+  │  SessionGuard: looks up session in Redis, extracts { userId, roles }
+  │  Refreshes access token server-side if near expiry
+  │  NestJS + Apollo Server (code-first GraphQL)
   │
-  │ GraphQL (Apollo Client)
+  │ Redis pub/sub — payload carries { userId, roles }, never the raw token
+  │
   ▼
-API Gateway (apps/api-gateway)          ← Only service exposed to frontend
-  │           NestJS + Apollo Server
-  │           Code-first GraphQL
-  │
-  │ Redis pub/sub (message patterns)
-  ├────────────────────┐
-  ▼                    ▼
-service-auth         service-core       ← NestJS microservices
-(authentication)     (CRUD for all
-                      domain entities)
+service-core         ← NestJS microservice
+(CRUD for all
+ domain entities)
 ```
 
 ## Service Map
 
 | Service | Purpose | Communication |
 |---------|---------|---------------|
-| `apps/web` | Next.js frontend, App Router, Apollo Client | GraphQL → API gateway |
-| `apps/api-gateway` | GraphQL API, forwards to microservices | GraphQL in, Redis out |
-| `apps/service-auth` | Authentication (login, register, token validation) | Redis transport |
+| Keycloak | Identity Provider — user management, roles | ROPC + Admin API (gateway ↔ Keycloak server-side) |
+| `apps/web` | Next.js frontend, App Router, Apollo Client, custom auth pages | GraphQL → API gateway (via Next.js rewrites / K8s ingress) |
+| `apps/api-gateway` | GraphQL API, REST auth endpoints, Redis session management | GraphQL in, Redis out |
 | `apps/service-core` | Generic CRUD for all domain entities | Redis transport |
 
 ## Architectural Decisions
@@ -46,11 +62,26 @@ Services are split by **functionality**, not by domain:
 - New microservices are only created for complex business logic (e.g., trading engine)
 - Domain types live in `packages/shared`, not in individual services
 
+## Auth Flow
+
+1. User hits a protected `(app)` route → Next.js middleware checks for `session_id` cookie
+2. If no cookie → redirect to `/login` (custom Next.js page)
+3. User enters credentials → form submits `POST /auth/login` with `{ email, password }`
+4. Gateway authenticates with Keycloak via ROPC grant (`grant_type=password`)
+5. Gateway creates Redis session, sets opaque `session_id` cookie (HttpOnly, Secure, SameSite=Lax)
+6. Frontend redirects to the original protected route
+7. All subsequent GraphQL requests include the cookie automatically (browser handles this)
+8. Gateway `SessionGuard` looks up session in Redis, refreshes token if near expiry
+9. Extracts `{ userId, email, name, roles }` into GQL context
+10. Redis microservice messages carry this identity payload — never the raw token
+
+Registration: custom `/register` page → `POST /auth/register` → gateway creates user via Keycloak Admin REST API (service account with `manage-users` role), then auto-logs in via ROPC.
+
 ## Data Flow (Request Lifecycle)
 
-1. **Frontend** sends GraphQL query/mutation via Apollo Client
-2. **API Gateway** resolver receives the request
-3. Resolver sends a Redis message via `ClientProxy.send(MessagePattern, payload)`
+1. **Frontend** sends GraphQL query/mutation via Apollo Client (cookie sent automatically)
+2. **API Gateway** `SessionGuard` looks up session in Redis, validates, and populates `req.user`
+3. Resolver sends a Redis message via `ClientProxy.send(MessagePattern, { ...payload, userId, roles })`
 4. **Microservice** controller receives the message via `@MessagePattern`
 5. Controller delegates to service class for business logic
 6. Service returns result → controller → Redis → gateway resolver → GraphQL response → frontend
@@ -59,17 +90,19 @@ Services are split by **functionality**, not by domain:
 
 | Package | Purpose |
 |---------|---------|
-| `packages/shared` | Entity interfaces, DTOs, message pattern enums, `ServiceResponse<T>`, utility functions (`getEnvVar`, `getRedisConfig`, `generateId`) |
+| `packages/shared` | Entity interfaces (`User`, `AuthUser`), DTOs, message pattern enums, `ServiceResponse<T>`, utility functions (`getEnvVar`, `getRedisConfig`, `generateId`) |
 | `packages/config` | Shared ESLint preset, TypeScript configs for NestJS and Next.js |
 
 ## Infrastructure
 
 - **Build:** Turborepo for monorepo orchestration, pnpm workspaces
+- **Local dev:** `docker compose up -d` (Redis, Keycloak), then `pnpm dev`
 - **Containers:** Multi-stage Docker builds (Alpine, non-root, turbo prune)
 - **CI/CD:** GitHub Actions → Docker build → ArgoCD sync
 - **Deployment:** Helm charts on Kubernetes (k3s locally, any K8s in production)
+- **Auth:** Keycloak (self-hosted), gateway-managed sessions with Redis store
 - **Docs:** Nextra v4 integrated at `/docs` within `apps/web`
-- **Inter-service:** Redis (pub/sub transport for NestJS microservices)
+- **Inter-service:** Redis (pub/sub transport for NestJS microservices + session store)
 
 See deep dives:
 - [CI/CD Pipeline](/docs/architecture/ci-cd-pipeline)
@@ -80,6 +113,7 @@ See deep dives:
 ## Current State and Known Limitations
 
 - **No database** — services use in-memory storage as placeholder
-- **No real auth** — service-auth uses mock tokens
 - **No tests** — CI test step exists but is a no-op
 - **No message persistence** — Redis pub/sub drops messages if a service is down
+- **Keycloak required** — local development needs `docker compose up -d` before `pnpm dev`
+- **Gateway stateful** — session store depends on Redis; Redis data loss invalidates all sessions

@@ -32,11 +32,14 @@ export class <PascalName>Module {}
 ### `<name>.resolver.ts`
 
 ```typescript
-import { Inject } from '@nestjs/common';
-import { Args, Query, Mutation, Resolver, ObjectType, Field } from '@nestjs/graphql';
+import { Inject, UseGuards } from '@nestjs/common';
+import { Args, Query, Mutation, Resolver, ObjectType, Field, ID } from '@nestjs/graphql';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { <PascalName>MessagePattern } from '@luckyplans/shared';
+import type { <PascalName>, AuthUser } from '@luckyplans/shared';
+import { SessionGuard } from '../auth/session.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 
 // Define @ObjectType() classes mirroring shared entity interfaces
 
@@ -46,9 +49,21 @@ export class <PascalName>Resolver {
     @Inject('<UPPER_NAME>_SERVICE') private readonly <camelName>Client: ClientProxy,
   ) {}
 
-  // Use firstValueFrom(this.<camelName>Client.send(Pattern, payload))
+  // Protected resolver — requires authenticated session
+  @UseGuards(SessionGuard)
+  @Query(() => <PascalName>Type, { nullable: true })
+  async get<PascalName>(
+    @Args('id') id: string,
+    @CurrentUser() _user: AuthUser,
+  ): Promise<<PascalName>> {
+    return firstValueFrom(
+      this.<camelName>Client.send(<PascalName>MessagePattern.GET, { id }),
+    );
+  }
 }
 ```
+
+> **Auth:** Use `@UseGuards(SessionGuard)` + `@CurrentUser()` for protected resolvers. Omit for public endpoints (like `health`).
 
 ### Register in `apps/api-gateway/src/app.module.ts`
 
