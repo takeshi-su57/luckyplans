@@ -6,10 +6,22 @@ set -e
 # Outputs a YAML block ready to paste into values.prod.yaml.
 #
 # Prerequisites: kubeseal, openssl, kubectl (with access to the prod cluster)
-# Usage: ./seal-secrets.sh [--rotate]
 #
-# Options:
-#   --rotate    Regenerate all secrets (default: only generate missing ones)
+# Usage:
+#   ./seal-secrets.sh                              # Generate all secrets randomly
+#   ./seal-secrets.sh --seal-only KEY=VALUE ...    # Seal specific values (no random generation)
+#
+# Examples:
+#   # First-time setup — generate everything:
+#   ./seal-secrets.sh
+#
+#   # Re-seal only KEYCLOAK_CLIENT_SECRET with a specific value:
+#   ./seal-secrets.sh --seal-only KEYCLOAK_CLIENT_SECRET=my-secret-from-keycloak
+#
+#   # Re-seal multiple specific values:
+#   ./seal-secrets.sh --seal-only \
+#     KEYCLOAK_CLIENT_SECRET=abc123 \
+#     KEYCLOAK_ADMIN_PASSWORD=xyz789
 # ---------------------------------------------------------------------------
 
 NAMESPACE="luckyplans"
@@ -17,14 +29,28 @@ SECRET_NAME="luckyplans-secrets"
 CONTROLLER_NAME="sealed-secrets-controller"
 CONTROLLER_NAMESPACE="kube-system"
 
-# All secret keys that must be sealed
-KEYS=(
-  JWT_SECRET
-  SESSION_SECRET
-  KEYCLOAK_CLIENT_SECRET
-  POSTGRES_PASSWORD
-  KEYCLOAK_ADMIN_PASSWORD
-)
+# Parse arguments
+SEAL_ONLY=false
+declare -A SPECIFIC_VALUES
+
+for arg in "$@"; do
+  case "$arg" in
+    --seal-only)
+      SEAL_ONLY=true
+      ;;
+    *=*)
+      if $SEAL_ONLY; then
+        key="${arg%%=*}"
+        val="${arg#*=}"
+        SPECIFIC_VALUES["$key"]="$val"
+      fi
+      ;;
+    -h|--help)
+      head -25 "$0" | tail -22
+      exit 0
+      ;;
+  esac
+done
 
 # Check prerequisites
 for cmd in kubeseal openssl; do
@@ -44,7 +70,7 @@ kubeseal --controller-name="$CONTROLLER_NAME" \
     exit 1
   }
 
-echo "=== Generating and Sealing LuckyPlans Production Secrets ==="
+echo "=== LuckyPlans — Seal Secrets ==="
 echo ""
 echo "Cluster: $(kubectl config current-context)"
 echo "Namespace: $NAMESPACE"
@@ -67,10 +93,37 @@ seal_value() {
     --name "$SECRET_NAME"
 }
 
-echo "Generating secret values..."
+# ---------------------------------------------------------------------------
+# Mode: --seal-only (seal specific provided values)
+# ---------------------------------------------------------------------------
+if $SEAL_ONLY; then
+  if [[ ${#SPECIFIC_VALUES[@]} -eq 0 ]]; then
+    echo "Error: --seal-only requires at least one KEY=VALUE argument."
+    echo "Example: ./seal-secrets.sh --seal-only KEYCLOAK_CLIENT_SECRET=my-secret"
+    exit 1
+  fi
+
+  echo "Sealing ${#SPECIFIC_VALUES[@]} specific value(s)..."
+  echo ""
+
+  for key in "${!SPECIFIC_VALUES[@]}"; do
+    val="${SPECIFIC_VALUES[$key]}"
+    sealed=$(seal_value "$val")
+    echo "    $key: \"$sealed\""
+  done
+
+  echo ""
+  echo "Paste the line(s) above into values.prod.yaml under sealedSecrets.encryptedData."
+  echo "Commit and push — ArgoCD will auto-sync."
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Mode: default (generate all secrets randomly and seal them)
+# ---------------------------------------------------------------------------
+echo "Generating all secret values..."
 echo ""
 
-# Generate values
 JWT_SECRET_VAL=$(generate_secret 48)
 SESSION_SECRET_VAL=$(generate_secret 48)
 KEYCLOAK_CLIENT_SECRET_VAL=$(generate_secret 24)
@@ -100,17 +153,28 @@ echo "    KEYCLOAK_CLIENT_SECRET: \"$KEYCLOAK_CLIENT_SECRET_SEALED\""
 echo "    POSTGRES_PASSWORD: \"$POSTGRES_PASSWORD_SEALED\""
 echo "    KEYCLOAK_ADMIN_PASSWORD: \"$KEYCLOAK_ADMIN_PASSWORD_SEALED\""
 echo ""
-echo "IMPORTANT:"
-echo "  - The KEYCLOAK_CLIENT_SECRET value must also be configured in Keycloak."
-echo "    After deployment, update the client secret in Keycloak Admin Console:"
-echo "    Realm: luckyplans > Clients > luckyplans-frontend > Credentials"
+echo "============================================================"
+echo "PLAIN-TEXT VALUES (for one-time Keycloak configuration)"
+echo "DO NOT commit these — copy them now, they won't be shown again."
+echo "============================================================"
 echo ""
-echo "  - Commit and push values.prod.yaml — ArgoCD will auto-sync."
+echo "KEYCLOAK_CLIENT_SECRET:   $KEYCLOAK_CLIENT_SECRET_VAL"
+echo "KEYCLOAK_ADMIN_PASSWORD:  $KEYCLOAK_ADMIN_PASSWORD_VAL"
+echo "POSTGRES_PASSWORD:        $POSTGRES_PASSWORD_VAL"
 echo ""
-echo "  - To view the plain-text values (for Keycloak setup), they are printed below."
-echo "    DO NOT commit these — they are for one-time manual configuration only."
+echo "============================================================"
 echo ""
-echo "--- PLAIN-TEXT VALUES (do not commit) ---"
-echo "KEYCLOAK_CLIENT_SECRET: $KEYCLOAK_CLIENT_SECRET_VAL"
-echo "KEYCLOAK_ADMIN_PASSWORD: $KEYCLOAK_ADMIN_PASSWORD_VAL"
-echo "---"
+echo "NEXT STEPS:"
+echo ""
+echo "  1. Paste the sealedSecrets block into values.prod.yaml"
+echo "  2. Commit and push — ArgoCD deploys Keycloak with KEYCLOAK_ADMIN_PASSWORD"
+echo "  3. Log into Keycloak Admin: https://luckyplans.xyz/admin"
+echo "     Username: admin"
+echo "     Password: (the KEYCLOAK_ADMIN_PASSWORD printed above)"
+echo "  4. Go to: luckyplans realm > Clients > luckyplans-frontend > Credentials"
+echo "  5. Click 'Regenerate' and paste the KEYCLOAK_CLIENT_SECRET value above"
+echo "     (or set it to the value printed above — both sides must match)"
+echo "  6. Done! The gateway and Keycloak now share the same client secret."
+echo ""
+echo "  To re-seal a single secret later (e.g., after rotating in Keycloak):"
+echo "    ./seal-secrets.sh --seal-only KEYCLOAK_CLIENT_SECRET=<new-value>"

@@ -203,15 +203,25 @@ cd luckyplans
 
 # 5. Generate and seal production secrets
 ./infrastructure/scripts/seal-secrets.sh
+# IMPORTANT: Save the plain-text output! You'll need KEYCLOAK_CLIENT_SECRET
+# and KEYCLOAK_ADMIN_PASSWORD for step 7.
 
-# 6. Paste the output into values.prod.yaml under sealedSecrets.encryptedData
-#    Commit and push — ArgoCD will auto-sync
+# 6. Paste the sealedSecrets block into values.prod.yaml
+#    Commit and push — ArgoCD will auto-sync and deploy all services
 
-# 7. Configure Keycloak client secret
-#    After Keycloak starts, log into admin at https://yourdomain.xyz/admin
-#    → Clients → luckyplans-frontend → Credentials
-#    Update the client secret to match the sealed KEYCLOAK_CLIENT_SECRET value
-#    (the seal-secrets.sh script prints plain-text values for this purpose)
+# 7. Sync Keycloak client secret (after Keycloak is running)
+#    a. Log into Keycloak Admin at https://yourdomain.xyz/admin
+#       Username: admin | Password: the KEYCLOAK_ADMIN_PASSWORD from step 5
+#    b. Select realm: luckyplans (top-left dropdown)
+#    c. Go to: Clients → luckyplans-frontend → Credentials tab
+#    d. Set the Client Secret to the KEYCLOAK_CLIENT_SECRET from step 5
+#       (paste the plain-text value the script printed, then click Save)
+#    e. Both the gateway and Keycloak now use the same secret — auth works.
+#
+# Alternative: if you prefer to use Keycloak's auto-generated secret:
+#    a. Copy the secret from Keycloak Admin → Clients → Credentials
+#    b. Re-seal it: ./seal-secrets.sh --seal-only KEYCLOAK_CLIENT_SECRET=<copied-value>
+#    c. Update values.prod.yaml with the new sealed value, commit and push
 ```
 
 ## Secrets Management (Sealed Secrets)
