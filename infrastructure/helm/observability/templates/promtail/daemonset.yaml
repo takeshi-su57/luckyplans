@@ -19,9 +19,18 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/promtail/configmap.yaml") . | sha256sum }}
     spec:
       serviceAccountName: promtail
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
       containers:
         - name: promtail
           image: {{ .Values.promtail.image }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+              add: [DAC_READ_SEARCH]
           args:
             - '-config.file=/etc/promtail/promtail.yaml'
           volumeMounts:

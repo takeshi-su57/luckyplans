@@ -19,9 +19,18 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/otel-collector/configmap.yaml") . | sha256sum }}
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
       containers:
         - name: otel-collector
           image: {{ .Values.otelCollector.image }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
           args:
             - '--config=/etc/otelcol-contrib/config.yaml'
           ports:

@@ -18,9 +18,18 @@ spec:
         app.kubernetes.io/name: redis-exporter
         {{- include "observability.selectorLabels" . | nindent 8 }}
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 59000
+        fsGroup: 59000
       containers:
         - name: redis-exporter
           image: {{ .Values.redisExporter.image }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
           ports:
             - name: metrics
               containerPort: 9121
