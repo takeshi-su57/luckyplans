@@ -63,7 +63,7 @@ import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Query, Mutation, Resolver, ObjectType, Field, ID } from '@nestjs/graphql';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { <PascalName>MessagePattern } from '@luckyplans/shared';
+import { <PascalName>MessagePattern, injectTraceContext } from '@luckyplans/shared';
 import type { <PascalName>, AuthUser } from '@luckyplans/shared';
 import { SessionGuard } from '../auth/session.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -88,8 +88,9 @@ export class <PascalName>Resolver {
     @Args('id') id: string,
     @CurrentUser() _user: AuthUser,
   ): Promise<<PascalName>> {
+    // Always wrap payloads with injectTraceContext() for end-to-end tracing
     return firstValueFrom(
-      this.<camelName>Client.send(<PascalName>MessagePattern.GET, { id }),
+      this.<camelName>Client.send(<PascalName>MessagePattern.GET, injectTraceContext({ id })),
     );
   }
 }

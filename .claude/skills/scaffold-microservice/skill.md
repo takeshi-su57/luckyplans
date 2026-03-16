@@ -9,8 +9,8 @@ Create a new NestJS microservice for complex business logic that goes beyond CRU
 | Layer | Files |
 |-------|-------|
 | Shared types | Message pattern enum + entity types in `packages/shared/src/types/index.ts` |
-| Microservice app | `apps/service-<name>/` — source code, package.json, configs |
-| Gateway submodule | `apps/api-gateway/src/<name>/` — module + resolver |
+| Microservice app | `apps/service-<name>/` — `instrument.ts`, `main.ts`, `app.module.ts`, controller, service, configs |
+| Gateway submodule | `apps/api-gateway/src/<name>/` — module + resolver (with `injectTraceContext()`) |
 | Docker | `apps/service-<name>/Dockerfile` |
 | Kubernetes | Helm deployment + values entry |
 | CI/CD | Add to `docker-build.yml` matrix + `update-tags.yml` |
@@ -25,7 +25,7 @@ Then: `pnpm --filter @luckyplans/shared build`
 
 ### 2. Create microservice app
 
-Create `apps/service-<name>/` with the 4-file source pattern plus config files.
+Create `apps/service-<name>/` with the 5-file source pattern (including `instrument.ts` for OTel) plus config files. Dependencies must include `nestjs-pino`, `pino`, `pino-http`, `@opentelemetry/api`, and `pino-pretty` (dev).
 
 See `templates/microservice-app.md` for the full file list and patterns.
 

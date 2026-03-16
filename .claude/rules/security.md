@@ -76,6 +76,25 @@ When validation is added:
 - Sanitize user input before storage
 - Reject unexpected fields (`whitelist: true` in ValidationPipe)
 
+## Logging Security
+
+All NestJS services use structured JSON logging via Pino (`nestjs-pino`) with automatic trace context correlation.
+
+Rules:
+- **Never log** access tokens, refresh tokens, id tokens, session secrets, passwords, or API keys
+- **Never log** full request/response bodies that may contain PII (email, name, etc.) — log only IDs and metadata
+- **Never use** `console.log`, `console.warn`, or `console.error` — use NestJS `Logger` from `@nestjs/common` which routes through Pino with trace context
+- **Always use** the class-scoped logger pattern: `private readonly logger = new Logger(ClassName.name)`
+- Log level is controlled via `LOG_LEVEL` env var — production defaults to `info` (no debug output)
+- Trace IDs (`traceId`, `spanId`) are auto-injected into every log line — do not log them manually
+
+What is safe to log:
+- User IDs (not email or name)
+- Request method and URL
+- Response status codes and timing
+- Error messages and stack traces (ensure no tokens in error messages)
+- Business event identifiers (order IDs, entity IDs)
+
 ## Dependency Management
 
 - Dependabot is configured (`.github/dependabot.yml`) for automated updates

@@ -25,12 +25,13 @@ This is a **shared kernel** approach: all services agree on the same domain mode
 
 ## Microservice Structure
 
-Each NestJS microservice follows the 4-file pattern. Canonical example: `apps/service-core/src/`:
+Each NestJS microservice follows the 5-file pattern. Canonical example: `apps/service-core/src/`:
 
 ```
 apps/service-<name>/src/
-├── main.ts              # Bootstrap: createMicroservice() with Redis transport
-├── app.module.ts        # Root module: imports, controllers, providers
+├── instrument.ts        # OTel SDK bootstrap — MUST be first import in main.ts
+├── main.ts              # Bootstrap: createMicroservice() with Redis transport + Pino logger
+├── app.module.ts        # Root module: imports (LoggerModule), controllers, providers (TraceContextExtractor)
 ├── <name>.controller.ts # Thin: @MessagePattern handlers that delegate to service
 └── <name>.service.ts    # All business logic lives here (@Injectable)
 ```
@@ -57,6 +58,7 @@ The gateway (`apps/api-gateway/`) is the only service exposed to the frontend. I
 ### Resolvers
 - Inject `ClientProxy` via `@Inject('SERVICE_NAME')` (e.g., `@Inject('CORE_SERVICE')`)
 - Convert Observable to Promise with `firstValueFrom()` from `rxjs`
+- Wrap payloads with `injectTraceContext()` from `@luckyplans/shared` before `ClientProxy.send()` — enables end-to-end tracing across Redis
 - Define GraphQL types in the resolver file using code-first decorators
 - Protected resolvers use `@UseGuards(SessionGuard)` + `@CurrentUser()` decorator
 
@@ -99,6 +101,12 @@ Key files:
 - `generateId()` — timestamp + random string ID generation
 - Add new cross-cutting utilities here, not in individual apps
 
+### Telemetry (`packages/shared/src/telemetry/index.ts`)
+- `bootstrapTelemetry(config)` — initializes OTel NodeSDK with OTLP exporters + auto-instrumentation. Returns `TelemetrySdk` with `shutdown()`.
+- `injectTraceContext(payload)` — wraps a Redis message payload with W3C trace context for cross-service propagation. Use in gateway resolvers before `ClientProxy.send()`.
+- `TraceContextExtractor` — NestJS interceptor that extracts trace context from incoming Redis messages. Register as `APP_INTERCEPTOR` in microservice `AppModule`.
+- `TraceContextInjector` — NestJS interceptor (unused — trace injection is done via the `injectTraceContext()` helper instead).
+
 After changes to shared: `pnpm --filter @luckyplans/shared build`
 
 ## Adding a New Entity (Common Path)
@@ -116,10 +124,10 @@ To add a new domain entity (e.g., `Order`) to `service-core`:
 
 Only when business logic justifies a separate service:
 
-1. Create `apps/service-<name>/` following the 4-file pattern
-2. Add `package.json`, `tsconfig.json`, `nest-cli.json`, `eslint.config.mjs` (copy from `service-core`)
+1. Create `apps/service-<name>/` following the 5-file pattern (including `instrument.ts`)
+2. Add `package.json` (include `nestjs-pino`, `pino`, `pino-http`, `@opentelemetry/api`), `tsconfig.json`, `nest-cli.json`, `eslint.config.mjs` (copy from `service-core`)
 3. Add message pattern enum in `packages/shared/src/types/index.ts`
-4. Create gateway module in `apps/api-gateway/src/<name>/`
+4. Create gateway module in `apps/api-gateway/src/<name>/` — resolvers must use `injectTraceContext()` when calling `ClientProxy.send()`
 5. Import new module in `apps/api-gateway/src/app.module.ts`
 6. Add `Dockerfile` (copy from `apps/service-core/Dockerfile`)
 7. Add Helm templates in `infrastructure/helm/luckyplans/templates/`
@@ -156,8 +164,10 @@ Only when business logic justifies a separate service:
 - Create REST endpoints — the project uses GraphQL exclusively via the API gateway (sole exception: `/auth/*` OIDC endpoints)
 - Duplicate types across apps — put shared types in `packages/shared`
 - Use `any` without a comment explaining the justification
-- Use `console.log` — use `console.warn` or `console.error` only
+- Use `console.log`, `console.warn`, or `console.error` — use NestJS `Logger` from `@nestjs/common` (routes through Pino with trace context)
 - Import from one app into another — apps communicate only via Redis messages
+- Skip `instrument.ts` when creating a new service — OTel must be initialized before NestJS imports
+- Send Redis messages without `injectTraceContext()` — breaks end-to-end tracing
 - Create separate `.graphql` operation files — use inline `graphql()` calls in hook files
 - Define GraphQL response types manually in frontend — use codegen-generated types
 - Call `useQuery`/`useMutation` directly in page components — wrap in custom hooks in `src/hooks/`

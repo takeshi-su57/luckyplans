@@ -151,6 +151,65 @@ Registration works similarly: the custom `/register` page submits to `POST /auth
 
 To log out, click the "Log out" button — it sends `POST /auth/logout`, which clears the session and cookie.
 
+## Logging
+
+All NestJS services use **Pino** (`nestjs-pino`) for structured JSON logging with automatic OpenTelemetry trace correlation. Every log line includes `traceId` and `spanId` so you can jump from a log to its trace in Grafana.
+
+### How to log in services
+
+Use the NestJS `Logger` from `@nestjs/common` — it routes through Pino automatically:
+
+```typescript
+import { Injectable, Logger } from '@nestjs/common';
+
+@Injectable()
+export class MyService {
+  private readonly logger = new Logger(MyService.name);
+
+  doSomething() {
+    this.logger.log('Processing request');          // info level
+    this.logger.warn('Cache miss, falling back');   // warn level
+    this.logger.error('Failed to connect', error);  // error level
+    this.logger.debug('Detailed debug info');        // debug level (dev only)
+  }
+}
+```
+
+### What NOT to do
+
+```typescript
+// ❌ Never use console — it bypasses structured logging and trace correlation
+console.log('something');
+console.warn('something');
+console.error('something');
+
+// ✅ Always use NestJS Logger
+this.logger.log('something');
+this.logger.warn('something');
+this.logger.error('something', error);
+```
+
+### Log output
+
+In **development** (`LOG_LEVEL=debug`), Pino pretty-prints with colors:
+
+```
+[10:23:45] INFO (api-gateway): Processing request
+    traceId: "abc123..."
+    spanId: "def456..."
+    req: {"method":"POST","url":"/graphql"}
+```
+
+In **production** (`LOG_LEVEL=info`), raw JSON goes to stdout for Loki to collect:
+
+```json
+{"level":"info","time":1710000000,"msg":"Processing request","traceId":"abc123...","spanId":"def456...","context":"MyService"}
+```
+
+### Trace context in logs
+
+The `traceId` and `spanId` are injected automatically by the Pino `mixin()` configured in `AppModule`. You don't need to do anything — just use `Logger` and trace IDs appear in every log line within an active request.
+
 ## Working on Specific Services
 
 ### Run a single service
@@ -247,19 +306,54 @@ export enum NewServiceMessagePattern {
 
 ### 5. Create the service files
 
-- `src/main.ts` — Bootstrap with Redis transport
-- `src/app.module.ts` — Module definition
+- `src/instrument.ts` — OTel SDK bootstrap (must be imported first in `main.ts`)
+- `src/main.ts` — Bootstrap with Redis transport, Pino logger, SIGTERM shutdown
+- `src/app.module.ts` — Module definition with `LoggerModule` and `TraceContextExtractor`
 - `src/<name>.controller.ts` — `@MessagePattern` handlers
-- `src/<name>.service.ts` — Business logic
+- `src/<name>.service.ts` — Business logic (use `Logger` from `@nestjs/common`, never `console`)
+
+Follow the patterns in `apps/service-core/src/` — it has all of these set up:
+
+```typescript
+// src/instrument.ts — MUST be the first import in main.ts
+import { bootstrapTelemetry } from '@luckyplans/shared';
+export const otelSdk = bootstrapTelemetry({ serviceName: 'service-<name>' });
+```
+
+```typescript
+// src/main.ts — import instrument.ts BEFORE anything else
+import { otelSdk } from './instrument';
+import { NestFactory } from '@nestjs/core';
+// ... rest of bootstrap
+process.on('SIGTERM', async () => { await otelSdk.shutdown(); });
+```
+
+```typescript
+// src/app.module.ts — include LoggerModule and TraceContextExtractor
+import { LoggerModule } from 'nestjs-pino';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TraceContextExtractor } from '@luckyplans/shared';
+// ... add LoggerModule.forRoot({...}) to imports
+// ... add { provide: APP_INTERCEPTOR, useClass: TraceContextExtractor } to providers
+```
 
 ### 6. Register in the API Gateway
 
 Create a new module in `apps/api-gateway/src/<name>/`:
 
 - `<name>.module.ts` — Register `ClientsModule` with Redis transport
-- `<name>.resolver.ts` — GraphQL resolvers
+- `<name>.resolver.ts` — GraphQL resolvers (use `injectTraceContext()` when calling `ClientProxy.send()`)
 
 Import the module in `apps/api-gateway/src/app.module.ts`.
+
+```typescript
+// In resolvers — wrap payloads with injectTraceContext() for end-to-end tracing
+import { injectTraceContext } from '@luckyplans/shared';
+
+return firstValueFrom(
+  this.client.send(Pattern.DO_SOMETHING, injectTraceContext({ id })),
+);
+```
 
 ### 7. Add a Helm template
 
