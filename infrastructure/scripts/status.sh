@@ -2,6 +2,7 @@
 
 CLUSTER_NAME="luckyplans-local"
 RELEASE_NAME="luckyplans"
+RELEASE_NAME_OBS="luckyplans-observability"
 
 echo "=== LuckyPlans Service Status ==="
 echo ""
@@ -21,16 +22,25 @@ else
 fi
 
 echo ""
-echo "--- Helm release ---"
-helm list -n luckyplans 2>/dev/null || echo "  (helm not available or namespace not found)"
+echo "--- Helm releases ---"
+helm list -n luckyplans 2>/dev/null || echo "  (luckyplans namespace not found)"
+helm list -n monitoring 2>/dev/null || echo "  (monitoring namespace not found)"
 
 echo ""
-echo "--- Pods ---"
+echo "--- App Pods (luckyplans) ---"
 kubectl -n luckyplans get pods 2>/dev/null || echo "  Cannot connect to cluster"
 
 echo ""
-echo "--- Services ---"
+echo "--- Observability Pods (monitoring) ---"
+kubectl -n monitoring get pods 2>/dev/null || echo "  (monitoring namespace not found)"
+
+echo ""
+echo "--- Services (luckyplans) ---"
 kubectl -n luckyplans get services 2>/dev/null
+
+echo ""
+echo "--- Services (monitoring) ---"
+kubectl -n monitoring get services 2>/dev/null
 
 echo ""
 echo "--- Ingress ---"
@@ -38,4 +48,6 @@ kubectl -n luckyplans get ingress 2>/dev/null
 
 echo ""
 echo "To view Helm values: helm -n luckyplans get values $RELEASE_NAME"
+echo "To view obs values:  helm -n monitoring get values $RELEASE_NAME_OBS"
 echo "To view logs:        kubectl -n luckyplans logs -f deployment/<name>"
+echo "To port-forward Grafana: kubectl -n monitoring port-forward svc/grafana 3002:3000"

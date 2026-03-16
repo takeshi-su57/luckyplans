@@ -5,7 +5,7 @@
   "scripts": {
     "setup": "bash infrastructure/scripts/setup.sh",
     "dev": "dotenv -e .env -- turbo run dev",
-    "build": "dotenv -e .env -- turbo run build",
+    "build": "dotenv -e .env -v NODE_ENV=production -- turbo run build",
     "lint": "dotenv -e .env -- turbo run lint",
     "test": "dotenv -e .env -- turbo run test",
     "type-check": "dotenv -e .env -- turbo run type-check",

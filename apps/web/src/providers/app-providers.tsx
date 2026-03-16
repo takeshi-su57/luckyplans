@@ -1,20 +1,15 @@
 'use client';
 
-import { RouterProvider } from '@heroui/react';
-import { ApolloWrapper } from '@/lib/apollo/provider';
-import { QueryProvider } from '@/lib/query/provider';
-import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+// All providers (Apollo, React Query, HeroUI Router) use React hooks internally.
+// Next.js 16 static prerendering fails when hooks run during page generation.
+// Load the entire provider tree client-side only to avoid prerendering crashes.
+const AppProvidersInner = dynamic(
+  () => import('./app-providers-inner').then((m) => m.AppProvidersInner),
+  { ssr: false },
+);
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-
-  return (
-    <QueryProvider>
-      <ApolloWrapper>
-        <RouterProvider navigate={(href) => router.push(href)}>
-          {children}
-        </RouterProvider>
-      </ApolloWrapper>
-    </QueryProvider>
-  );
+  return <AppProvidersInner>{children}</AppProvidersInner>;
 }

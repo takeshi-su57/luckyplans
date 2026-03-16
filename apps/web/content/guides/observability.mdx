@@ -1,0 +1,295 @@
+---
+title: Observability Guide
+description: How to use Grafana, view traces, query logs, monitor metrics, and debug issues using the LuckyPlans observability stack.
+---
+
+# Observability Guide
+
+LuckyPlans includes a full observability stack covering **metrics**, **logs**, and **traces**. This guide covers how to use it day-to-day for development and debugging.
+
+## Quick Reference
+
+| Tool | Local URL | K8s Access | Purpose |
+|------|-----------|------------|---------|
+| Grafana | http://localhost:3002 | `kubectl -n monitoring port-forward svc/grafana 3002:3000` | Dashboards, log/trace exploration |
+| Prometheus | http://localhost:9090 | `kubectl -n monitoring port-forward svc/prometheus 9090:9090` | Metrics queries, target health |
+| Loki | http://localhost:3100 | (via Grafana) | Log aggregation |
+| Tempo | http://localhost:3200 | (via Grafana) | Distributed traces |
+
+## Getting Started
+
+### Local development
+
+The observability stack starts automatically with `docker compose up -d`:
+
+```bash
+docker compose up -d
+pnpm dev
+```
+
+Open http://localhost:3002 — Grafana is pre-configured with anonymous admin access, datasources, and dashboards. No login required.
+
+### K8s (local k3d or prod)
+
+The observability stack is deployed via Helm:
+
+```bash
+# Included automatically in full deploy:
+pnpm deploy:local
+
+# Or deploy observability only:
+helm upgrade --install luckyplans-observability infrastructure/helm/observability \
+  --namespace monitoring --create-namespace \
+  -f infrastructure/helm/observability/values.yaml
+
+# Access Grafana:
+kubectl -n monitoring port-forward svc/grafana 3002:3000
+```
+
+## Grafana Dashboards
+
+### RED Metrics Dashboard
+
+Open Grafana → **LuckyPlans** folder → **RED Metrics**.
+
+This dashboard shows the [RED method](https://grafana.com/blog/2018/08/02/the-red-method-how-to-instrument-your-services/) for each service:
+
+| Panel | What it shows | What to look for |
+|-------|--------------|------------------|
+| Request Rate by Service | Requests per second per service | Sudden drops = service may be down |
+| Error Rate by Service (5xx) | Percentage of 5xx responses | Yellow > 1%, Red > 5% — investigate immediately |
+| Request Duration (p50/p95/p99) | Latency percentiles | p95 > 2s triggers an alert |
+| Request Rate by Route (Top 10) | Busiest endpoints | Identify hot paths for optimization |
+| Slowest Endpoints (p95) | Table of slowest routes | Find performance bottlenecks |
+
+Use the **service** dropdown at the top to filter by `api-gateway` or `service-core`.
+
+### Infrastructure Dashboard
+
+Open Grafana → **LuckyPlans** folder → **Infrastructure**.
+
+| Panel | What it shows |
+|-------|--------------|
+| Service Targets Up/Down | Whether Prometheus can reach each scrape target |
+| OTel Collector — Exported Spans/Metrics/Logs | Throughput of the telemetry pipeline |
+| OTel Collector — Dropped Telemetry | If the collector is dropping data (memory pressure) |
+
+## Viewing Traces
+
+Traces show the full journey of a request across services.
+
+### Find traces for a request
+
+1. Open Grafana → **Explore** (compass icon in sidebar)
+2. Select **Tempo** datasource (top-left dropdown)
+3. Use **Search** tab:
+   - **Service Name**: `api-gateway` or `service-core`
+   - **Span Name**: e.g., `GET /graphql`, `HTTP POST`
+   - **Min Duration**: e.g., `100ms` to find slow requests
+4. Click **Run query**
+5. Click any trace row to see the full span waterfall
+
+### Reading a trace
+
+A typical GraphQL request trace looks like:
+
+```
+HTTP POST /graphql                          [api-gateway, 45ms]
+  ├── graphql.resolve getItems              [api-gateway, 38ms]
+  │   ├── ioredis: PUBLISH                  [api-gateway, 2ms]
+  │   └── microservice.getItems             [service-core, 30ms]
+  │       └── ioredis: GET/SET              [service-core, 1ms]
+  └── graphql.serialize                     [api-gateway, 1ms]
+```
+
+- **Parent span**: The HTTP request hitting the gateway
+- **GraphQL resolver span**: Auto-instrumented by OTel
+- **Redis spans**: Auto-instrumented by ioredis instrumentation
+- **Microservice span**: Created by `TraceContextExtractor` from the propagated W3C trace context
+
+### Trace-to-log correlation
+
+Click the **Logs for this span** button on any span to jump to Loki with the trace ID pre-filtered. This shows all log lines emitted during that span's execution.
+
+## Querying Logs
+
+### Basic log queries
+
+1. Open Grafana → **Explore**
+2. Select **Loki** datasource
+3. Use LogQL queries:
+
+```logql
+# All logs from api-gateway
+{service_name="api-gateway"}
+
+# Error-level logs only
+{service_name="api-gateway"} | json | level="error"
+
+# Logs containing a specific trace ID
+{service_name=~"api-gateway|service-core"} |= "abc123def456"
+
+# Logs from a specific route
+{service_name="api-gateway"} | json | req_url=~"/graphql.*"
+
+# Count errors per minute
+count_over_time({service_name="api-gateway"} | json | level="error" [1m])
+```
+
+### Log format
+
+Every log line is structured JSON with these fields:
+
+| Field | Description |
+|-------|-------------|
+| `level` | Log level (`debug`, `info`, `warn`, `error`) |
+| `msg` | Log message |
+| `traceId` | OpenTelemetry trace ID (for correlation) |
+| `spanId` | OpenTelemetry span ID |
+| `req.method` | HTTP method (api-gateway only) |
+| `req.url` | Request URL (api-gateway only) |
+| `res.statusCode` | Response status code (api-gateway only) |
+| `responseTime` | Request duration in ms (api-gateway only) |
+| `context` | NestJS context (class name) |
+
+### Log-to-trace correlation
+
+When viewing a log line that contains a `traceId`, click the **TraceID** link to jump to the full trace in Tempo.
+
+## Querying Metrics
+
+### Using Prometheus directly
+
+Open http://localhost:9090 (or port-forward in K8s) for the Prometheus UI.
+
+### Useful PromQL queries
+
+```promql
+# Request rate per service (last 5 minutes)
+sum(rate(http_server_request_duration_seconds_count[5m])) by (service_name)
+
+# Error rate (5xx) as percentage
+sum(rate(http_server_request_duration_seconds_count{http_status_code=~"5.."}[5m])) by (service_name)
+/
+sum(rate(http_server_request_duration_seconds_count[5m])) by (service_name)
+
+# p95 latency per service
+histogram_quantile(0.95,
+  sum(rate(http_server_request_duration_seconds_bucket[5m])) by (le, service_name)
+)
+
+# p99 latency for a specific route
+histogram_quantile(0.99,
+  sum(rate(http_server_request_duration_seconds_bucket{http_route="/graphql"}[5m])) by (le)
+)
+
+# Redis connected clients
+redis_connected_clients
+
+# Redis memory usage
+redis_memory_used_bytes
+
+# OTel Collector: exported spans per second
+rate(otelcol_exporter_sent_spans_total[5m])
+```
+
+### Checking scrape targets
+
+Open http://localhost:9090/targets to verify all targets are UP:
+
+| Target | Expected |
+|--------|----------|
+| `otel-collector` | UP — app metrics from NestJS services |
+| `prometheus` | UP — self-monitoring |
+| `redis` | UP — Redis metrics (K8s only, via redis-exporter) |
+| `keycloak` | UP — Keycloak Micrometer metrics (K8s only) |
+
+## Alerts
+
+Prometheus evaluates these alert rules (defined in the Prometheus configmap):
+
+| Alert | Condition | Severity | What to do |
+|-------|-----------|----------|------------|
+| `HighErrorRate` | >5% of requests return 5xx for 5 min | warning | Check api-gateway logs for errors, look at traces for failing requests |
+| `HighLatency` | p95 latency >2s for 5 min | warning | Find slow traces in Tempo, check for Redis connection issues |
+| `RedisDown` | Redis exporter unreachable for 1 min | critical | Check Redis pod status, restart if needed |
+| `ServiceTargetDown` | Any scrape target down for 2 min | critical | Check if the OTel Collector or exporters are running |
+
+View active alerts: http://localhost:9090/alerts
+
+> **Note:** Alert *notifications* (email, Slack, PagerDuty) are not yet configured. Alerts currently only show in the Prometheus UI.
+
+## Debugging Common Issues
+
+### "No data" in Grafana dashboards
+
+1. **Check OTel Collector**: `docker compose logs otel-collector` (local) or `kubectl -n monitoring logs deployment/otel-collector` (K8s)
+2. **Check Prometheus targets**: http://localhost:9090/targets — all should be UP
+3. **Check NestJS apps are sending telemetry**: Look for `OTEL_EXPORTER_OTLP_ENDPOINT` in the app's env. Default is `http://localhost:4317` (local dev)
+4. **Make some requests**: The dashboards need traffic. Hit http://localhost:3000/graphql with a query
+
+### Traces missing the service-core span
+
+The Redis trace propagation requires `injectTraceContext()` in the gateway resolver and `TraceContextExtractor` in service-core. Check:
+
+1. Gateway resolver uses `injectTraceContext()` when calling `ClientProxy.send()`
+2. service-core `AppModule` has `{ provide: APP_INTERCEPTOR, useClass: TraceContextExtractor }`
+
+### Logs not showing traceId
+
+The Pino `mixin()` function reads the active OTel span. If `traceId` is missing:
+
+1. Verify `instrument.ts` is imported as the **first line** of `main.ts`
+2. Check that `OTEL_EXPORTER_OTLP_ENDPOINT` is set (the SDK starts even without a collector, but auto-instrumentation needs the SDK initialized)
+
+### OTel Collector dropping data
+
+Check the Infrastructure dashboard — "Dropped Telemetry" panel. If data is being dropped:
+
+1. Increase `memory_limiter.limit_mib` in the collector config
+2. Increase the collector's memory limits in `values.yaml`
+
+### High memory usage
+
+The observability stack uses ~900Mi total. If the k3s node is constrained:
+
+1. Use `--no-observability` flag: `./deploy-local.sh --no-observability`
+2. Or reduce retention: edit `values.yaml` → `prometheus.retention`, `loki.retention`, `tempo.retention`
+
+## Architecture Reference
+
+```
+┌─────────────────────────────────────────────────────┐
+│                  luckyplans namespace                │
+│                                                     │
+│  api-gateway ──OTLP──┐   service-core ──OTLP──┐    │
+│                       │                        │    │
+└───────────────────────┼────────────────────────┼────┘
+                        │                        │
+┌───────────────────────┼────────────────────────┼────┐
+│                  monitoring namespace                │
+│                       ▼                        ▼    │
+│               ┌──────────────┐                      │
+│               │ OTel Collector│                      │
+│               └──┬───┬───┬───┘                      │
+│                  │   │   │                          │
+│          metrics │   │   │ traces                   │
+│                  ▼   │   ▼                          │
+│            Prometheus│  Tempo                       │
+│                  │   │   │                          │
+│                  │   │logs│                         │
+│                  │   ▼   │                          │
+│                  │  Loki │                          │
+│                  │   │   │                          │
+│                  ▼   ▼   ▼                          │
+│               ┌──────────────┐                      │
+│               │   Grafana    │ ← dashboards         │
+│               └──────────────┘                      │
+│                                                     │
+│  Promtail (DaemonSet) ────────▶ Loki (pod logs)    │
+│  Redis Exporter ──────────────▶ Prometheus          │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
+
+See [ADR: Full-Stack Observability](/docs/architecture/decisions/2026-03-13-full-stack-observability) for the architectural decision and alternatives considered.

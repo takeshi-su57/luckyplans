@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: {{ include "observability.namespace" . }}
+  labels:
+    app.kubernetes.io/name: prometheus
+    {{- include "observability.labels" . | nindent 4 }}
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: {{ .Values.prometheus.scrapeInterval }}
+      evaluation_interval: {{ .Values.prometheus.scrapeInterval }}
+
+    rule_files:
+      - /etc/prometheus/rules/*.yml
+
+    scrape_configs:
+      - job_name: otel-collector
+        static_configs:
+          - targets: ['otel-collector.{{ include "observability.namespace" . }}.svc:8889']
+
+      - job_name: prometheus
+        static_configs:
+          - targets: ['localhost:9090']
+
+      {{- if .Values.redisExporter.enabled }}
+      - job_name: redis
+        static_configs:
+          - targets: ['redis-exporter.{{ include "observability.namespace" . }}.svc:9121']
+      {{- end }}
+
+      {{- if .Values.keycloak.metricsEnabled }}
+      - job_name: keycloak
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['{{ .Values.keycloak.address }}']
+      {{- end }}
+
+  alerts.yml: |
+    groups:
+      - name: luckyplans-availability
+        rules:
+          - alert: HighErrorRate
+            expr: >
+              sum(rate(http_server_request_duration_seconds_count{http_status_code=~"5.."}[5m])) by (service_name)
+              /
+              sum(rate(http_server_request_duration_seconds_count[5m])) by (service_name)
+              > 0.05
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: 'Error rate > 5% for {{`{{ $labels.service_name }}`}}'
+
+          - alert: HighLatency
+            expr: >
+              histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket[5m])) by (le, service_name)) > 2
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: 'P95 latency > 2s for {{`{{ $labels.service_name }}`}}'
+
+          {{- if .Values.redisExporter.enabled }}
+          - alert: RedisDown
+            expr: redis_up == 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: 'Redis is unreachable'
+          {{- end }}
+
+          - alert: ServiceTargetDown
+            expr: up == 0
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: 'Scrape target {{`{{ $labels.job }}`}} is down'

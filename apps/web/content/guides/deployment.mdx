@@ -24,9 +24,16 @@ Continuous delivery is handled by **ArgoCD** (pull-based GitOps). See [ArgoCD](/
                                      │              │
                                      ▼              ▼
                                   Redis:6379   PostgreSQL:5432
+
+    monitoring namespace:
+      OTel Collector ← api-gateway, service-core (OTLP)
+        ├── Prometheus (metrics)
+        ├── Loki (logs via Promtail)
+        └── Tempo (traces)
+              └── Grafana (dashboards)
 ```
 
-All services run in the `luckyplans` Kubernetes namespace.
+App services run in the `luckyplans` namespace. Observability services run in the `monitoring` namespace.
 
 ## Prerequisites
 
@@ -82,12 +89,14 @@ See [TLS Certificates](/docs/architecture/tls-certificates) for full documentati
 pnpm deploy:local
 ```
 
-This handles everything: cluster creation, image builds, k3d import, and `helm upgrade --install`.
+This handles everything: cluster creation, image builds (app + observability), k3d import, and `helm upgrade --install` for both the app and observability charts.
 
 After completion:
 
 - **Frontend**: http://localhost
 - **GraphQL Playground**: http://localhost/graphql
+- **Grafana**: `kubectl -n monitoring port-forward svc/grafana 3002:3000` → http://localhost:3002
+- **Prometheus**: `kubectl -n monitoring port-forward svc/prometheus 9090:9090` → http://localhost:9090
 
 ### Targeted deploy (rebuild one or more services)
 
@@ -100,6 +109,9 @@ After completion:
 
 # Helm upgrade only — for config/secret changes (no image builds):
 ./infrastructure/scripts/deploy-local.sh --helm-only
+
+# Skip observability stack (faster if you don't need monitoring):
+./infrastructure/scripts/deploy-local.sh --no-observability
 ```
 
 Targeted deploy builds only the specified service images, imports them into k3d, and does a `kubectl rollout restart` — much faster than a full deploy.
@@ -281,12 +293,35 @@ Commit and push — ArgoCD auto-syncs.
 
 > **Warning:** Do not use `kubectl scale` on ArgoCD-managed clusters — ArgoCD self-heal will revert the change immediately.
 
+## Observability (K8s)
+
+The observability stack is deployed as a separate Helm chart (`infrastructure/helm/observability/`) in the `monitoring` namespace. In production, it's managed by its own ArgoCD Application (`infrastructure/argocd/apps/observability-prod.yaml`).
+
+Components: OTel Collector, Prometheus, Grafana, Loki, Tempo, Promtail, Redis Exporter.
+
+```bash
+# Check observability pods:
+kubectl -n monitoring get pods
+
+# Port-forward Grafana:
+kubectl -n monitoring port-forward svc/grafana 3002:3000
+
+# Port-forward Prometheus:
+kubectl -n monitoring port-forward svc/prometheus 9090:9090
+```
+
+NestJS services push traces and metrics via OTLP to the OTel Collector. Promtail ships pod logs to Loki. Grafana provides unified dashboards with trace↔log correlation.
+
 ## Viewing Logs
 
 ```bash
 kubectl -n luckyplans logs -f deployment/api-gateway
 kubectl -n luckyplans logs -f deployment/web
 kubectl -n luckyplans logs <pod-name> --previous  # after crash
+
+# Observability stack logs:
+kubectl -n monitoring logs -f deployment/otel-collector
+kubectl -n monitoring logs -f deployment/grafana
 ```
 
 ## Rollback

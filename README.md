@@ -30,6 +30,8 @@ Authentication is gateway-managed: the browser only sees an opaque `session_id` 
 | Auth             | Keycloak (ROPC + Admin API)         |
 | Monorepo         | Turborepo + pnpm workspaces         |
 | Containerization | Docker (multi-stage builds)         |
+| Observability    | Prometheus, Grafana, Loki, Tempo, OTel Collector |
+| Logging          | Pino (structured JSON) via nestjs-pino |
 | Deployment       | ArgoCD + Helm on Kubernetes         |
 
 ## AI Engineering
@@ -48,12 +50,12 @@ luckyplans/
 │   ├── config/              # Shared ESLint + TypeScript configs
 │   └── shared/              # Shared types and utilities
 ├── infrastructure/
-│   ├── helm/                # Helm charts for Kubernetes deployment
+│   ├── helm/                # Helm charts (luckyplans + observability)
 │   ├── keycloak/            # Keycloak realm config (realm-export.json)
 │   ├── argocd/              # ArgoCD application configs
 │   └── scripts/             # Deploy scripts (deploy-local.sh with targeted deploy)
 ├── apps/web/content/        # Public docs source (MDX) — served at /docs
-├── docker-compose.yml       # Local dev infrastructure (Redis + Keycloak)
+├── docker-compose.yml       # Local dev infrastructure (Redis, Keycloak, observability stack)
 ├── .claude/                 # AI tool context and rules
 ├── turbo.json               # Turborepo configuration
 └── pnpm-workspace.yaml      # pnpm workspace definition

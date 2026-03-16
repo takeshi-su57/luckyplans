@@ -33,6 +33,9 @@ config:
   keycloakAdminUrl: 'http://keycloak'
   apiGatewayUrl: 'http://api-gateway:3001'
   sessionTtlSeconds: '36000'
+  # OpenTelemetry — OTel Collector in monitoring namespace
+  otelExporterEndpoint: 'http://otel-collector.monitoring.svc:4317'
+  logLevel: 'info'
 
 # ============================================================
 # Sealed Secrets (Bitnami)

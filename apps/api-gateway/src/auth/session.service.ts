@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import Redis from 'ioredis';
 import { randomBytes } from 'node:crypto';
 import { getEnvVar, getRedisConfig } from '@luckyplans/shared';
@@ -18,13 +18,14 @@ const SESSION_PREFIX = 'session:';
 
 @Injectable()
 export class SessionService {
+  private readonly logger = new Logger(SessionService.name);
   private redis: Redis;
 
   constructor() {
     const { host, port } = getRedisConfig();
     this.redis = new Redis({ host, port, lazyConnect: true });
     this.redis.connect().catch((err) => {
-      console.error('SessionService: failed to connect to Redis', err);
+      this.logger.error('Failed to connect to Redis', err);
     });
   }
 

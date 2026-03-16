@@ -8,4 +8,5 @@ export default {
   '2026-03-12-gateway-managed-sessions': 'Gateway-Managed Sessions',
   '2026-03-12-custom-auth-pages-ropc': 'Custom Auth Pages (ROPC + Admin API)',
   '2026-03-13-bitnami-sealed-secrets': 'Bitnami Sealed Secrets for Production',
+  '2026-03-13-full-stack-observability': 'Full-Stack Observability',
 };

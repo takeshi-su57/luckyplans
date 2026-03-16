@@ -55,6 +55,9 @@ spec:
             - name: KC_HOSTNAME_STRICT
               value: "false"
             {{- end }}
+            # Metrics — Keycloak 26+ exposes Micrometer metrics at /metrics
+            - name: KC_METRICS_ENABLED
+              value: "true"
             # PostgreSQL database
             - name: KC_DB
               value: postgres

@@ -1,0 +1,50 @@
+---
+title: Full-Stack Observability
+description: Add Prometheus, Grafana, Loki, Tempo, and OTel Collector for metrics, logs, and traces.
+---
+
+# Full-Stack Observability
+
+**Date:** 2026-03-13
+**Status:** accepted
+
+## Context
+
+LuckyPlans has zero monitoring infrastructure — no structured logging, no metrics collection, and no distributed tracing. As the platform grows (API gateway, microservices, Redis, PostgreSQL, Keycloak), we need visibility into system health, performance, and errors. Without observability, debugging requires SSH + manual log tailing, there is no alerting, no request tracing across services, and no capacity planning data.
+
+## Decision
+
+Add a comprehensive observability stack covering the three pillars — metrics, logs, and traces — using open-source, self-hosted tools:
+
+| Component | Role |
+|-----------|------|
+| **Prometheus** | Metrics collection and storage (scrapes OTel Collector, Redis Exporter, Keycloak) |
+| **Grafana** | Unified visualization for metrics, logs, and traces |
+| **Loki** | Log aggregation (lightweight alternative to ELK) |
+| **Tempo** | Distributed tracing backend (native Grafana integration) |
+| **OpenTelemetry Collector** | Telemetry pipeline — receives OTLP from apps, exports to Prometheus/Loki/Tempo |
+| **Promtail** | Log shipper — ships pod logs to Loki |
+
+NestJS services are instrumented with the OpenTelemetry Node.js SDK, which auto-instruments HTTP, Express, ioredis, and GraphQL. Structured logging uses Pino (via `nestjs-pino`) with JSON output and trace context correlation.
+
+The observability stack is deployed as a separate Helm chart (`infrastructure/helm/observability/`) in a dedicated `monitoring` namespace, managed by its own ArgoCD Application.
+
+## Consequences
+
+**Benefits:**
+- End-to-end request tracing: web → gateway → Redis → service-core
+- RED metrics (Rate, Errors, Duration) for all services
+- Structured JSON logs with trace IDs for correlation
+- Alerting on service down, high error rate, pod restart loops
+- Trace-to-log and log-to-trace correlation in Grafana
+
+**Trade-offs:**
+- Additional resource usage (~900Mi memory on k3s single-node)
+- More infrastructure to maintain (7 new components)
+- OTel auto-instrumentation adds small latency overhead to requests
+
+**Alternatives considered:**
+- **ELK Stack** — too heavy for k3s single-node
+- **Jaeger** — Tempo is lighter, has native Grafana integration, no separate UI
+- **Datadog/New Relic** — cost, vendor lock-in, project is self-hosted
+- **Direct export (no OTel Collector)** — Collector provides buffering, retry, and fan-out

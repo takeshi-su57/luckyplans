@@ -1,0 +1,44 @@
+{{- if .Values.redisExporter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-exporter
+  namespace: {{ include "observability.namespace" . }}
+  labels:
+    app.kubernetes.io/name: redis-exporter
+    {{- include "observability.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: redis-exporter
+        {{- include "observability.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: redis-exporter
+          image: {{ .Values.redisExporter.image }}
+          ports:
+            - name: metrics
+              containerPort: 9121
+              protocol: TCP
+          env:
+            - name: REDIS_ADDR
+              value: {{ .Values.redisExporter.redisAddress | quote }}
+          resources:
+            requests:
+              memory: {{ .Values.redisExporter.resources.requests.memory }}
+              cpu: {{ .Values.redisExporter.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.redisExporter.resources.limits.memory }}
+              cpu: {{ .Values.redisExporter.resources.limits.cpu }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 15
+{{- end }}

@@ -19,7 +19,7 @@ description: How to set up and run LuckyPlans locally for development.
 # First time — installs deps, sets up .env, builds shared packages:
 pnpm setup
 
-# Start infrastructure (Redis, Keycloak):
+# Start infrastructure (Redis, Keycloak, observability stack):
 docker compose up -d
 
 # Start all services with hot reload:
@@ -53,17 +53,22 @@ Paste the output into `SESSION_SECRET=` in your `.env` file.
 
 ### 3. Start infrastructure
 
-Docker Compose provides the infrastructure services needed for local dev:
+Docker Compose provides the infrastructure and observability services needed for local dev:
 
 ```bash
 docker compose up -d
 ```
 
-| Container    | Port  | Purpose                                        |
-| ------------ | ----- | ---------------------------------------------- |
-| redis        | 6379  | Inter-service communication + sessions         |
-| postgresql   | 5432  | Keycloak database (persistent)                 |
-| keycloak     | 8080  | Identity provider                              |
+| Container      | Port  | Purpose                                        |
+| -------------- | ----- | ---------------------------------------------- |
+| redis          | 6379  | Inter-service communication + sessions         |
+| postgresql     | 5432  | Keycloak database (persistent)                 |
+| keycloak       | 8080  | Identity provider                              |
+| otel-collector | 4317  | OpenTelemetry Collector (gRPC), also 4318 (HTTP), 8889 (Prometheus) |
+| prometheus     | 9090  | Metrics storage                                |
+| grafana        | 3002  | Dashboards (admin/admin)                       |
+| loki           | 3100  | Log aggregation                                |
+| tempo          | 3200  | Distributed tracing                            |
 
 Verify everything is healthy:
 
@@ -77,7 +82,7 @@ To stop infrastructure:
 
 ```bash
 docker compose down        # stop containers (PostgreSQL data preserved)
-docker compose down -v     # stop and remove volumes (reset Keycloak DB, Redis)
+docker compose down -v     # stop and remove volumes (reset all data)
 ```
 
 ### 4. Build shared packages
@@ -196,6 +201,7 @@ Exports:
 - **Types**: `User`, `ServiceResponse`, `PaginatedResponse`, etc.
 - **Enums**: `CoreMessagePattern` (Redis message patterns)
 - **Utilities**: `generateId()`, `getRedisConfig()`, `getEnvVar()`
+- **Telemetry**: `bootstrapTelemetry()`, `injectTraceContext()`, `TraceContextExtractor`
 
 ```typescript
 import { CoreMessagePattern, ServiceResponse, getRedisConfig } from '@luckyplans/shared';
@@ -285,6 +291,43 @@ pnpm dev
 | `pnpm deploy:teardown`      | Destroy the local k3d cluster                              |
 | `pnpm deploy:status`        | Show cluster, Helm release, and pod status                 |
 
+## Observability (Local Dev)
+
+The local dev stack includes a full observability pipeline. NestJS services automatically emit traces, metrics, and structured logs via OpenTelemetry.
+
+### Grafana
+
+Open http://localhost:3002 (auto-login as admin). Pre-configured datasources:
+
+- **Prometheus** — metrics from OTel Collector, scraped every 15s
+- **Loki** — structured JSON logs from services (via OTel Collector)
+- **Tempo** — distributed traces with service map
+
+Pre-built dashboards are in the **LuckyPlans** folder:
+
+- **RED Metrics** — request rate, error rate, latency (p50/p95/p99) per service
+- **Infrastructure** — OTel Collector throughput, dropped telemetry
+
+### Viewing traces
+
+1. Make a GraphQL request (e.g., visit http://localhost:3000/dashboard)
+2. Open Grafana → Explore → select **Tempo** datasource
+3. Search by service name (`api-gateway` or `service-core`)
+4. Click a trace to see the full span tree: HTTP request → GraphQL resolver → Redis pub/sub → service-core handler
+
+### Viewing logs
+
+1. Open Grafana → Explore → select **Loki** datasource
+2. Query: `{service_name="api-gateway"}` or use the Log Browser
+3. Each log line includes `traceId` and `spanId` for correlation — click the TraceID link to jump to the associated trace in Tempo
+
+### How instrumentation works
+
+- **OTel SDK** is bootstrapped in `instrument.ts` (first import in `main.ts`) — auto-instruments HTTP, Express, ioredis, GraphQL
+- **Pino** (`nestjs-pino`) outputs structured JSON logs with trace context (`traceId`, `spanId`)
+- **Trace propagation** across Redis: `injectTraceContext()` on the gateway side, `TraceContextExtractor` interceptor on the service side
+- **Config**: `OTEL_EXPORTER_OTLP_ENDPOINT` (default `http://localhost:4317`), `LOG_LEVEL` (default `debug` in dev)
+
 ## Troubleshooting
 
 ### Infrastructure not starting
@@ -343,3 +386,10 @@ pnpm build
 pnpm --filter @luckyplans/shared build
 pnpm dev
 ```
+
+### No traces/metrics in Grafana
+
+- Verify OTel Collector is running: `docker compose ps otel-collector`
+- Check collector logs: `docker compose logs otel-collector`
+- Verify `OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317` is in your `.env`
+- Check Prometheus targets: http://localhost:9090/targets — `otel-collector` should show as UP

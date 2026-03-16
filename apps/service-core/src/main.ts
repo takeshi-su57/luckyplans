@@ -1,5 +1,7 @@
+import { otelSdk } from './instrument';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 import { getRedisConfig } from '@luckyplans/shared';
 
@@ -12,10 +14,17 @@ async function bootstrap() {
       host: redisConfig.host,
       port: redisConfig.port,
     },
+    bufferLogs: true,
   });
 
+  app.useLogger(app.get(Logger));
+
   await app.listen();
-  console.warn('Core Service is listening on Redis transport');
+  app.get(Logger).log('Core Service is listening on Redis transport');
 }
+
+process.on('SIGTERM', async () => {
+  await otelSdk.shutdown();
+});
 
 bootstrap();

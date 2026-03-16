@@ -1,0 +1,42 @@
+# ============================================================
+# Production overrides for observability stack
+# ============================================================
+
+prometheus:
+  retention: 15d
+  storage: 10Gi
+  resources:
+    requests:
+      memory: '512Mi'
+      cpu: '200m'
+    limits:
+      memory: '1Gi'
+      cpu: '500m'
+
+grafana:
+  adminPassword: '' # Set via sealed secret in production
+  ingress:
+    enabled: true
+    host: luckyplans.xyz
+
+loki:
+  retention: 336h # 14 days
+  storage: 10Gi
+  resources:
+    requests:
+      memory: '256Mi'
+      cpu: '100m'
+    limits:
+      memory: '512Mi'
+      cpu: '300m'
+
+tempo:
+  retention: 168h # 7 days
+  storage: 5Gi
+  resources:
+    requests:
+      memory: '256Mi'
+      cpu: '100m'
+    limits:
+      memory: '512Mi'
+      cpu: '300m'
