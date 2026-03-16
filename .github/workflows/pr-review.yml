@@ -1,0 +1,58 @@
+name: AI PR Review
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review'
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+
+jobs:
+  ai-review:
+    name: Claude Code Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          ref: refs/pull/${{ inputs.pr_number }}/head
+
+      - name: Check PR size
+        id: pr-size
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ADDITIONS=$(gh pr view ${{ inputs.pr_number }} --json additions -q '.additions')
+          DELETIONS=$(gh pr view ${{ inputs.pr_number }} --json deletions -q '.deletions')
+          TOTAL=$((ADDITIONS + DELETIONS))
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          if [ "$TOTAL" -gt 2000 ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::PR has $TOTAL changed lines — skipping AI review to control costs."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run Claude Code Review
+        if: steps.pr-size.outputs.skip != 'true'
+        uses: anthropics/claude-code-action@cd77b50d2b0808657f8e6774085c8bf54484351c # v1.0.72
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Review PR #${{ inputs.pr_number }} against the project's conventions and rules defined in .claude/rules/.
+            Focus on: architecture anti-patterns, security issues, frontend convention violations,
+            logging violations (console.log), missing getEnvVar() usage, and bug risks.
+            Skip reviewing generated files (apps/web/src/generated/), lock files, and snapshots.
+            Post your feedback as informational review comments — do not request changes.
+          claude_args: '--model claude-sonnet-4-20250514'
+          classify_inline_comments: 'true'
+          include_fix_links: 'true'

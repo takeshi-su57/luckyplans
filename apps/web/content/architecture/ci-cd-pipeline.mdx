@@ -91,14 +91,36 @@ After ArgoCD syncs the Helm chart, **post-sync hooks** run as Kubernetes Jobs:
 
 See [ArgoCD](/docs/architecture/argocd) for full operational documentation.
 
+### 5. AI PR Review (`.github/workflows/pr-review.yml`)
+
+**Triggers:** Manual only (`workflow_dispatch`) — run from the Actions tab by entering a PR number.
+
+Runs an AI-powered code review using Claude against the project's architecture,
+security, and convention rules (`.claude/rules/`). Posts inline review comments
+on changed files.
+
+**This workflow is opt-in** to control API costs. To review a PR:
+1. Go to Actions → "AI PR Review" → Run workflow
+2. Enter the PR number and click "Run workflow"
+
+**This workflow is informational only** — it posts comments, does not block merging.
+
+**Cost controls:**
+- Opt-in only — never runs automatically
+- Skips PRs with more than 2000 changed lines
+- Excludes generated files (`src/generated/`, lock files)
+- Uses Claude Sonnet (not Opus) for cost efficiency
+- 10-minute timeout per review
+
 ## Required GitHub Configuration
 
 ### Secrets
 
-| Secret          | Scope      | Description |
-| --------------- | ---------- | ----------- |
-| `GITHUB_TOKEN`  | Automatic  | Provided by GitHub Actions. Used for ghcr.io auth. |
-| `CD_PUSH_TOKEN` | Repository | **Required with branch protection.** Fine-grained PAT with Contents: read+write scope. Used by `update-tags.yml` to push tag commits to `main`. |
+| Secret              | Scope      | Description |
+| ------------------- | ---------- | ----------- |
+| `GITHUB_TOKEN`      | Automatic  | Provided by GitHub Actions. Used for ghcr.io auth. |
+| `CD_PUSH_TOKEN`     | Repository | **Required with branch protection.** Fine-grained PAT with Contents: read+write scope. Used by `update-tags.yml` to push tag commits to `main`. |
+| `ANTHROPIC_API_KEY` | Repository | API key for Claude AI PR review. Configure spending limits in the Anthropic console. |
 
 ### Branch Protection (recommended)
 

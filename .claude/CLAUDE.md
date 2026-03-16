@@ -85,6 +85,7 @@ CI (`.github/workflows/ci.yml`) runs on push to main and PRs:
 2. Trivy security scan (dependencies + Dockerfiles/IaC) — CRITICAL/HIGH severity
 3. Helm chart linting + kubeconform K8s manifest validation
 4. SARIF results uploaded to GitHub Security tab
+5. AI PR review (opt-in, manual trigger) — Claude reviews changed files against `.claude/rules/`, posts informational comments (does not block merge)
 
 ## Conventions
 
