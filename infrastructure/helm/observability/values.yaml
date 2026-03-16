@@ -1,0 +1,124 @@
+# ============================================================
+# Global
+# ============================================================
+namespace: monitoring
+
+# ============================================================
+# OpenTelemetry Collector
+# ============================================================
+otelCollector:
+  image: otel/opentelemetry-collector-contrib:0.96.0
+  replicas: 1
+  resources:
+    requests:
+      memory: '128Mi'
+      cpu: '100m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
+
+# ============================================================
+# Prometheus
+# ============================================================
+prometheus:
+  image: prom/prometheus:v2.51.0
+  retention: 7d
+  storage: 2Gi
+  scrapeInterval: 30s
+  resources:
+    requests:
+      memory: '256Mi'
+      cpu: '100m'
+    limits:
+      memory: '512Mi'
+      cpu: '300m'
+
+# ============================================================
+# Grafana
+# ============================================================
+grafana:
+  image: grafana/grafana:10.4.0
+  replicas: 1
+  adminPassword: admin
+  # Ingress settings for /grafana path
+  ingress:
+    enabled: false
+    host: ''
+  resources:
+    requests:
+      memory: '128Mi'
+      cpu: '50m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
+
+# ============================================================
+# Loki (monolithic mode)
+# ============================================================
+loki:
+  image: grafana/loki:2.9.4
+  retention: 168h # 7 days
+  storage: 2Gi
+  resources:
+    requests:
+      memory: '128Mi'
+      cpu: '50m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
+
+# ============================================================
+# Tempo (monolithic mode)
+# ============================================================
+tempo:
+  image: grafana/tempo:2.4.0
+  retention: 72h # 3 days
+  storage: 2Gi
+  resources:
+    requests:
+      memory: '128Mi'
+      cpu: '50m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
+
+# ============================================================
+# Promtail (log shipper DaemonSet)
+# ============================================================
+promtail:
+  image: grafana/promtail:2.9.4
+  resources:
+    requests:
+      memory: '64Mi'
+      cpu: '25m'
+    limits:
+      memory: '128Mi'
+      cpu: '100m'
+
+# ============================================================
+# Redis Exporter
+# ============================================================
+redisExporter:
+  enabled: true
+  image: oliver006/redis_exporter:v1.58.0
+  # Redis address in the luckyplans namespace
+  redisAddress: 'redis://redis.luckyplans.svc:6379'
+  resources:
+    requests:
+      memory: '32Mi'
+      cpu: '25m'
+    limits:
+      memory: '64Mi'
+      cpu: '50m'
+
+# ============================================================
+# Scrape targets — app namespace
+# ============================================================
+appNamespace: luckyplans
+
+# ============================================================
+# Keycloak metrics
+# ============================================================
+keycloak:
+  metricsEnabled: true
+  address: 'keycloak.luckyplans.svc:8080'

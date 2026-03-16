@@ -1,0 +1,14 @@
+# Grafana dashboard provisioning configuration.
+
+apiVersion: 1
+
+providers:
+  - name: LuckyPlans
+    orgId: 1
+    folder: LuckyPlans
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

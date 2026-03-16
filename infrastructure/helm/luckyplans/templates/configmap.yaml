@@ -18,3 +18,5 @@ data:
   KEYCLOAK_ADMIN_URL: {{ .Values.config.keycloakAdminUrl | quote }}
   API_GATEWAY_URL: {{ .Values.config.apiGatewayUrl | quote }}
   SESSION_TTL_SECONDS: {{ .Values.config.sessionTtlSeconds | quote }}
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.config.otelExporterEndpoint | quote }}
+  LOG_LEVEL: {{ .Values.config.logLevel | quote }}

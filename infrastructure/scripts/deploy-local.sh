@@ -4,7 +4,9 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 HELM_CHART="$SCRIPT_DIR/../helm/luckyplans"
+HELM_CHART_OBS="$SCRIPT_DIR/../helm/observability"
 RELEASE_NAME="luckyplans"
+RELEASE_NAME_OBS="luckyplans-observability"
 CLUSTER_NAME="luckyplans-local"
 
 # ---------------------------------------------------------------------------
@@ -17,7 +19,8 @@ Usage: deploy-local.sh [options] [services...]
 Deploy LuckyPlans to a local k3d cluster.
 
 Options:
-  --helm-only       Run Helm upgrade only (no image build/import)
+  --helm-only         Run Helm upgrade only (no image build/import)
+  --no-observability  Skip observability stack deployment
 
 Services:
   No arguments      Full deploy — build all images, import infra, Helm install
@@ -37,11 +40,13 @@ EOF
 }
 
 HELM_ONLY=false
+SKIP_OBS=false
 SERVICES=()
 for arg in "$@"; do
   case "$arg" in
     -h|--help) usage ;;
     --helm-only) HELM_ONLY=true ;;
+    --no-observability) SKIP_OBS=true ;;
     *) SERVICES+=("$arg") ;;
   esac
 done
@@ -102,6 +107,19 @@ WEB_GRAPHQL_URL=$(grep 'graphqlUrl:' "$HELM_CHART/values.yaml" \
 WEB_GRAPHQL_URL="${WEB_GRAPHQL_URL:-/graphql}"
 
 # ---------------------------------------------------------------------------
+# Helper: pull image only if not already present locally
+# ---------------------------------------------------------------------------
+pull_if_missing() {
+  local image="$1"
+  if docker image inspect "$image" >/dev/null 2>&1; then
+    echo "  $image (cached)"
+  else
+    echo "  $image (pulling...)"
+    docker pull "$image"
+  fi
+}
+
+# ---------------------------------------------------------------------------
 # Create k3d cluster if missing (full deploy only)
 # ---------------------------------------------------------------------------
 if $FULL_DEPLOY; then
@@ -120,9 +138,9 @@ fi
 kubectl config use-context "k3d-$CLUSTER_NAME"
 
 # ---------------------------------------------------------------------------
-# Helper: build and import a single service
+# Helper: build a single service image
 # ---------------------------------------------------------------------------
-build_and_import() {
+build_image() {
   local svc="$1"
   local dockerfile="${SERVICE_MAP[$svc]%%|*}"
   local image="${SERVICE_MAP[$svc]##*|}"
@@ -131,45 +149,83 @@ build_and_import() {
   echo "--- Building $svc ---"
   cd "$ROOT_DIR"
 
-  local build_args=()
   if [[ "$svc" == "web" ]]; then
     echo "NEXT_PUBLIC_GRAPHQL_URL (baked into web image): $WEB_GRAPHQL_URL"
-    build_args=(--build-arg "NEXT_PUBLIC_GRAPHQL_URL=$WEB_GRAPHQL_URL")
     # MSYS_NO_PATHCONV prevents Git Bash from mangling the build arg on Windows
-    MSYS_NO_PATHCONV=1 docker build "${build_args[@]}" -t "$image" -f "$dockerfile" .
+    MSYS_NO_PATHCONV=1 docker build \
+      --build-arg "NEXT_PUBLIC_GRAPHQL_URL=$WEB_GRAPHQL_URL" \
+      -t "$image" -f "$dockerfile" .
   else
     docker build -t "$image" -f "$dockerfile" .
   fi
-
-  echo "--- Importing $svc into k3d ---"
-  k3d image import "$image" -c "$CLUSTER_NAME"
 }
 
 # ---------------------------------------------------------------------------
-# Build Docker images (skipped with --helm-only)
+# Build Docker images and import in batch (skipped with --helm-only)
 # ---------------------------------------------------------------------------
 if ! $HELM_ONLY; then
   echo ""
   echo "--- Building Docker images ---"
 
+  # Collect all images to import in one batch
+  IMAGES_TO_IMPORT=()
+
   if $FULL_DEPLOY; then
+    # Build app images
     for svc in web api-gateway service-core; do
-      build_and_import "$svc"
+      build_image "$svc"
+      local_image="${SERVICE_MAP[$svc]##*|}"
+      IMAGES_TO_IMPORT+=("$local_image")
     done
 
-    # Import infrastructure images (full deploy only)
+    # Pull infrastructure images (skip if already cached)
     echo ""
-    echo "--- Importing infrastructure images ---"
-    docker pull redis:7-alpine
-    docker pull postgres:17-alpine
-    docker pull quay.io/keycloak/keycloak:26.0
-    k3d image import redis:7-alpine                  -c "$CLUSTER_NAME"
-    k3d image import postgres:17-alpine              -c "$CLUSTER_NAME"
-    k3d image import quay.io/keycloak/keycloak:26.0  -c "$CLUSTER_NAME"
-  else
-    for svc in "${SERVICES[@]}"; do
-      build_and_import "$svc"
+    echo "--- Pulling infrastructure images (skipping cached) ---"
+    INFRA_IMAGES=(
+      "redis:7-alpine"
+      "postgres:17-alpine"
+      "quay.io/keycloak/keycloak:26.0"
+    )
+    for img in "${INFRA_IMAGES[@]}"; do
+      pull_if_missing "$img"
     done
+    IMAGES_TO_IMPORT+=("${INFRA_IMAGES[@]}")
+
+    # Pull observability images (skip if already cached)
+    if ! $SKIP_OBS; then
+      echo ""
+      echo "--- Pulling observability images (skipping cached) ---"
+      OBS_IMAGES=(
+        "otel/opentelemetry-collector-contrib:0.96.0"
+        "prom/prometheus:v2.51.0"
+        "grafana/grafana:10.4.0"
+        "grafana/loki:2.9.4"
+        "grafana/tempo:2.4.0"
+        "grafana/promtail:2.9.4"
+        "oliver006/redis_exporter:v1.58.0"
+      )
+      for img in "${OBS_IMAGES[@]}"; do
+        pull_if_missing "$img"
+      done
+      IMAGES_TO_IMPORT+=("${OBS_IMAGES[@]}")
+    fi
+
+    # Batch import ALL images in a single k3d command (much faster than one-by-one)
+    echo ""
+    echo "--- Importing ${#IMAGES_TO_IMPORT[@]} images into k3d (single batch) ---"
+    k3d image import "${IMAGES_TO_IMPORT[@]}" -c "$CLUSTER_NAME"
+
+  else
+    # Targeted deploy: build and import only specified services
+    for svc in "${SERVICES[@]}"; do
+      build_image "$svc"
+      local_image="${SERVICE_MAP[$svc]##*|}"
+      IMAGES_TO_IMPORT+=("$local_image")
+    done
+
+    echo ""
+    echo "--- Importing ${#IMAGES_TO_IMPORT[@]} images into k3d ---"
+    k3d image import "${IMAGES_TO_IMPORT[@]}" -c "$CLUSTER_NAME"
   fi
 
   echo ""
@@ -181,13 +237,25 @@ fi
 # ---------------------------------------------------------------------------
 if $HELM_ONLY || $FULL_DEPLOY; then
   echo ""
-  echo "--- Deploying with Helm ---"
+  echo "--- Deploying app with Helm ---"
   helm upgrade --install "$RELEASE_NAME" "$HELM_CHART" \
     --namespace luckyplans \
     --create-namespace \
     -f "$HELM_CHART/values.yaml" \
     --rollback-on-failure \
     --timeout 10m
+
+  # Deploy observability stack (full deploy or helm-only, unless skipped)
+  if ! $SKIP_OBS; then
+    echo ""
+    echo "--- Deploying observability stack with Helm ---"
+    helm upgrade --install "$RELEASE_NAME_OBS" "$HELM_CHART_OBS" \
+      --namespace monitoring \
+      --create-namespace \
+      -f "$HELM_CHART_OBS/values.yaml" \
+      --rollback-on-failure \
+      --timeout 10m
+  fi
 else
   # Targeted deploy: restart only the affected deployments to pick up new images
   echo ""
@@ -212,8 +280,16 @@ echo "=== Deployment complete ==="
 echo ""
 echo "Frontend:           http://localhost"
 echo "GraphQL Playground: http://localhost/graphql"
+if ! $SKIP_OBS; then
+  echo ""
+  echo "Observability (monitoring namespace):"
+  echo "  Grafana:          kubectl -n monitoring port-forward svc/grafana 3002:3000"
+  echo "  Prometheus:       kubectl -n monitoring port-forward svc/prometheus 9090:9090"
+fi
 echo ""
 echo "Useful commands:"
 echo "  kubectl -n luckyplans get pods"
+echo "  kubectl -n monitoring get pods"
 echo "  kubectl -n luckyplans logs -f deployment/<service>"
 echo "  helm -n luckyplans history $RELEASE_NAME"
+echo "  helm -n monitoring history $RELEASE_NAME_OBS"

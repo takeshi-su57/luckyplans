@@ -18,6 +18,8 @@ LuckyPlans is a TypeScript monorepo (Turborepo + pnpm) containing a Next.js fron
 | Linting | ESLint 10 (flat config) + Prettier |
 | Containers | Docker multi-stage builds (Alpine) |
 | Deployment | ArgoCD + Helm on Kubernetes (k3s) |
+| Observability | Prometheus, Grafana, Loki, Tempo, OTel Collector |
+| Logging | Pino (structured JSON) via nestjs-pino |
 | Secrets | Bitnami Sealed Secrets (prod), plain values (dev) |
 
 ## Repository Layout
@@ -28,9 +30,10 @@ apps/api-gateway/          → GraphQL gateway + auth controller (ROPC login, Ad
 apps/service-core/         → Core domain microservice (Redis transport, CoreMessagePattern)
 packages/shared/           → Shared types (ServiceResponse<T>, message pattern enums) and utils (getEnvVar, getRedisConfig, generateId)
 packages/config/           → Shared ESLint preset (eslint-preset.mjs) and TypeScript configs
-infrastructure/            → Helm charts, K8s manifests, ArgoCD config, Keycloak realm, deploy scripts
+infrastructure/            → Helm charts (luckyplans + observability), K8s manifests, ArgoCD config, Keycloak realm, deploy scripts
+infrastructure/otel/       → Local dev observability configs (OTel Collector, Prometheus, Loki, Tempo, Grafana)
 apps/web/content/          → Public docs source (MDX): architecture, ADRs, guides, system reference — served at /docs
-docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL, Keycloak
+docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL, Keycloak + observability stack
 ```
 
 ## Architecture Patterns
@@ -45,7 +48,9 @@ docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL, Keyc
 
 **Authentication** — Gateway-managed sessions via Keycloak. Browser gets an opaque `session_id` HttpOnly cookie — no tokens exposed to the client. `POST /auth/login` (ROPC), `POST /auth/register` (Admin API + auto-login), `POST /auth/logout`. Custom login/register pages in Next.js under `(public)` route group. Sessions stored in Redis. `SessionGuard` protects GraphQL resolvers. See `.claude/rules/security.md`.
 
-**Local development infrastructure** — `docker-compose.yml` provides Redis, PostgreSQL, and Keycloak. Keycloak uses PostgreSQL for persistent storage across all environments (local dev, local deploy, prod). Next.js runs on port 3000 (default) with `rewrites` in `next.config.ts` proxying `/auth/*` and `/graphql` to the gateway (port 3001). All browser traffic goes through `localhost:3000`.
+**Local development infrastructure** — `docker-compose.yml` provides Redis, PostgreSQL, Keycloak, and the observability stack (OTel Collector, Prometheus, Grafana, Loki, Tempo). Grafana at `localhost:3002`. Next.js runs on port 3000 with `rewrites` in `next.config.ts` proxying `/auth/*` and `/graphql` to the gateway (port 3001).
+
+**Observability** — NestJS services are instrumented with OpenTelemetry SDK (auto-instrumentation for HTTP, Express, ioredis, GraphQL). Structured logging via Pino (`nestjs-pino`) with JSON output and trace context correlation (`traceId`, `spanId`). Telemetry flows: NestJS → OTel Collector → Prometheus (metrics) / Loki (logs) / Tempo (traces) → Grafana. Observability infra lives in `infrastructure/helm/observability/` (`monitoring` namespace). Redis trace propagation via custom `injectTraceContext()` / `TraceContextExtractor` in `packages/shared/src/telemetry/`.
 
 **Inter-service communication** — Redis pub/sub. Message patterns as enums in `packages/shared/src/types/index.ts`.
 

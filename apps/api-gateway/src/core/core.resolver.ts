@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { Args, Query, Mutation, Resolver, ObjectType, Field, ID } from '@nestjs/graphql';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { CoreMessagePattern } from '@luckyplans/shared';
+import { CoreMessagePattern, injectTraceContext } from '@luckyplans/shared';
 
 @ObjectType()
 class Item {
@@ -37,12 +37,16 @@ export class CoreResolver {
     @Args('page', { defaultValue: 1 }) page: number,
     @Args('limit', { defaultValue: 10 }) limit: number,
   ): Promise<ItemsResponse> {
-    return firstValueFrom(this.coreClient.send(CoreMessagePattern.GET_ITEMS, { page, limit }));
+    return firstValueFrom(
+      this.coreClient.send(CoreMessagePattern.GET_ITEMS, injectTraceContext({ page, limit })),
+    );
   }
 
   @Query(() => Item, { nullable: true })
   async getItem(@Args('id') id: string): Promise<Item> {
-    return firstValueFrom(this.coreClient.send(CoreMessagePattern.GET_ITEM, { id }));
+    return firstValueFrom(
+      this.coreClient.send(CoreMessagePattern.GET_ITEM, injectTraceContext({ id })),
+    );
   }
 
   @Mutation(() => Item)
@@ -51,7 +55,10 @@ export class CoreResolver {
     @Args('description', { nullable: true }) description?: string,
   ): Promise<Item> {
     return firstValueFrom(
-      this.coreClient.send(CoreMessagePattern.CREATE_ITEM, { name, description }),
+      this.coreClient.send(
+        CoreMessagePattern.CREATE_ITEM,
+        injectTraceContext({ name, description }),
+      ),
     );
   }
 }

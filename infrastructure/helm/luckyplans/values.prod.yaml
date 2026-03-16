@@ -15,6 +15,11 @@ image:
 config:
   nodeEnv: production
   corsOrigin: 'https://luckyplans.xyz'
+  # Keycloak issuer must match the `iss` claim in tokens. When KC_HOSTNAME is set
+  # to the public URL, Keycloak stamps tokens with the public issuer — so the
+  # gateway must verify against the public URL, not the internal cluster URL.
+  keycloakIssuer: 'https://luckyplans.xyz/realms/luckyplans'
+  keycloakJwksUri: 'https://luckyplans.xyz/realms/luckyplans/protocol/openid-connect/certs'
 ingress:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure

@@ -19,7 +19,7 @@ description: How to set up and run LuckyPlans locally for development.
 # First time — installs deps, sets up .env, builds shared packages:
 pnpm setup
 
-# Start infrastructure (Redis, Keycloak):
+# Start infrastructure (Redis, Keycloak, observability stack):
 docker compose up -d
 
 # Start all services with hot reload:
@@ -53,17 +53,22 @@ Paste the output into `SESSION_SECRET=` in your `.env` file.
 
 ### 3. Start infrastructure
 
-Docker Compose provides the infrastructure services needed for local dev:
+Docker Compose provides the infrastructure and observability services needed for local dev:
 
 ```bash
 docker compose up -d
 ```
 
-| Container    | Port  | Purpose                                        |
-| ------------ | ----- | ---------------------------------------------- |
-| redis        | 6379  | Inter-service communication + sessions         |
-| postgresql   | 5432  | Keycloak database (persistent)                 |
-| keycloak     | 8080  | Identity provider                              |
+| Container      | Port  | Purpose                                        |
+| -------------- | ----- | ---------------------------------------------- |
+| redis          | 6379  | Inter-service communication + sessions         |
+| postgresql     | 5432  | Keycloak database (persistent)                 |
+| keycloak       | 8080  | Identity provider                              |
+| otel-collector | 4317  | OpenTelemetry Collector (gRPC), also 4318 (HTTP), 8889 (Prometheus) |
+| prometheus     | 9090  | Metrics storage                                |
+| grafana        | 3002  | Dashboards (admin/admin)                       |
+| loki           | 3100  | Log aggregation                                |
+| tempo          | 3200  | Distributed tracing                            |
 
 Verify everything is healthy:
 
@@ -77,7 +82,7 @@ To stop infrastructure:
 
 ```bash
 docker compose down        # stop containers (PostgreSQL data preserved)
-docker compose down -v     # stop and remove volumes (reset Keycloak DB, Redis)
+docker compose down -v     # stop and remove volumes (reset all data)
 ```
 
 ### 4. Build shared packages
@@ -146,6 +151,65 @@ Registration works similarly: the custom `/register` page submits to `POST /auth
 
 To log out, click the "Log out" button — it sends `POST /auth/logout`, which clears the session and cookie.
 
+## Logging
+
+All NestJS services use **Pino** (`nestjs-pino`) for structured JSON logging with automatic OpenTelemetry trace correlation. Every log line includes `traceId` and `spanId` so you can jump from a log to its trace in Grafana.
+
+### How to log in services
+
+Use the NestJS `Logger` from `@nestjs/common` — it routes through Pino automatically:
+
+```typescript
+import { Injectable, Logger } from '@nestjs/common';
+
+@Injectable()
+export class MyService {
+  private readonly logger = new Logger(MyService.name);
+
+  doSomething() {
+    this.logger.log('Processing request');          // info level
+    this.logger.warn('Cache miss, falling back');   // warn level
+    this.logger.error('Failed to connect', error);  // error level
+    this.logger.debug('Detailed debug info');        // debug level (dev only)
+  }
+}
+```
+
+### What NOT to do
+
+```typescript
+// ❌ Never use console — it bypasses structured logging and trace correlation
+console.log('something');
+console.warn('something');
+console.error('something');
+
+// ✅ Always use NestJS Logger
+this.logger.log('something');
+this.logger.warn('something');
+this.logger.error('something', error);
+```
+
+### Log output
+
+In **development** (`LOG_LEVEL=debug`), Pino pretty-prints with colors:
+
+```
+[10:23:45] INFO (api-gateway): Processing request
+    traceId: "abc123..."
+    spanId: "def456..."
+    req: {"method":"POST","url":"/graphql"}
+```
+
+In **production** (`LOG_LEVEL=info`), raw JSON goes to stdout for Loki to collect:
+
+```json
+{"level":"info","time":1710000000,"msg":"Processing request","traceId":"abc123...","spanId":"def456...","context":"MyService"}
+```
+
+### Trace context in logs
+
+The `traceId` and `spanId` are injected automatically by the Pino `mixin()` configured in `AppModule`. You don't need to do anything — just use `Logger` and trace IDs appear in every log line within an active request.
+
 ## Working on Specific Services
 
 ### Run a single service
@@ -196,6 +260,7 @@ Exports:
 - **Types**: `User`, `ServiceResponse`, `PaginatedResponse`, etc.
 - **Enums**: `CoreMessagePattern` (Redis message patterns)
 - **Utilities**: `generateId()`, `getRedisConfig()`, `getEnvVar()`
+- **Telemetry**: `bootstrapTelemetry()`, `injectTraceContext()`, `TraceContextExtractor`
 
 ```typescript
 import { CoreMessagePattern, ServiceResponse, getRedisConfig } from '@luckyplans/shared';
@@ -241,19 +306,54 @@ export enum NewServiceMessagePattern {
 
 ### 5. Create the service files
 
-- `src/main.ts` — Bootstrap with Redis transport
-- `src/app.module.ts` — Module definition
+- `src/instrument.ts` — OTel SDK bootstrap (must be imported first in `main.ts`)
+- `src/main.ts` — Bootstrap with Redis transport, Pino logger, SIGTERM shutdown
+- `src/app.module.ts` — Module definition with `LoggerModule` and `TraceContextExtractor`
 - `src/<name>.controller.ts` — `@MessagePattern` handlers
-- `src/<name>.service.ts` — Business logic
+- `src/<name>.service.ts` — Business logic (use `Logger` from `@nestjs/common`, never `console`)
+
+Follow the patterns in `apps/service-core/src/` — it has all of these set up:
+
+```typescript
+// src/instrument.ts — MUST be the first import in main.ts
+import { bootstrapTelemetry } from '@luckyplans/shared';
+export const otelSdk = bootstrapTelemetry({ serviceName: 'service-<name>' });
+```
+
+```typescript
+// src/main.ts — import instrument.ts BEFORE anything else
+import { otelSdk } from './instrument';
+import { NestFactory } from '@nestjs/core';
+// ... rest of bootstrap
+process.on('SIGTERM', async () => { await otelSdk.shutdown(); });
+```
+
+```typescript
+// src/app.module.ts — include LoggerModule and TraceContextExtractor
+import { LoggerModule } from 'nestjs-pino';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TraceContextExtractor } from '@luckyplans/shared';
+// ... add LoggerModule.forRoot({...}) to imports
+// ... add { provide: APP_INTERCEPTOR, useClass: TraceContextExtractor } to providers
+```
 
 ### 6. Register in the API Gateway
 
 Create a new module in `apps/api-gateway/src/<name>/`:
 
 - `<name>.module.ts` — Register `ClientsModule` with Redis transport
-- `<name>.resolver.ts` — GraphQL resolvers
+- `<name>.resolver.ts` — GraphQL resolvers (use `injectTraceContext()` when calling `ClientProxy.send()`)
 
 Import the module in `apps/api-gateway/src/app.module.ts`.
+
+```typescript
+// In resolvers — wrap payloads with injectTraceContext() for end-to-end tracing
+import { injectTraceContext } from '@luckyplans/shared';
+
+return firstValueFrom(
+  this.client.send(Pattern.DO_SOMETHING, injectTraceContext({ id })),
+);
+```
 
 ### 7. Add a Helm template
 
@@ -284,6 +384,43 @@ pnpm dev
 | `deploy-local.sh --helm-only` | Helm upgrade only (config/secret changes, no builds)     |
 | `pnpm deploy:teardown`      | Destroy the local k3d cluster                              |
 | `pnpm deploy:status`        | Show cluster, Helm release, and pod status                 |
+
+## Observability (Local Dev)
+
+The local dev stack includes a full observability pipeline. NestJS services automatically emit traces, metrics, and structured logs via OpenTelemetry.
+
+### Grafana
+
+Open http://localhost:3002 (auto-login as admin). Pre-configured datasources:
+
+- **Prometheus** — metrics from OTel Collector, scraped every 15s
+- **Loki** — structured JSON logs from services (via OTel Collector)
+- **Tempo** — distributed traces with service map
+
+Pre-built dashboards are in the **LuckyPlans** folder:
+
+- **RED Metrics** — request rate, error rate, latency (p50/p95/p99) per service
+- **Infrastructure** — OTel Collector throughput, dropped telemetry
+
+### Viewing traces
+
+1. Make a GraphQL request (e.g., visit http://localhost:3000/dashboard)
+2. Open Grafana → Explore → select **Tempo** datasource
+3. Search by service name (`api-gateway` or `service-core`)
+4. Click a trace to see the full span tree: HTTP request → GraphQL resolver → Redis pub/sub → service-core handler
+
+### Viewing logs
+
+1. Open Grafana → Explore → select **Loki** datasource
+2. Query: `{service_name="api-gateway"}` or use the Log Browser
+3. Each log line includes `traceId` and `spanId` for correlation — click the TraceID link to jump to the associated trace in Tempo
+
+### How instrumentation works
+
+- **OTel SDK** is bootstrapped in `instrument.ts` (first import in `main.ts`) — auto-instruments HTTP, Express, ioredis, GraphQL
+- **Pino** (`nestjs-pino`) outputs structured JSON logs with trace context (`traceId`, `spanId`)
+- **Trace propagation** across Redis: `injectTraceContext()` on the gateway side, `TraceContextExtractor` interceptor on the service side
+- **Config**: `OTEL_EXPORTER_OTLP_ENDPOINT` (default `http://localhost:4317`), `LOG_LEVEL` (default `debug` in dev)
 
 ## Troubleshooting
 
@@ -343,3 +480,10 @@ pnpm build
 pnpm --filter @luckyplans/shared build
 pnpm dev
 ```
+
+### No traces/metrics in Grafana
+
+- Verify OTel Collector is running: `docker compose ps otel-collector`
+- Check collector logs: `docker compose logs otel-collector`
+- Verify `OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317` is in your `.env`
+- Check Prometheus targets: http://localhost:9090/targets — `otel-collector` should show as UP
