@@ -65,9 +65,9 @@ spec:
             capabilities:
               drop: ["ALL"]
           command: ["node", "node_modules/prisma/build/index.js", "migrate", "deploy"]
-          env:
-            - name: DATABASE_URL
-              value: {{ index .Values.secrets "DATABASE_URL" | quote }}
+          envFrom:
+            - secretRef:
+                name: luckyplans-secrets
           resources:
             requests:
               memory: "128Mi"
