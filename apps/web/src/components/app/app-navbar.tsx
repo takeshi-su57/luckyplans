@@ -7,6 +7,7 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Profile', href: '/profile' },
   { label: 'Docs', href: '/docs' },
 ];
 

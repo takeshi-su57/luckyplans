@@ -38,7 +38,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [web, api-gateway, service-core]
+        include:
+          - service: web
+            dockerfile: apps/web/Dockerfile
+          - service: api-gateway
+            dockerfile: apps/api-gateway/Dockerfile
+          - service: service-core
+            dockerfile: apps/service-core/Dockerfile
+          - service: prisma-migrate
+            dockerfile: packages/prisma/Dockerfile
 
     env:
       REGISTRY: ghcr.io
@@ -79,7 +87,7 @@ jobs:
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
-          file: apps/${{ matrix.service }}/Dockerfile
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:sha-${{ steps.sha.outputs.short }}

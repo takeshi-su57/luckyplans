@@ -7,6 +7,7 @@ import { trace } from '@opentelemetry/api';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CoreModule } from './core/core.module';
     HealthModule,
     AuthModule,
     CoreModule,
+    ProfileModule,
   ],
 })
 export class AppModule {}

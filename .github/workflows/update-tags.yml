@@ -73,6 +73,7 @@ jobs:
           yq -i ".apiGateway.image.tag = \"$TAG\"" "$VALUES_FILE"
           yq -i ".serviceCore.image.tag = \"$TAG\"" "$VALUES_FILE"
           yq -i ".web.image.tag = \"$TAG\"" "$VALUES_FILE"
+          yq -i ".prismaMigrate.image.tag = \"$TAG\"" "$VALUES_FILE"
 
           echo "==> Done. Changes:"
           git diff --stat

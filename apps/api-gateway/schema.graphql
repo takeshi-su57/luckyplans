@@ -7,6 +7,10 @@ type UserProfile {
   email: String!
   name: String
   roles: [String!]!
+  firstName: String
+  lastName: String
+  avatarUrl: String
+  bio: String
 }
 
 type Item {
@@ -35,4 +39,12 @@ type Query {
 
 type Mutation {
   createItem(name: String!, description: String): Item!
+  updateProfile(input: UpdateProfileInput!): UserProfile!
+}
+
+input UpdateProfileInput {
+  firstName: String
+  lastName: String
+  avatarUrl: String
+  bio: String
 }

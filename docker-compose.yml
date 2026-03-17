@@ -26,13 +26,14 @@ services:
   postgresql:
     image: postgres:17-alpine
     ports:
-      - '5432:5432'
+      - '5433:5432'
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: keycloak
     volumes:
       - postgresql-data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U keycloak']
       interval: 10s

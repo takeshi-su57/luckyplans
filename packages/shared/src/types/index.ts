@@ -39,10 +39,25 @@ export enum ServiceName {
   API_GATEWAY = 'api-gateway',
 }
 
+export interface UserProfileData {
+  id: string;
+  userId: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string;
+  bio?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export enum CoreMessagePattern {
   GET_ITEMS = 'core.getItems',
   GET_ITEM = 'core.getItem',
   CREATE_ITEM = 'core.createItem',
   UPDATE_ITEM = 'core.updateItem',
   DELETE_ITEM = 'core.deleteItem',
+  GET_PROFILE = 'core.getProfile',
+  GET_OR_CREATE_PROFILE = 'core.getOrCreateProfile',
+  UPDATE_PROFILE = 'core.updateProfile',
 }

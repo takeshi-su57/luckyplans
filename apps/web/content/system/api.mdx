@@ -42,6 +42,9 @@ All message patterns are defined in `packages/shared/src/types/index.ts`.
 | `core.createItem` | Create a new item |
 | `core.updateItem` | Update an existing item |
 | `core.deleteItem` | Delete an item |
+| `core.getProfile` | Get user profile by userId |
+| `core.getOrCreateProfile` | Get or lazily create profile for a user |
+| `core.updateProfile` | Update profile fields |
 
 ## Response Format
 
@@ -81,6 +84,8 @@ Expected: `"API Gateway is running"`
 
 ### Current user (requires session cookie)
 
+The `me` query returns the authenticated user's profile. On first call, a profile is lazily created from session data (userId, email, name from Keycloak).
+
 ```graphql
 query Me {
   me {
@@ -88,6 +93,36 @@ query Me {
     email
     name
     roles
+    firstName
+    lastName
+    avatarUrl
+    bio
+  }
+}
+```
+
+### Update profile (requires session cookie)
+
+```graphql
+mutation UpdateProfile($input: UpdateProfileInput!) {
+  updateProfile(input: $input) {
+    userId
+    email
+    firstName
+    lastName
+    avatarUrl
+    bio
+  }
+}
+```
+
+Variables:
+```json
+{
+  "input": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "bio": "Software engineer"
   }
 }
 ```

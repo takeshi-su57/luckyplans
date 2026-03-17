@@ -31,4 +31,31 @@ export class CoreController {
   async deleteItem(@Payload() data: { id: string }) {
     return this.coreService.deleteItem(data.id);
   }
+
+  @MessagePattern(CoreMessagePattern.GET_PROFILE)
+  async getProfile(@Payload() data: { userId: string }) {
+    return this.coreService.getProfile(data.userId);
+  }
+
+  @MessagePattern(CoreMessagePattern.GET_OR_CREATE_PROFILE)
+  async getOrCreateProfile(
+    @Payload() data: { userId: string; email: string; name?: string },
+  ) {
+    return this.coreService.getOrCreateProfile(data);
+  }
+
+  @MessagePattern(CoreMessagePattern.UPDATE_PROFILE)
+  async updateProfile(
+    @Payload()
+    data: {
+      userId: string;
+      firstName?: string;
+      lastName?: string;
+      avatarUrl?: string;
+      bio?: string;
+    },
+  ) {
+    const { userId, ...updateData } = data;
+    return this.coreService.updateProfile(userId, updateData);
+  }
 }

@@ -58,6 +58,7 @@ secrets:
   KEYCLOAK_CLIENT_SECRET: 'dev-client-secret'
   POSTGRES_PASSWORD: 'dev-postgres-password'
   KEYCLOAK_ADMIN_PASSWORD: 'admin'
+  DATABASE_URL: 'postgresql://keycloak:dev-postgres-password@postgresql:5432/luckyplans'
 
 # ============================================================
 # Ingress (Traefik)
@@ -135,6 +136,15 @@ apiGateway:
       failureThreshold: 3
 
 # ============================================================
+# Prisma Migrate (pre-deploy Job)
+# Runs `prisma migrate deploy` before service-core starts.
+# ============================================================
+prismaMigrate:
+  image:
+    repository: luckyplans/prisma-migrate
+    tag: latest
+
+# ============================================================
 # service-core (Redis transport microservice — no HTTP port)
 # ============================================================
 serviceCore:
@@ -203,6 +213,8 @@ postgresql:
   image: postgres:17-alpine
   database: keycloak
   username: keycloak
+  appDatabase: luckyplans
+  appUsername: luckyplans
   storage: 1Gi
   resources:
     requests:

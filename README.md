@@ -28,6 +28,7 @@ Authentication is gateway-managed: the browser only sees an opaque `session_id` 
 | Microservices    | NestJS Microservices                |
 | Inter-service    | Redis transport (pub/sub)           |
 | Auth             | Keycloak (ROPC + Admin API)         |
+| Database         | PostgreSQL 17 + Prisma ORM          |
 | Monorepo         | Turborepo + pnpm workspaces         |
 | Containerization | Docker (multi-stage builds)         |
 | Observability    | Prometheus, Grafana, Loki, Tempo, OTel Collector |
@@ -48,6 +49,7 @@ luckyplans/
 │   └── service-core/        # Core domain microservice (NestJS, Redis transport)
 ├── packages/
 │   ├── config/              # Shared ESLint + TypeScript configs
+│   ├── prisma/              # Prisma ORM: schema, migrations, generated client
 │   └── shared/              # Shared types and utilities
 ├── infrastructure/
 │   ├── helm/                # Helm charts (luckyplans + observability)
@@ -140,6 +142,7 @@ See [apps/web/content/guides/deployment.mdx](apps/web/content/guides/deployment.
 | `KEYCLOAK_ADMIN_URL`      | `http://localhost:8080`                   | Keycloak base URL for Admin API      |
 | `SESSION_SECRET`          | —                                         | Secret for session signing           |
 | `SESSION_TTL_SECONDS`     | `36000`                                   | Session TTL (default 10 hours)       |
+| `DATABASE_URL`            | —                                         | PostgreSQL connection string (Prisma) |
 | `NODE_ENV`                | `development`                             | Node environment                     |
 
 ## Scripts

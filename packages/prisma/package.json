@@ -1,0 +1,28 @@
+{
+  "name": "@luckyplans/prisma",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "prisma generate && tsc --build",
+    "clean": "node -e \"const fs=require('fs');['dist','tsconfig.tsbuildinfo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint \"src/**/*.ts\"",
+    "db:migrate:dev": "dotenv -e ../../.env -- prisma migrate dev",
+    "db:migrate:deploy": "dotenv -e ../../.env -- prisma migrate deploy",
+    "db:push": "dotenv -e ../../.env -- prisma db push",
+    "db:studio": "dotenv -e ../../.env -- prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.5.0"
+  },
+  "devDependencies": {
+    "@luckyplans/config": "workspace:*",
+    "@types/node": "^25.5.0",
+    "dotenv-cli": "^11.0.0",
+    "eslint": "^10.0.3",
+    "prisma": "^7.5.0",
+    "typescript": "^5.4.0"
+  }
+}

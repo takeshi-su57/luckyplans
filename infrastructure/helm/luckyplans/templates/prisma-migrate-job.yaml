@@ -1,0 +1,77 @@
+{{- $component := "prisma-migrate" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $component }}-{{ .Release.Revision }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.labels" . | nindent 4 }}
+    app: {{ $component }}
+  annotations:
+    # post-install: on first deploy, wait for PostgreSQL to be created first
+    # pre-upgrade: on subsequent deploys, run migrations before new pods roll out
+    helm.sh/hook: post-install,pre-upgrade
+    helm.sh/hook-weight: "-5"
+    # Keep the last successful job for debugging, delete failed ones
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: 5
+  activeDeadlineSeconds: 180
+  template:
+    metadata:
+      labels:
+        app: {{ $component }}
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+      restartPolicy: Never
+      initContainers:
+        # Wait for PostgreSQL to accept connections before running migrations
+        - name: wait-for-postgres
+          image: {{ .Values.postgresql.image | quote }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for PostgreSQL at postgresql:5432..."
+              until pg_isready -h postgresql -p 5432 -U {{ .Values.postgresql.username }}; do
+                echo "PostgreSQL not ready, retrying in 3s..."
+                sleep 3
+              done
+              echo "PostgreSQL is ready."
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+      containers:
+        - name: {{ $component }}
+          image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.prismaMigrate.image.repository "tag" .Values.prismaMigrate.image.tag) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop: ["ALL"]
+          command: ["node", "node_modules/prisma/build/index.js", "migrate", "deploy"]
+          env:
+            - name: DATABASE_URL
+              value: {{ index .Values.secrets "DATABASE_URL" | quote }}
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"

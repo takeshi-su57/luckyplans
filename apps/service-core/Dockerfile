@@ -39,6 +39,11 @@ RUN adduser --system --uid 1001 nestjs
 COPY --from=builder --chown=nestjs:nodejs /app/apps/service-core/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /deploy/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /deploy/package.json ./package.json
+# Prisma v7 generated client (output = "../generated/client" in schema.prisma)
+# Included via @luckyplans/prisma build output, copied by pnpm deploy
+COPY --from=builder --chown=nestjs:nodejs /app/packages/prisma/generated ./node_modules/@luckyplans/prisma/generated
+# Prisma schema required at runtime for query engine
+COPY --from=builder --chown=nestjs:nodejs /app/packages/prisma/prisma ./prisma
 
 USER nestjs
 
