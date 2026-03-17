@@ -21,11 +21,12 @@ FROM base AS builder
 COPY --from=deps /app/ .
 COPY --from=pruner /app/out/full/ .
 COPY --from=pruner /app/tsconfig.base.json ./tsconfig.base.json
+# .pnpmfile.cjs hooks apply during `pnpm deploy` (unlike pnpm.overrides which do not).
+# This ensures minimatch and tar are resolved to patched versions in the deploy dir.
+COPY .pnpmfile.cjs .pnpmfile.cjs
 RUN pnpm turbo run build --filter=@luckyplans/prisma
 # Deploy with ALL deps (not --prod) so prisma CLI is included
 RUN pnpm --filter=@luckyplans/prisma deploy /deploy
-# pnpm deploy does not apply workspace overrides; patch vulnerable transitive deps explicitly
-RUN pnpm add -C /deploy minimatch@">=10.2.3" tar@">=7.5.11"
 
 # --- Migration runner ---
 FROM node:25-alpine AS runner
