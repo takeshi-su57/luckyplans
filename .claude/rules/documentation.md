@@ -185,7 +185,8 @@ Technical reference for the running system:
 ### When environment variables change
 
 1. Update `apps/web/content/system/configuration.mdx` — add/remove from env var tables
-2. Update `apps/web/content/guides/developer.mdx` — if it affects local setup
+2. Update `apps/web/content/guides/developer.mdx` — always (local dev setup, .env table)
+3. Update `apps/web/content/guides/deployment.mdx` — always (production env vars, Helm values table)
 
 ## Anti-Patterns
 
