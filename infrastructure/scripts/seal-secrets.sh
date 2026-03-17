@@ -129,6 +129,7 @@ SESSION_SECRET_VAL=$(generate_secret 48)
 KEYCLOAK_CLIENT_SECRET_VAL=$(generate_secret 24)
 POSTGRES_PASSWORD_VAL=$(generate_secret 24)
 KEYCLOAK_ADMIN_PASSWORD_VAL=$(generate_secret 24)
+DATABASE_URL_VAL="postgresql://keycloak:${POSTGRES_PASSWORD_VAL}@postgresql:5432/luckyplans"
 
 echo "Sealing secrets against the cluster..."
 echo "(This encrypts each value with the controller's public key)"
@@ -139,6 +140,7 @@ SESSION_SECRET_SEALED=$(seal_value "$SESSION_SECRET_VAL")
 KEYCLOAK_CLIENT_SECRET_SEALED=$(seal_value "$KEYCLOAK_CLIENT_SECRET_VAL")
 POSTGRES_PASSWORD_SEALED=$(seal_value "$POSTGRES_PASSWORD_VAL")
 KEYCLOAK_ADMIN_PASSWORD_SEALED=$(seal_value "$KEYCLOAK_ADMIN_PASSWORD_VAL")
+DATABASE_URL_SEALED=$(seal_value "$DATABASE_URL_VAL")
 
 echo "=== Done! ==="
 echo ""
@@ -152,6 +154,7 @@ echo "    SESSION_SECRET: \"$SESSION_SECRET_SEALED\""
 echo "    KEYCLOAK_CLIENT_SECRET: \"$KEYCLOAK_CLIENT_SECRET_SEALED\""
 echo "    POSTGRES_PASSWORD: \"$POSTGRES_PASSWORD_SEALED\""
 echo "    KEYCLOAK_ADMIN_PASSWORD: \"$KEYCLOAK_ADMIN_PASSWORD_SEALED\""
+echo "    DATABASE_URL: \"$DATABASE_URL_SEALED\""
 echo ""
 echo "============================================================"
 echo "PLAIN-TEXT VALUES (for one-time Keycloak configuration)"
