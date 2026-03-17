@@ -5,6 +5,7 @@ import { trace } from '@opentelemetry/api';
 import { TraceContextExtractor } from '@luckyplans/shared';
 import { CoreController } from './core.controller';
 import { CoreService } from './core.service';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CoreService } from './core.service';
   ],
   controllers: [CoreController],
   providers: [
+    PrismaService,
     CoreService,
     { provide: APP_INTERCEPTOR, useClass: TraceContextExtractor },
   ],

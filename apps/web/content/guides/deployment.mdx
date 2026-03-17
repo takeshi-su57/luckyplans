@@ -24,6 +24,8 @@ Continuous delivery is handled by **ArgoCD** (pull-based GitOps). See [ArgoCD](/
                                      │              │
                                      ▼              ▼
                                   Redis:6379   PostgreSQL:5432
+                                                    ▲
+                                  prisma-migrate ───┘ (Helm pre-upgrade Job)
 
     monitoring namespace:
       OTel Collector ← api-gateway, service-core (OTLP)
@@ -145,6 +147,7 @@ docker build \
   -t luckyplans/web:latest -f apps/web/Dockerfile .
 docker build -t luckyplans/api-gateway:latest  -f apps/api-gateway/Dockerfile .
 docker build -t luckyplans/service-core:latest  -f apps/service-core/Dockerfile .
+docker build -t luckyplans/prisma-migrate:latest -f packages/prisma/Dockerfile .
 
 # 3. Import images into k3d
 docker pull redis:7-alpine
@@ -154,6 +157,7 @@ k3d image import postgres:17-alpine          -c luckyplans-local
 k3d image import luckyplans/web:latest       -c luckyplans-local
 k3d image import luckyplans/api-gateway:latest  -c luckyplans-local
 k3d image import luckyplans/service-core:latest -c luckyplans-local
+k3d image import luckyplans/prisma-migrate:latest -c luckyplans-local
 
 # 4. Deploy with Helm
 helm upgrade --install luckyplans infrastructure/helm/luckyplans \

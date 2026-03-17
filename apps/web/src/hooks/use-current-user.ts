@@ -8,6 +8,10 @@ const MeQuery = graphql(`
       email
       name
       roles
+      firstName
+      lastName
+      avatarUrl
+      bio
     }
   }
 `);

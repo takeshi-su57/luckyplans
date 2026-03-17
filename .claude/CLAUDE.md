@@ -20,6 +20,7 @@ LuckyPlans is a TypeScript monorepo (Turborepo + pnpm) containing a Next.js fron
 | Deployment | ArgoCD + Helm on Kubernetes (k3s) |
 | Observability | Prometheus, Grafana, Loki, Tempo, OTel Collector |
 | Logging | Pino (structured JSON) via nestjs-pino |
+| Database | PostgreSQL 17 + Prisma ORM (`packages/prisma`) |
 | Secrets | Bitnami Sealed Secrets (prod), plain values (dev) |
 
 ## Repository Layout
@@ -29,6 +30,7 @@ apps/web/                  → Next.js frontend (App Router, Apollo Client, cook
 apps/api-gateway/          → GraphQL gateway + auth controller (ROPC login, Admin API registration, session management)
 apps/service-core/         → Core domain microservice (Redis transport, CoreMessagePattern)
 packages/shared/           → Shared types (ServiceResponse<T>, message pattern enums) and utils (getEnvVar, getRedisConfig, generateId)
+packages/prisma/           → Prisma ORM: schema, migrations, generated client (@luckyplans/prisma)
 packages/config/           → Shared ESLint preset (eslint-preset.mjs) and TypeScript configs
 infrastructure/            → Helm charts (luckyplans + observability), K8s manifests, ArgoCD config, Keycloak realm, deploy scripts
 infrastructure/otel/       → Local dev observability configs (OTel Collector, Prometheus, Loki, Tempo, Grafana)
@@ -73,6 +75,8 @@ pnpm format:check     # Check formatting
 pnpm clean            # Clean build artifacts
 pnpm --filter @luckyplans/<name> dev   # Run single package
 pnpm --filter @luckyplans/web codegen # Generate GraphQL types from schema
+pnpm --filter @luckyplans/prisma db:migrate:dev -- --name <name>  # Create new Prisma migration
+pnpm --filter @luckyplans/prisma db:migrate:deploy                # Apply migrations (production)
 pnpm deploy:local                     # Full deploy to local k3d cluster
 ./infrastructure/scripts/deploy-local.sh web          # Rebuild + redeploy one service
 ./infrastructure/scripts/deploy-local.sh --helm-only  # Helm upgrade only (config changes)
@@ -110,4 +114,4 @@ CI (`.github/workflows/ci.yml`) runs on push to main and PRs:
 ## Known Gaps
 
 - No tests exist yet (CI test step is a no-op)
-- No database — services use in-memory storage as placeholder
+- Items entity still uses in-memory storage (Profile uses PostgreSQL/Prisma)

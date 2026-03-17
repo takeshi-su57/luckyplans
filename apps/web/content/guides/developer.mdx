@@ -62,7 +62,7 @@ docker compose up -d
 | Container      | Port  | Purpose                                        |
 | -------------- | ----- | ---------------------------------------------- |
 | redis          | 6379  | Inter-service communication + sessions         |
-| postgresql     | 5432  | Keycloak database (persistent)                 |
+| postgresql     | 5433  | Keycloak + application database (persistent)   |
 | keycloak       | 8080  | Identity provider                              |
 | otel-collector | 4317  | OpenTelemetry Collector (gRPC), also 4318 (HTTP), 8889 (Prometheus) |
 | prometheus     | 9090  | Metrics storage                                |
@@ -85,11 +85,15 @@ docker compose down        # stop containers (PostgreSQL data preserved)
 docker compose down -v     # stop and remove volumes (reset all data)
 ```
 
-### 4. Build shared packages
+### 4. Build shared packages and run database migrations
 
 ```bash
 pnpm --filter @luckyplans/shared build
+pnpm --filter @luckyplans/prisma build
+pnpm --filter @luckyplans/prisma db:migrate:deploy
 ```
+
+> **Note:** If upgrading from a previous setup without the `luckyplans` application database, run `docker compose down -v && docker compose up -d` once to re-initialize PostgreSQL with the init script that creates the `luckyplans` database.
 
 ### 5. Start all services
 

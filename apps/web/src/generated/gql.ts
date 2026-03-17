@@ -15,17 +15,19 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  */
 type Documents = {
     "\n  mutation CreateItem($name: String!, $description: String) {\n    createItem(name: $name, description: $description) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n": typeof types.CreateItemDocument,
-    "\n  query Me {\n    me {\n      userId\n      email\n      name\n      roles\n    }\n  }\n": typeof types.MeDocument,
+    "\n  query Me {\n    me {\n      userId\n      email\n      name\n      roles\n      firstName\n      lastName\n      avatarUrl\n      bio\n    }\n  }\n": typeof types.MeDocument,
     "\n  query Health {\n    health\n  }\n": typeof types.HealthDocument,
     "\n  query GetItem($id: String!) {\n    getItem(id: $id) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n": typeof types.GetItemDocument,
     "\n  query GetItems($page: Float = 1, $limit: Float = 10) {\n    getItems(page: $page, limit: $limit) {\n      items {\n        id\n        name\n        description\n        createdAt\n      }\n      total\n    }\n  }\n": typeof types.GetItemsDocument,
+    "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      userId\n      email\n      name\n      roles\n      firstName\n      lastName\n      avatarUrl\n      bio\n    }\n  }\n": typeof types.UpdateProfileDocument,
 };
 const documents: Documents = {
     "\n  mutation CreateItem($name: String!, $description: String) {\n    createItem(name: $name, description: $description) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n": types.CreateItemDocument,
-    "\n  query Me {\n    me {\n      userId\n      email\n      name\n      roles\n    }\n  }\n": types.MeDocument,
+    "\n  query Me {\n    me {\n      userId\n      email\n      name\n      roles\n      firstName\n      lastName\n      avatarUrl\n      bio\n    }\n  }\n": types.MeDocument,
     "\n  query Health {\n    health\n  }\n": types.HealthDocument,
     "\n  query GetItem($id: String!) {\n    getItem(id: $id) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n": types.GetItemDocument,
     "\n  query GetItems($page: Float = 1, $limit: Float = 10) {\n    getItems(page: $page, limit: $limit) {\n      items {\n        id\n        name\n        description\n        createdAt\n      }\n      total\n    }\n  }\n": types.GetItemsDocument,
+    "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      userId\n      email\n      name\n      roles\n      firstName\n      lastName\n      avatarUrl\n      bio\n    }\n  }\n": types.UpdateProfileDocument,
 };
 
 /**
@@ -49,7 +51,7 @@ export function graphql(source: "\n  mutation CreateItem($name: String!, $descri
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Me {\n    me {\n      userId\n      email\n      name\n      roles\n    }\n  }\n"): (typeof documents)["\n  query Me {\n    me {\n      userId\n      email\n      name\n      roles\n    }\n  }\n"];
+export function graphql(source: "\n  query Me {\n    me {\n      userId\n      email\n      name\n      roles\n      firstName\n      lastName\n      avatarUrl\n      bio\n    }\n  }\n"): (typeof documents)["\n  query Me {\n    me {\n      userId\n      email\n      name\n      roles\n      firstName\n      lastName\n      avatarUrl\n      bio\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -62,6 +64,10 @@ export function graphql(source: "\n  query GetItem($id: String!) {\n    getItem(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetItems($page: Float = 1, $limit: Float = 10) {\n    getItems(page: $page, limit: $limit) {\n      items {\n        id\n        name\n        description\n        createdAt\n      }\n      total\n    }\n  }\n"): (typeof documents)["\n  query GetItems($page: Float = 1, $limit: Float = 10) {\n    getItems(page: $page, limit: $limit) {\n      items {\n        id\n        name\n        description\n        createdAt\n      }\n      total\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      userId\n      email\n      name\n      roles\n      firstName\n      lastName\n      avatarUrl\n      bio\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProfile($input: UpdateProfileInput!) {\n    updateProfile(input: $input) {\n      userId\n      email\n      name\n      roles\n      firstName\n      lastName\n      avatarUrl\n      bio\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

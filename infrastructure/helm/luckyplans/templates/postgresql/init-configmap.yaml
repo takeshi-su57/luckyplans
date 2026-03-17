@@ -1,0 +1,16 @@
+{{- if .Values.keycloak.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgresql-init
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels: {{- include "luckyplans.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+data:
+  init-app-db.sql: |
+    -- Create the application database (separate from Keycloak).
+    -- Uses the same PostgreSQL superuser; app connects via DATABASE_URL secret.
+    SELECT 'CREATE DATABASE {{ .Values.postgresql.appDatabase }}'
+      WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{{ .Values.postgresql.appDatabase }}')\gexec
+{{- end }}

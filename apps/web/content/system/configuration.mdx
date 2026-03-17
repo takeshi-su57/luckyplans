@@ -36,6 +36,12 @@ description: All environment variables, Helm values, and production overrides.
 | `SESSION_SECRET` | — | Secret for signing session cookies. Generate with `openssl rand -base64 32` |
 | `SESSION_TTL_SECONDS` | `36000` | Session time-to-live in seconds (default: 10 hours) |
 
+### Database (service-core)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | — | PostgreSQL connection string for Prisma ORM. Format: `postgresql://user:password@host:port/database`. Local dev: `postgresql://luckyplans:luckyplans@localhost:5433/luckyplans` |
+
 ### Observability
 
 | Variable | Default | Description |

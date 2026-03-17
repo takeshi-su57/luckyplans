@@ -1,0 +1,35 @@
+---
+title: PostgreSQL Persistence with Prisma ORM
+description: Add PostgreSQL as the application database via Prisma ORM in a dedicated packages/prisma package
+---
+
+# PostgreSQL Persistence with Prisma ORM
+
+**Date:** 2026-03-16
+**Status:** accepted
+
+## Context
+
+The project had no persistent database — all services used in-memory storage as a placeholder (listed as a Known Gap). A user profile system was needed to store application-specific data beyond what Keycloak manages, establishing the database layer for future features.
+
+## Decision
+
+1. **PostgreSQL as the relational database** — already running in docker-compose for Keycloak. We reuse the same PostgreSQL instance with a separate `luckyplans` database for application data (no second container).
+
+2. **Prisma ORM in `packages/prisma`** — a dedicated workspace package that owns the schema, migrations, and generated client. This keeps ORM concerns (schema, migrations, query engine binaries) isolated from `packages/shared` (types and utilities).
+
+3. **Lazy profile creation** — profiles are auto-created on first `me` query using session data (userId, email, name). This avoids coupling profile creation to the registration flow and ensures every authenticated user gets a profile transparently.
+
+4. **`service-core` owns all CRUD** — per the functional decomposition pattern, profile operations live in `service-core` alongside items. The gateway communicates via Redis message patterns as usual.
+
+## Consequences
+
+**Easier:**
+- Adding new entities with persistence — follow the Profile pattern with Prisma models
+- Type safety across the stack — Prisma generates TypeScript types from the schema
+- Database migrations are tracked and versioned in `packages/prisma/prisma/migrations/`
+
+**Harder:**
+- Local setup requires `docker compose down -v` once to get the init script that creates the `luckyplans` database
+- Docker images for `service-core` must include Prisma query engine binaries for the Alpine target
+- `DATABASE_URL` must be configured as a secret in all environments
