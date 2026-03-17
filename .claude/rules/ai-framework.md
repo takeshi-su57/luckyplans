@@ -74,7 +74,8 @@ When the project evolves, multiple files must stay in sync. Follow this order:
 2. Update `apps/web/content/system/configuration.mdx` — env var reference table
 3. Update `infrastructure/helm/luckyplans/values.yaml` + `configmap.yaml` — if applicable to K8s
 4. Update `turbo.json` globalEnv — if the var affects build caching
-5. Update `apps/web/content/guides/developer.mdx` — if it affects local dev setup
+5. Update `apps/web/content/guides/developer.mdx` — always (local dev setup, .env table)
+6. Update `apps/web/content/guides/deployment.mdx` — always (production env vars, Helm values table)
 
 ### When scripts or commands change
 
@@ -130,6 +131,8 @@ Read through every file you modified or created. Categorize each into one or mor
 - [ ] `infrastructure/helm/luckyplans/values.yaml`
 - [ ] `infrastructure/helm/luckyplans/templates/configmap.yaml`
 - [ ] `apps/web/content/system/configuration.mdx`
+- [ ] `apps/web/content/guides/developer.mdx` — always
+- [ ] `apps/web/content/guides/deployment.mdx` — always
 
 #### If Infrastructure changed:
 - [ ] `docker-compose.yml` — local dev containers
