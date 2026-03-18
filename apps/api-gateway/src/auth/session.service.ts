@@ -114,9 +114,22 @@ export class SessionService {
 
       await this.updateSession(sessionId, updated);
       return updated;
-    } catch {
-      await this.deleteSession(sessionId);
-      throw new UnauthorizedException('Session expired — please log in again');
+    } catch (err) {
+      // Only destroy the session if Keycloak explicitly rejected the refresh token
+      // (4xx means the token is invalid/revoked). Transient errors (network timeout,
+      // 5xx from Keycloak) should NOT nuke the user's session — just skip the refresh
+      // and let the existing (possibly stale) access token ride until the next request.
+      const isTokenRejected =
+        err instanceof Error && /Token refresh failed: 4\d{2}/.test(err.message);
+
+      if (isTokenRejected) {
+        this.logger.warn('Refresh token rejected by Keycloak — deleting session');
+        await this.deleteSession(sessionId);
+        throw new UnauthorizedException('Session expired — please log in again');
+      }
+
+      this.logger.warn('Token refresh failed (transient) — using existing session');
+      return session;
     }
   }
 }

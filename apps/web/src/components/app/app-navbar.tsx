@@ -21,7 +21,18 @@ export function AppNavbar() {
   }, []);
 
   useEffect(() => {
-    if (error && !isLoading) {
+    if (!error || isLoading) return;
+
+    // Only redirect on authentication errors (UNAUTHENTICATED from SessionGuard).
+    // Other errors (network, server, resolver bugs) should NOT force a logout —
+    // they would create a redirect loop if the underlying issue isn't auth-related.
+    const graphQLErrors = 'graphQLErrors' in error
+      ? (error as { graphQLErrors?: Array<{ extensions?: Record<string, unknown> }> }).graphQLErrors
+      : undefined;
+    const isAuthError = graphQLErrors?.some(
+      (e) => e.extensions?.['code'] === 'UNAUTHENTICATED',
+    );
+    if (isAuthError) {
       window.location.href = '/login?returnTo=' + window.location.pathname;
     }
   }, [error, isLoading]);
