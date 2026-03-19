@@ -14,6 +14,7 @@ FROM base AS deps
 COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/.pnpmfile.cjs ./.pnpmfile.cjs
 RUN pnpm install --frozen-lockfile
 
 # --- Build ---
