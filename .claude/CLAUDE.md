@@ -21,6 +21,7 @@ LuckyPlans is a TypeScript monorepo (Turborepo + pnpm) containing a Next.js fron
 | Observability | Prometheus, Grafana, Loki, Tempo, OTel Collector |
 | Logging | Pino (structured JSON) via nestjs-pino |
 | Database | PostgreSQL 17 + Prisma ORM (`packages/prisma`) |
+| Blog CMS | Sanity (headless, GROQ queries, ISR rendering) |
 | Secrets | Bitnami Sealed Secrets (prod), plain values (dev) |
 
 ## Repository Layout
@@ -34,6 +35,7 @@ packages/prisma/           → Prisma ORM: schema, migrations, generated client 
 packages/config/           → Shared ESLint preset (eslint-preset.mjs) and TypeScript configs
 infrastructure/            → Helm charts (luckyplans + observability), K8s manifests, ArgoCD config, Keycloak realm, deploy scripts
 infrastructure/otel/       → Local dev observability configs (OTel Collector, Prometheus, Loki, Tempo, Grafana)
+apps/web/src/lib/sanity/       → Sanity CMS client, GROQ queries, image helper, types (blog data source)
 apps/web/content/          → Public docs source (MDX): architecture, ADRs, guides, system reference — served at /docs
 docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL, Keycloak + observability stack
 ```
@@ -115,3 +117,4 @@ CI (`.github/workflows/ci.yml`) runs on push to main and PRs:
 
 - No tests exist yet (CI test step is a no-op)
 - Items entity still uses in-memory storage (Profile uses PostgreSQL/Prisma)
+- Blog requires Sanity project setup (external) — without `NEXT_PUBLIC_SANITY_PROJECT_ID`, blog shows empty state

@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@luckyplans/shared', '@heroui/react', '@heroui/styles'],
   output: 'standalone',
+  images: {
+    remotePatterns: [{ protocol: 'https', hostname: 'cdn.sanity.io' }],
+  },
   async rewrites() {
     const gatewayUrl = process.env.API_GATEWAY_URL || 'http://localhost:3001';
     return [

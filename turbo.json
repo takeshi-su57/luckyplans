@@ -19,7 +19,9 @@
     "OTEL_EXPORTER_OTLP_ENDPOINT",
     "OTEL_SERVICE_NAME",
     "LOG_LEVEL",
-    "DATABASE_URL"
+    "DATABASE_URL",
+    "NEXT_PUBLIC_SANITY_PROJECT_ID",
+    "NEXT_PUBLIC_SANITY_DATASET"
   ],
   "tasks": {
     "build": {

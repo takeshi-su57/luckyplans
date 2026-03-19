@@ -199,6 +199,8 @@ web:
   # Changing this value here only takes effect after rebuilding the web image.
   buildArgs:
     graphqlUrl: '/graphql'
+    sanityProjectId: ''
+    sanityDataset: 'production'
 
 # ============================================================
 # Smoke tests (ArgoCD post-sync hook)

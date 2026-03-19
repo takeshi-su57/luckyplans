@@ -11,7 +11,7 @@ const navItems = [
   { label: "Developers", href: "#developers" },
   { label: "Artifacts", href: "#proof" },
   { label: "Team", href: "#team" },
-  { label: "Lab Notes", href: "#lab-notes" },
+  { label: "Lab Notes", href: "/blog" },
   { label: "Docs", href: "/docs" },
 ];
 
