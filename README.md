@@ -33,7 +33,6 @@ Authentication is gateway-managed: the browser only sees an opaque `session_id` 
 | Containerization | Docker (multi-stage builds)         |
 | Observability    | Prometheus, Grafana, Loki, Tempo, OTel Collector |
 | Logging          | Pino (structured JSON) via nestjs-pino |
-| Blog CMS         | Sanity (headless CMS, GROQ queries) |
 | Deployment       | ArgoCD + Helm on Kubernetes         |
 
 ## AI Engineering
@@ -144,8 +143,6 @@ See [apps/web/content/guides/deployment.mdx](apps/web/content/guides/deployment.
 | `SESSION_SECRET`          | —                                         | Secret for session signing           |
 | `SESSION_TTL_SECONDS`     | `36000`                                   | Session TTL (default 10 hours)       |
 | `DATABASE_URL`            | —                                         | PostgreSQL connection string (Prisma) |
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | —                                   | Sanity project ID (blog CMS)         |
-| `NEXT_PUBLIC_SANITY_DATASET`    | `production`                        | Sanity dataset name                  |
 | `NODE_ENV`                | `development`                             | Node environment                     |
 
 ## Scripts

@@ -59,11 +59,12 @@ Docker Compose provides the infrastructure and observability services needed for
 docker compose up -d
 ```
 
-| Container      | Port  | Purpose                                        |
-| -------------- | ----- | ---------------------------------------------- |
-| redis          | 6379  | Inter-service communication + sessions         |
-| postgresql     | 5433  | Keycloak + application database (persistent)   |
-| keycloak       | 8080  | Identity provider                              |
+| Container            | Port  | Purpose                                        |
+| -------------------- | ----- | ---------------------------------------------- |
+| redis                | 6379  | Inter-service communication + sessions         |
+| postgresql-keycloak  | 5433  | Keycloak database                              |
+| postgresql-app       | 5434  | Application database (Prisma / service-core)   |
+| keycloak             | 8080  | Identity provider                              |
 | otel-collector | 4317  | OpenTelemetry Collector (gRPC), also 4318 (HTTP), 8889 (Prometheus) |
 | prometheus     | 9090  | Metrics storage                                |
 | grafana        | 3002  | Dashboards (admin/admin)                       |
@@ -93,7 +94,7 @@ pnpm --filter @luckyplans/prisma build
 pnpm --filter @luckyplans/prisma db:migrate:deploy
 ```
 
-> **Note:** If upgrading from a previous setup without the `luckyplans` application database, run `docker compose down -v && docker compose up -d` once to re-initialize PostgreSQL with the init script that creates the `luckyplans` database.
+> **Note:** The `postgresql-app` container auto-creates the `luckyplans` database via its `POSTGRES_DB` env var on first start. If you run into connection issues, try `docker compose down -v && docker compose up -d` to reset all volumes.
 
 ### 5. Start all services
 
@@ -425,38 +426,6 @@ Pre-built dashboards are in the **LuckyPlans** folder:
 - **Pino** (`nestjs-pino`) outputs structured JSON logs with trace context (`traceId`, `spanId`)
 - **Trace propagation** across Redis: `injectTraceContext()` on the gateway side, `TraceContextExtractor` interceptor on the service side
 - **Config**: `OTEL_EXPORTER_OTLP_ENDPOINT` (default `http://localhost:4317`), `LOG_LEVEL` (default `debug` in dev)
-
-## Blog Development
-
-The blog at `/blog` is powered by [Sanity](https://sanity.io), a managed headless CMS. Content is authored in Sanity Studio (outside this repo) and fetched by Next.js at build/request time via ISR.
-
-### Setup
-
-1. Create a Sanity project at [sanity.io/manage](https://www.sanity.io/manage)
-2. Add your project ID to `.env`:
-   ```
-   NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
-   NEXT_PUBLIC_SANITY_DATASET=production
-   ```
-3. Run `pnpm dev` — blog pages are available at http://localhost:3000/blog
-
-### Without Sanity configured
-
-If `NEXT_PUBLIC_SANITY_PROJECT_ID` is not set, the blog listing shows a placeholder empty state. The build still passes — no Sanity account is required for local development of non-blog features.
-
-### Content schema
-
-The Sanity Studio project defines the content schema (separate repo). Expected document types:
-- **post** — title, slug, excerpt, body (Portable Text), mainImage, author (reference), categories (references), publishedAt
-- **author** — name, image, bio
-- **category** — title, slug
-
-### How it works
-
-- Blog pages are **Server Components** with `revalidate = 60` (ISR)
-- Data is fetched via GROQ queries through `@sanity/client` (not GraphQL)
-- No Apollo Client or gateway involvement — blog is a standalone frontend feature
-- Images are served from `cdn.sanity.io` and optimized by Next.js `<Image>`
 
 ## Troubleshooting
 

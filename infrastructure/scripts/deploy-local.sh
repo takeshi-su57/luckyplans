@@ -108,12 +108,6 @@ WEB_GRAPHQL_URL=$(grep 'graphqlUrl:' "$HELM_CHART/values.yaml" \
   | head -1 | sed 's/.*graphqlUrl:[[:space:]]*//' | tr -d "\"'")
 WEB_GRAPHQL_URL="${WEB_GRAPHQL_URL:-/graphql}"
 
-# Read Sanity CMS build args from values.yaml
-SANITY_PROJECT_ID=$(grep 'sanityProjectId:' "$HELM_CHART/values.yaml" \
-  | head -1 | sed 's/.*sanityProjectId:[[:space:]]*//' | tr -d "\"'")
-SANITY_DATASET=$(grep 'sanityDataset:' "$HELM_CHART/values.yaml" \
-  | head -1 | sed 's/.*sanityDataset:[[:space:]]*//' | tr -d "\"'")
-
 # ---------------------------------------------------------------------------
 # Helper: pull image only if not already present locally
 # ---------------------------------------------------------------------------
@@ -159,12 +153,9 @@ build_image() {
 
   if [[ "$svc" == "web" ]]; then
     echo "NEXT_PUBLIC_GRAPHQL_URL (baked into web image): $WEB_GRAPHQL_URL"
-    echo "NEXT_PUBLIC_SANITY_PROJECT_ID: ${SANITY_PROJECT_ID:-(not set)}"
     # MSYS_NO_PATHCONV prevents Git Bash from mangling the build arg on Windows
     MSYS_NO_PATHCONV=1 docker build \
       --build-arg "NEXT_PUBLIC_GRAPHQL_URL=$WEB_GRAPHQL_URL" \
-      --build-arg "NEXT_PUBLIC_SANITY_PROJECT_ID=$SANITY_PROJECT_ID" \
-      --build-arg "NEXT_PUBLIC_SANITY_DATASET=${SANITY_DATASET:-production}" \
       -t "$image" -f "$dockerfile" .
   else
     docker build -t "$image" -f "$dockerfile" .

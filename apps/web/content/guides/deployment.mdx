@@ -144,8 +144,6 @@ kubectl config use-context k3d-luckyplans-local
 # 2. Build Docker images
 docker build \
   --build-arg NEXT_PUBLIC_GRAPHQL_URL="/graphql" \
-  --build-arg NEXT_PUBLIC_SANITY_PROJECT_ID="your-project-id" \
-  --build-arg NEXT_PUBLIC_SANITY_DATASET="production" \
   -t luckyplans/web:latest -f apps/web/Dockerfile .
 docker build -t luckyplans/api-gateway:latest  -f apps/api-gateway/Dockerfile .
 docker build -t luckyplans/service-core:latest  -f apps/service-core/Dockerfile .

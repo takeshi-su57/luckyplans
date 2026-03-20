@@ -51,7 +51,7 @@ service-core         ← NestJS microservice
 | Service | Purpose | Communication |
 |---------|---------|---------------|
 | Keycloak | Identity Provider — user management, roles (PostgreSQL-backed) | ROPC + Admin API (gateway ↔ Keycloak server-side) |
-| `apps/web` | Next.js frontend, App Router, Apollo Client, custom auth pages | GraphQL → API gateway (via Next.js rewrites / K8s ingress) |
+| `apps/web` | Next.js frontend, App Router, Apollo Client, custom auth pages, blog | GraphQL → API gateway (via Next.js rewrites / K8s ingress) |
 | `apps/api-gateway` | GraphQL API, REST auth endpoints, Redis session management | GraphQL in, Redis out |
 | `apps/service-core` | Generic CRUD for all domain entities | Redis transport |
 
@@ -112,8 +112,9 @@ See deep dives:
 
 ## Current State and Known Limitations
 
-- **No database** — services use in-memory storage as placeholder
+- **Items entity uses in-memory storage** — Profile entity uses PostgreSQL/Prisma, but Items is still in-memory
 - **No tests** — CI test step exists but is a no-op
 - **No message persistence** — Redis pub/sub drops messages if a service is down
 - **Keycloak + PostgreSQL required** — local development needs `docker compose up -d` before `pnpm dev`
 - **Gateway stateful** — session store depends on Redis; Redis data loss invalidates all sessions
+- **Blog pages are static placeholders** — no CMS backend yet

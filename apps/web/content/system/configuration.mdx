@@ -49,15 +49,6 @@ description: All environment variables, Helm values, and production overrides.
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:4317` | OpenTelemetry Collector gRPC endpoint for traces, metrics, and logs |
 | `LOG_LEVEL` | `info` (prod) / `debug` (dev) | Pino log level (`debug`, `info`, `warn`, `error`) |
 
-### Blog (Sanity CMS)
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | — | Sanity project ID. Blog pages show empty state if not set. |
-| `NEXT_PUBLIC_SANITY_DATASET` | `production` | Sanity dataset name |
-
-These are `NEXT_PUBLIC_*` variables — baked into the Next.js bundle at build time. In Docker/K8s deployments, pass them as `--build-arg` when building the web image (see `web.buildArgs` in `values.yaml`).
-
 Environment variables are accessed via `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. This throws on missing required variables. See `.env.example` for the full template.
 
 > **Note:** The frontend no longer requires any auth-related environment variables. Apollo Client uses a relative `/graphql` URL and session cookies are managed entirely by the gateway.
