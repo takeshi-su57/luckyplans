@@ -108,6 +108,14 @@ export function Footer() {
               </li>
               <li>
                 <a
+                  href="/blog"
+                  className="text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+                >
+                  Lab Notes
+                </a>
+              </li>
+              <li>
+                <a
                   href="#team"
                   className="text-sm text-neutral-500 transition-colors hover:text-neutral-900"
                 >

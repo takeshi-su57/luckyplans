@@ -35,7 +35,7 @@ packages/config/           → Shared ESLint preset (eslint-preset.mjs) and Type
 infrastructure/            → Helm charts (luckyplans + observability), K8s manifests, ArgoCD config, Keycloak realm, deploy scripts
 infrastructure/otel/       → Local dev observability configs (OTel Collector, Prometheus, Loki, Tempo, Grafana)
 apps/web/content/          → Public docs source (MDX): architecture, ADRs, guides, system reference — served at /docs
-docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL, Keycloak + observability stack
+docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL (×2: keycloak, app), Keycloak + observability stack
 ```
 
 ## Architecture Patterns
@@ -50,7 +50,7 @@ docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL, Keyc
 
 **Authentication** — Gateway-managed sessions via Keycloak. Browser gets an opaque `session_id` HttpOnly cookie — no tokens exposed to the client. `POST /auth/login` (ROPC), `POST /auth/register` (Admin API + auto-login), `POST /auth/logout`. Custom login/register pages in Next.js under `(public)` route group. Sessions stored in Redis. `SessionGuard` protects GraphQL resolvers. See `.claude/rules/security.md`.
 
-**Local development infrastructure** — `docker-compose.yml` provides Redis, PostgreSQL, Keycloak, and the observability stack (OTel Collector, Prometheus, Grafana, Loki, Tempo). Grafana at `localhost:3002`. Next.js runs on port 3000 with `rewrites` in `next.config.ts` proxying `/auth/*` and `/graphql` to the gateway (port 3001).
+**Local development infrastructure** — `docker-compose.yml` provides Redis, two PostgreSQL instances (Keycloak on 5433, app on 5434), Keycloak, and the observability stack (OTel Collector, Prometheus, Grafana, Loki, Tempo). Grafana at `localhost:3002`. Next.js runs on port 3000 with `rewrites` in `next.config.ts` proxying `/auth/*` and `/graphql` to the gateway (port 3001).
 
 **Observability** — NestJS services are instrumented with OpenTelemetry SDK (auto-instrumentation for HTTP, Express, ioredis, GraphQL). Structured logging via Pino (`nestjs-pino`) with JSON output and trace context correlation (`traceId`, `spanId`). Telemetry flows: NestJS → OTel Collector → Prometheus (metrics) / Loki (logs) / Tempo (traces) → Grafana. Observability infra lives in `infrastructure/helm/observability/` (`monitoring` namespace). Redis trace propagation via custom `injectTraceContext()` / `TraceContextExtractor` in `packages/shared/src/telemetry/`.
 
@@ -115,3 +115,4 @@ CI (`.github/workflows/ci.yml`) runs on push to main and PRs:
 
 - No tests exist yet (CI test step is a no-op)
 - Items entity still uses in-memory storage (Profile uses PostgreSQL/Prisma)
+- Blog pages at `/blog` are static placeholders — no CMS backend yet

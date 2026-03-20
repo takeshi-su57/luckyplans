@@ -30,6 +30,6 @@ The project had no persistent database — all services used in-memory storage a
 - Database migrations are tracked and versioned in `packages/prisma/prisma/migrations/`
 
 **Harder:**
-- Local setup requires `docker compose down -v` once to get the init script that creates the `luckyplans` database
+- Local setup requires `docker compose up -d` to start the `postgresql-app` container (auto-creates the `luckyplans` database)
 - Docker images for `service-core` must include Prisma query engine binaries for the Alpine target
 - `DATABASE_URL` must be configured as a secret in all environments

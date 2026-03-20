@@ -59,11 +59,12 @@ Docker Compose provides the infrastructure and observability services needed for
 docker compose up -d
 ```
 
-| Container      | Port  | Purpose                                        |
-| -------------- | ----- | ---------------------------------------------- |
-| redis          | 6379  | Inter-service communication + sessions         |
-| postgresql     | 5433  | Keycloak + application database (persistent)   |
-| keycloak       | 8080  | Identity provider                              |
+| Container            | Port  | Purpose                                        |
+| -------------------- | ----- | ---------------------------------------------- |
+| redis                | 6379  | Inter-service communication + sessions         |
+| postgresql-keycloak  | 5433  | Keycloak database                              |
+| postgresql-app       | 5434  | Application database (Prisma / service-core)   |
+| keycloak             | 8080  | Identity provider                              |
 | otel-collector | 4317  | OpenTelemetry Collector (gRPC), also 4318 (HTTP), 8889 (Prometheus) |
 | prometheus     | 9090  | Metrics storage                                |
 | grafana        | 3002  | Dashboards (admin/admin)                       |
@@ -93,7 +94,7 @@ pnpm --filter @luckyplans/prisma build
 pnpm --filter @luckyplans/prisma db:migrate:deploy
 ```
 
-> **Note:** If upgrading from a previous setup without the `luckyplans` application database, run `docker compose down -v && docker compose up -d` once to re-initialize PostgreSQL with the init script that creates the `luckyplans` database.
+> **Note:** The `postgresql-app` container auto-creates the `luckyplans` database via its `POSTGRES_DB` env var on first start. If you run into connection issues, try `docker compose down -v && docker compose up -d` to reset all volumes.
 
 ### 5. Start all services
 

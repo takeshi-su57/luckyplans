@@ -18,10 +18,11 @@ export const config = {
   // - Next.js internals (_next/static, _next/image)
   // - Static files (favicon, images, etc. — matched by file extension)
   // - Docs route (public)
+  // - Blog route (public)
   // - Auth API routes (/auth/*)
   // - Login and register pages
   // - Root landing page (/)
   matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|avif)$|docs|auth|login|register|$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|avif)$|docs|blog|auth|login|register|$).*)',
   ],
 };
