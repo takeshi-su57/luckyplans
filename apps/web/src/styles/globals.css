@@ -3,10 +3,20 @@
 
 @theme inline {
   --font-sans: var(--font-inter);
+  --font-mono: var(--font-mono);
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  background-color: lab(96.5432% -0.0000596046 0);
+  color: #37352f;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Docs prose — scoped MDX content styles */
@@ -106,6 +116,15 @@ html {
   padding: 0.5rem 0.75rem;
 }
 .docs-prose tbody tr:last-child td { border-bottom: none; }
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
 
 ::selection {
   background-color: rgba(22, 163, 74, 0.2);

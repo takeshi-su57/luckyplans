@@ -23,6 +23,6 @@ export const config = {
   // - Login and register pages
   // - Root landing page (/)
   matcher: [
-    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|avif)$|docs|blog|auth|login|register|$).*)',
+    '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|avif)$|docs|blog|auth|login|register|u|$).*)',
   ],
 };

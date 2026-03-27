@@ -1,8 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useState } from 'react';
+import { Button, TextField, Label, Input } from '@heroui/react';
+import { Loader2 } from 'lucide-react';
 
 function RegisterForm() {
   const router = useRouter();
@@ -50,124 +53,134 @@ function RegisterForm() {
   }
 
   return (
-    <div className="w-full max-w-sm">
-      <div className="rounded-xl border border-neutral-200 bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-bold text-neutral-900">Sign up</h1>
-        <p className="mt-2 text-sm text-neutral-500">
-          Create your LuckyPlans account
-        </p>
-
-        {error && (
-          <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label
-                htmlFor="firstName"
-                className="block text-sm font-medium text-neutral-700"
-              >
-                First name
-              </label>
-              <input
-                id="firstName"
-                type="text"
-                autoComplete="given-name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
-                placeholder="Jane"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="lastName"
-                className="block text-sm font-medium text-neutral-700"
-              >
-                Last name
-              </label>
-              <input
-                id="lastName"
-                type="text"
-                autoComplete="family-name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
-                placeholder="Doe"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-neutral-700"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
-              placeholder="you@example.com"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-neutral-700"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              required
-              autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
-              placeholder="Create a password"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:opacity-50"
-          >
-            {loading ? 'Creating account...' : 'Sign up'}
-          </button>
-        </form>
+    <div className="flex min-h-screen">
+      {/* Left panel — hidden on mobile */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-gradient-to-br from-emerald-600 to-emerald-900 p-12 text-white">
+        <div>
+          <Link href="/" className="flex items-center gap-2">
+            <Image src="/brand.png" alt="LuckyPlans" width={40} height={40} />
+            <span className="text-xl font-bold">LuckyPlans</span>
+          </Link>
+        </div>
+        <div>
+          <h1 className="text-4xl font-bold leading-tight">
+            Build your portfolio
+            <br />
+            with confidence.
+          </h1>
+          <p className="mt-4 text-lg text-white/80">
+            Showcase your projects, skills, and experience to the world.
+          </p>
+        </div>
+        <p className="text-sm text-white/50">&copy; 2026 LuckyPlans</p>
       </div>
 
-      <p className="mt-6 text-center text-sm text-neutral-500">
-        Already have an account?{' '}
-        <Link
-          href={`/login?returnTo=${encodeURIComponent(returnTo)}`}
-          className="font-medium text-green-600 hover:text-green-700"
-        >
-          Log in
-        </Link>
-      </p>
+      {/* Right panel — form */}
+      <div className="flex w-full lg:w-1/2 items-center justify-center bg-white px-6 py-12">
+        <div className="w-full max-w-sm">
+          {/* Logo for mobile */}
+          <div className="mb-8 lg:hidden">
+            <Link href="/" className="flex items-center gap-2">
+              <Image src="/brand.png" alt="LuckyPlans" width={32} height={32} />
+              <span className="text-lg font-bold text-[#37352f]">
+                Lucky<span className="text-primary">Plans</span>
+              </span>
+            </Link>
+          </div>
+
+          <h2 className="text-[30px] font-bold text-[#37352f]">Sign up</h2>
+          <p className="mt-1 text-sm text-[#787774]">Create your LuckyPlans account</p>
+
+          {/* Error */}
+          {error && (
+            <div className="mt-4 rounded-lg bg-[#ffe2dd] px-4 py-3 text-sm text-[#e03e3e]">
+              {error}
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <TextField onChange={setFirstName}>
+                <Label>First name</Label>
+                <Input
+                  type="text"
+                  autoComplete="given-name"
+                  placeholder="Jane"
+                  value={firstName}
+                />
+              </TextField>
+
+              <TextField onChange={setLastName}>
+                <Label>Last name</Label>
+                <Input
+                  type="text"
+                  autoComplete="family-name"
+                  placeholder="Doe"
+                  value={lastName}
+                />
+              </TextField>
+            </div>
+
+            <TextField onChange={setEmail}>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+              />
+            </TextField>
+
+            <TextField onChange={setPassword}>
+              <Label>Password</Label>
+              <Input
+                type="password"
+                required
+                autoComplete="new-password"
+                placeholder="Create a password"
+                value={password}
+              />
+            </TextField>
+
+            <Button
+              type="submit"
+              isPending={loading}
+              className="w-full"
+              onPress={() => {}}
+            >
+              {({ isPending }) =>
+                isPending ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" /> Creating account...
+                  </>
+                ) : (
+                  'Sign up'
+                )
+              }
+            </Button>
+          </form>
+
+          <p className="mt-6 text-center text-sm text-[#787774]">
+            Already have an account?{' '}
+            <Link
+              href={`/login?returnTo=${encodeURIComponent(returnTo)}`}
+              className="font-medium text-primary hover:text-[#0b6e99]"
+            >
+              Log in
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default function RegisterPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
-      <Suspense>
-        <RegisterForm />
-      </Suspense>
-    </div>
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   );
 }

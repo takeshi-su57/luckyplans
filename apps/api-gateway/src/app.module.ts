@@ -8,6 +8,7 @@ import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { CoreModule } from './core/core.module';
 import { ProfileModule } from './profile/profile.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ProfileModule } from './profile/profile.module';
     AuthModule,
     CoreModule,
     ProfileModule,
+    UploadsModule,
   ],
 })
 export class AppModule {}

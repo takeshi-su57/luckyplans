@@ -1,9 +1,9 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
-  // Use local schema file (mirrors the gateway's code-first schema).
+  // Read schema directly from the gateway's auto-generated file (single source of truth).
   // Switch to 'http://localhost:3001/graphql' when running with a live gateway.
-  schema: 'schema.graphql',
+  schema: '../api-gateway/schema.graphql',
   documents: ['src/**/*.{ts,tsx}'],
   generates: {
     'src/generated/': {

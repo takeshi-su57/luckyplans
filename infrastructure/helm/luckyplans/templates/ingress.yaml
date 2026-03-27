@@ -70,6 +70,13 @@ spec:
                 port:
                   number: 80
           {{- end }}
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 3001
           - path: /auth
             pathType: Prefix
             backend:

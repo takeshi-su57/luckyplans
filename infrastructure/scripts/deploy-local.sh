@@ -187,6 +187,7 @@ if ! $HELM_ONLY; then
       "redis:7-alpine"
       "postgres:17-alpine"
       "quay.io/keycloak/keycloak:26.0"
+      "minio/minio:latest"
     )
     for img in "${INFRA_IMAGES[@]}"; do
       pull_if_missing "$img"

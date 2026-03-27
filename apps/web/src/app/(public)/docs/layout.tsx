@@ -6,7 +6,7 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
   const pageMap = await getPageMap('/docs');
 
   return (
-    <div className="min-h-screen bg-white text-neutral-900">
+    <div className="min-h-screen bg-white text-[#37352f]">
       <DocsNavbar />
       <div className="mx-auto flex max-w-7xl">
         <DocsSidebar pageMap={pageMap} />

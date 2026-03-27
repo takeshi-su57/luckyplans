@@ -1,30 +1,30 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { GitHubIcon } from "@/components/icons/GitHubIcon";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import { GitHubIcon } from '@/components/icons/GitHubIcon';
 
 const navItems = [
-  { label: "Platform", href: "#infrastructure" },
-  { label: "Chains", href: "#chains" },
-  { label: "Developers", href: "#developers" },
-  { label: "Artifacts", href: "#proof" },
-  { label: "Team", href: "#team" },
-  { label: "Lab Notes", href: "/blog" },
-  { label: "Docs", href: "/docs" },
+  { label: 'Platform', href: '#infrastructure' },
+  { label: 'Chains', href: '#chains' },
+  { label: 'Developers', href: '#developers' },
+  { label: 'Artifacts', href: '#proof' },
+  { label: 'Team', href: '#team' },
+  { label: 'Lab Notes', href: '/blog' },
+  { label: 'Docs', href: '/docs' },
 ];
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-[#e8e7e4] bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4 md:px-8">
         <a href="#" className="flex items-center gap-2">
           <Image src="/brand.png" alt="LuckyPlans" width={32} height={32} />
-          <span className="text-lg font-bold text-neutral-900">
-            Lucky<span className="text-green-600">Plans</span>
+          <span className="text-lg font-bold text-[#37352f]">
+            Lucky<span className="text-[#0f7b6c]">Plans</span>
           </span>
         </a>
 
@@ -34,7 +34,7 @@ export function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900"
+                className="text-sm font-medium text-[#787774] transition-colors hover:text-[#37352f]"
               >
                 {item.label}
               </Link>
@@ -42,29 +42,29 @@ export function Navbar() {
               <a
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900"
+                className="text-sm font-medium text-[#787774] transition-colors hover:text-[#37352f]"
               >
                 {item.label}
               </a>
-            )
+            ),
           )}
           <a
-            href="https://github.com/takeshi-su57/lucky-plan"
+            href="https://github.com/takeshi-su57/luckyplans"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-neutral-500 transition-colors hover:text-neutral-900"
+            className="text-[#787774] transition-colors hover:text-[#37352f]"
           >
             <GitHubIcon size={20} />
           </a>
           <Link
             href="/login"
-            className="text-sm font-medium text-neutral-700 transition-colors hover:text-neutral-900"
+            className="text-sm font-medium text-[#37352f] transition-colors hover:text-[#37352f]"
           >
             Log in
           </Link>
           <Link
             href="/register"
-            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
+            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
           >
             Sign up
           </Link>
@@ -72,17 +72,31 @@ export function Navbar() {
 
         <button
           type="button"
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="text-neutral-500 lg:hidden"
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          className="text-[#787774] lg:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? (
-            <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <svg
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           ) : (
-            <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <svg
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
               <line x1="4" y1="8" x2="20" y2="8" />
               <line x1="4" y1="16" x2="20" y2="16" />
             </svg>
@@ -91,14 +105,14 @@ export function Navbar() {
       </div>
 
       {isMenuOpen && (
-        <div className="border-t border-neutral-200 bg-white/95 px-6 pb-6 pt-4 backdrop-blur-md lg:hidden">
+        <div className="border-t border-[#e8e7e4] bg-white/95 px-6 pb-6 pt-4 backdrop-blur-md lg:hidden">
           <div className="flex flex-col gap-4">
             {navItems.map((item) =>
               item.href.startsWith('/') ? (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-lg text-neutral-700 transition-colors hover:text-neutral-900"
+                  className="text-lg text-[#37352f] transition-colors hover:text-[#37352f]"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
@@ -107,33 +121,33 @@ export function Navbar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  className="text-lg text-neutral-700 transition-colors hover:text-neutral-900"
+                  className="text-lg text-[#37352f] transition-colors hover:text-[#37352f]"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
                 </a>
-              )
+              ),
             )}
             <a
-              href="https://github.com/takeshi-su57/lucky-plan"
+              href="https://github.com/takeshi-su57/luckyplans"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-lg text-neutral-700 transition-colors hover:text-neutral-900"
+              className="flex items-center gap-2 text-lg text-[#37352f] transition-colors hover:text-[#37352f]"
             >
               <GitHubIcon size={20} />
               GitHub
             </a>
-            <div className="mt-2 flex flex-col gap-3 border-t border-neutral-200 pt-4">
+            <div className="mt-2 flex flex-col gap-3 border-t border-[#e8e7e4] pt-4">
               <Link
                 href="/login"
-                className="text-lg font-medium text-neutral-700 transition-colors hover:text-neutral-900"
+                className="text-lg font-medium text-[#37352f] transition-colors hover:text-[#37352f]"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Log in
               </Link>
               <Link
                 href="/register"
-                className="rounded-lg bg-green-600 px-4 py-3 text-center text-lg font-medium text-white transition-colors hover:bg-green-700"
+                className="rounded-lg bg-emerald-600 px-4 py-3 text-center text-lg font-medium text-white transition-colors hover:bg-emerald-700"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Sign up

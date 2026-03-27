@@ -42,10 +42,10 @@ export function InfrastructureSection() {
   return (
     <SectionContainer id="infrastructure">
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+        <h2 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">
           Core Platform
         </h2>
-        <p className="max-w-2xl text-base text-neutral-600">
+        <p className="max-w-2xl text-base text-[#787774]">
           Two products. One data layer. Full coverage across perpetual DEX
           protocols on EVM chains.
         </p>
@@ -55,15 +55,15 @@ export function InfrastructureSection() {
         {modules.map((mod) => (
           <div
             key={mod.title}
-            className="rounded-xl border border-neutral-200 bg-neutral-50 p-6"
+            className="rounded-xl border border-[#e8e7e4] bg-[#fbfbfa] p-6"
           >
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
               <mod.icon size={20} fill="#16a34a" />
             </div>
-            <h3 className="text-lg font-semibold text-neutral-900">
+            <h3 className="text-lg font-semibold text-[#37352f]">
               {mod.title}
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+            <p className="mt-2 text-sm leading-relaxed text-[#787774]">
               {mod.description}
             </p>
           </div>

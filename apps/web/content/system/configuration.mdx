@@ -42,6 +42,17 @@ description: All environment variables, Helm values, and production overrides.
 |----------|---------|-------------|
 | `DATABASE_URL` | — | PostgreSQL connection string for Prisma ORM. Format: `postgresql://user:password@host:port/database`. Local dev: `postgresql://luckyplans:luckyplans@localhost:5433/luckyplans` |
 
+### MinIO (File Uploads)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MINIO_ENDPOINT` | `localhost` | MinIO server hostname |
+| `MINIO_PORT` | `9000` | MinIO API port |
+| `MINIO_ACCESS_KEY` | `minioadmin` | MinIO access key |
+| `MINIO_SECRET_KEY` | `minioadmin` | MinIO secret key |
+| `MINIO_BUCKET` | `luckyplans-uploads` | MinIO bucket name |
+| `MINIO_USE_SSL` | `false` | Use SSL for MinIO connection |
+
 ### Observability
 
 | Variable | Default | Description |

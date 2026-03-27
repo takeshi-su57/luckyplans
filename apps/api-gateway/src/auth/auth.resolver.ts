@@ -32,6 +32,12 @@ export class UserProfile {
 
   @Field({ nullable: true })
   bio?: string;
+
+  @Field({ nullable: true })
+  headline?: string;
+
+  @Field({ nullable: true })
+  location?: string;
 }
 
 @Resolver()

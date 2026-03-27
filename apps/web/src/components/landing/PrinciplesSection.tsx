@@ -36,21 +36,21 @@ export function PrinciplesSection() {
   return (
     <SectionContainer id="principles">
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+        <h2 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">
           Engineering Principles
         </h2>
-        <p className="max-w-2xl text-base text-neutral-600">
+        <p className="max-w-2xl text-base text-[#787774]">
           The constraints that shape every design decision in this system.
         </p>
       </div>
 
       <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {principles.map((principle) => (
-          <div key={principle.title} className="rounded-lg border border-neutral-200 bg-white p-5">
-            <h3 className="text-sm font-semibold text-neutral-900">
+          <div key={principle.title} className="rounded-lg border border-[#e8e7e4] bg-white p-5">
+            <h3 className="text-sm font-semibold text-[#37352f]">
               {principle.title}
             </h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-neutral-500">
+            <p className="mt-1.5 text-sm leading-relaxed text-[#787774]">
               {principle.description}
             </p>
           </div>

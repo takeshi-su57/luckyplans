@@ -12,6 +12,8 @@ const UpdateProfileMutation = graphql(`
       lastName
       avatarUrl
       bio
+      headline
+      location
     }
   }
 `);

@@ -112,9 +112,11 @@ See deep dives:
 
 ## Current State and Known Limitations
 
-- **Items entity uses in-memory storage** — Profile entity uses PostgreSQL/Prisma, but Items is still in-memory
+- **Items entity uses in-memory storage** — Profile and portfolio entities (Project, Skill, Experience) use PostgreSQL/Prisma, but Items is still in-memory
 - **No tests** — CI test step exists but is a no-op
 - **No message persistence** — Redis pub/sub drops messages if a service is down
 - **Keycloak + PostgreSQL required** — local development needs `docker compose up -d` before `pnpm dev`
 - **Gateway stateful** — session store depends on Redis; Redis data loss invalidates all sessions
 - **Blog pages are static placeholders** — no CMS backend yet
+- **Portfolio image uploads not supported** — `imageUrl` fields accept external URLs only, no file upload
+- **No portfolio search/discovery** — public profiles are accessed directly via `/u/[userId]`, no directory or search
