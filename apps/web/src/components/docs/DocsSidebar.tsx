@@ -33,7 +33,7 @@ function SidebarItem({
   if (hasChildren) {
     return (
       <div className={depth > 0 ? 'ml-3' : ''}>
-        <p className="mb-1 mt-4 text-xs font-semibold uppercase tracking-wider text-neutral-400">
+        <p className="mb-1 mt-4 text-xs font-semibold uppercase tracking-wider text-[#a3a29e]">
           {item.title}
         </p>
         <ul className="space-y-0.5">
@@ -51,8 +51,8 @@ function SidebarItem({
         href={item.route}
         className={`block rounded px-2 py-1.5 text-sm transition-colors ${
           isActive
-            ? 'bg-green-50 font-semibold text-green-700'
-            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
+            ? 'bg-green-50 font-semibold text-[#0f7b6c]'
+            : 'text-[#787774] hover:bg-[#f1f1ef] hover:text-[#37352f]'
         }`}
       >
         {item.title}
@@ -66,7 +66,7 @@ export function DocsSidebar({ pageMap }: DocsSidebarProps) {
   const { directories } = normalizePages({ list: pageMap, route: pathname });
 
   return (
-    <aside className="w-60 shrink-0 border-r border-neutral-200 px-4 py-10">
+    <aside className="w-60 shrink-0 border-r border-[#e8e7e4] px-4 py-10">
       <nav>
         {directories.map((item) => (
           <SidebarItem key={item.route} item={item as NormalizedPage} pathname={pathname} />

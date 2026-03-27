@@ -3,6 +3,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getEnvVar } from '@luckyplans/shared';
 import { AuthModule } from '../auth/auth.module';
 import { ProfileResolver } from './profile.resolver';
+import { PortfolioResolver } from './portfolio.resolver';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { ProfileResolver } from './profile.resolver';
       },
     ]),
   ],
-  providers: [ProfileResolver],
+  providers: [ProfileResolver, PortfolioResolver],
 })
 export class ProfileModule {}

@@ -120,6 +120,87 @@ To add a new domain entity (e.g., `Order`) to `service-core`:
 5. Add GraphQL types and resolver methods in the gateway
 6. Rebuild shared: `pnpm --filter @luckyplans/shared build`
 
+## Prisma Migration Safety
+
+Prisma auto-generates SQL migration files, but it does **not** handle data backfills for existing rows. A migration that adds a non-nullable column without a default to a table with existing data **will fail in production**.
+
+### Rules
+
+1. **New columns on existing tables** must be either nullable (`String?`) or have a `@default()`. No exceptions.
+2. **Never add a required column without a default to a table that has data.** The migration will fail with: `column "x" of relation "y" contains null values`.
+3. **New tables** (no existing rows) can have required columns freely — this is safe.
+
+### Safe Patterns
+
+**Pattern A: Nullable column (recommended for optional data)**
+
+```prisma
+model Profile {
+  headline String?   // nullable — existing rows get NULL, no migration failure
+}
+```
+
+**Pattern B: Column with default (recommended for required data)**
+
+```prisma
+model Skill {
+  proficiency Proficiency @default(INTERMEDIATE)   // existing rows get INTERMEDIATE
+  sortOrder   Int         @default(0)              // existing rows get 0
+}
+```
+
+**Pattern C: Two-step migration (for making a nullable column required later)**
+
+When you need a required column on a table with existing data and no sensible default:
+
+1. **Migration 1:** Add column as nullable (`String?`), deploy, backfill existing rows via script or SQL
+2. **Migration 2:** Alter column to required — edit the generated migration SQL if Prisma doesn't handle it cleanly
+
+```bash
+# Step 1: Add nullable column
+pnpm --filter @luckyplans/prisma db:migrate:dev -- --name add_username_nullable
+
+# Step 2: Backfill (run against the database)
+# UPDATE profiles SET username = CONCAT('user_', id) WHERE username IS NULL;
+
+# Step 3: Make required
+pnpm --filter @luckyplans/prisma db:migrate:dev -- --name make_username_required
+```
+
+### Editing Generated Migration SQL
+
+Prisma creates migration files at `packages/prisma/prisma/migrations/<timestamp>_<name>/migration.sql`. You **can and should** edit this file before applying when:
+
+- You need to add a `DEFAULT` clause that Prisma didn't generate
+- You need to add a backfill `UPDATE` statement before an `ALTER COLUMN SET NOT NULL`
+- You need to handle complex data transformations
+
+```sql
+-- Example: edited migration.sql
+-- Add column with a temporary default, then remove the default
+ALTER TABLE "profiles" ADD COLUMN "username" TEXT NOT NULL DEFAULT '';
+
+-- Backfill existing rows
+UPDATE "profiles" SET "username" = CONCAT('user_', LEFT("id", 8)) WHERE "username" = '';
+```
+
+After editing, apply with `db:migrate:dev` (local) or `db:migrate:deploy` (production). The edited SQL is committed to git — it IS the migration.
+
+### Helm Auto-Migration
+
+Production migrations run automatically via a Helm pre-upgrade Job that executes `prisma migrate deploy`. This means:
+
+- The migration SQL must be correct **before** the Helm upgrade — there is no manual intervention during deploy
+- Test migrations locally against a database with realistic data before merging
+- If a migration fails in production, the Helm upgrade will fail and ArgoCD will not roll forward
+
+### Anti-Patterns
+
+- Adding a required column (`String` not `String?`) without `@default()` to a table with existing rows
+- Assuming Prisma will backfill data — it only generates DDL, never DML
+- Skipping local testing of migrations against seeded data
+- Editing migration SQL after it has been applied to any environment (create a new migration instead)
+
 ## Adding a New Functional Service (Rare)
 
 Only when business logic justifies a separate service:
@@ -145,6 +226,7 @@ Only when business logic justifies a separate service:
 - Route protection via Next.js middleware (`apps/web/middleware.ts`) — checks `session_id` cookie presence, redirects to `/auth/login` if absent. This is UX-only protection; the gateway `SessionGuard` is the real auth authority.
 - `useCurrentUser()` hook uses the GraphQL `me` query to get the authenticated user from the session
 - No auth-related environment variables needed on the frontend — Apollo uses relative URL, cookies are automatic
+- File uploads use REST `POST /uploads` (multipart/form-data) and `GET /uploads/:key`, not GraphQL — binary data is not suited for GraphQL
 - See `.claude/rules/frontend.md` for full details
 
 ## Dependency Injection
@@ -161,7 +243,7 @@ Only when business logic justifies a separate service:
 - Put business logic in controllers or resolvers
 - Define entity types in individual services — put them in `packages/shared`
 - Use `process.env` directly — use `getEnvVar()` from `@luckyplans/shared`
-- Create REST endpoints — the project uses GraphQL exclusively via the API gateway (sole exception: `/auth/*` OIDC endpoints)
+- Create REST endpoints — the project uses GraphQL exclusively via the API gateway (exceptions: `/auth/*` OIDC endpoints and `/uploads/*` file upload endpoints)
 - Duplicate types across apps — put shared types in `packages/shared`
 - Use `any` without a comment explaining the justification
 - Use `console.log`, `console.warn`, or `console.error` — use NestJS `Logger` from `@nestjs/common` (routes through Pino with trace context)

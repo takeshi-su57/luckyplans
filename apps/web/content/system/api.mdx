@@ -29,6 +29,15 @@ These endpoints are served by the API Gateway at `/auth/*`. The gateway authenti
 | `/auth/register` | POST | `{ email, password, firstName?, lastName? }` | Creates user via Keycloak Admin API, auto-logs in via ROPC, sets cookie. Returns `{ success, user }` (201). |
 | `/auth/logout` | POST | — | Clears Redis session and cookie. Returns `{ success: true }`. |
 
+## REST Upload Endpoints
+
+File uploads use REST (multipart/form-data) instead of GraphQL. These endpoints are served by the API Gateway at `/uploads/*`.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/uploads` | POST | Upload an image file (multipart, auth required, 5MB limit). Returns `{ key }`. |
+| `/uploads/:key` | GET | Serve an uploaded file (public, cached). |
+
 ## Message Patterns
 
 All message patterns are defined in `packages/shared/src/types/index.ts`.
@@ -44,7 +53,31 @@ All message patterns are defined in `packages/shared/src/types/index.ts`.
 | `core.deleteItem` | Delete an item |
 | `core.getProfile` | Get user profile by userId |
 | `core.getOrCreateProfile` | Get or lazily create profile for a user |
-| `core.updateProfile` | Update profile fields |
+| `core.updateProfile` | Update profile fields (headline, location, bio, etc.) |
+| `core.getPublicProfile` | Get public portfolio (profile + projects + skills + experience) |
+| `core.getProjects` | List projects for a user |
+| `core.createProject` | Create a portfolio project |
+| `core.updateProject` | Update a portfolio project |
+| `core.deleteProject` | Delete a portfolio project |
+| `core.reorderProjects` | Reorder portfolio projects |
+| `core.getSkills` | List skills for a user |
+| `core.createSkill` | Add a skill |
+| `core.updateSkill` | Update a skill |
+| `core.deleteSkill` | Delete a skill |
+| `core.reorderSkills` | Reorder skills |
+| `core.getExperiences` | List experience entries for a user |
+| `core.createExperience` | Add work experience |
+| `core.updateExperience` | Update work experience |
+| `core.deleteExperience` | Delete work experience |
+| `core.reorderExperiences` | Reorder experience entries |
+| `core.createSocialLink` | Create a social link for a user |
+| `core.updateSocialLink` | Update a social link |
+| `core.deleteSocialLink` | Delete a social link |
+| `core.reorderSocialLinks` | Reorder social links |
+| `core.getSkillCategories` | List skill categories for a user |
+| `core.createSkillCategory` | Create a skill category |
+| `core.updateSkillCategory` | Update a skill category |
+| `core.deleteSkillCategory` | Delete a skill category |
 
 ## Response Format
 
@@ -97,6 +130,15 @@ query Me {
     lastName
     avatarUrl
     bio
+    headline
+    location
+    socialLinks {
+      id
+      platform
+      url
+      label
+      sortOrder
+    }
   }
 }
 ```
@@ -112,6 +154,8 @@ mutation UpdateProfile($input: UpdateProfileInput!) {
     lastName
     avatarUrl
     bio
+    headline
+    location
   }
 }
 ```
@@ -122,7 +166,9 @@ Variables:
   "input": {
     "firstName": "John",
     "lastName": "Doe",
-    "bio": "Software engineer"
+    "bio": "Software engineer",
+    "headline": "Full-stack developer",
+    "location": "San Francisco, CA"
   }
 }
 ```
@@ -152,6 +198,136 @@ mutation CreateItem($name: String!, $description: String) {
     name
     description
     createdAt
+  }
+}
+```
+
+### Get public profile (no auth required)
+
+Returns a user's full portfolio including projects, skills, and experience. Accessible at `/u/[userId]`.
+
+```graphql
+query GetPublicProfile($userId: String!) {
+  getPublicProfile(userId: $userId) {
+    userId
+    firstName
+    lastName
+    avatarUrl
+    bio
+    headline
+    location
+    socialLinks {
+      id
+      platform
+      url
+      label
+      sortOrder
+    }
+    projects {
+      id
+      title
+      description
+      liveUrl
+      repoUrl
+      tags
+      sortOrder
+    }
+    skills {
+      id
+      name
+      category {
+        id
+        name
+      }
+      proficiency
+      sortOrder
+    }
+    experiences {
+      id
+      company
+      role
+      description
+      startDate
+      endDate
+      sortOrder
+    }
+  }
+}
+```
+
+### Create project (requires session cookie)
+
+```graphql
+mutation CreateProject($input: CreateProjectInput!) {
+  createProject(input: $input) {
+    id
+    title
+    description
+    tags
+    sortOrder
+  }
+}
+```
+
+Variables:
+```json
+{
+  "input": {
+    "title": "My App",
+    "description": "A cool project",
+    "liveUrl": "https://myapp.com",
+    "repoUrl": "https://github.com/me/myapp",
+    "tags": ["React", "TypeScript"]
+  }
+}
+```
+
+### Create skill (requires session cookie)
+
+```graphql
+mutation CreateSkill($input: CreateSkillInput!) {
+  createSkill(input: $input) {
+    id
+    name
+    category
+    proficiency
+  }
+}
+```
+
+Variables:
+```json
+{
+  "input": {
+    "name": "TypeScript",
+    "categoryId": "category-uuid",
+    "proficiency": "ADVANCED"
+  }
+}
+```
+
+### Create experience (requires session cookie)
+
+```graphql
+mutation CreateExperience($input: CreateExperienceInput!) {
+  createExperience(input: $input) {
+    id
+    company
+    role
+    startDate
+    endDate
+  }
+}
+```
+
+Variables:
+```json
+{
+  "input": {
+    "company": "Acme Corp",
+    "role": "Senior Developer",
+    "description": ["Built scalable microservices", "Led team of 5 engineers"],
+    "startDate": "2023-01-01T00:00:00Z"
   }
 }
 ```

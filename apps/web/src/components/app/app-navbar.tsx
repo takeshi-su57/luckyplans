@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useCurrentUser } from '@/hooks/use-current-user';
+import { Button, Skeleton } from '@heroui/react';
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard' },
@@ -12,7 +13,7 @@ const navItems = [
 ];
 
 export function AppNavbar() {
-  const { user, isLoading, error } = useCurrentUser();
+  const { user, isLoading } = useCurrentUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = useCallback(async () => {
@@ -20,33 +21,16 @@ export function AppNavbar() {
     window.location.href = '/';
   }, []);
 
-  useEffect(() => {
-    if (!error || isLoading) return;
-
-    // Only redirect on authentication errors (UNAUTHENTICATED from SessionGuard).
-    // Other errors (network, server, resolver bugs) should NOT force a logout —
-    // they would create a redirect loop if the underlying issue isn't auth-related.
-    const graphQLErrors = 'graphQLErrors' in error
-      ? (error as { graphQLErrors?: Array<{ extensions?: Record<string, unknown> }> }).graphQLErrors
-      : undefined;
-    const isAuthError = graphQLErrors?.some(
-      (e) => e.extensions?.['code'] === 'UNAUTHENTICATED',
-    );
-    if (isAuthError) {
-      window.location.href = '/login?returnTo=' + window.location.pathname;
-    }
-  }, [error, isLoading]);
-
   const displayName = user?.name || user?.email || 'User';
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-[#e8e7e4] bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4 md:px-8">
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="flex items-center gap-2">
             <Image src="/brand.png" alt="LuckyPlans" width={32} height={32} />
-            <span className="text-lg font-bold text-neutral-900">
-              Lucky<span className="text-green-600">Plans</span>
+            <span className="text-lg font-bold text-[#37352f]">
+              Lucky<span className="text-primary">Plans</span>
             </span>
           </Link>
 
@@ -55,7 +39,7 @@ export function AppNavbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900"
+                className="text-sm font-medium text-[#787774] transition-colors hover:text-[#37352f]"
               >
                 {item.label}
               </Link>
@@ -65,26 +49,24 @@ export function AppNavbar() {
 
         <div className="hidden items-center gap-4 md:flex">
           {isLoading ? (
-            <span className="h-4 w-24 animate-pulse rounded bg-neutral-200" />
+            <Skeleton className="h-4 w-24 rounded-lg" />
           ) : user ? (
             <>
-              <span className="text-sm text-neutral-600">{displayName}</span>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:border-neutral-400 hover:text-neutral-900"
-              >
+              <span className="text-sm text-[#787774]">{displayName}</span>
+              <Button variant="outline" size="sm" onPress={handleLogout}>
                 Log out
-              </button>
+              </Button>
             </>
           ) : null}
         </div>
 
-        <button
-          type="button"
+        <Button
+          isIconOnly
+          variant="ghost"
+          size="sm"
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          className="text-neutral-500 md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="md:hidden"
+          onPress={() => setIsMenuOpen(!isMenuOpen)}
         >
           {isMenuOpen ? (
             <svg
@@ -111,35 +93,36 @@ export function AppNavbar() {
               <line x1="4" y1="16" x2="20" y2="16" />
             </svg>
           )}
-        </button>
+        </Button>
       </div>
 
       {isMenuOpen && (
-        <div className="border-t border-neutral-200 bg-white/95 px-6 pb-6 pt-4 backdrop-blur-md md:hidden">
+        <div className="border-t border-[#e8e7e4] bg-white/95 px-6 pb-6 pt-4 backdrop-blur-md md:hidden">
           <div className="flex flex-col gap-4">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-lg text-neutral-700 transition-colors hover:text-neutral-900"
+                className="text-lg text-[#37352f] transition-colors hover:text-[#37352f]"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
             {user && (
-              <div className="mt-2 flex flex-col gap-3 border-t border-neutral-200 pt-4">
-                <span className="text-sm text-neutral-500">{displayName}</span>
-                <button
-                  type="button"
-                  onClick={() => {
+              <div className="mt-2 flex flex-col gap-3 border-t border-[#e8e7e4] pt-4">
+                <span className="text-sm text-[#787774]">{displayName}</span>
+                <Button
+                  variant="outline"
+                  size="md"
+                  className="w-full"
+                  onPress={() => {
                     setIsMenuOpen(false);
                     handleLogout();
                   }}
-                  className="rounded-lg border border-neutral-300 px-4 py-3 text-center text-lg font-medium text-neutral-700 transition-colors hover:border-neutral-400 hover:text-neutral-900"
                 >
                   Log out
-                </button>
+                </Button>
               </div>
             )}
           </div>

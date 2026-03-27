@@ -65,6 +65,7 @@ docker compose up -d
 | postgresql-keycloak  | 5433  | Keycloak database                              |
 | postgresql-app       | 5434  | Application database (Prisma / service-core)   |
 | keycloak             | 8080  | Identity provider                              |
+| minio                | 9000 (API), 9001 (Console) | Object storage for file uploads |
 | otel-collector | 4317  | OpenTelemetry Collector (gRPC), also 4318 (HTTP), 8889 (Prometheus) |
 | prometheus     | 9090  | Metrics storage                                |
 | grafana        | 3002  | Dashboards (admin/admin)                       |
@@ -129,7 +130,16 @@ curl http://localhost:3001/graphql -H 'Content-Type: application/json' \
   -d '{"query":"{ health }"}'
 ```
 
-### 7. Keycloak admin console (optional)
+### 7. MinIO console (optional)
+
+Access the MinIO Console at http://localhost:9001:
+
+- **Username:** `minioadmin`
+- **Password:** `minioadmin`
+
+MinIO provides S3-compatible object storage for file uploads (avatars, project images). The `luckyplans-uploads` bucket is auto-created on first upload.
+
+### 8. Keycloak admin console (optional)
 
 Access the Keycloak admin console at http://localhost:8080:
 
@@ -244,15 +254,71 @@ After modifying a `graphql()` call in any hook file or updating the schema:
 pnpm --filter @luckyplans/web codegen
 ```
 
-This reads `apps/web/schema.graphql` and regenerates typed helpers in `apps/web/src/generated/`.
+This reads `apps/api-gateway/schema.graphql` (single source of truth) and regenerates typed helpers in `apps/web/src/generated/`.
 
-### Update the local schema file
+### Schema location
 
-The frontend uses a local `schema.graphql` for codegen (so CI works without a running gateway). When the gateway schema changes:
+The frontend codegen reads the schema directly from `apps/api-gateway/schema.graphql` — there is no duplicate schema file in the web app. The gateway auto-generates this file from code-first decorators on startup (dev mode). When the gateway schema changes:
 
-1. Copy the updated schema from `apps/api-gateway/schema.graphql` to `apps/web/schema.graphql`
+1. Start the gateway (or run `pnpm dev`) so it regenerates `apps/api-gateway/schema.graphql`
 2. Run codegen: `pnpm --filter @luckyplans/web codegen`
-3. Commit both files
+3. Commit the updated schema and generated types
+
+## Working with Prisma Migrations
+
+Prisma schema lives at `packages/prisma/prisma/schema.prisma`. Migrations are auto-generated SQL files committed to git.
+
+### Creating a migration
+
+```bash
+pnpm --filter @luckyplans/prisma db:migrate:dev -- --name describe_the_change
+```
+
+This generates a SQL file at `packages/prisma/prisma/migrations/<timestamp>_<name>/migration.sql`, applies it locally, and regenerates the Prisma Client.
+
+### Migration safety rules
+
+Prisma generates DDL (schema changes) but **never backfills data**. Adding a non-nullable column without a default to a table with existing rows **will fail**.
+
+| Scenario | Safe? | What to do |
+|----------|-------|------------|
+| New table with required columns | Yes | No existing rows — safe |
+| New nullable column (`String?`) on existing table | Yes | Existing rows get `NULL` |
+| New column with `@default()` on existing table | Yes | Existing rows get the default |
+| New required column (no `?`, no `@default`) on existing table | **No** | Migration will fail if table has rows |
+
+### When you need a required column on an existing table
+
+Use the **two-step migration** pattern:
+
+1. **Migration 1:** Add column as nullable, deploy
+2. **Backfill:** Update existing rows via script or SQL (`UPDATE ... SET column = value WHERE column IS NULL`)
+3. **Migration 2:** Alter column to required
+
+### Editing generated migration SQL
+
+You can edit the generated `migration.sql` **before** applying it. This is useful for:
+
+- Adding `DEFAULT` values Prisma didn't generate
+- Adding `UPDATE` statements to backfill data before a `SET NOT NULL`
+
+```sql
+-- Example: add column with temp default, backfill, keep as required
+ALTER TABLE "profiles" ADD COLUMN "username" TEXT NOT NULL DEFAULT '';
+UPDATE "profiles" SET "username" = CONCAT('user_', LEFT("id", 8)) WHERE "username" = '';
+```
+
+The edited SQL is committed to git — it **is** the migration. Never edit SQL after it's been applied to any environment.
+
+### Production migrations
+
+Migrations run automatically via a Helm pre-upgrade Job (`prisma migrate deploy`). This means:
+
+- Migration SQL must be correct before merging — no manual intervention during deploy
+- Test migrations locally against a database with realistic data
+- If a migration fails, the Helm upgrade fails and ArgoCD will not roll forward
+
+See `.claude/rules/architecture.md` for the full migration safety rules.
 
 ## Working with Shared Packages
 
@@ -262,8 +328,8 @@ Shared packages are in `packages/` and used as workspace dependencies (`workspac
 
 Exports:
 
-- **Types**: `User`, `ServiceResponse`, `PaginatedResponse`, etc.
-- **Enums**: `CoreMessagePattern` (Redis message patterns)
+- **Types**: `User`, `ServiceResponse`, `PaginatedResponse`, `UserProfileData`, `ProjectData`, `SkillData`, `ExperienceData`, `PublicProfileData`, etc.
+- **Enums**: `CoreMessagePattern` (Redis message patterns), `Proficiency` (skill levels)
 - **Utilities**: `generateId()`, `getRedisConfig()`, `getEnvVar()`
 - **Telemetry**: `bootstrapTelemetry()`, `injectTraceContext()`, `TraceContextExtractor`
 

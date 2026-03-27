@@ -44,12 +44,12 @@ This project uses an AI-assisted development framework with documented rules to 
 ```
 luckyplans/
 ├── apps/
-│   ├── web/                 # Next.js frontend (custom login/register pages)
+│   ├── web/                 # Next.js frontend (custom login/register, portfolio at /u/[userId])
 │   ├── api-gateway/         # GraphQL gateway + auth controller (NestJS)
 │   └── service-core/        # Core domain microservice (NestJS, Redis transport)
 ├── packages/
 │   ├── config/              # Shared ESLint + TypeScript configs
-│   ├── prisma/              # Prisma ORM: schema, migrations, generated client
+│   ├── prisma/              # Prisma ORM: schema (Profile, Project, Skill, Experience), migrations, generated client
 │   └── shared/              # Shared types and utilities
 ├── infrastructure/
 │   ├── helm/                # Helm charts (luckyplans + observability)
@@ -143,6 +143,12 @@ See [apps/web/content/guides/deployment.mdx](apps/web/content/guides/deployment.
 | `SESSION_SECRET`          | —                                         | Secret for session signing           |
 | `SESSION_TTL_SECONDS`     | `36000`                                   | Session TTL (default 10 hours)       |
 | `DATABASE_URL`            | —                                         | PostgreSQL connection string (Prisma) |
+| `MINIO_ENDPOINT`          | `localhost`                               | MinIO server hostname                |
+| `MINIO_PORT`              | `9000`                                    | MinIO API port                       |
+| `MINIO_ACCESS_KEY`        | `minioadmin`                              | MinIO access key                     |
+| `MINIO_SECRET_KEY`        | `minioadmin`                              | MinIO secret key                     |
+| `MINIO_BUCKET`            | `luckyplans-uploads`                      | MinIO bucket name                    |
+| `MINIO_USE_SSL`           | `false`                                   | Use SSL for MinIO connection         |
 | `NODE_ENV`                | `development`                             | Node environment                     |
 
 ## Scripts

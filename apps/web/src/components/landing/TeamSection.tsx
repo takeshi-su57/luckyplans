@@ -41,10 +41,10 @@ export function TeamSection() {
   return (
     <SectionContainer id="team">
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+        <h2 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">
           About Us
         </h2>
-        <p className="max-w-2xl text-base text-neutral-600">
+        <p className="max-w-2xl text-base text-[#787774]">
           We are a small team of infrastructure engineers building the analytics
           and verification layer for perpetual DEX trading. Our focus is
           reproducibility, transparency, and open-source tooling.
@@ -55,19 +55,19 @@ export function TeamSection() {
         {team.map((member) => (
           <div
             key={member.name}
-            className="rounded-xl border border-neutral-200 bg-neutral-50 p-6"
+            className="rounded-xl border border-[#e8e7e4] bg-[#fbfbfa] p-6"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-lg font-bold text-green-700">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-lg font-bold text-[#0f7b6c]">
               {member.name
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
             </div>
-            <h3 className="mt-4 text-base font-semibold text-neutral-900">
+            <h3 className="mt-4 text-base font-semibold text-[#37352f]">
               {member.name}
             </h3>
-            <p className="text-sm font-medium text-green-600">{member.role}</p>
-            <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+            <p className="text-sm font-medium text-[#0f7b6c]">{member.role}</p>
+            <p className="mt-3 text-sm leading-relaxed text-[#787774]">
               {member.bio}
             </p>
             <div className="mt-4 flex items-center gap-3">
@@ -76,7 +76,7 @@ export function TeamSection() {
                   href={member.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-neutral-400 transition-colors hover:text-neutral-900"
+                  className="text-[#a3a29e] transition-colors hover:text-[#37352f]"
                 >
                   <GitHubIcon size={18} />
                 </a>
@@ -86,7 +86,7 @@ export function TeamSection() {
                   href={member.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-neutral-400 transition-colors hover:text-neutral-900"
+                  className="text-[#a3a29e] transition-colors hover:text-[#37352f]"
                 >
                   <svg
                     width={18}

@@ -42,7 +42,9 @@ docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL (×2:
 
 **Functional decomposition** — Services are split by functionality, not domain. `service-core` handles generic CRUD for all entities. Authentication is handled directly by the API gateway (not a separate microservice). New services are only created for distinct complex logic (e.g., trading engine). Domain entities and types live in `packages/shared`.
 
-**Adding a new entity** — Define type in `packages/shared`, add message patterns to `CoreMessagePattern`, extend `service-core` controller/service, add gateway resolver. Do NOT create a new microservice for it.
+**Adding a new entity** — Define type in `packages/shared`, add message patterns to `CoreMessagePattern`, extend `service-core` controller/service, add gateway resolver. Do NOT create a new microservice for it. Existing entities: Profile (with portfolio extensions: projects, skills, experience), Items (in-memory placeholder).
+
+**Prisma migration safety** — New columns on existing tables must be nullable (`?`) or have `@default()`. Never add a required column without a default to a table with data — the migration will fail. Use two-step migrations (add nullable → backfill → make required) when needed. Edit generated `migration.sql` for backfills. See `.claude/rules/architecture.md` for full rules.
 
 **Microservice structure** — 4-file pattern: `main.ts`, `app.module.ts`, `<name>.controller.ts` (thin), `<name>.service.ts` (all logic). Canonical example: `apps/service-core/src/`.
 
@@ -60,6 +62,8 @@ docker-compose.yml         → Local dev infrastructure: Redis, PostgreSQL (×2:
 
 **Environment config** — Always use `getEnvVar()` from `@luckyplans/shared`. Never use raw `process.env`.
 
+**File uploads** — MinIO (S3-compatible) for avatar and project images. Gateway serves REST endpoints at `POST /uploads` (multipart, auth required, 5MB limit) and `GET /uploads/:key` (public, cached). Next.js rewrites proxy `/uploads/*` to the gateway.
+
 **Secrets management** — Production uses Bitnami Sealed Secrets (encrypted in git, decrypted by in-cluster controller). Local dev uses plain defaults in `values.yaml`. Helm chart conditionally renders `SealedSecret` (prod) or plain `Secret` (dev) based on `sealedSecrets.enabled`. See `.claude/rules/security.md`.
 
 ## Key Commands
@@ -74,7 +78,7 @@ pnpm format           # Format with Prettier
 pnpm format:check     # Check formatting
 pnpm clean            # Clean build artifacts
 pnpm --filter @luckyplans/<name> dev   # Run single package
-pnpm --filter @luckyplans/web codegen # Generate GraphQL types from schema
+pnpm --filter @luckyplans/web codegen # Generate GraphQL types from apps/api-gateway/schema.graphql
 pnpm --filter @luckyplans/prisma db:migrate:dev -- --name <name>  # Create new Prisma migration
 pnpm --filter @luckyplans/prisma db:migrate:deploy                # Apply migrations (production)
 pnpm deploy:local                     # Full deploy to local k3d cluster
@@ -110,9 +114,11 @@ CI (`.github/workflows/ci.yml`) runs on push to main and PRs:
 - `.claude/rules/ai-framework.md` — How to maintain this framework: sync protocol, skill/rule design, evolution guidelines
 - `.claude/rules/documentation.md` — Docs folder structure, ADR conventions, sync protocol for docs
 - `.claude/rules/frontend.md` — Apollo Client, GraphQL Codegen (`client-preset` + inline `graphql()`), hooks, component patterns, anti-patterns
+- `.claude/rules/ui-baseline.md` — **Enforced** UI baseline: HeroUI v3 components, color system, spacing, typography, loading patterns
 
 ## Known Gaps
 
 - No tests exist yet (CI test step is a no-op)
-- Items entity still uses in-memory storage (Profile uses PostgreSQL/Prisma)
+- Items entity still uses in-memory storage (Profile and portfolio entities use PostgreSQL/Prisma)
 - Blog pages at `/blog` are static placeholders — no CMS backend yet
+- No portfolio search or filtering — public profiles are accessed directly via `/u/[userId]`

@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
     return [
       { source: '/auth/:path*', destination: `${gatewayUrl}/auth/:path*` },
       { source: '/graphql', destination: `${gatewayUrl}/graphql` },
+      { source: '/uploads', destination: `${gatewayUrl}/uploads` },
+      { source: '/uploads/:path*', destination: `${gatewayUrl}/uploads/:path*` },
     ];
   },
 };

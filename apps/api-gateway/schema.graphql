@@ -11,6 +11,8 @@ type UserProfile {
   lastName: String
   avatarUrl: String
   bio: String
+  headline: String
+  location: String
 }
 
 type Item {
@@ -30,16 +32,197 @@ type ItemsResponse {
   total: Float!
 }
 
+type Project {
+  id: ID!
+  title: String!
+  description: String
+  images: [String!]!
+  liveUrl: String
+  repoUrl: String
+  tags: [String!]!
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SkillCategory {
+  id: ID!
+  name: String!
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Skill {
+  id: ID!
+  name: String!
+  categoryId: String
+  category: SkillCategory
+  proficiency: Proficiency!
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum Proficiency {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+type Experience {
+  id: ID!
+  company: String!
+  role: String!
+  description: [String!]!
+  startDate: DateTime!
+  endDate: DateTime
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Education {
+  id: ID!
+  school: String!
+  degree: String
+  field: String
+  startDate: DateTime!
+  endDate: DateTime
+  description: [String!]!
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Certification {
+  id: ID!
+  name: String!
+  issuer: String!
+  issueDate: DateTime
+  expiryDate: DateTime
+  url: String
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Language {
+  id: ID!
+  name: String!
+  proficiency: String!
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Award {
+  id: ID!
+  title: String!
+  issuer: String
+  date: DateTime
+  description: String
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Hobby {
+  id: ID!
+  name: String!
+  description: String
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SocialLink {
+  id: ID!
+  platform: String!
+  url: String!
+  label: String
+  sortOrder: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PublicProfile {
+  userId: String!
+  email: String!
+  firstName: String
+  lastName: String
+  avatarUrl: String
+  bio: String
+  headline: String
+  location: String
+  projects: [Project!]!
+  skills: [Skill!]!
+  experiences: [Experience!]!
+  socialLinks: [SocialLink!]!
+  skillCategories: [SkillCategory!]!
+  education: [Education!]!
+  certifications: [Certification!]!
+  languages: [Language!]!
+  awards: [Award!]!
+  hobbies: [Hobby!]!
+}
+
+type DeleteResult {
+  success: Boolean!
+}
+
 type Query {
   health: String!
   me: UserProfile!
   getItems(page: Float! = 1, limit: Float! = 10): ItemsResponse!
   getItem(id: String!): Item
+  getPublicProfile(userId: String!): PublicProfile
+  getSkillCategories: [SkillCategory!]!
 }
 
 type Mutation {
   createItem(name: String!, description: String): Item!
   updateProfile(input: UpdateProfileInput!): UserProfile!
+  createProject(input: CreateProjectInput!): Project!
+  updateProject(id: String!, input: UpdateProjectInput!): Project
+  deleteProject(id: String!): DeleteResult!
+  reorderProjects(input: ReorderInput!): DeleteResult!
+  createSkill(input: CreateSkillInput!): Skill!
+  updateSkill(id: String!, input: UpdateSkillInput!): Skill
+  deleteSkill(id: String!): DeleteResult!
+  reorderSkills(input: ReorderInput!): DeleteResult!
+  createExperience(input: CreateExperienceInput!): Experience!
+  updateExperience(id: String!, input: UpdateExperienceInput!): Experience
+  deleteExperience(id: String!): DeleteResult!
+  reorderExperiences(input: ReorderInput!): DeleteResult!
+  createSocialLink(input: CreateSocialLinkInput!): SocialLink!
+  updateSocialLink(id: String!, input: UpdateSocialLinkInput!): SocialLink
+  deleteSocialLink(id: String!): DeleteResult!
+  reorderSocialLinks(input: ReorderInput!): DeleteResult!
+  createSkillCategory(input: CreateSkillCategoryInput!): SkillCategory!
+  updateSkillCategory(id: String!, input: UpdateSkillCategoryInput!): SkillCategory
+  deleteSkillCategory(id: String!): DeleteResult!
+  createEducation(input: CreateEducationInput!): Education!
+  updateEducation(id: String!, input: UpdateEducationInput!): Education
+  deleteEducation(id: String!): DeleteResult!
+  reorderEducation(input: ReorderInput!): DeleteResult!
+  createCertification(input: CreateCertificationInput!): Certification!
+  updateCertification(id: String!, input: UpdateCertificationInput!): Certification
+  deleteCertification(id: String!): DeleteResult!
+  reorderCertifications(input: ReorderInput!): DeleteResult!
+  createLanguage(input: CreateLanguageInput!): Language!
+  updateLanguage(id: String!, input: UpdateLanguageInput!): Language
+  deleteLanguage(id: String!): DeleteResult!
+  reorderLanguages(input: ReorderInput!): DeleteResult!
+  createAward(input: CreateAwardInput!): Award!
+  updateAward(id: String!, input: UpdateAwardInput!): Award
+  deleteAward(id: String!): DeleteResult!
+  reorderAwards(input: ReorderInput!): DeleteResult!
+  createHobby(input: CreateHobbyInput!): Hobby!
+  updateHobby(id: String!, input: UpdateHobbyInput!): Hobby
+  deleteHobby(id: String!): DeleteResult!
+  reorderHobbies(input: ReorderInput!): DeleteResult!
 }
 
 input UpdateProfileInput {
@@ -47,4 +230,144 @@ input UpdateProfileInput {
   lastName: String
   avatarUrl: String
   bio: String
+  headline: String
+  location: String
+}
+
+input CreateProjectInput {
+  title: String!
+  description: String
+  images: [String!]
+  liveUrl: String
+  repoUrl: String
+  tags: [String!]
+}
+
+input UpdateProjectInput {
+  title: String
+  description: String
+  images: [String!]
+  liveUrl: String
+  repoUrl: String
+  tags: [String!]
+}
+
+input ReorderInput {
+  orderedIds: [String!]!
+}
+
+input CreateSkillInput {
+  name: String!
+  categoryId: String
+  proficiency: Proficiency
+}
+
+input UpdateSkillInput {
+  name: String
+  categoryId: String
+  proficiency: Proficiency
+}
+
+input CreateExperienceInput {
+  company: String!
+  role: String!
+  description: [String!]
+  startDate: DateTime!
+  endDate: DateTime
+}
+
+input UpdateExperienceInput {
+  company: String
+  role: String
+  description: [String!]
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input CreateSocialLinkInput {
+  platform: String!
+  url: String!
+  label: String
+}
+
+input UpdateSocialLinkInput {
+  platform: String
+  url: String
+  label: String
+}
+
+input CreateSkillCategoryInput {
+  name: String!
+}
+
+input UpdateSkillCategoryInput {
+  name: String
+}
+
+input CreateEducationInput {
+  school: String!
+  degree: String
+  field: String
+  startDate: DateTime!
+  endDate: DateTime
+  description: [String!]
+}
+
+input UpdateEducationInput {
+  school: String
+  degree: String
+  field: String
+  startDate: DateTime
+  endDate: DateTime
+  description: [String!]
+}
+
+input CreateCertificationInput {
+  name: String!
+  issuer: String!
+  issueDate: DateTime
+  expiryDate: DateTime
+  url: String
+}
+
+input UpdateCertificationInput {
+  name: String
+  issuer: String
+  issueDate: DateTime
+  expiryDate: DateTime
+  url: String
+}
+
+input CreateLanguageInput {
+  name: String!
+  proficiency: String
+}
+
+input UpdateLanguageInput {
+  name: String
+  proficiency: String
+}
+
+input CreateAwardInput {
+  title: String!
+  issuer: String
+  date: DateTime
+  description: String
+}
+
+input UpdateAwardInput {
+  title: String
+  issuer: String
+  date: DateTime
+  description: String
+}
+
+input CreateHobbyInput {
+  name: String!
+  description: String
+}
+
+input UpdateHobbyInput {
+  name: String
+  description: String
 }

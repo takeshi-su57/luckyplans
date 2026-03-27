@@ -1,0 +1,22 @@
+{{- $component := "minio" }}
+apiVersion: v1
+kind: Service
+metadata:
+  # Service name must stay "minio" to match MINIO_ENDPOINT=minio in the ConfigMap.
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP
+      name: api
+    - port: 9001
+      targetPort: 9001
+      protocol: TCP
+      name: console
+  selector:
+    {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 4 }}

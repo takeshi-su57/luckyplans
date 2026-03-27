@@ -5,16 +5,16 @@ export function LabNotesSection() {
   return (
     <SectionContainer id="lab-notes">
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold tracking-tight text-neutral-900 md:text-3xl">
+        <h2 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">
           Lab Notes
         </h2>
-        <p className="max-w-2xl text-base text-neutral-600">
+        <p className="max-w-2xl text-base text-[#787774]">
           Weekly observations from building in the open.
         </p>
       </div>
 
-      <div className="mt-12 rounded-xl border border-dashed border-neutral-300 p-8 text-center md:p-12">
-        <p className="text-sm text-neutral-500">
+      <div className="mt-12 rounded-xl border border-dashed border-[#e8e7e4] p-8 text-center md:p-12">
+        <p className="text-sm text-[#787774]">
           First entry publishing soon. Follow the repository for updates.
         </p>
       </div>
@@ -22,7 +22,7 @@ export function LabNotesSection() {
       <div className="mt-6 text-center">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-1 text-sm font-medium text-green-600 transition-colors hover:text-green-700"
+          className="inline-flex items-center gap-1 text-sm font-medium text-[#0f7b6c] transition-colors hover:text-[#0f7b6c]"
         >
           View all notes
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
