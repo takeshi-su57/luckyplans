@@ -9,7 +9,8 @@ set -e
 #
 # Usage:
 #   ./seal-secrets.sh                              # Generate all secrets randomly
-#   ./seal-secrets.sh --seal-only KEY=VALUE ...    # Seal specific values (no random generation)
+#   ./seal-secrets.sh --seal-only KEY=VALUE ...    # Seal specific provided values
+#   ./seal-secrets.sh --seal-only KEY ...          # Auto-generate + seal specific keys
 #
 # Examples:
 #   # First-time setup — generate everything:
@@ -18,10 +19,13 @@ set -e
 #   # Re-seal only KEYCLOAK_CLIENT_SECRET with a specific value:
 #   ./seal-secrets.sh --seal-only KEYCLOAK_CLIENT_SECRET=my-secret-from-keycloak
 #
-#   # Re-seal multiple specific values:
+#   # Auto-generate + seal MinIO credentials (no value needed):
+#   ./seal-secrets.sh --seal-only MINIO_ACCESS_KEY MINIO_SECRET_KEY
+#
+#   # Mix both — provide one value, auto-generate another:
 #   ./seal-secrets.sh --seal-only \
 #     KEYCLOAK_CLIENT_SECRET=abc123 \
-#     KEYCLOAK_ADMIN_PASSWORD=xyz789
+#     MINIO_ACCESS_KEY
 # ---------------------------------------------------------------------------
 
 NAMESPACE="luckyplans"
@@ -32,6 +36,7 @@ CONTROLLER_NAMESPACE="kube-system"
 # Parse arguments
 SEAL_ONLY=false
 declare -A SPECIFIC_VALUES
+AUTO_GENERATE_KEYS=()
 
 for arg in "$@"; do
   case "$arg" in
@@ -46,8 +51,13 @@ for arg in "$@"; do
       fi
       ;;
     -h|--help)
-      head -25 "$0" | tail -22
+      head -28 "$0" | tail -25
       exit 0
+      ;;
+    *)
+      if $SEAL_ONLY; then
+        AUTO_GENERATE_KEYS+=("$arg")
+      fi
       ;;
   esac
 done
@@ -94,27 +104,64 @@ seal_value() {
 }
 
 # ---------------------------------------------------------------------------
-# Mode: --seal-only (seal specific provided values)
+# Mode: --seal-only (seal specific keys — with provided or auto-generated values)
 # ---------------------------------------------------------------------------
 if $SEAL_ONLY; then
-  if [[ ${#SPECIFIC_VALUES[@]} -eq 0 ]]; then
-    echo "Error: --seal-only requires at least one KEY=VALUE argument."
-    echo "Example: ./seal-secrets.sh --seal-only KEYCLOAK_CLIENT_SECRET=my-secret"
+  TOTAL=$(( ${#SPECIFIC_VALUES[@]} + ${#AUTO_GENERATE_KEYS[@]} ))
+  if [[ $TOTAL -eq 0 ]]; then
+    echo "Error: --seal-only requires at least one KEY or KEY=VALUE argument."
+    echo ""
+    echo "Examples:"
+    echo "  ./seal-secrets.sh --seal-only KEYCLOAK_CLIENT_SECRET=my-secret   # seal a known value"
+    echo "  ./seal-secrets.sh --seal-only MINIO_ACCESS_KEY MINIO_SECRET_KEY  # auto-generate + seal"
     exit 1
   fi
 
-  echo "Sealing ${#SPECIFIC_VALUES[@]} specific value(s)..."
+  echo "Sealing $TOTAL key(s)..."
   echo ""
 
+  HAS_GENERATED=false
+
+  # Seal provided values (KEY=VALUE)
   for key in "${!SPECIFIC_VALUES[@]}"; do
     val="${SPECIFIC_VALUES[$key]}"
     sealed=$(seal_value "$val")
     echo "    $key: \"$sealed\""
   done
 
+  # Auto-generate + seal bare keys (KEY only)
+  if [[ ${#AUTO_GENERATE_KEYS[@]} -gt 0 ]]; then
+    HAS_GENERATED=true
+    echo ""
+    echo "Auto-generating secure values for: ${AUTO_GENERATE_KEYS[*]}"
+    echo ""
+
+    for key in "${AUTO_GENERATE_KEYS[@]}"; do
+      val=$(generate_secret 24)
+      sealed=$(seal_value "$val")
+      echo "    $key: \"$sealed\""
+      # Store for plain-text output below
+      SPECIFIC_VALUES["$key"]="$val"
+    done
+  fi
+
   echo ""
   echo "Paste the line(s) above into values.prod.yaml under sealedSecrets.encryptedData."
   echo "Commit and push — ArgoCD will auto-sync."
+
+  if $HAS_GENERATED; then
+    echo ""
+    echo "============================================================"
+    echo "PLAIN-TEXT VALUES (auto-generated — save them now)"
+    echo "============================================================"
+    echo ""
+    for key in "${AUTO_GENERATE_KEYS[@]}"; do
+      printf "  %-30s %s\n" "$key:" "${SPECIFIC_VALUES[$key]}"
+    done
+    echo ""
+    echo "============================================================"
+  fi
+
   exit 0
 fi
 
@@ -129,6 +176,8 @@ SESSION_SECRET_VAL=$(generate_secret 48)
 KEYCLOAK_CLIENT_SECRET_VAL=$(generate_secret 24)
 POSTGRES_PASSWORD_VAL=$(generate_secret 24)
 KEYCLOAK_ADMIN_PASSWORD_VAL=$(generate_secret 24)
+MINIO_ACCESS_KEY_VAL=$(generate_secret 16)
+MINIO_SECRET_KEY_VAL=$(generate_secret 32)
 DATABASE_URL_VAL="postgresql://keycloak:${POSTGRES_PASSWORD_VAL}@postgresql:5432/luckyplans"
 
 echo "Sealing secrets against the cluster..."
@@ -140,6 +189,8 @@ SESSION_SECRET_SEALED=$(seal_value "$SESSION_SECRET_VAL")
 KEYCLOAK_CLIENT_SECRET_SEALED=$(seal_value "$KEYCLOAK_CLIENT_SECRET_VAL")
 POSTGRES_PASSWORD_SEALED=$(seal_value "$POSTGRES_PASSWORD_VAL")
 KEYCLOAK_ADMIN_PASSWORD_SEALED=$(seal_value "$KEYCLOAK_ADMIN_PASSWORD_VAL")
+MINIO_ACCESS_KEY_SEALED=$(seal_value "$MINIO_ACCESS_KEY_VAL")
+MINIO_SECRET_KEY_SEALED=$(seal_value "$MINIO_SECRET_KEY_VAL")
 DATABASE_URL_SEALED=$(seal_value "$DATABASE_URL_VAL")
 
 echo "=== Done! ==="
@@ -154,6 +205,8 @@ echo "    SESSION_SECRET: \"$SESSION_SECRET_SEALED\""
 echo "    KEYCLOAK_CLIENT_SECRET: \"$KEYCLOAK_CLIENT_SECRET_SEALED\""
 echo "    POSTGRES_PASSWORD: \"$POSTGRES_PASSWORD_SEALED\""
 echo "    KEYCLOAK_ADMIN_PASSWORD: \"$KEYCLOAK_ADMIN_PASSWORD_SEALED\""
+echo "    MINIO_ACCESS_KEY: \"$MINIO_ACCESS_KEY_SEALED\""
+echo "    MINIO_SECRET_KEY: \"$MINIO_SECRET_KEY_SEALED\""
 echo "    DATABASE_URL: \"$DATABASE_URL_SEALED\""
 echo ""
 echo "============================================================"
@@ -164,6 +217,8 @@ echo ""
 echo "KEYCLOAK_CLIENT_SECRET:   $KEYCLOAK_CLIENT_SECRET_VAL"
 echo "KEYCLOAK_ADMIN_PASSWORD:  $KEYCLOAK_ADMIN_PASSWORD_VAL"
 echo "POSTGRES_PASSWORD:        $POSTGRES_PASSWORD_VAL"
+echo "MINIO_ACCESS_KEY:         $MINIO_ACCESS_KEY_VAL"
+echo "MINIO_SECRET_KEY:         $MINIO_SECRET_KEY_VAL"
 echo ""
 echo "============================================================"
 echo ""
@@ -181,3 +236,6 @@ echo "  6. Done! The gateway and Keycloak now share the same client secret."
 echo ""
 echo "  To re-seal a single secret later (e.g., after rotating in Keycloak):"
 echo "    ./seal-secrets.sh --seal-only KEYCLOAK_CLIENT_SECRET=<new-value>"
+echo ""
+echo "  To auto-generate + seal specific keys (e.g., adding MinIO):"
+echo "    ./seal-secrets.sh --seal-only MINIO_ACCESS_KEY MINIO_SECRET_KEY"

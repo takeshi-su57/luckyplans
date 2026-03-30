@@ -48,8 +48,8 @@ description: All environment variables, Helm values, and production overrides.
 |----------|---------|-------------|
 | `MINIO_ENDPOINT` | `localhost` | MinIO server hostname |
 | `MINIO_PORT` | `9000` | MinIO API port |
-| `MINIO_ACCESS_KEY` | `minioadmin` | MinIO access key |
-| `MINIO_SECRET_KEY` | `minioadmin` | MinIO secret key |
+| `MINIO_ACCESS_KEY` | `minioadmin` | MinIO root user (S3 access key). **Secret** — managed via Sealed Secrets in production |
+| `MINIO_SECRET_KEY` | `minioadmin` | MinIO root password (S3 secret key). **Secret** — managed via Sealed Secrets in production |
 | `MINIO_BUCKET` | `luckyplans-uploads` | MinIO bucket name |
 | `MINIO_USE_SSL` | `false` | Use SSL for MinIO connection |
 

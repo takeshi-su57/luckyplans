@@ -42,7 +42,7 @@ pnpm install
 cp .env.example .env
 ```
 
-Default values work for local development. The only value you must fill in is `SESSION_SECRET`:
+Default values work for local development — including MinIO credentials (`MINIO_ACCESS_KEY=minioadmin`, `MINIO_SECRET_KEY=minioadmin`). The only value you must fill in is `SESSION_SECRET`:
 
 ```bash
 # Generate a session secret:
