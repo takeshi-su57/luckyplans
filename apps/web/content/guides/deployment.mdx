@@ -13,19 +13,19 @@ Continuous delivery is handled by **ArgoCD** (pull-based GitOps). See [ArgoCD](/
 
 ```
                      Traefik Ingress (k3d built-in)
-                      │              │            │
-                      │ /            │ /graphql   │ /auth/*
-                      ▼              ▼            ▼
-                    web:3000    api-gateway:3001
-                                     │         │
-                                     │ Redis   │ OIDC
-                                     ▼         ▼
-                                service-core  Keycloak:8080
-                                     │              │
-                                     ▼              ▼
-                                  Redis:6379   PostgreSQL:5432
-                                                    ▲
-                                  prisma-migrate ───┘ (Helm pre-upgrade Job)
+                      │              │            │           │
+                      │ /            │ /graphql   │ /auth/*   │ /uploads/*
+                      ▼              ▼            ▼           ▼
+                    web:3000    api-gateway:3001 ─────────────┘
+                                     │         │         │
+                                     │ Redis   │ OIDC    │ S3 API
+                                     ▼         ▼         ▼
+                                service-core  Keycloak  MinIO:9000
+                                     │           │         │
+                                     ▼           ▼         ▼
+                                  Redis:6379  PostgreSQL  /data (PVC)
+                                                  ▲
+                                  prisma-migrate ─┘ (Helm pre-upgrade Job)
 
     monitoring namespace:
       OTel Collector ← api-gateway, service-core (OTLP)
@@ -261,6 +261,8 @@ Production secrets are managed via **Bitnami Sealed Secrets**. Encrypted values 
 | `KEYCLOAK_CLIENT_SECRET` | Keycloak OIDC client authentication |
 | `POSTGRES_PASSWORD` | PostgreSQL database (used by PostgreSQL + Keycloak) |
 | `KEYCLOAK_ADMIN_PASSWORD` | Keycloak admin console login |
+| `MINIO_ACCESS_KEY` | MinIO root user (S3 access key for file uploads) |
+| `MINIO_SECRET_KEY` | MinIO root password (S3 secret key for file uploads) |
 
 ### Rotating secrets
 
@@ -274,6 +276,8 @@ Production secrets are managed via **Bitnami Sealed Secrets**. Encrypted values 
 
 After rotating `KEYCLOAK_CLIENT_SECRET`, update Keycloak Admin Console:
 Clients → `luckyplans-frontend` → Credentials → set the new value.
+
+> **Important:** All secrets in the table above must be present in `values.prod.yaml` under `sealedSecrets.encryptedData`. If any are missing, the corresponding Pod will fail to start because its `secretKeyRef` cannot resolve — and any PVCs it mounts will stay in `WaitForFirstConsumer` indefinitely.
 
 ### Local dev secrets
 

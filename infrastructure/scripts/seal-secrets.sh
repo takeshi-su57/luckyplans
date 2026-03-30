@@ -129,6 +129,8 @@ SESSION_SECRET_VAL=$(generate_secret 48)
 KEYCLOAK_CLIENT_SECRET_VAL=$(generate_secret 24)
 POSTGRES_PASSWORD_VAL=$(generate_secret 24)
 KEYCLOAK_ADMIN_PASSWORD_VAL=$(generate_secret 24)
+MINIO_ACCESS_KEY_VAL=$(generate_secret 16)
+MINIO_SECRET_KEY_VAL=$(generate_secret 32)
 DATABASE_URL_VAL="postgresql://keycloak:${POSTGRES_PASSWORD_VAL}@postgresql:5432/luckyplans"
 
 echo "Sealing secrets against the cluster..."
@@ -140,6 +142,8 @@ SESSION_SECRET_SEALED=$(seal_value "$SESSION_SECRET_VAL")
 KEYCLOAK_CLIENT_SECRET_SEALED=$(seal_value "$KEYCLOAK_CLIENT_SECRET_VAL")
 POSTGRES_PASSWORD_SEALED=$(seal_value "$POSTGRES_PASSWORD_VAL")
 KEYCLOAK_ADMIN_PASSWORD_SEALED=$(seal_value "$KEYCLOAK_ADMIN_PASSWORD_VAL")
+MINIO_ACCESS_KEY_SEALED=$(seal_value "$MINIO_ACCESS_KEY_VAL")
+MINIO_SECRET_KEY_SEALED=$(seal_value "$MINIO_SECRET_KEY_VAL")
 DATABASE_URL_SEALED=$(seal_value "$DATABASE_URL_VAL")
 
 echo "=== Done! ==="
@@ -154,6 +158,8 @@ echo "    SESSION_SECRET: \"$SESSION_SECRET_SEALED\""
 echo "    KEYCLOAK_CLIENT_SECRET: \"$KEYCLOAK_CLIENT_SECRET_SEALED\""
 echo "    POSTGRES_PASSWORD: \"$POSTGRES_PASSWORD_SEALED\""
 echo "    KEYCLOAK_ADMIN_PASSWORD: \"$KEYCLOAK_ADMIN_PASSWORD_SEALED\""
+echo "    MINIO_ACCESS_KEY: \"$MINIO_ACCESS_KEY_SEALED\""
+echo "    MINIO_SECRET_KEY: \"$MINIO_SECRET_KEY_SEALED\""
 echo "    DATABASE_URL: \"$DATABASE_URL_SEALED\""
 echo ""
 echo "============================================================"
@@ -164,6 +170,8 @@ echo ""
 echo "KEYCLOAK_CLIENT_SECRET:   $KEYCLOAK_CLIENT_SECRET_VAL"
 echo "KEYCLOAK_ADMIN_PASSWORD:  $KEYCLOAK_ADMIN_PASSWORD_VAL"
 echo "POSTGRES_PASSWORD:        $POSTGRES_PASSWORD_VAL"
+echo "MINIO_ACCESS_KEY:         $MINIO_ACCESS_KEY_VAL"
+echo "MINIO_SECRET_KEY:         $MINIO_SECRET_KEY_VAL"
 echo ""
 echo "============================================================"
 echo ""
