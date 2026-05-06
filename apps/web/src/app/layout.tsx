@@ -82,6 +82,9 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
+  other: {
+    'base:app_id': '69fb65b56e900aabdc5abadb',
+  },
   metadataBase: new URL('https://luckyplans.com'),
 };
 
