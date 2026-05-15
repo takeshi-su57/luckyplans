@@ -20,20 +20,20 @@ Authentication is gateway-managed: the browser only sees an opaque `session_id` 
 
 ## Tech Stack
 
-| Layer            | Technology                          |
-| ---------------- | ----------------------------------- |
-| Frontend         | Next.js 16 (App Router)             |
-| GraphQL Client   | Apollo Client                       |
-| API Gateway      | NestJS + Apollo Server (code-first) |
-| Microservices    | NestJS Microservices                |
-| Inter-service    | Redis transport (pub/sub)           |
-| Auth             | Keycloak (ROPC + Admin API)         |
-| Database         | PostgreSQL 17 + Prisma ORM          |
-| Monorepo         | Turborepo + pnpm workspaces         |
-| Containerization | Docker (multi-stage builds)         |
+| Layer            | Technology                                       |
+| ---------------- | ------------------------------------------------ |
+| Frontend         | Next.js 16 (App Router)                          |
+| GraphQL Client   | Apollo Client                                    |
+| API Gateway      | NestJS + Apollo Server (code-first)              |
+| Microservices    | NestJS Microservices                             |
+| Inter-service    | Redis transport (pub/sub)                        |
+| Auth             | Keycloak (ROPC + Admin API)                      |
+| Database         | PostgreSQL 17 + Prisma ORM                       |
+| Monorepo         | Turborepo + pnpm workspaces                      |
+| Containerization | Docker (multi-stage builds)                      |
 | Observability    | Prometheus, Grafana, Loki, Tempo, OTel Collector |
-| Logging          | Pino (structured JSON) via nestjs-pino |
-| Deployment       | ArgoCD + Helm on Kubernetes         |
+| Logging          | Pino (structured JSON) via nestjs-pino           |
+| Deployment       | ArgoCD + Helm on Kubernetes                      |
 
 ## AI Engineering
 
@@ -66,7 +66,7 @@ luckyplans/
 ## Prerequisites
 
 - **Node.js** >= 20.0.0
-- **pnpm** >= 9.0.0 (`corepack enable && corepack prepare pnpm@9.15.4 --activate`)
+- **pnpm** >= 11.1.2 (`corepack enable && corepack prepare pnpm@11.1.2 --activate`)
 - **Docker** (for containerized builds and local Keycloak/Redis)
 - **k3d** (for local Kubernetes — [install](https://k3d.io))
 
@@ -129,43 +129,43 @@ See [apps/web/content/guides/deployment.mdx](apps/web/content/guides/deployment.
 
 ## Environment Variables
 
-| Variable                  | Default                                   | Description                          |
-| ------------------------- | ----------------------------------------- | ------------------------------------ |
-| `REDIS_HOST`              | `localhost`                               | Redis hostname                       |
-| `REDIS_PORT`              | `6379`                                    | Redis port                           |
-| `API_GATEWAY_PORT`        | `3001`                                    | API Gateway listen port              |
-| `CORS_ORIGIN`             | `http://localhost:3000`                   | Allowed CORS origin                  |
-| `API_GATEWAY_URL`         | `http://localhost:3001`                   | Gateway URL (used by Next.js rewrites) |
-| `KEYCLOAK_ISSUER`         | `http://localhost:8080/realms/luckyplans` | Keycloak realm issuer URL            |
-| `KEYCLOAK_CLIENT_ID`      | `luckyplans-frontend`                     | Keycloak OIDC client ID              |
-| `KEYCLOAK_CLIENT_SECRET`  | —                                         | Keycloak client secret (confidential) |
-| `KEYCLOAK_ADMIN_URL`      | `http://localhost:8080`                   | Keycloak base URL for Admin API      |
-| `SESSION_SECRET`          | —                                         | Secret for session signing           |
-| `SESSION_TTL_SECONDS`     | `36000`                                   | Session TTL (default 10 hours)       |
-| `DATABASE_URL`            | —                                         | PostgreSQL connection string (Prisma) |
-| `MINIO_ENDPOINT`          | `localhost`                               | MinIO server hostname                |
-| `MINIO_PORT`              | `9000`                                    | MinIO API port                       |
-| `MINIO_ACCESS_KEY`        | `minioadmin`                              | MinIO access key                     |
-| `MINIO_SECRET_KEY`        | `minioadmin`                              | MinIO secret key                     |
-| `MINIO_BUCKET`            | `luckyplans-uploads`                      | MinIO bucket name                    |
-| `MINIO_USE_SSL`           | `false`                                   | Use SSL for MinIO connection         |
-| `NODE_ENV`                | `development`                             | Node environment                     |
+| Variable                 | Default                                   | Description                            |
+| ------------------------ | ----------------------------------------- | -------------------------------------- |
+| `REDIS_HOST`             | `localhost`                               | Redis hostname                         |
+| `REDIS_PORT`             | `6379`                                    | Redis port                             |
+| `API_GATEWAY_PORT`       | `3001`                                    | API Gateway listen port                |
+| `CORS_ORIGIN`            | `http://localhost:3000`                   | Allowed CORS origin                    |
+| `API_GATEWAY_URL`        | `http://localhost:3001`                   | Gateway URL (used by Next.js rewrites) |
+| `KEYCLOAK_ISSUER`        | `http://localhost:8080/realms/luckyplans` | Keycloak realm issuer URL              |
+| `KEYCLOAK_CLIENT_ID`     | `luckyplans-frontend`                     | Keycloak OIDC client ID                |
+| `KEYCLOAK_CLIENT_SECRET` | —                                         | Keycloak client secret (confidential)  |
+| `KEYCLOAK_ADMIN_URL`     | `http://localhost:8080`                   | Keycloak base URL for Admin API        |
+| `SESSION_SECRET`         | —                                         | Secret for session signing             |
+| `SESSION_TTL_SECONDS`    | `36000`                                   | Session TTL (default 10 hours)         |
+| `DATABASE_URL`           | —                                         | PostgreSQL connection string (Prisma)  |
+| `MINIO_ENDPOINT`         | `localhost`                               | MinIO server hostname                  |
+| `MINIO_PORT`             | `9000`                                    | MinIO API port                         |
+| `MINIO_ACCESS_KEY`       | `minioadmin`                              | MinIO access key                       |
+| `MINIO_SECRET_KEY`       | `minioadmin`                              | MinIO secret key                       |
+| `MINIO_BUCKET`           | `luckyplans-uploads`                      | MinIO bucket name                      |
+| `MINIO_USE_SSL`          | `false`                                   | Use SSL for MinIO connection           |
+| `NODE_ENV`               | `development`                             | Node environment                       |
 
 ## Scripts
 
-| Command                | Description                          |
-| ---------------------- | ------------------------------------ |
-| `pnpm setup`           | First-time project setup             |
-| `pnpm dev`             | Start all services with hot reload   |
-| `pnpm build`           | Build all packages and apps          |
-| `pnpm lint`            | Lint all packages and apps           |
-| `pnpm test`            | Run tests across all packages        |
-| `pnpm type-check`      | Type-check all packages and apps     |
-| `pnpm format`          | Format all files with Prettier       |
-| `pnpm format:check`    | Check formatting without writing     |
-| `pnpm clean`           | Clean all build artifacts            |
-| `pnpm deploy:local`    | Full deploy to local Kubernetes      |
-| `pnpm deploy:status`   | Check deployment status              |
-| `pnpm deploy:teardown` | Destroy local Kubernetes cluster     |
+| Command                | Description                        |
+| ---------------------- | ---------------------------------- |
+| `pnpm setup`           | First-time project setup           |
+| `pnpm dev`             | Start all services with hot reload |
+| `pnpm build`           | Build all packages and apps        |
+| `pnpm lint`            | Lint all packages and apps         |
+| `pnpm test`            | Run tests across all packages      |
+| `pnpm type-check`      | Type-check all packages and apps   |
+| `pnpm format`          | Format all files with Prettier     |
+| `pnpm format:check`    | Check formatting without writing   |
+| `pnpm clean`           | Clean all build artifacts          |
+| `pnpm deploy:local`    | Full deploy to local Kubernetes    |
+| `pnpm deploy:status`   | Check deployment status            |
+| `pnpm deploy:teardown` | Destroy local Kubernetes cluster   |
 
 See [apps/web/content/guides/developer.mdx](apps/web/content/guides/developer.mdx) for the full development guide.

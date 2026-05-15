@@ -1,6 +1,6 @@
 FROM node:25-alpine AS base
 RUN apk add --no-cache libc6-compat
-RUN npm install -g pnpm@9.15.4
+RUN npm install -g pnpm@11.1.2
 WORKDIR /app
 
 # --- Pruned workspace ---
