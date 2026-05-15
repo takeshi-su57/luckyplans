@@ -1,6 +1,7 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+injectWorkspacePackages: true
 allowBuilds:
   '@apollo/protobufjs': false
   '@nestjs/core': false
