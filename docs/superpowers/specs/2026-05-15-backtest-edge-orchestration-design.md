@@ -507,9 +507,30 @@ Verification gate:
 Stop condition:
 - No real backtest engine invoked.
 
-### Scope 4: Shared Composable Backtest Runtime Import
+### Scope 3.5: Edge Packaging, Distribution, and Upgrade Control Plane
 
 Depends on: Scope 3
+
+Deliverables:
+- Publish edge release artifact contract (Windows/Linux binaries + checksums/signatures).
+- Implement orchestration metadata model for edge releases and `targetVersion`.
+- Add orchestration UI actions to trigger upgrade for selected edges.
+- Add edge-side upgrade state reporting contract (without requiring real compute tasks).
+
+Required tests:
+- Integration: create release metadata and set target version for selected edges.
+- Integration: edge reports upgrade lifecycle status (`UPGRADE_PENDING` ... `SUCCEEDED|FAILED`).
+- Security test: invalid checksum/signature upgrade attempt must fail.
+
+Verification gate:
+- User can trigger upgrade intent from UI and observe per-edge upgrade status transitions.
+
+Stop condition:
+- Real backtest engine execution still out of scope.
+
+### Scope 4: Shared Composable Backtest Runtime Import
+
+Depends on: Scope 3.5
 
 Deliverables:
 - Port alpha composable backtest runtime into beta shared compute module.
@@ -613,3 +634,137 @@ Stop condition:
   - `pnpm type-check` passes
   - demo checklist for that scope is verified manually
 - No next scope starts until previous scope verification gate is met.
+
+## 15. Edge Distribution and Upgrade Contract
+
+This section defines where users download edge binaries and how centralized upgrade is triggered from orchestration UI.
+
+### 15.1 Distribution Channel
+
+Versioned release artifacts must be published per edge version.
+
+Preferred base URL pattern:
+- `https://downloads.luckyplans.io/edge/v<version>/...`
+
+Alternative:
+- GitHub release assets under `edge-v<version>` tag.
+
+Required published files per version:
+- `lucky-edge-windows-x64-installer.exe`
+- `lucky-edge-linux-x64.tar.gz`
+- `SHA256SUMS`
+- `SHA256SUMS.sig`
+- `RELEASE_NOTES.md`
+
+Recommended stable aliases:
+- `/edge/latest/windows` -> redirects to latest Windows installer
+- `/edge/latest/linux` -> redirects to latest Linux tarball
+
+### 15.2 Installation Layout (Contract)
+
+Windows (immutable binaries):
+- `C:\Program Files\LuckyPlans Edge\`
+  - `lucky-edge.exe`
+  - `VERSION`
+
+Windows (mutable runtime):
+- `C:\ProgramData\LuckyPlans\edge\`
+  - `config\edge.config.json`
+  - `secrets\worker.key`
+  - `state\edge-state.db`
+  - `logs\edge.log`
+  - `work\`
+  - `results\`
+
+Linux (immutable binaries):
+- `/opt/luckyplans-edge/`
+  - `lucky-edge`
+  - `VERSION`
+
+Linux (mutable runtime):
+- `/var/lib/luckyplans-edge/`
+  - `config/edge.config.json`
+  - `secrets/worker.key`
+  - `state/edge-state.db`
+  - `work/`
+  - `results/`
+
+Linux logs:
+- primary: `journald` via systemd
+- optional: `/var/log/luckyplans-edge/edge.log`
+
+### 15.3 Upgrade Model (Orchestrator-Triggered, Edge-Executed)
+
+Upgrades are centrally initiated but locally executed by each edge agent.
+Orchestrator never shells into edge hosts.
+
+Flow:
+1. Orchestrator stores release metadata (version, per-OS URL, checksum/signature, compatibility constraints).
+2. User clicks upgrade action in orchestration UI for selected edges (or group).
+3. Orchestrator sets `targetVersion` for selected edges.
+4. Edge polls and sees `targetVersion > currentVersion`.
+5. Edge waits for safe point (not running critical task unless forced policy).
+6. Edge downloads artifact, validates checksum and signature.
+7. Edge stages update, restarts service, reports new version and status.
+
+### 15.4 Upgrade Safety Rules
+
+- Artifact verification is mandatory:
+  - verify SHA256 checksum
+  - verify signature (`SHA256SUMS.sig`)
+- Compatibility gate:
+  - orchestrator enforces minimum edge version
+  - edge enforces minimum orchestrator API version
+- Rollout strategy:
+  - canary first, then phased rollout
+- Task-safety policy:
+  - default: do not upgrade while task is processing
+  - optional force mode with explicit user action
+- Rollback support:
+  - orchestrator can set previous stable `targetVersion`
+
+### 15.5 Upgrade Status Model
+
+Per edge upgrade status enum:
+- `IDLE`
+- `UPGRADE_PENDING`
+- `DOWNLOADING`
+- `VERIFYING`
+- `RESTARTING`
+- `SUCCEEDED`
+- `FAILED`
+- `ROLLED_BACK`
+
+Required status payload fields:
+- `edgeId`
+- `fromVersion`
+- `targetVersion`
+- `status`
+- `message`
+- `updatedAt`
+
+### 15.6 Scope Binding
+
+- Distribution page and downloadable artifact links are required by Scope 1 UI foundation.
+- Upgrade control plane (set `targetVersion`, monitor status) is required by Scope 3.5.
+- In-place auto-upgrade execution on edge agent baseline is required by Scope 3.5 before compute scopes.
+
+## 16. Scope 0 Completion Record
+
+Scope: `Scope 0: Contract Freeze and Alignment`  
+Date: `2026-05-15`
+
+Verification checklist:
+- [x] Architecture goal approved.
+- [x] Phase-1 in-scope and out-of-scope boundaries defined.
+- [x] V1 task state machine frozen.
+- [x] Lease/heartbeat/assignment rules frozen.
+- [x] Internal edge API payload contract frozen.
+- [x] Worker credential security contract frozen.
+- [x] Distribution and upgrade contract frozen.
+- [x] Session-based scope ladder defined with dependencies.
+- [x] Pre-compute platform prerequisite added (`Scope 3.5` before Scope 4).
+
+Gate decision:
+- Scope 0 is **APPROVED** and considered the authoritative baseline for subsequent scopes.
+- Any future changes to contracts in Sections 13-15 require explicit approval before implementation updates.
