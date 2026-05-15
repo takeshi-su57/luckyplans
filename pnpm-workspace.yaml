@@ -1,3 +1,10 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+allowBuilds:
+  '@apollo/protobufjs': false
+  '@nestjs/core': false
+  '@prisma/engines': false
+  prisma: false
+  protobufjs: false
+  sharp: false

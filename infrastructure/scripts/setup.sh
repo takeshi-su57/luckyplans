@@ -23,7 +23,7 @@ echo "[OK] Node.js $(node -v)"
 # Check pnpm
 if ! command -v pnpm >/dev/null 2>&1; then
   echo "pnpm not found. Installing..."
-  npm install -g pnpm@9.15.4
+  npm install -g pnpm@11.1.2
 fi
 echo "[OK] pnpm $(pnpm -v)"
 

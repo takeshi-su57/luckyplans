@@ -10,7 +10,7 @@ description: How to set up and run LuckyPlans locally for development.
 | Tool           | Version   | Install                              |
 | -------------- | --------- | ------------------------------------ |
 | Node.js        | >= 20.0.0 | [nodejs.org](https://nodejs.org)     |
-| pnpm           | >= 9.0.0  | `npm install -g pnpm@9.15.4`        |
+| pnpm           | >= 9.0.0  | `npm install -g pnpm@11.1.2`         |
 | Docker Compose | Latest    | [docker.com](https://www.docker.com) |
 
 ## Quick Start
@@ -59,18 +59,18 @@ Docker Compose provides the infrastructure and observability services needed for
 docker compose up -d
 ```
 
-| Container            | Port  | Purpose                                        |
-| -------------------- | ----- | ---------------------------------------------- |
-| redis                | 6379  | Inter-service communication + sessions         |
-| postgresql-keycloak  | 5433  | Keycloak database                              |
-| postgresql-app       | 5434  | Application database (Prisma / service-core)   |
-| keycloak             | 8080  | Identity provider                              |
-| minio                | 9000 (API), 9001 (Console) | Object storage for file uploads |
-| otel-collector | 4317  | OpenTelemetry Collector (gRPC), also 4318 (HTTP), 8889 (Prometheus) |
-| prometheus     | 9090  | Metrics storage                                |
-| grafana        | 3002  | Dashboards (admin/admin)                       |
-| loki           | 3100  | Log aggregation                                |
-| tempo          | 3200  | Distributed tracing                            |
+| Container           | Port                       | Purpose                                                             |
+| ------------------- | -------------------------- | ------------------------------------------------------------------- |
+| redis               | 6379                       | Inter-service communication + sessions                              |
+| postgresql-keycloak | 5433                       | Keycloak database                                                   |
+| postgresql-app      | 5434                       | Application database (Prisma / service-core)                        |
+| keycloak            | 8080                       | Identity provider                                                   |
+| minio               | 9000 (API), 9001 (Console) | Object storage for file uploads                                     |
+| otel-collector      | 4317                       | OpenTelemetry Collector (gRPC), also 4318 (HTTP), 8889 (Prometheus) |
+| prometheus          | 9090                       | Metrics storage                                                     |
+| grafana             | 3002                       | Dashboards (admin/admin)                                            |
+| loki                | 3100                       | Log aggregation                                                     |
+| tempo               | 3200                       | Distributed tracing                                                 |
 
 Verify everything is healthy:
 
@@ -105,11 +105,11 @@ pnpm dev
 
 Turborepo starts everything in parallel with hot reload:
 
-| Service      | Internal Port | Access URL                     | Description                            |
-| ------------ | ------------- | ------------------------------ | -------------------------------------- |
-| Frontend     | 3000          | http://localhost:3000          | Next.js app (rewrites proxy to gateway)|
-| API Gateway  | 3001          | http://localhost:3000/graphql  | GraphQL (via Next.js rewrite)          |
-| service-core | —             | — (Redis transport)            | Core domain microservice               |
+| Service      | Internal Port | Access URL                    | Description                             |
+| ------------ | ------------- | ----------------------------- | --------------------------------------- |
+| Frontend     | 3000          | http://localhost:3000         | Next.js app (rewrites proxy to gateway) |
+| API Gateway  | 3001          | http://localhost:3000/graphql | GraphQL (via Next.js rewrite)           |
+| service-core | —             | — (Redis transport)           | Core domain microservice                |
 
 > **Note:** The browser talks to `localhost:3000`. Next.js rewrites in `next.config.ts` proxy `/auth/*` and `/graphql` to the API Gateway (port 3001). This same-domain routing is what allows the `session_id` cookie to be shared between the frontend and the gateway.
 
@@ -182,10 +182,10 @@ export class MyService {
   private readonly logger = new Logger(MyService.name);
 
   doSomething() {
-    this.logger.log('Processing request');          // info level
-    this.logger.warn('Cache miss, falling back');   // warn level
-    this.logger.error('Failed to connect', error);  // error level
-    this.logger.debug('Detailed debug info');        // debug level (dev only)
+    this.logger.log('Processing request'); // info level
+    this.logger.warn('Cache miss, falling back'); // warn level
+    this.logger.error('Failed to connect', error); // error level
+    this.logger.debug('Detailed debug info'); // debug level (dev only)
   }
 }
 ```
@@ -218,7 +218,14 @@ In **development** (`LOG_LEVEL=debug`), Pino pretty-prints with colors:
 In **production** (`LOG_LEVEL=info`), raw JSON goes to stdout for Loki to collect:
 
 ```json
-{"level":"info","time":1710000000,"msg":"Processing request","traceId":"abc123...","spanId":"def456...","context":"MyService"}
+{
+  "level": "info",
+  "time": 1710000000,
+  "msg": "Processing request",
+  "traceId": "abc123...",
+  "spanId": "def456...",
+  "context": "MyService"
+}
 ```
 
 ### Trace context in logs
@@ -280,11 +287,11 @@ This generates a SQL file at `packages/prisma/prisma/migrations/<timestamp>_<nam
 
 Prisma generates DDL (schema changes) but **never backfills data**. Adding a non-nullable column without a default to a table with existing rows **will fail**.
 
-| Scenario | Safe? | What to do |
-|----------|-------|------------|
-| New table with required columns | Yes | No existing rows — safe |
-| New nullable column (`String?`) on existing table | Yes | Existing rows get `NULL` |
-| New column with `@default()` on existing table | Yes | Existing rows get the default |
+| Scenario                                                      | Safe?  | What to do                            |
+| ------------------------------------------------------------- | ------ | ------------------------------------- |
+| New table with required columns                               | Yes    | No existing rows — safe               |
+| New nullable column (`String?`) on existing table             | Yes    | Existing rows get `NULL`              |
+| New column with `@default()` on existing table                | Yes    | Existing rows get the default         |
 | New required column (no `?`, no `@default`) on existing table | **No** | Migration will fail if table has rows |
 
 ### When you need a required column on an existing table
@@ -396,7 +403,9 @@ export const otelSdk = bootstrapTelemetry({ serviceName: 'service-<name>' });
 import { otelSdk } from './instrument';
 import { NestFactory } from '@nestjs/core';
 // ... rest of bootstrap
-process.on('SIGTERM', async () => { await otelSdk.shutdown(); });
+process.on('SIGTERM', async () => {
+  await otelSdk.shutdown();
+});
 ```
 
 ```typescript
@@ -421,9 +430,7 @@ Import the module in `apps/api-gateway/src/app.module.ts`.
 // In resolvers — wrap payloads with injectTraceContext() for end-to-end tracing
 import { injectTraceContext } from '@luckyplans/shared';
 
-return firstValueFrom(
-  this.client.send(Pattern.DO_SOMETHING, injectTraceContext({ id })),
-);
+return firstValueFrom(this.client.send(Pattern.DO_SOMETHING, injectTraceContext({ id })));
 ```
 
 ### 7. Add a Helm template
@@ -440,21 +447,21 @@ pnpm dev
 
 ## All Commands
 
-| Command                     | Description                                                |
-| --------------------------- | ---------------------------------------------------------- |
-| `pnpm setup`                | First-time project setup (deps, .env, build shared pkgs)   |
-| `pnpm dev`                  | Start all services with hot reload                         |
-| `pnpm build`                | Build all packages and apps                                |
-| `pnpm lint`                 | Lint all packages                                          |
-| `pnpm type-check`           | Type-check all packages                                    |
-| `pnpm format`               | Format all files with Prettier                             |
-| `pnpm format:check`         | Check formatting without modifying                         |
-| `pnpm clean`                | Remove all build artifacts                                 |
-| `pnpm deploy:local`         | Full deploy to local k3d cluster (build all + Helm)        |
-| `deploy-local.sh web`       | Rebuild and redeploy a single service                      |
+| Command                       | Description                                              |
+| ----------------------------- | -------------------------------------------------------- |
+| `pnpm setup`                  | First-time project setup (deps, .env, build shared pkgs) |
+| `pnpm dev`                    | Start all services with hot reload                       |
+| `pnpm build`                  | Build all packages and apps                              |
+| `pnpm lint`                   | Lint all packages                                        |
+| `pnpm type-check`             | Type-check all packages                                  |
+| `pnpm format`                 | Format all files with Prettier                           |
+| `pnpm format:check`           | Check formatting without modifying                       |
+| `pnpm clean`                  | Remove all build artifacts                               |
+| `pnpm deploy:local`           | Full deploy to local k3d cluster (build all + Helm)      |
+| `deploy-local.sh web`         | Rebuild and redeploy a single service                    |
 | `deploy-local.sh --helm-only` | Helm upgrade only (config/secret changes, no builds)     |
-| `pnpm deploy:teardown`      | Destroy the local k3d cluster                              |
-| `pnpm deploy:status`        | Show cluster, Helm release, and pod status                 |
+| `pnpm deploy:teardown`        | Destroy the local k3d cluster                            |
+| `pnpm deploy:status`          | Show cluster, Helm release, and pod status               |
 
 ## Observability (Local Dev)
 
