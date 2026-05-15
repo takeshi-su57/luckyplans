@@ -358,4 +358,23 @@ export class CoreController {
   async reorderHobbies(@Payload() data: { userId: string; orderedIds: string[] }) {
     return this.coreService.reorderHobbies(data.userId, data.orderedIds);
   }
+
+  // —— Edge Registry ———————————————————————————————————————————————————————————————
+
+  @MessagePattern(CoreMessagePattern.GET_WORKERS)
+  async getWorkers() {
+    return this.coreService.getWorkers();
+  }
+
+  @MessagePattern(CoreMessagePattern.CREATE_WORKER)
+  async createWorker(
+    @Payload() data: { name: string; platform?: string; version?: string },
+  ) {
+    return this.coreService.createWorker(data);
+  }
+
+  @MessagePattern(CoreMessagePattern.DISABLE_WORKER)
+  async disableWorker(@Payload() data: { id: string }) {
+    return this.coreService.disableWorker(data.id);
+  }
 }

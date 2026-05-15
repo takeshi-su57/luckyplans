@@ -9,7 +9,8 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "type-check": "tsc --noEmit",
-    "clean": "node -e \"const fs=require('fs');['dist','.turbo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\""
+    "clean": "node -e \"const fs=require('fs');['dist','.turbo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
+    "test": "node --test test/**/*.test.cjs"
   },
   "dependencies": {
     "@luckyplans/prisma": "workspace:*",

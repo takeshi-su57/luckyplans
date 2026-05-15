@@ -191,6 +191,22 @@ export interface PublicProfileData extends UserProfileData {
   hobbies: HobbyData[];
 }
 
+export enum WorkerStatus {
+  ACTIVE = 'ACTIVE',
+  DISABLED = 'DISABLED',
+}
+
+export interface WorkerData {
+  id: string;
+  name: string;
+  platform?: string;
+  version?: string;
+  status: WorkerStatus;
+  lastSeenAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export enum CoreMessagePattern {
   GET_ITEMS = 'core.getItems',
   GET_ITEM = 'core.getItem',
@@ -266,4 +282,9 @@ export enum CoreMessagePattern {
   UPDATE_HOBBY = 'core.updateHobby',
   DELETE_HOBBY = 'core.deleteHobby',
   REORDER_HOBBIES = 'core.reorderHobbies',
+
+  // Edge registry
+  GET_WORKERS = 'core.getWorkers',
+  CREATE_WORKER = 'core.createWorker',
+  DISABLE_WORKER = 'core.disableWorker',
 }

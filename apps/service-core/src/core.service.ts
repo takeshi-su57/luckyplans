@@ -905,4 +905,36 @@ export class CoreService {
     );
     return { success: true };
   }
+
+  // —— Edge Registry ———————————————————————————————————————————————————————————————
+
+  async getWorkers() {
+    return this.prisma.worker.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async createWorker(data: {
+    name: string;
+    platform?: string;
+    version?: string;
+  }) {
+    return this.prisma.worker.create({
+      data: {
+        name: data.name,
+        platform: data.platform,
+        version: data.version,
+      },
+    });
+  }
+
+  async disableWorker(id: string) {
+    const existing = await this.prisma.worker.findUnique({ where: { id } });
+    if (!existing) return null;
+
+    return this.prisma.worker.update({
+      where: { id },
+      data: { status: 'DISABLED' },
+    });
+  }
 }

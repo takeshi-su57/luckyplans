@@ -251,6 +251,17 @@ exports.Prisma.HobbyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.WorkerScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  platform: 'platform',
+  version: 'version',
+  status: 'status',
+  lastSeenAt: 'lastSeenAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -272,6 +283,11 @@ exports.Proficiency = exports.$Enums.Proficiency = {
   EXPERT: 'EXPERT'
 };
 
+exports.WorkerStatus = exports.$Enums.WorkerStatus = {
+  ACTIVE: 'ACTIVE',
+  DISABLED: 'DISABLED'
+};
+
 exports.Prisma.ModelName = {
   Profile: 'Profile',
   SocialLink: 'SocialLink',
@@ -283,7 +299,8 @@ exports.Prisma.ModelName = {
   Certification: 'Certification',
   Language: 'Language',
   Award: 'Award',
-  Hobby: 'Hobby'
+  Hobby: 'Hobby',
+  Worker: 'Worker'
 };
 
 /**

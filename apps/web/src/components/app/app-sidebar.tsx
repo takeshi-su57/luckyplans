@@ -9,6 +9,7 @@ import {
   BookOpen,
   ChevronsLeft,
   ChevronsRight,
+  Cpu,
   LayoutDashboard,
   LogOut,
   Settings,
@@ -19,6 +20,7 @@ import { useCurrentUser } from '@/hooks/use-current-user';
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Profile', href: '/profile', icon: User },
+  { label: 'Edges', href: '/edges', icon: Cpu },
   { label: 'Docs', href: '/docs', icon: BookOpen },
 ];
 

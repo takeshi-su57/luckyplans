@@ -7,6 +7,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum WorkerStatus {
+  ACTIVE
+  DISABLED
+}
+
 model Profile {
   id        String   @id @default(cuid())
   userId    String   @unique
@@ -190,4 +195,18 @@ model Hobby {
   updatedAt   DateTime @updatedAt
 
   @@map("hobbies")
+}
+
+model Worker {
+  id         String       @id @default(cuid())
+  name       String
+  platform   String?
+  version    String?
+  status     WorkerStatus @default(ACTIVE)
+  lastSeenAt DateTime?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@index([status])
+  @@map("workers")
 }
