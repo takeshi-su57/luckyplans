@@ -13,8 +13,8 @@
   "devDependencies": {
     "@luckyplans/config": "workspace:*",
     "@types/node": "^25.5.0",
-    "eslint": "^10.0.3",
-    "typescript": "^5.4.0"
+    "eslint": "^10.4.0",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.17",
