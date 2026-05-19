@@ -14,6 +14,7 @@
   "dependencies": {
     "@apollo/server": "^5.4.0",
     "@as-integrations/express5": "^1.1.0",
+    "@luckyplans/prisma": "workspace:*",
     "@luckyplans/shared": "workspace:*",
     "@nestjs/apollo": "^13.2.4",
     "@nestjs/common": "^11.1.17",
@@ -22,6 +23,7 @@
     "@nestjs/microservices": "^11.1.19",
     "@nestjs/platform-express": "^11.0.0",
     "@opentelemetry/api": "^1.9.1",
+    "@prisma/adapter-pg": "^7.0.0",
     "cookie-parser": "^1.4.7",
     "graphql": "^16.8.0",
     "ioredis": "^5.3.0",

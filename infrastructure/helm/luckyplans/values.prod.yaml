@@ -54,18 +54,6 @@ prismaMigrate:
   image:
     repository: takeshi-su57/prisma-migrate
     tag: 'sha-3742852'
-serviceCore:
-  image:
-    repository: takeshi-su57/service-core
-    tag: 'sha-3742852'
-  replicas: 2
-  resources:
-    requests:
-      memory: '256Mi'
-      cpu: '200m'
-    limits:
-      memory: '512Mi'
-      cpu: '500m'
 web:
   image:
     repository: takeshi-su57/web

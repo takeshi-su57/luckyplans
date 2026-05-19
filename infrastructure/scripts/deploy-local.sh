@@ -26,7 +26,6 @@ Services:
   No arguments      Full deploy — build all images, import infra, Helm install
   web               Rebuild and redeploy the web frontend only
   api-gateway       Rebuild and redeploy the API gateway only
-  service-core      Rebuild and redeploy service-core only
   prisma-migrate    Rebuild the Prisma migration image only
 
 Multiple services can be specified: deploy-local.sh web api-gateway
@@ -68,7 +67,6 @@ fi
 declare -A SERVICE_MAP=(
   [web]="apps/web/Dockerfile|luckyplans/web:latest"
   [api-gateway]="apps/api-gateway/Dockerfile|luckyplans/api-gateway:latest"
-  [service-core]="apps/service-core/Dockerfile|luckyplans/service-core:latest"
   [prisma-migrate]="packages/prisma/Dockerfile|luckyplans/prisma-migrate:latest"
 )
 
@@ -76,7 +74,7 @@ declare -A SERVICE_MAP=(
 for svc in "${SERVICES[@]}"; do
   if [[ -z "${SERVICE_MAP[$svc]:-}" ]]; then
     echo "Error: Unknown service '$svc'"
-    echo "Valid services: web, api-gateway, service-core"
+    echo "Valid services: web, api-gateway, prisma-migrate"
     exit 1
   fi
 done
@@ -174,7 +172,7 @@ if ! $HELM_ONLY; then
 
   if $FULL_DEPLOY; then
     # Build app images
-    for svc in web api-gateway service-core prisma-migrate; do
+    for svc in web api-gateway prisma-migrate; do
       build_image "$svc"
       local_image="${SERVICE_MAP[$svc]##*|}"
       IMAGES_TO_IMPORT+=("$local_image")

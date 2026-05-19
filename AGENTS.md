@@ -34,8 +34,7 @@ Required behavior:
 ## Repository Layout
 
 - `apps/web/`: Next.js frontend and public docs content
-- `apps/api-gateway/`: GraphQL gateway, auth/session REST endpoints
-- `apps/service-core/`: core microservice (CRUD + message-pattern handling)
+- `apps/api-gateway/`: GraphQL gateway plus core domain logic modules
 - `packages/shared/`: shared types, enums, utils, telemetry helpers
 - `packages/prisma/`: schema, migrations, generated client
 - `packages/config/`: lint and tsconfig presets
@@ -57,7 +56,7 @@ Required behavior:
 ## Service Decomposition
 
 - Default path is extending existing services.
-- `service-core` owns shared CRUD-style domain operations.
+- `api-gateway` currently owns shared CRUD-style domain operations.
 - `api-gateway` is the single client-facing API interface.
 - Create a new microservice only when justified by workload/operations:
   - CPU-heavy workload
@@ -70,7 +69,6 @@ Required behavior:
 ## Skill Routing
 
 - `create-gateway-module`: create or extend gateway modules.
-- `scaffold-submodule`: extend `service-core` functionality/entities.
 - `scaffold-microservice`: create new microservice app + Docker + Helm + ArgoCD path.
 - `docs/architecture/microservice-decision-matrix.md`: required decision reference before new service creation.
 

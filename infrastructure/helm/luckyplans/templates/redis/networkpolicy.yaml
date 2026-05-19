@@ -17,9 +17,6 @@ spec:
         - podSelector:
             matchLabels:
               app.kubernetes.io/name: api-gateway
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/name: service-core
       ports:
         - protocol: TCP
           port: 6379

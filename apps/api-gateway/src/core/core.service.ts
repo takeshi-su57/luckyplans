@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { from, Observable } from 'rxjs';
 import { generateId } from '@luckyplans/shared';
+import { CoreMessagePattern } from '@luckyplans/shared';
 import type { UserProfileData } from '@luckyplans/shared';
 import { PrismaService } from './prisma.service';
 
@@ -18,6 +20,319 @@ export class CoreService {
   private items: Item[] = [];
 
   constructor(private readonly prisma: PrismaService) {}
+
+  private stripTraceContext<T extends Record<string, unknown>>(data: T): T {
+    const { __traceContext: _traceContext, ...payload } = data as T & {
+      __traceContext?: unknown;
+    };
+    return payload as T;
+  }
+
+  send(pattern: CoreMessagePattern, data: Record<string, unknown>): Observable<unknown> {
+    const payload = this.stripTraceContext(data);
+
+    const dispatch = async () => {
+      switch (pattern) {
+        case CoreMessagePattern.GET_ITEMS:
+          return this.getItems(payload.page as number, payload.limit as number);
+        case CoreMessagePattern.GET_ITEM:
+          return this.getItem(payload.id as string);
+        case CoreMessagePattern.CREATE_ITEM:
+          return this.createItem(payload.name as string, payload.description as string | undefined);
+        case CoreMessagePattern.UPDATE_ITEM:
+          return this.updateItem(
+            payload.id as string,
+            payload.name as string | undefined,
+            payload.description as string | undefined,
+          );
+        case CoreMessagePattern.DELETE_ITEM:
+          return this.deleteItem(payload.id as string);
+        case CoreMessagePattern.GET_PROFILE:
+          return this.getProfile(payload.userId as string);
+        case CoreMessagePattern.GET_OR_CREATE_PROFILE:
+          return this.getOrCreateProfile({
+            userId: payload.userId as string,
+            email: payload.email as string,
+            name: payload.name as string | undefined,
+          });
+        case CoreMessagePattern.UPDATE_PROFILE: {
+          const { userId, ...updateData } = payload as {
+            userId: string;
+            firstName?: string;
+            lastName?: string;
+            avatarUrl?: string;
+            bio?: string;
+            headline?: string;
+            location?: string;
+          };
+          return this.updateProfile(userId, updateData);
+        }
+        case CoreMessagePattern.GET_PUBLIC_PROFILE:
+          return this.getPublicProfile(payload.userId as string);
+        case CoreMessagePattern.GET_PROJECTS:
+          return this.getProjects(payload.userId as string);
+        case CoreMessagePattern.CREATE_PROJECT: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            title: string;
+            description?: string;
+            images?: string[];
+            liveUrl?: string;
+            repoUrl?: string;
+            tags?: string[];
+          };
+          return this.createProject(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_PROJECT: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            title?: string;
+            description?: string;
+            images?: string[];
+            liveUrl?: string;
+            repoUrl?: string;
+            tags?: string[];
+          };
+          return this.updateProject(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_PROJECT:
+          return this.deleteProject(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_PROJECTS:
+          return this.reorderProjects(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.GET_SKILLS:
+          return this.getSkills(payload.userId as string);
+        case CoreMessagePattern.CREATE_SKILL: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            name: string;
+            categoryId?: string;
+            proficiency?: string;
+          };
+          return this.createSkill(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_SKILL: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            name?: string;
+            categoryId?: string;
+            proficiency?: string;
+          };
+          return this.updateSkill(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_SKILL:
+          return this.deleteSkill(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_SKILLS:
+          return this.reorderSkills(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.GET_EXPERIENCES:
+          return this.getExperiences(payload.userId as string);
+        case CoreMessagePattern.CREATE_EXPERIENCE: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            company: string;
+            role: string;
+            description?: string[];
+            startDate: Date;
+            endDate?: Date;
+          };
+          return this.createExperience(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_EXPERIENCE: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            company?: string;
+            role?: string;
+            description?: string[];
+            startDate?: Date;
+            endDate?: Date;
+          };
+          return this.updateExperience(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_EXPERIENCE:
+          return this.deleteExperience(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_EXPERIENCES:
+          return this.reorderExperiences(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.CREATE_SOCIAL_LINK: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            platform: string;
+            url: string;
+            label?: string;
+          };
+          return this.createSocialLink(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_SOCIAL_LINK: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            platform?: string;
+            url?: string;
+            label?: string;
+          };
+          return this.updateSocialLink(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_SOCIAL_LINK:
+          return this.deleteSocialLink(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_SOCIAL_LINKS:
+          return this.reorderSocialLinks(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.GET_SKILL_CATEGORIES:
+          return this.getSkillCategories(payload.userId as string);
+        case CoreMessagePattern.CREATE_SKILL_CATEGORY: {
+          const { userId, ...createData } = payload as { userId: string; name: string };
+          return this.createSkillCategory(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_SKILL_CATEGORY: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            name?: string;
+          };
+          return this.updateSkillCategory(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_SKILL_CATEGORY:
+          return this.deleteSkillCategory(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.CREATE_EDUCATION: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            school: string;
+            degree?: string;
+            field?: string;
+            startDate: Date;
+            endDate?: Date;
+            description?: string[];
+          };
+          return this.createEducation(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_EDUCATION: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            school?: string;
+            degree?: string;
+            field?: string;
+            startDate?: Date;
+            endDate?: Date;
+            description?: string[];
+          };
+          return this.updateEducation(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_EDUCATION:
+          return this.deleteEducation(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_EDUCATION:
+          return this.reorderEducation(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.CREATE_CERTIFICATION: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            name: string;
+            issuer: string;
+            issueDate?: Date;
+            expiryDate?: Date;
+            url?: string;
+          };
+          return this.createCertification(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_CERTIFICATION: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            name?: string;
+            issuer?: string;
+            issueDate?: Date;
+            expiryDate?: Date;
+            url?: string;
+          };
+          return this.updateCertification(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_CERTIFICATION:
+          return this.deleteCertification(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_CERTIFICATIONS:
+          return this.reorderCertifications(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.CREATE_LANGUAGE: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            name: string;
+            proficiency?: string;
+          };
+          return this.createLanguage(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_LANGUAGE: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            name?: string;
+            proficiency?: string;
+          };
+          return this.updateLanguage(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_LANGUAGE:
+          return this.deleteLanguage(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_LANGUAGES:
+          return this.reorderLanguages(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.CREATE_AWARD: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            title: string;
+            issuer?: string;
+            date?: Date;
+            description?: string;
+          };
+          return this.createAward(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_AWARD: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            title?: string;
+            issuer?: string;
+            date?: Date;
+            description?: string;
+          };
+          return this.updateAward(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_AWARD:
+          return this.deleteAward(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_AWARDS:
+          return this.reorderAwards(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.CREATE_HOBBY: {
+          const { userId, ...createData } = payload as {
+            userId: string;
+            name: string;
+            description?: string;
+          };
+          return this.createHobby(userId, createData);
+        }
+        case CoreMessagePattern.UPDATE_HOBBY: {
+          const { userId, id, ...updateData } = payload as {
+            userId: string;
+            id: string;
+            name?: string;
+            description?: string;
+          };
+          return this.updateHobby(userId, id, updateData);
+        }
+        case CoreMessagePattern.DELETE_HOBBY:
+          return this.deleteHobby(payload.userId as string, payload.id as string);
+        case CoreMessagePattern.REORDER_HOBBIES:
+          return this.reorderHobbies(payload.userId as string, payload.orderedIds as string[]);
+        case CoreMessagePattern.GET_WORKERS:
+          return this.getWorkers();
+        case CoreMessagePattern.CREATE_WORKER:
+          return this.createWorker({
+            name: payload.name as string,
+            platform: payload.platform as string | undefined,
+            version: payload.version as string | undefined,
+          });
+        case CoreMessagePattern.DISABLE_WORKER:
+          return this.disableWorker(payload.id as string);
+        default:
+          throw new Error(`Unsupported CoreMessagePattern: ${pattern}`);
+      }
+    };
+
+    return from(dispatch());
+  }
 
   // ── Items (in-memory placeholder) ──────────────────────────────
 

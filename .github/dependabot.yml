@@ -23,7 +23,3 @@ updates:
     schedule:
       interval: 'monthly'
 
-  - package-ecosystem: 'docker'
-    directory: '/apps/service-core'
-    schedule:
-      interval: 'monthly'

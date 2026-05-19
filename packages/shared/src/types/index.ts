@@ -35,7 +35,7 @@ export interface PaginatedResponse<T = unknown> {
 }
 
 export enum ServiceName {
-  CORE = 'service-core',
+  CORE = 'api-gateway-core',
   API_GATEWAY = 'api-gateway',
 }
 
