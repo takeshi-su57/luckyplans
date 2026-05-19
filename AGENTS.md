@@ -54,6 +54,26 @@ Required behavior:
 9. Gateway manages auth/session lifecycle; frontend handles no tokens.
 10. Do not introduce major dependencies/frameworks without explicit approval.
 
+## Service Decomposition
+
+- Default path is extending existing services.
+- `service-core` owns shared CRUD-style domain operations.
+- `api-gateway` is the single client-facing API interface.
+- Create a new microservice only when justified by workload/operations:
+  - CPU-heavy workload
+  - cron/scheduled workload
+  - long-running/background processing
+  - independent scaling/SLO needs
+  - distinct operational lifecycle needs
+- Do not split microservices by domain naming alone (`service-orders`, `service-users`, etc.).
+
+## Skill Routing
+
+- `create-gateway-module`: create or extend gateway modules.
+- `scaffold-submodule`: extend `service-core` functionality/entities.
+- `scaffold-microservice`: create new microservice app + Docker + Helm + ArgoCD path.
+- `docs/architecture/microservice-decision-matrix.md`: required decision reference before new service creation.
+
 ## Prisma Safety
 
 - Never add required columns to populated tables without defaults/backfills.
@@ -63,29 +83,60 @@ Required behavior:
 
 - Never expose access/refresh tokens to the browser.
 - Use HttpOnly session cookie (`session_id`) patterns.
-- Follow input validation and CI security rules from `.agents/rules/security.md`.
+- Never hardcode secrets/keys/tokens/passwords; use env-based config.
+- Use `getEnvVar()` from `@luckyplans/shared` instead of direct `process.env` in app code.
+- Keep CI security scanning enforced (Trivy CRITICAL/HIGH gates).
+- Do not log tokens, passwords, API keys, or full PII payloads.
+- Keep gateway-managed auth/session model (no frontend token handling).
+
+## Framework Sync
+
+- `AGENTS.md` is the primary source of truth for architecture and process.
+- Prefer skills for repeatable workflows; keep rules only for stable reference constraints.
+- When architecture/security/workflow changes, update `AGENTS.md` and affected skills/docs in the same change.
+- Before claiming completion, run and verify:
+  - `pnpm lint`
+  - `pnpm type-check`
+  - `pnpm build`
+  - `pnpm format:check`
 
 ## Codex Rulebook
 
 Converted Claude rules now live in `.agents/rules/`:
 
-- `architecture.md`
-- `frontend.md`
-- `ui-baseline.md`
-- `testing.md`
-- `security.md`
-- `documentation.md`
-- `git-commit.md`
-- `pull-request.md`
-- `gh-issue.md`
-- `ai-framework.md`
+No active rule files are required; architecture/security/process guidance is in `AGENTS.md` and skills.
 
 ## Codex Skills
 
 Converted Claude skills now live in `.agents/skills/`:
 
-- `scaffold-submodule/SKILL.md`
-- `scaffold-microservice/SKILL.md`
+Frontend scope:
+- `frontend/add-frontend-page/SKILL.md`
+- `frontend/apply-ui-baseline/SKILL.md`
+- `frontend/create-graphql-hook/SKILL.md`
+- `frontend/customize-frontend-component/SKILL.md`
+- `frontend/enforce-apollo-state-boundary/SKILL.md`
+- `frontend/enforce-frontend-auth-boundary/SKILL.md`
+- `frontend/follow-nextjs-route-conventions/SKILL.md`
+- `frontend/frontend-reference-minimal/SKILL.md`
+- `frontend/implement-apollo-page-boundary/SKILL.md`
+- `frontend/run-frontend-codegen/SKILL.md`
+
+Services scope:
+- `services/create-gateway-module/SKILL.md`
+- `services/scaffold-submodule/SKILL.md`
+- `services/scaffold-microservice/SKILL.md`
+
+Packages scope:
+- `packages/update-shared-kernel/SKILL.md`
+- `packages/prisma-safe-migrations/SKILL.md`
+
+Cross-cutting:
+- `add-testing-foundation/SKILL.md`
+- `maintain-project-docs/SKILL.md`
+- `prepare-pull-request/SKILL.md`
+- `write-conventional-commit/SKILL.md`
+- `write-github-issue/SKILL.md`
 - `write-adr/SKILL.md`
 
 Existing process/system skills remain under `.agents/skills/`.

@@ -16,13 +16,13 @@ Create an Architecture Decision Record when a significant architectural decision
 2. Create `apps/web/content/architecture/decisions/yyyy-mm-dd-<name>.mdx` using the template (add frontmatter `title:` and `description:` at the top)
 3. Add the new key to `apps/web/content/architecture/decisions/_meta.ts`
 4. Update `apps/web/content/architecture/overview.mdx` if the decision changes the current architecture
-5. Follow sync protocol in `.agents/rules/ai-framework.md` for any `.agents/` file updates
+5. Follow `AGENTS.md` Framework Sync guidance for any `.agents/` file updates
 
 ## Reference
 
 - See `templates/adr-template.md` for the file format
 - See `examples/` for worked examples
-- See `.agents/rules/documentation.md` for when to write (and when not to write) an ADR
+- Use `maintain-project-docs` for documentation sync expectations around ADR usage
 
 
 
