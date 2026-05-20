@@ -42,9 +42,7 @@ export default function DashboardPage() {
                     </Avatar.Fallback>
                   </Avatar>
                   <div>
-                    {user.name && (
-                      <p className="text-sm font-medium text-[#37352f]">{user.name}</p>
-                    )}
+                    {user.name && <p className="text-sm font-medium text-[#37352f]">{user.name}</p>}
                     <p className="text-xs text-[#787774]">{user.email}</p>
                   </div>
                 </div>
@@ -71,12 +69,8 @@ export default function DashboardPage() {
             </Card.Title>
           </Card.Header>
           <Card.Content>
-            {healthLoading && (
-              <p className="text-sm text-[#787774]">Checking connection...</p>
-            )}
-            {healthError && (
-              <p className="text-sm text-danger">Error: {healthError.message}</p>
-            )}
+            {healthLoading && <p className="text-sm text-[#787774]">Checking connection...</p>}
+            {healthError && <p className="text-sm text-danger">Error: {healthError.message}</p>}
             {data && (
               <Chip size="sm" color="success">
                 {data.health}

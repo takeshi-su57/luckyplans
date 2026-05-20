@@ -1,14 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import {
-  Button,
-  Card,
-  Skeleton,
-  TextField,
-  Label,
-  Input,
-} from '@heroui/react';
+import { Button, Card, Skeleton, TextField, Label, Input } from '@heroui/react';
 import { GraduationCap, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { usePublicProfile } from '@/hooks/use-public-profile';
 import { useCreateEducation } from '@/hooks/use-create-education';
@@ -171,10 +164,7 @@ export function EducationTab({ userId }: EducationTabProps) {
               <div className="mt-1 space-y-2">
                 {form.description.map((item, index) => (
                   <div key={index} className="flex gap-2">
-                    <TextField
-                      className="flex-1"
-                      onChange={(v) => updateDescItem(index, v)}
-                    >
+                    <TextField className="flex-1" onChange={(v) => updateDescItem(index, v)}>
                       <Label className="sr-only">Item {index + 1}</Label>
                       <Input placeholder={`Item ${index + 1}`} value={item} />
                     </TextField>

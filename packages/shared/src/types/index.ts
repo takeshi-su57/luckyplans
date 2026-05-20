@@ -277,5 +277,4 @@ export enum CoreMessagePattern {
   UPDATE_HOBBY = 'core.updateHobby',
   DELETE_HOBBY = 'core.deleteHobby',
   REORDER_HOBBIES = 'core.reorderHobbies',
-
 }

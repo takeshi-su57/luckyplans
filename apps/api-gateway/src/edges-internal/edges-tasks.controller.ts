@@ -37,7 +37,13 @@ export class EdgesTasksController {
   @Post(':id/complete')
   async complete(
     @Param('id') id: string,
-    @Body() body: { workerId: string; bestConfigIds: string[]; processedConfigs: number; totalConfigs: number },
+    @Body()
+    body: {
+      workerId: string;
+      bestConfigIds: string[];
+      processedConfigs: number;
+      totalConfigs: number;
+    },
   ) {
     const result = await this.backtestService.complete(id, body.workerId, body);
     return { success: true, status: result.status };

@@ -74,10 +74,30 @@ export type Hobby = $Result.DefaultSelection<Prisma.$HobbyPayload>
  */
 export type Worker = $Result.DefaultSelection<Prisma.$WorkerPayload>
 /**
+ * Model EdgeRelease
+ * 
+ */
+export type EdgeRelease = $Result.DefaultSelection<Prisma.$EdgeReleasePayload>
+/**
  * Model WorkerCredential
  * 
  */
 export type WorkerCredential = $Result.DefaultSelection<Prisma.$WorkerCredentialPayload>
+/**
+ * Model StrategyTemplate
+ * 
+ */
+export type StrategyTemplate = $Result.DefaultSelection<Prisma.$StrategyTemplatePayload>
+/**
+ * Model BacktestTask
+ * 
+ */
+export type BacktestTask = $Result.DefaultSelection<Prisma.$BacktestTaskPayload>
+/**
+ * Model BacktestResult
+ * 
+ */
+export type BacktestResult = $Result.DefaultSelection<Prisma.$BacktestResultPayload>
 
 /**
  * Enums
@@ -100,6 +120,40 @@ export const WorkerCredentialStatus: {
 export type WorkerCredentialStatus = (typeof WorkerCredentialStatus)[keyof typeof WorkerCredentialStatus]
 
 
+export const SearchStrategy: {
+  GRID: 'GRID',
+  OPTUNA: 'OPTUNA'
+};
+
+export type SearchStrategy = (typeof SearchStrategy)[keyof typeof SearchStrategy]
+
+
+export const BacktestTaskStatus: {
+  AWAIT: 'AWAIT',
+  ASSIGNED: 'ASSIGNED',
+  PROCESSING: 'PROCESSING',
+  DONE: 'DONE',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type BacktestTaskStatus = (typeof BacktestTaskStatus)[keyof typeof BacktestTaskStatus]
+
+
+export const WorkerUpgradeStatus: {
+  IDLE: 'IDLE',
+  UPGRADE_PENDING: 'UPGRADE_PENDING',
+  DOWNLOADING: 'DOWNLOADING',
+  VERIFYING: 'VERIFYING',
+  RESTARTING: 'RESTARTING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
+export type WorkerUpgradeStatus = (typeof WorkerUpgradeStatus)[keyof typeof WorkerUpgradeStatus]
+
+
 export const Proficiency: {
   BEGINNER: 'BEGINNER',
   INTERMEDIATE: 'INTERMEDIATE',
@@ -118,6 +172,18 @@ export const WorkerStatus: typeof $Enums.WorkerStatus
 export type WorkerCredentialStatus = $Enums.WorkerCredentialStatus
 
 export const WorkerCredentialStatus: typeof $Enums.WorkerCredentialStatus
+
+export type SearchStrategy = $Enums.SearchStrategy
+
+export const SearchStrategy: typeof $Enums.SearchStrategy
+
+export type BacktestTaskStatus = $Enums.BacktestTaskStatus
+
+export const BacktestTaskStatus: typeof $Enums.BacktestTaskStatus
+
+export type WorkerUpgradeStatus = $Enums.WorkerUpgradeStatus
+
+export const WorkerUpgradeStatus: typeof $Enums.WorkerUpgradeStatus
 
 export type Proficiency = $Enums.Proficiency
 
@@ -365,6 +431,16 @@ export class PrismaClient<
   get worker(): Prisma.WorkerDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.edgeRelease`: Exposes CRUD operations for the **EdgeRelease** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EdgeReleases
+    * const edgeReleases = await prisma.edgeRelease.findMany()
+    * ```
+    */
+  get edgeRelease(): Prisma.EdgeReleaseDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.workerCredential`: Exposes CRUD operations for the **WorkerCredential** model.
     * Example usage:
     * ```ts
@@ -373,6 +449,36 @@ export class PrismaClient<
     * ```
     */
   get workerCredential(): Prisma.WorkerCredentialDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.strategyTemplate`: Exposes CRUD operations for the **StrategyTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StrategyTemplates
+    * const strategyTemplates = await prisma.strategyTemplate.findMany()
+    * ```
+    */
+  get strategyTemplate(): Prisma.StrategyTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.backtestTask`: Exposes CRUD operations for the **BacktestTask** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BacktestTasks
+    * const backtestTasks = await prisma.backtestTask.findMany()
+    * ```
+    */
+  get backtestTask(): Prisma.BacktestTaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.backtestResult`: Exposes CRUD operations for the **BacktestResult** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BacktestResults
+    * const backtestResults = await prisma.backtestResult.findMany()
+    * ```
+    */
+  get backtestResult(): Prisma.BacktestResultDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -819,7 +925,11 @@ export namespace Prisma {
     Award: 'Award',
     Hobby: 'Hobby',
     Worker: 'Worker',
-    WorkerCredential: 'WorkerCredential'
+    EdgeRelease: 'EdgeRelease',
+    WorkerCredential: 'WorkerCredential',
+    StrategyTemplate: 'StrategyTemplate',
+    BacktestTask: 'BacktestTask',
+    BacktestResult: 'BacktestResult'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -835,7 +945,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker" | "workerCredential"
+      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker" | "edgeRelease" | "workerCredential" | "strategyTemplate" | "backtestTask" | "backtestResult"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1727,6 +1837,80 @@ export namespace Prisma {
           }
         }
       }
+      EdgeRelease: {
+        payload: Prisma.$EdgeReleasePayload<ExtArgs>
+        fields: Prisma.EdgeReleaseFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EdgeReleaseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EdgeReleaseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          findFirst: {
+            args: Prisma.EdgeReleaseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EdgeReleaseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          findMany: {
+            args: Prisma.EdgeReleaseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>[]
+          }
+          create: {
+            args: Prisma.EdgeReleaseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          createMany: {
+            args: Prisma.EdgeReleaseCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EdgeReleaseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>[]
+          }
+          delete: {
+            args: Prisma.EdgeReleaseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          update: {
+            args: Prisma.EdgeReleaseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          deleteMany: {
+            args: Prisma.EdgeReleaseDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EdgeReleaseUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EdgeReleaseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>[]
+          }
+          upsert: {
+            args: Prisma.EdgeReleaseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          aggregate: {
+            args: Prisma.EdgeReleaseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEdgeRelease>
+          }
+          groupBy: {
+            args: Prisma.EdgeReleaseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EdgeReleaseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EdgeReleaseCountArgs<ExtArgs>
+            result: $Utils.Optional<EdgeReleaseCountAggregateOutputType> | number
+          }
+        }
+      }
       WorkerCredential: {
         payload: Prisma.$WorkerCredentialPayload<ExtArgs>
         fields: Prisma.WorkerCredentialFieldRefs
@@ -1798,6 +1982,228 @@ export namespace Prisma {
           count: {
             args: Prisma.WorkerCredentialCountArgs<ExtArgs>
             result: $Utils.Optional<WorkerCredentialCountAggregateOutputType> | number
+          }
+        }
+      }
+      StrategyTemplate: {
+        payload: Prisma.$StrategyTemplatePayload<ExtArgs>
+        fields: Prisma.StrategyTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StrategyTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StrategyTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.StrategyTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StrategyTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.StrategyTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.StrategyTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.StrategyTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StrategyTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.StrategyTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          update: {
+            args: Prisma.StrategyTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.StrategyTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StrategyTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StrategyTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.StrategyTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.StrategyTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStrategyTemplate>
+          }
+          groupBy: {
+            args: Prisma.StrategyTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StrategyTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StrategyTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<StrategyTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      BacktestTask: {
+        payload: Prisma.$BacktestTaskPayload<ExtArgs>
+        fields: Prisma.BacktestTaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BacktestTaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BacktestTaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          findFirst: {
+            args: Prisma.BacktestTaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BacktestTaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          findMany: {
+            args: Prisma.BacktestTaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>[]
+          }
+          create: {
+            args: Prisma.BacktestTaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          createMany: {
+            args: Prisma.BacktestTaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BacktestTaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>[]
+          }
+          delete: {
+            args: Prisma.BacktestTaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          update: {
+            args: Prisma.BacktestTaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.BacktestTaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BacktestTaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BacktestTaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.BacktestTaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          aggregate: {
+            args: Prisma.BacktestTaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBacktestTask>
+          }
+          groupBy: {
+            args: Prisma.BacktestTaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BacktestTaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BacktestTaskCountArgs<ExtArgs>
+            result: $Utils.Optional<BacktestTaskCountAggregateOutputType> | number
+          }
+        }
+      }
+      BacktestResult: {
+        payload: Prisma.$BacktestResultPayload<ExtArgs>
+        fields: Prisma.BacktestResultFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BacktestResultFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BacktestResultFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          findFirst: {
+            args: Prisma.BacktestResultFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BacktestResultFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          findMany: {
+            args: Prisma.BacktestResultFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>[]
+          }
+          create: {
+            args: Prisma.BacktestResultCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          createMany: {
+            args: Prisma.BacktestResultCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BacktestResultCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>[]
+          }
+          delete: {
+            args: Prisma.BacktestResultDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          update: {
+            args: Prisma.BacktestResultUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          deleteMany: {
+            args: Prisma.BacktestResultDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BacktestResultUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BacktestResultUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>[]
+          }
+          upsert: {
+            args: Prisma.BacktestResultUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          aggregate: {
+            args: Prisma.BacktestResultAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBacktestResult>
+          }
+          groupBy: {
+            args: Prisma.BacktestResultGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BacktestResultGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BacktestResultCountArgs<ExtArgs>
+            result: $Utils.Optional<BacktestResultCountAggregateOutputType> | number
           }
         }
       }
@@ -1921,7 +2327,11 @@ export namespace Prisma {
     award?: AwardOmit
     hobby?: HobbyOmit
     worker?: WorkerOmit
+    edgeRelease?: EdgeReleaseOmit
     workerCredential?: WorkerCredentialOmit
+    strategyTemplate?: StrategyTemplateOmit
+    backtestTask?: BacktestTaskOmit
+    backtestResult?: BacktestResultOmit
   }
 
   /* Types for Logging */
@@ -2168,6 +2578,68 @@ export namespace Prisma {
    */
   export type WorkerCountOutputTypeCountCredentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkerCredentialWhereInput
+  }
+
+
+  /**
+   * Count Type StrategyTemplateCountOutputType
+   */
+
+  export type StrategyTemplateCountOutputType = {
+    tasks: number
+  }
+
+  export type StrategyTemplateCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tasks?: boolean | StrategyTemplateCountOutputTypeCountTasksArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StrategyTemplateCountOutputType without action
+   */
+  export type StrategyTemplateCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplateCountOutputType
+     */
+    select?: StrategyTemplateCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StrategyTemplateCountOutputType without action
+   */
+  export type StrategyTemplateCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BacktestTaskWhereInput
+  }
+
+
+  /**
+   * Count Type BacktestTaskCountOutputType
+   */
+
+  export type BacktestTaskCountOutputType = {
+    results: number
+  }
+
+  export type BacktestTaskCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    results?: boolean | BacktestTaskCountOutputTypeCountResultsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BacktestTaskCountOutputType without action
+   */
+  export type BacktestTaskCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTaskCountOutputType
+     */
+    select?: BacktestTaskCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BacktestTaskCountOutputType without action
+   */
+  export type BacktestTaskCountOutputTypeCountResultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BacktestResultWhereInput
   }
 
 
@@ -15089,6 +15561,9 @@ export namespace Prisma {
     version: string | null
     status: $Enums.WorkerStatus | null
     lastSeenAt: Date | null
+    targetVersion: string | null
+    upgradeStatus: $Enums.WorkerUpgradeStatus | null
+    upgradeMessage: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15100,6 +15575,9 @@ export namespace Prisma {
     version: string | null
     status: $Enums.WorkerStatus | null
     lastSeenAt: Date | null
+    targetVersion: string | null
+    upgradeStatus: $Enums.WorkerUpgradeStatus | null
+    upgradeMessage: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15111,6 +15589,9 @@ export namespace Prisma {
     version: number
     status: number
     lastSeenAt: number
+    targetVersion: number
+    upgradeStatus: number
+    upgradeMessage: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -15124,6 +15605,9 @@ export namespace Prisma {
     version?: true
     status?: true
     lastSeenAt?: true
+    targetVersion?: true
+    upgradeStatus?: true
+    upgradeMessage?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -15135,6 +15619,9 @@ export namespace Prisma {
     version?: true
     status?: true
     lastSeenAt?: true
+    targetVersion?: true
+    upgradeStatus?: true
+    upgradeMessage?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -15146,6 +15633,9 @@ export namespace Prisma {
     version?: true
     status?: true
     lastSeenAt?: true
+    targetVersion?: true
+    upgradeStatus?: true
+    upgradeMessage?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -15230,6 +15720,9 @@ export namespace Prisma {
     version: string | null
     status: $Enums.WorkerStatus
     lastSeenAt: Date | null
+    targetVersion: string | null
+    upgradeStatus: $Enums.WorkerUpgradeStatus
+    upgradeMessage: string | null
     createdAt: Date
     updatedAt: Date
     _count: WorkerCountAggregateOutputType | null
@@ -15258,6 +15751,9 @@ export namespace Prisma {
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
+    targetVersion?: boolean
+    upgradeStatus?: boolean
+    upgradeMessage?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     credentials?: boolean | Worker$credentialsArgs<ExtArgs>
@@ -15271,6 +15767,9 @@ export namespace Prisma {
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
+    targetVersion?: boolean
+    upgradeStatus?: boolean
+    upgradeMessage?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["worker"]>
@@ -15282,6 +15781,9 @@ export namespace Prisma {
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
+    targetVersion?: boolean
+    upgradeStatus?: boolean
+    upgradeMessage?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["worker"]>
@@ -15293,11 +15795,14 @@ export namespace Prisma {
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
+    targetVersion?: boolean
+    upgradeStatus?: boolean
+    upgradeMessage?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "platform" | "version" | "status" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
+  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "platform" | "version" | "status" | "lastSeenAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
   export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     credentials?: boolean | Worker$credentialsArgs<ExtArgs>
     _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
@@ -15317,6 +15822,9 @@ export namespace Prisma {
       version: string | null
       status: $Enums.WorkerStatus
       lastSeenAt: Date | null
+      targetVersion: string | null
+      upgradeStatus: $Enums.WorkerUpgradeStatus
+      upgradeMessage: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["worker"]>
@@ -15749,6 +16257,9 @@ export namespace Prisma {
     readonly version: FieldRef<"Worker", 'String'>
     readonly status: FieldRef<"Worker", 'WorkerStatus'>
     readonly lastSeenAt: FieldRef<"Worker", 'DateTime'>
+    readonly targetVersion: FieldRef<"Worker", 'String'>
+    readonly upgradeStatus: FieldRef<"Worker", 'WorkerUpgradeStatus'>
+    readonly upgradeMessage: FieldRef<"Worker", 'String'>
     readonly createdAt: FieldRef<"Worker", 'DateTime'>
     readonly updatedAt: FieldRef<"Worker", 'DateTime'>
   }
@@ -16183,6 +16694,1058 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: WorkerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EdgeRelease
+   */
+
+  export type AggregateEdgeRelease = {
+    _count: EdgeReleaseCountAggregateOutputType | null
+    _min: EdgeReleaseMinAggregateOutputType | null
+    _max: EdgeReleaseMaxAggregateOutputType | null
+  }
+
+  export type EdgeReleaseMinAggregateOutputType = {
+    id: string | null
+    version: string | null
+    windowsUrl: string | null
+    linuxUrl: string | null
+    checksum: string | null
+    signature: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeReleaseMaxAggregateOutputType = {
+    id: string | null
+    version: string | null
+    windowsUrl: string | null
+    linuxUrl: string | null
+    checksum: string | null
+    signature: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeReleaseCountAggregateOutputType = {
+    id: number
+    version: number
+    windowsUrl: number
+    linuxUrl: number
+    checksum: number
+    signature: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EdgeReleaseMinAggregateInputType = {
+    id?: true
+    version?: true
+    windowsUrl?: true
+    linuxUrl?: true
+    checksum?: true
+    signature?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeReleaseMaxAggregateInputType = {
+    id?: true
+    version?: true
+    windowsUrl?: true
+    linuxUrl?: true
+    checksum?: true
+    signature?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeReleaseCountAggregateInputType = {
+    id?: true
+    version?: true
+    windowsUrl?: true
+    linuxUrl?: true
+    checksum?: true
+    signature?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EdgeReleaseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeRelease to aggregate.
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleases to fetch.
+     */
+    orderBy?: EdgeReleaseOrderByWithRelationInput | EdgeReleaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EdgeReleaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EdgeReleases
+    **/
+    _count?: true | EdgeReleaseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EdgeReleaseMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EdgeReleaseMaxAggregateInputType
+  }
+
+  export type GetEdgeReleaseAggregateType<T extends EdgeReleaseAggregateArgs> = {
+        [P in keyof T & keyof AggregateEdgeRelease]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEdgeRelease[P]>
+      : GetScalarType<T[P], AggregateEdgeRelease[P]>
+  }
+
+
+
+
+  export type EdgeReleaseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EdgeReleaseWhereInput
+    orderBy?: EdgeReleaseOrderByWithAggregationInput | EdgeReleaseOrderByWithAggregationInput[]
+    by: EdgeReleaseScalarFieldEnum[] | EdgeReleaseScalarFieldEnum
+    having?: EdgeReleaseScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EdgeReleaseCountAggregateInputType | true
+    _min?: EdgeReleaseMinAggregateInputType
+    _max?: EdgeReleaseMaxAggregateInputType
+  }
+
+  export type EdgeReleaseGroupByOutputType = {
+    id: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EdgeReleaseCountAggregateOutputType | null
+    _min: EdgeReleaseMinAggregateOutputType | null
+    _max: EdgeReleaseMaxAggregateOutputType | null
+  }
+
+  type GetEdgeReleaseGroupByPayload<T extends EdgeReleaseGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EdgeReleaseGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EdgeReleaseGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EdgeReleaseGroupByOutputType[P]>
+            : GetScalarType<T[P], EdgeReleaseGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EdgeReleaseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    version?: boolean
+    windowsUrl?: boolean
+    linuxUrl?: boolean
+    checksum?: boolean
+    signature?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeRelease"]>
+
+  export type EdgeReleaseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    version?: boolean
+    windowsUrl?: boolean
+    linuxUrl?: boolean
+    checksum?: boolean
+    signature?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeRelease"]>
+
+  export type EdgeReleaseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    version?: boolean
+    windowsUrl?: boolean
+    linuxUrl?: boolean
+    checksum?: boolean
+    signature?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeRelease"]>
+
+  export type EdgeReleaseSelectScalar = {
+    id?: boolean
+    version?: boolean
+    windowsUrl?: boolean
+    linuxUrl?: boolean
+    checksum?: boolean
+    signature?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EdgeReleaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "version" | "windowsUrl" | "linuxUrl" | "checksum" | "signature" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["edgeRelease"]>
+
+  export type $EdgeReleasePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EdgeRelease"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      version: string
+      windowsUrl: string
+      linuxUrl: string
+      checksum: string
+      signature: string
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["edgeRelease"]>
+    composites: {}
+  }
+
+  type EdgeReleaseGetPayload<S extends boolean | null | undefined | EdgeReleaseDefaultArgs> = $Result.GetResult<Prisma.$EdgeReleasePayload, S>
+
+  type EdgeReleaseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EdgeReleaseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EdgeReleaseCountAggregateInputType | true
+    }
+
+  export interface EdgeReleaseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EdgeRelease'], meta: { name: 'EdgeRelease' } }
+    /**
+     * Find zero or one EdgeRelease that matches the filter.
+     * @param {EdgeReleaseFindUniqueArgs} args - Arguments to find a EdgeRelease
+     * @example
+     * // Get one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EdgeReleaseFindUniqueArgs>(args: SelectSubset<T, EdgeReleaseFindUniqueArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EdgeRelease that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EdgeReleaseFindUniqueOrThrowArgs} args - Arguments to find a EdgeRelease
+     * @example
+     * // Get one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EdgeReleaseFindUniqueOrThrowArgs>(args: SelectSubset<T, EdgeReleaseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeRelease that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseFindFirstArgs} args - Arguments to find a EdgeRelease
+     * @example
+     * // Get one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EdgeReleaseFindFirstArgs>(args?: SelectSubset<T, EdgeReleaseFindFirstArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeRelease that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseFindFirstOrThrowArgs} args - Arguments to find a EdgeRelease
+     * @example
+     * // Get one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EdgeReleaseFindFirstOrThrowArgs>(args?: SelectSubset<T, EdgeReleaseFindFirstOrThrowArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EdgeReleases that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EdgeReleases
+     * const edgeReleases = await prisma.edgeRelease.findMany()
+     * 
+     * // Get first 10 EdgeReleases
+     * const edgeReleases = await prisma.edgeRelease.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const edgeReleaseWithIdOnly = await prisma.edgeRelease.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EdgeReleaseFindManyArgs>(args?: SelectSubset<T, EdgeReleaseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EdgeRelease.
+     * @param {EdgeReleaseCreateArgs} args - Arguments to create a EdgeRelease.
+     * @example
+     * // Create one EdgeRelease
+     * const EdgeRelease = await prisma.edgeRelease.create({
+     *   data: {
+     *     // ... data to create a EdgeRelease
+     *   }
+     * })
+     * 
+     */
+    create<T extends EdgeReleaseCreateArgs>(args: SelectSubset<T, EdgeReleaseCreateArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EdgeReleases.
+     * @param {EdgeReleaseCreateManyArgs} args - Arguments to create many EdgeReleases.
+     * @example
+     * // Create many EdgeReleases
+     * const edgeRelease = await prisma.edgeRelease.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EdgeReleaseCreateManyArgs>(args?: SelectSubset<T, EdgeReleaseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EdgeReleases and returns the data saved in the database.
+     * @param {EdgeReleaseCreateManyAndReturnArgs} args - Arguments to create many EdgeReleases.
+     * @example
+     * // Create many EdgeReleases
+     * const edgeRelease = await prisma.edgeRelease.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EdgeReleases and only return the `id`
+     * const edgeReleaseWithIdOnly = await prisma.edgeRelease.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EdgeReleaseCreateManyAndReturnArgs>(args?: SelectSubset<T, EdgeReleaseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EdgeRelease.
+     * @param {EdgeReleaseDeleteArgs} args - Arguments to delete one EdgeRelease.
+     * @example
+     * // Delete one EdgeRelease
+     * const EdgeRelease = await prisma.edgeRelease.delete({
+     *   where: {
+     *     // ... filter to delete one EdgeRelease
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EdgeReleaseDeleteArgs>(args: SelectSubset<T, EdgeReleaseDeleteArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EdgeRelease.
+     * @param {EdgeReleaseUpdateArgs} args - Arguments to update one EdgeRelease.
+     * @example
+     * // Update one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EdgeReleaseUpdateArgs>(args: SelectSubset<T, EdgeReleaseUpdateArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EdgeReleases.
+     * @param {EdgeReleaseDeleteManyArgs} args - Arguments to filter EdgeReleases to delete.
+     * @example
+     * // Delete a few EdgeReleases
+     * const { count } = await prisma.edgeRelease.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EdgeReleaseDeleteManyArgs>(args?: SelectSubset<T, EdgeReleaseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeReleases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EdgeReleases
+     * const edgeRelease = await prisma.edgeRelease.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EdgeReleaseUpdateManyArgs>(args: SelectSubset<T, EdgeReleaseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeReleases and returns the data updated in the database.
+     * @param {EdgeReleaseUpdateManyAndReturnArgs} args - Arguments to update many EdgeReleases.
+     * @example
+     * // Update many EdgeReleases
+     * const edgeRelease = await prisma.edgeRelease.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EdgeReleases and only return the `id`
+     * const edgeReleaseWithIdOnly = await prisma.edgeRelease.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EdgeReleaseUpdateManyAndReturnArgs>(args: SelectSubset<T, EdgeReleaseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EdgeRelease.
+     * @param {EdgeReleaseUpsertArgs} args - Arguments to update or create a EdgeRelease.
+     * @example
+     * // Update or create a EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.upsert({
+     *   create: {
+     *     // ... data to create a EdgeRelease
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EdgeRelease we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EdgeReleaseUpsertArgs>(args: SelectSubset<T, EdgeReleaseUpsertArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EdgeReleases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseCountArgs} args - Arguments to filter EdgeReleases to count.
+     * @example
+     * // Count the number of EdgeReleases
+     * const count = await prisma.edgeRelease.count({
+     *   where: {
+     *     // ... the filter for the EdgeReleases we want to count
+     *   }
+     * })
+    **/
+    count<T extends EdgeReleaseCountArgs>(
+      args?: Subset<T, EdgeReleaseCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EdgeReleaseCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EdgeRelease.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EdgeReleaseAggregateArgs>(args: Subset<T, EdgeReleaseAggregateArgs>): Prisma.PrismaPromise<GetEdgeReleaseAggregateType<T>>
+
+    /**
+     * Group by EdgeRelease.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EdgeReleaseGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EdgeReleaseGroupByArgs['orderBy'] }
+        : { orderBy?: EdgeReleaseGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EdgeReleaseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEdgeReleaseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EdgeRelease model
+   */
+  readonly fields: EdgeReleaseFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EdgeRelease.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EdgeReleaseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EdgeRelease model
+   */
+  interface EdgeReleaseFieldRefs {
+    readonly id: FieldRef<"EdgeRelease", 'String'>
+    readonly version: FieldRef<"EdgeRelease", 'String'>
+    readonly windowsUrl: FieldRef<"EdgeRelease", 'String'>
+    readonly linuxUrl: FieldRef<"EdgeRelease", 'String'>
+    readonly checksum: FieldRef<"EdgeRelease", 'String'>
+    readonly signature: FieldRef<"EdgeRelease", 'String'>
+    readonly notes: FieldRef<"EdgeRelease", 'String'>
+    readonly createdAt: FieldRef<"EdgeRelease", 'DateTime'>
+    readonly updatedAt: FieldRef<"EdgeRelease", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EdgeRelease findUnique
+   */
+  export type EdgeReleaseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeRelease to fetch.
+     */
+    where: EdgeReleaseWhereUniqueInput
+  }
+
+  /**
+   * EdgeRelease findUniqueOrThrow
+   */
+  export type EdgeReleaseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeRelease to fetch.
+     */
+    where: EdgeReleaseWhereUniqueInput
+  }
+
+  /**
+   * EdgeRelease findFirst
+   */
+  export type EdgeReleaseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeRelease to fetch.
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleases to fetch.
+     */
+    orderBy?: EdgeReleaseOrderByWithRelationInput | EdgeReleaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeReleases.
+     */
+    cursor?: EdgeReleaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleases.
+     */
+    distinct?: EdgeReleaseScalarFieldEnum | EdgeReleaseScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeRelease findFirstOrThrow
+   */
+  export type EdgeReleaseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeRelease to fetch.
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleases to fetch.
+     */
+    orderBy?: EdgeReleaseOrderByWithRelationInput | EdgeReleaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeReleases.
+     */
+    cursor?: EdgeReleaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleases.
+     */
+    distinct?: EdgeReleaseScalarFieldEnum | EdgeReleaseScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeRelease findMany
+   */
+  export type EdgeReleaseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeReleases to fetch.
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleases to fetch.
+     */
+    orderBy?: EdgeReleaseOrderByWithRelationInput | EdgeReleaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EdgeReleases.
+     */
+    cursor?: EdgeReleaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleases.
+     */
+    distinct?: EdgeReleaseScalarFieldEnum | EdgeReleaseScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeRelease create
+   */
+  export type EdgeReleaseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EdgeRelease.
+     */
+    data: XOR<EdgeReleaseCreateInput, EdgeReleaseUncheckedCreateInput>
+  }
+
+  /**
+   * EdgeRelease createMany
+   */
+  export type EdgeReleaseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EdgeReleases.
+     */
+    data: EdgeReleaseCreateManyInput | EdgeReleaseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeRelease createManyAndReturn
+   */
+  export type EdgeReleaseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The data used to create many EdgeReleases.
+     */
+    data: EdgeReleaseCreateManyInput | EdgeReleaseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeRelease update
+   */
+  export type EdgeReleaseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EdgeRelease.
+     */
+    data: XOR<EdgeReleaseUpdateInput, EdgeReleaseUncheckedUpdateInput>
+    /**
+     * Choose, which EdgeRelease to update.
+     */
+    where: EdgeReleaseWhereUniqueInput
+  }
+
+  /**
+   * EdgeRelease updateMany
+   */
+  export type EdgeReleaseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EdgeReleases.
+     */
+    data: XOR<EdgeReleaseUpdateManyMutationInput, EdgeReleaseUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeReleases to update
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * Limit how many EdgeReleases to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeRelease updateManyAndReturn
+   */
+  export type EdgeReleaseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The data used to update EdgeReleases.
+     */
+    data: XOR<EdgeReleaseUpdateManyMutationInput, EdgeReleaseUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeReleases to update
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * Limit how many EdgeReleases to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeRelease upsert
+   */
+  export type EdgeReleaseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EdgeRelease to update in case it exists.
+     */
+    where: EdgeReleaseWhereUniqueInput
+    /**
+     * In case the EdgeRelease found by the `where` argument doesn't exist, create a new EdgeRelease with this data.
+     */
+    create: XOR<EdgeReleaseCreateInput, EdgeReleaseUncheckedCreateInput>
+    /**
+     * In case the EdgeRelease was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EdgeReleaseUpdateInput, EdgeReleaseUncheckedUpdateInput>
+  }
+
+  /**
+   * EdgeRelease delete
+   */
+  export type EdgeReleaseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter which EdgeRelease to delete.
+     */
+    where: EdgeReleaseWhereUniqueInput
+  }
+
+  /**
+   * EdgeRelease deleteMany
+   */
+  export type EdgeReleaseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeReleases to delete
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * Limit how many EdgeReleases to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeRelease without action
+   */
+  export type EdgeReleaseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
   }
 
 
@@ -17302,6 +18865,3580 @@ export namespace Prisma {
 
 
   /**
+   * Model StrategyTemplate
+   */
+
+  export type AggregateStrategyTemplate = {
+    _count: StrategyTemplateCountAggregateOutputType | null
+    _min: StrategyTemplateMinAggregateOutputType | null
+    _max: StrategyTemplateMaxAggregateOutputType | null
+  }
+
+  export type StrategyTemplateMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    category: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StrategyTemplateMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    category: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StrategyTemplateCountAggregateOutputType = {
+    id: number
+    name: number
+    category: number
+    factoryConfig: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StrategyTemplateMinAggregateInputType = {
+    id?: true
+    name?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StrategyTemplateMaxAggregateInputType = {
+    id?: true
+    name?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StrategyTemplateCountAggregateInputType = {
+    id?: true
+    name?: true
+    category?: true
+    factoryConfig?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StrategyTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StrategyTemplate to aggregate.
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StrategyTemplates to fetch.
+     */
+    orderBy?: StrategyTemplateOrderByWithRelationInput | StrategyTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StrategyTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StrategyTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StrategyTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StrategyTemplates
+    **/
+    _count?: true | StrategyTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StrategyTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StrategyTemplateMaxAggregateInputType
+  }
+
+  export type GetStrategyTemplateAggregateType<T extends StrategyTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateStrategyTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStrategyTemplate[P]>
+      : GetScalarType<T[P], AggregateStrategyTemplate[P]>
+  }
+
+
+
+
+  export type StrategyTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StrategyTemplateWhereInput
+    orderBy?: StrategyTemplateOrderByWithAggregationInput | StrategyTemplateOrderByWithAggregationInput[]
+    by: StrategyTemplateScalarFieldEnum[] | StrategyTemplateScalarFieldEnum
+    having?: StrategyTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StrategyTemplateCountAggregateInputType | true
+    _min?: StrategyTemplateMinAggregateInputType
+    _max?: StrategyTemplateMaxAggregateInputType
+  }
+
+  export type StrategyTemplateGroupByOutputType = {
+    id: string
+    name: string
+    category: string | null
+    factoryConfig: JsonValue
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: StrategyTemplateCountAggregateOutputType | null
+    _min: StrategyTemplateMinAggregateOutputType | null
+    _max: StrategyTemplateMaxAggregateOutputType | null
+  }
+
+  type GetStrategyTemplateGroupByPayload<T extends StrategyTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StrategyTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StrategyTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StrategyTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], StrategyTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StrategyTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    category?: boolean
+    factoryConfig?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tasks?: boolean | StrategyTemplate$tasksArgs<ExtArgs>
+    _count?: boolean | StrategyTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["strategyTemplate"]>
+
+  export type StrategyTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    category?: boolean
+    factoryConfig?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["strategyTemplate"]>
+
+  export type StrategyTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    category?: boolean
+    factoryConfig?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["strategyTemplate"]>
+
+  export type StrategyTemplateSelectScalar = {
+    id?: boolean
+    name?: boolean
+    category?: boolean
+    factoryConfig?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StrategyTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "category" | "factoryConfig" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["strategyTemplate"]>
+  export type StrategyTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tasks?: boolean | StrategyTemplate$tasksArgs<ExtArgs>
+    _count?: boolean | StrategyTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type StrategyTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type StrategyTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $StrategyTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StrategyTemplate"
+    objects: {
+      tasks: Prisma.$BacktestTaskPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      category: string | null
+      factoryConfig: Prisma.JsonValue
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["strategyTemplate"]>
+    composites: {}
+  }
+
+  type StrategyTemplateGetPayload<S extends boolean | null | undefined | StrategyTemplateDefaultArgs> = $Result.GetResult<Prisma.$StrategyTemplatePayload, S>
+
+  type StrategyTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StrategyTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StrategyTemplateCountAggregateInputType | true
+    }
+
+  export interface StrategyTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StrategyTemplate'], meta: { name: 'StrategyTemplate' } }
+    /**
+     * Find zero or one StrategyTemplate that matches the filter.
+     * @param {StrategyTemplateFindUniqueArgs} args - Arguments to find a StrategyTemplate
+     * @example
+     * // Get one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StrategyTemplateFindUniqueArgs>(args: SelectSubset<T, StrategyTemplateFindUniqueArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StrategyTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StrategyTemplateFindUniqueOrThrowArgs} args - Arguments to find a StrategyTemplate
+     * @example
+     * // Get one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StrategyTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, StrategyTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StrategyTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateFindFirstArgs} args - Arguments to find a StrategyTemplate
+     * @example
+     * // Get one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StrategyTemplateFindFirstArgs>(args?: SelectSubset<T, StrategyTemplateFindFirstArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StrategyTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateFindFirstOrThrowArgs} args - Arguments to find a StrategyTemplate
+     * @example
+     * // Get one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StrategyTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, StrategyTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StrategyTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StrategyTemplates
+     * const strategyTemplates = await prisma.strategyTemplate.findMany()
+     * 
+     * // Get first 10 StrategyTemplates
+     * const strategyTemplates = await prisma.strategyTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const strategyTemplateWithIdOnly = await prisma.strategyTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StrategyTemplateFindManyArgs>(args?: SelectSubset<T, StrategyTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StrategyTemplate.
+     * @param {StrategyTemplateCreateArgs} args - Arguments to create a StrategyTemplate.
+     * @example
+     * // Create one StrategyTemplate
+     * const StrategyTemplate = await prisma.strategyTemplate.create({
+     *   data: {
+     *     // ... data to create a StrategyTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends StrategyTemplateCreateArgs>(args: SelectSubset<T, StrategyTemplateCreateArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StrategyTemplates.
+     * @param {StrategyTemplateCreateManyArgs} args - Arguments to create many StrategyTemplates.
+     * @example
+     * // Create many StrategyTemplates
+     * const strategyTemplate = await prisma.strategyTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StrategyTemplateCreateManyArgs>(args?: SelectSubset<T, StrategyTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StrategyTemplates and returns the data saved in the database.
+     * @param {StrategyTemplateCreateManyAndReturnArgs} args - Arguments to create many StrategyTemplates.
+     * @example
+     * // Create many StrategyTemplates
+     * const strategyTemplate = await prisma.strategyTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StrategyTemplates and only return the `id`
+     * const strategyTemplateWithIdOnly = await prisma.strategyTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StrategyTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, StrategyTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StrategyTemplate.
+     * @param {StrategyTemplateDeleteArgs} args - Arguments to delete one StrategyTemplate.
+     * @example
+     * // Delete one StrategyTemplate
+     * const StrategyTemplate = await prisma.strategyTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one StrategyTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StrategyTemplateDeleteArgs>(args: SelectSubset<T, StrategyTemplateDeleteArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StrategyTemplate.
+     * @param {StrategyTemplateUpdateArgs} args - Arguments to update one StrategyTemplate.
+     * @example
+     * // Update one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StrategyTemplateUpdateArgs>(args: SelectSubset<T, StrategyTemplateUpdateArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StrategyTemplates.
+     * @param {StrategyTemplateDeleteManyArgs} args - Arguments to filter StrategyTemplates to delete.
+     * @example
+     * // Delete a few StrategyTemplates
+     * const { count } = await prisma.strategyTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StrategyTemplateDeleteManyArgs>(args?: SelectSubset<T, StrategyTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StrategyTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StrategyTemplates
+     * const strategyTemplate = await prisma.strategyTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StrategyTemplateUpdateManyArgs>(args: SelectSubset<T, StrategyTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StrategyTemplates and returns the data updated in the database.
+     * @param {StrategyTemplateUpdateManyAndReturnArgs} args - Arguments to update many StrategyTemplates.
+     * @example
+     * // Update many StrategyTemplates
+     * const strategyTemplate = await prisma.strategyTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StrategyTemplates and only return the `id`
+     * const strategyTemplateWithIdOnly = await prisma.strategyTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StrategyTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, StrategyTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StrategyTemplate.
+     * @param {StrategyTemplateUpsertArgs} args - Arguments to update or create a StrategyTemplate.
+     * @example
+     * // Update or create a StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.upsert({
+     *   create: {
+     *     // ... data to create a StrategyTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StrategyTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StrategyTemplateUpsertArgs>(args: SelectSubset<T, StrategyTemplateUpsertArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StrategyTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateCountArgs} args - Arguments to filter StrategyTemplates to count.
+     * @example
+     * // Count the number of StrategyTemplates
+     * const count = await prisma.strategyTemplate.count({
+     *   where: {
+     *     // ... the filter for the StrategyTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends StrategyTemplateCountArgs>(
+      args?: Subset<T, StrategyTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StrategyTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StrategyTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StrategyTemplateAggregateArgs>(args: Subset<T, StrategyTemplateAggregateArgs>): Prisma.PrismaPromise<GetStrategyTemplateAggregateType<T>>
+
+    /**
+     * Group by StrategyTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StrategyTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StrategyTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: StrategyTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StrategyTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStrategyTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StrategyTemplate model
+   */
+  readonly fields: StrategyTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StrategyTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StrategyTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tasks<T extends StrategyTemplate$tasksArgs<ExtArgs> = {}>(args?: Subset<T, StrategyTemplate$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StrategyTemplate model
+   */
+  interface StrategyTemplateFieldRefs {
+    readonly id: FieldRef<"StrategyTemplate", 'String'>
+    readonly name: FieldRef<"StrategyTemplate", 'String'>
+    readonly category: FieldRef<"StrategyTemplate", 'String'>
+    readonly factoryConfig: FieldRef<"StrategyTemplate", 'Json'>
+    readonly isActive: FieldRef<"StrategyTemplate", 'Boolean'>
+    readonly createdAt: FieldRef<"StrategyTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"StrategyTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StrategyTemplate findUnique
+   */
+  export type StrategyTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplate to fetch.
+     */
+    where: StrategyTemplateWhereUniqueInput
+  }
+
+  /**
+   * StrategyTemplate findUniqueOrThrow
+   */
+  export type StrategyTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplate to fetch.
+     */
+    where: StrategyTemplateWhereUniqueInput
+  }
+
+  /**
+   * StrategyTemplate findFirst
+   */
+  export type StrategyTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplate to fetch.
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StrategyTemplates to fetch.
+     */
+    orderBy?: StrategyTemplateOrderByWithRelationInput | StrategyTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StrategyTemplates.
+     */
+    cursor?: StrategyTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StrategyTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StrategyTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StrategyTemplates.
+     */
+    distinct?: StrategyTemplateScalarFieldEnum | StrategyTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * StrategyTemplate findFirstOrThrow
+   */
+  export type StrategyTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplate to fetch.
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StrategyTemplates to fetch.
+     */
+    orderBy?: StrategyTemplateOrderByWithRelationInput | StrategyTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StrategyTemplates.
+     */
+    cursor?: StrategyTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StrategyTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StrategyTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StrategyTemplates.
+     */
+    distinct?: StrategyTemplateScalarFieldEnum | StrategyTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * StrategyTemplate findMany
+   */
+  export type StrategyTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplates to fetch.
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StrategyTemplates to fetch.
+     */
+    orderBy?: StrategyTemplateOrderByWithRelationInput | StrategyTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StrategyTemplates.
+     */
+    cursor?: StrategyTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StrategyTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StrategyTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StrategyTemplates.
+     */
+    distinct?: StrategyTemplateScalarFieldEnum | StrategyTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * StrategyTemplate create
+   */
+  export type StrategyTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StrategyTemplate.
+     */
+    data: XOR<StrategyTemplateCreateInput, StrategyTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * StrategyTemplate createMany
+   */
+  export type StrategyTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StrategyTemplates.
+     */
+    data: StrategyTemplateCreateManyInput | StrategyTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StrategyTemplate createManyAndReturn
+   */
+  export type StrategyTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many StrategyTemplates.
+     */
+    data: StrategyTemplateCreateManyInput | StrategyTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StrategyTemplate update
+   */
+  export type StrategyTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StrategyTemplate.
+     */
+    data: XOR<StrategyTemplateUpdateInput, StrategyTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which StrategyTemplate to update.
+     */
+    where: StrategyTemplateWhereUniqueInput
+  }
+
+  /**
+   * StrategyTemplate updateMany
+   */
+  export type StrategyTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StrategyTemplates.
+     */
+    data: XOR<StrategyTemplateUpdateManyMutationInput, StrategyTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which StrategyTemplates to update
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * Limit how many StrategyTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StrategyTemplate updateManyAndReturn
+   */
+  export type StrategyTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update StrategyTemplates.
+     */
+    data: XOR<StrategyTemplateUpdateManyMutationInput, StrategyTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which StrategyTemplates to update
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * Limit how many StrategyTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StrategyTemplate upsert
+   */
+  export type StrategyTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StrategyTemplate to update in case it exists.
+     */
+    where: StrategyTemplateWhereUniqueInput
+    /**
+     * In case the StrategyTemplate found by the `where` argument doesn't exist, create a new StrategyTemplate with this data.
+     */
+    create: XOR<StrategyTemplateCreateInput, StrategyTemplateUncheckedCreateInput>
+    /**
+     * In case the StrategyTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StrategyTemplateUpdateInput, StrategyTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * StrategyTemplate delete
+   */
+  export type StrategyTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which StrategyTemplate to delete.
+     */
+    where: StrategyTemplateWhereUniqueInput
+  }
+
+  /**
+   * StrategyTemplate deleteMany
+   */
+  export type StrategyTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StrategyTemplates to delete
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * Limit how many StrategyTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StrategyTemplate.tasks
+   */
+  export type StrategyTemplate$tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    where?: BacktestTaskWhereInput
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    cursor?: BacktestTaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BacktestTaskScalarFieldEnum | BacktestTaskScalarFieldEnum[]
+  }
+
+  /**
+   * StrategyTemplate without action
+   */
+  export type StrategyTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BacktestTask
+   */
+
+  export type AggregateBacktestTask = {
+    _count: BacktestTaskCountAggregateOutputType | null
+    _avg: BacktestTaskAvgAggregateOutputType | null
+    _sum: BacktestTaskSumAggregateOutputType | null
+    _min: BacktestTaskMinAggregateOutputType | null
+    _max: BacktestTaskMaxAggregateOutputType | null
+  }
+
+  export type BacktestTaskAvgAggregateOutputType = {
+    trials: number | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+  }
+
+  export type BacktestTaskSumAggregateOutputType = {
+    trials: number | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+  }
+
+  export type BacktestTaskMinAggregateOutputType = {
+    id: string | null
+    strategyTemplateId: string | null
+    name: string | null
+    symbol: string | null
+    interval: string | null
+    startDate: Date | null
+    endDate: Date | null
+    searchStrategy: $Enums.SearchStrategy | null
+    trials: number | null
+    status: $Enums.BacktestTaskStatus | null
+    assignedWorkerId: string | null
+    leaseExpiresAt: Date | null
+    lastHeartbeat: Date | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+    currentConfig: string | null
+    trialProgress: string | null
+    errorMessage: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BacktestTaskMaxAggregateOutputType = {
+    id: string | null
+    strategyTemplateId: string | null
+    name: string | null
+    symbol: string | null
+    interval: string | null
+    startDate: Date | null
+    endDate: Date | null
+    searchStrategy: $Enums.SearchStrategy | null
+    trials: number | null
+    status: $Enums.BacktestTaskStatus | null
+    assignedWorkerId: string | null
+    leaseExpiresAt: Date | null
+    lastHeartbeat: Date | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+    currentConfig: string | null
+    trialProgress: string | null
+    errorMessage: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BacktestTaskCountAggregateOutputType = {
+    id: number
+    strategyTemplateId: number
+    name: number
+    symbol: number
+    interval: number
+    startDate: number
+    endDate: number
+    searchStrategy: number
+    optimizationParams: number
+    optimizationMetrics: number
+    trials: number
+    status: number
+    assignedWorkerId: number
+    leaseExpiresAt: number
+    lastHeartbeat: number
+    totalConfigs: number
+    processedConfigs: number
+    currentConfig: number
+    trialProgress: number
+    bestConfigIds: number
+    errorMessage: number
+    startedAt: number
+    completedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BacktestTaskAvgAggregateInputType = {
+    trials?: true
+    totalConfigs?: true
+    processedConfigs?: true
+  }
+
+  export type BacktestTaskSumAggregateInputType = {
+    trials?: true
+    totalConfigs?: true
+    processedConfigs?: true
+  }
+
+  export type BacktestTaskMinAggregateInputType = {
+    id?: true
+    strategyTemplateId?: true
+    name?: true
+    symbol?: true
+    interval?: true
+    startDate?: true
+    endDate?: true
+    searchStrategy?: true
+    trials?: true
+    status?: true
+    assignedWorkerId?: true
+    leaseExpiresAt?: true
+    lastHeartbeat?: true
+    totalConfigs?: true
+    processedConfigs?: true
+    currentConfig?: true
+    trialProgress?: true
+    errorMessage?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BacktestTaskMaxAggregateInputType = {
+    id?: true
+    strategyTemplateId?: true
+    name?: true
+    symbol?: true
+    interval?: true
+    startDate?: true
+    endDate?: true
+    searchStrategy?: true
+    trials?: true
+    status?: true
+    assignedWorkerId?: true
+    leaseExpiresAt?: true
+    lastHeartbeat?: true
+    totalConfigs?: true
+    processedConfigs?: true
+    currentConfig?: true
+    trialProgress?: true
+    errorMessage?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BacktestTaskCountAggregateInputType = {
+    id?: true
+    strategyTemplateId?: true
+    name?: true
+    symbol?: true
+    interval?: true
+    startDate?: true
+    endDate?: true
+    searchStrategy?: true
+    optimizationParams?: true
+    optimizationMetrics?: true
+    trials?: true
+    status?: true
+    assignedWorkerId?: true
+    leaseExpiresAt?: true
+    lastHeartbeat?: true
+    totalConfigs?: true
+    processedConfigs?: true
+    currentConfig?: true
+    trialProgress?: true
+    bestConfigIds?: true
+    errorMessage?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BacktestTaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BacktestTask to aggregate.
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestTasks to fetch.
+     */
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BacktestTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BacktestTasks
+    **/
+    _count?: true | BacktestTaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BacktestTaskAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BacktestTaskSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BacktestTaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BacktestTaskMaxAggregateInputType
+  }
+
+  export type GetBacktestTaskAggregateType<T extends BacktestTaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateBacktestTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBacktestTask[P]>
+      : GetScalarType<T[P], AggregateBacktestTask[P]>
+  }
+
+
+
+
+  export type BacktestTaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BacktestTaskWhereInput
+    orderBy?: BacktestTaskOrderByWithAggregationInput | BacktestTaskOrderByWithAggregationInput[]
+    by: BacktestTaskScalarFieldEnum[] | BacktestTaskScalarFieldEnum
+    having?: BacktestTaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BacktestTaskCountAggregateInputType | true
+    _avg?: BacktestTaskAvgAggregateInputType
+    _sum?: BacktestTaskSumAggregateInputType
+    _min?: BacktestTaskMinAggregateInputType
+    _max?: BacktestTaskMaxAggregateInputType
+  }
+
+  export type BacktestTaskGroupByOutputType = {
+    id: string
+    strategyTemplateId: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date
+    endDate: Date
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonValue
+    optimizationMetrics: string[]
+    trials: number
+    status: $Enums.BacktestTaskStatus
+    assignedWorkerId: string | null
+    leaseExpiresAt: Date | null
+    lastHeartbeat: Date | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+    currentConfig: string | null
+    trialProgress: string | null
+    bestConfigIds: string[]
+    errorMessage: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BacktestTaskCountAggregateOutputType | null
+    _avg: BacktestTaskAvgAggregateOutputType | null
+    _sum: BacktestTaskSumAggregateOutputType | null
+    _min: BacktestTaskMinAggregateOutputType | null
+    _max: BacktestTaskMaxAggregateOutputType | null
+  }
+
+  type GetBacktestTaskGroupByPayload<T extends BacktestTaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BacktestTaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BacktestTaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BacktestTaskGroupByOutputType[P]>
+            : GetScalarType<T[P], BacktestTaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BacktestTaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    strategyTemplateId?: boolean
+    name?: boolean
+    symbol?: boolean
+    interval?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    searchStrategy?: boolean
+    optimizationParams?: boolean
+    optimizationMetrics?: boolean
+    trials?: boolean
+    status?: boolean
+    assignedWorkerId?: boolean
+    leaseExpiresAt?: boolean
+    lastHeartbeat?: boolean
+    totalConfigs?: boolean
+    processedConfigs?: boolean
+    currentConfig?: boolean
+    trialProgress?: boolean
+    bestConfigIds?: boolean
+    errorMessage?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+    results?: boolean | BacktestTask$resultsArgs<ExtArgs>
+    _count?: boolean | BacktestTaskCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestTask"]>
+
+  export type BacktestTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    strategyTemplateId?: boolean
+    name?: boolean
+    symbol?: boolean
+    interval?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    searchStrategy?: boolean
+    optimizationParams?: boolean
+    optimizationMetrics?: boolean
+    trials?: boolean
+    status?: boolean
+    assignedWorkerId?: boolean
+    leaseExpiresAt?: boolean
+    lastHeartbeat?: boolean
+    totalConfigs?: boolean
+    processedConfigs?: boolean
+    currentConfig?: boolean
+    trialProgress?: boolean
+    bestConfigIds?: boolean
+    errorMessage?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestTask"]>
+
+  export type BacktestTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    strategyTemplateId?: boolean
+    name?: boolean
+    symbol?: boolean
+    interval?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    searchStrategy?: boolean
+    optimizationParams?: boolean
+    optimizationMetrics?: boolean
+    trials?: boolean
+    status?: boolean
+    assignedWorkerId?: boolean
+    leaseExpiresAt?: boolean
+    lastHeartbeat?: boolean
+    totalConfigs?: boolean
+    processedConfigs?: boolean
+    currentConfig?: boolean
+    trialProgress?: boolean
+    bestConfigIds?: boolean
+    errorMessage?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestTask"]>
+
+  export type BacktestTaskSelectScalar = {
+    id?: boolean
+    strategyTemplateId?: boolean
+    name?: boolean
+    symbol?: boolean
+    interval?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    searchStrategy?: boolean
+    optimizationParams?: boolean
+    optimizationMetrics?: boolean
+    trials?: boolean
+    status?: boolean
+    assignedWorkerId?: boolean
+    leaseExpiresAt?: boolean
+    lastHeartbeat?: boolean
+    totalConfigs?: boolean
+    processedConfigs?: boolean
+    currentConfig?: boolean
+    trialProgress?: boolean
+    bestConfigIds?: boolean
+    errorMessage?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BacktestTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "strategyTemplateId" | "name" | "symbol" | "interval" | "startDate" | "endDate" | "searchStrategy" | "optimizationParams" | "optimizationMetrics" | "trials" | "status" | "assignedWorkerId" | "leaseExpiresAt" | "lastHeartbeat" | "totalConfigs" | "processedConfigs" | "currentConfig" | "trialProgress" | "bestConfigIds" | "errorMessage" | "startedAt" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["backtestTask"]>
+  export type BacktestTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+    results?: boolean | BacktestTask$resultsArgs<ExtArgs>
+    _count?: boolean | BacktestTaskCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BacktestTaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+  }
+  export type BacktestTaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+  }
+
+  export type $BacktestTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BacktestTask"
+    objects: {
+      strategyTemplate: Prisma.$StrategyTemplatePayload<ExtArgs>
+      results: Prisma.$BacktestResultPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      strategyTemplateId: string
+      name: string
+      symbol: string
+      interval: string
+      startDate: Date
+      endDate: Date
+      searchStrategy: $Enums.SearchStrategy
+      optimizationParams: Prisma.JsonValue
+      optimizationMetrics: string[]
+      trials: number
+      status: $Enums.BacktestTaskStatus
+      assignedWorkerId: string | null
+      leaseExpiresAt: Date | null
+      lastHeartbeat: Date | null
+      totalConfigs: number | null
+      processedConfigs: number | null
+      currentConfig: string | null
+      trialProgress: string | null
+      bestConfigIds: string[]
+      errorMessage: string | null
+      startedAt: Date | null
+      completedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["backtestTask"]>
+    composites: {}
+  }
+
+  type BacktestTaskGetPayload<S extends boolean | null | undefined | BacktestTaskDefaultArgs> = $Result.GetResult<Prisma.$BacktestTaskPayload, S>
+
+  type BacktestTaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BacktestTaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BacktestTaskCountAggregateInputType | true
+    }
+
+  export interface BacktestTaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BacktestTask'], meta: { name: 'BacktestTask' } }
+    /**
+     * Find zero or one BacktestTask that matches the filter.
+     * @param {BacktestTaskFindUniqueArgs} args - Arguments to find a BacktestTask
+     * @example
+     * // Get one BacktestTask
+     * const backtestTask = await prisma.backtestTask.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BacktestTaskFindUniqueArgs>(args: SelectSubset<T, BacktestTaskFindUniqueArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BacktestTask that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BacktestTaskFindUniqueOrThrowArgs} args - Arguments to find a BacktestTask
+     * @example
+     * // Get one BacktestTask
+     * const backtestTask = await prisma.backtestTask.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BacktestTaskFindUniqueOrThrowArgs>(args: SelectSubset<T, BacktestTaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BacktestTask that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskFindFirstArgs} args - Arguments to find a BacktestTask
+     * @example
+     * // Get one BacktestTask
+     * const backtestTask = await prisma.backtestTask.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BacktestTaskFindFirstArgs>(args?: SelectSubset<T, BacktestTaskFindFirstArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BacktestTask that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskFindFirstOrThrowArgs} args - Arguments to find a BacktestTask
+     * @example
+     * // Get one BacktestTask
+     * const backtestTask = await prisma.backtestTask.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BacktestTaskFindFirstOrThrowArgs>(args?: SelectSubset<T, BacktestTaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BacktestTasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BacktestTasks
+     * const backtestTasks = await prisma.backtestTask.findMany()
+     * 
+     * // Get first 10 BacktestTasks
+     * const backtestTasks = await prisma.backtestTask.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const backtestTaskWithIdOnly = await prisma.backtestTask.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BacktestTaskFindManyArgs>(args?: SelectSubset<T, BacktestTaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BacktestTask.
+     * @param {BacktestTaskCreateArgs} args - Arguments to create a BacktestTask.
+     * @example
+     * // Create one BacktestTask
+     * const BacktestTask = await prisma.backtestTask.create({
+     *   data: {
+     *     // ... data to create a BacktestTask
+     *   }
+     * })
+     * 
+     */
+    create<T extends BacktestTaskCreateArgs>(args: SelectSubset<T, BacktestTaskCreateArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BacktestTasks.
+     * @param {BacktestTaskCreateManyArgs} args - Arguments to create many BacktestTasks.
+     * @example
+     * // Create many BacktestTasks
+     * const backtestTask = await prisma.backtestTask.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BacktestTaskCreateManyArgs>(args?: SelectSubset<T, BacktestTaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BacktestTasks and returns the data saved in the database.
+     * @param {BacktestTaskCreateManyAndReturnArgs} args - Arguments to create many BacktestTasks.
+     * @example
+     * // Create many BacktestTasks
+     * const backtestTask = await prisma.backtestTask.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BacktestTasks and only return the `id`
+     * const backtestTaskWithIdOnly = await prisma.backtestTask.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BacktestTaskCreateManyAndReturnArgs>(args?: SelectSubset<T, BacktestTaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BacktestTask.
+     * @param {BacktestTaskDeleteArgs} args - Arguments to delete one BacktestTask.
+     * @example
+     * // Delete one BacktestTask
+     * const BacktestTask = await prisma.backtestTask.delete({
+     *   where: {
+     *     // ... filter to delete one BacktestTask
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BacktestTaskDeleteArgs>(args: SelectSubset<T, BacktestTaskDeleteArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BacktestTask.
+     * @param {BacktestTaskUpdateArgs} args - Arguments to update one BacktestTask.
+     * @example
+     * // Update one BacktestTask
+     * const backtestTask = await prisma.backtestTask.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BacktestTaskUpdateArgs>(args: SelectSubset<T, BacktestTaskUpdateArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BacktestTasks.
+     * @param {BacktestTaskDeleteManyArgs} args - Arguments to filter BacktestTasks to delete.
+     * @example
+     * // Delete a few BacktestTasks
+     * const { count } = await prisma.backtestTask.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BacktestTaskDeleteManyArgs>(args?: SelectSubset<T, BacktestTaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BacktestTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BacktestTasks
+     * const backtestTask = await prisma.backtestTask.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BacktestTaskUpdateManyArgs>(args: SelectSubset<T, BacktestTaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BacktestTasks and returns the data updated in the database.
+     * @param {BacktestTaskUpdateManyAndReturnArgs} args - Arguments to update many BacktestTasks.
+     * @example
+     * // Update many BacktestTasks
+     * const backtestTask = await prisma.backtestTask.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BacktestTasks and only return the `id`
+     * const backtestTaskWithIdOnly = await prisma.backtestTask.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BacktestTaskUpdateManyAndReturnArgs>(args: SelectSubset<T, BacktestTaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BacktestTask.
+     * @param {BacktestTaskUpsertArgs} args - Arguments to update or create a BacktestTask.
+     * @example
+     * // Update or create a BacktestTask
+     * const backtestTask = await prisma.backtestTask.upsert({
+     *   create: {
+     *     // ... data to create a BacktestTask
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BacktestTask we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BacktestTaskUpsertArgs>(args: SelectSubset<T, BacktestTaskUpsertArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BacktestTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskCountArgs} args - Arguments to filter BacktestTasks to count.
+     * @example
+     * // Count the number of BacktestTasks
+     * const count = await prisma.backtestTask.count({
+     *   where: {
+     *     // ... the filter for the BacktestTasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends BacktestTaskCountArgs>(
+      args?: Subset<T, BacktestTaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BacktestTaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BacktestTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BacktestTaskAggregateArgs>(args: Subset<T, BacktestTaskAggregateArgs>): Prisma.PrismaPromise<GetBacktestTaskAggregateType<T>>
+
+    /**
+     * Group by BacktestTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BacktestTaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BacktestTaskGroupByArgs['orderBy'] }
+        : { orderBy?: BacktestTaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BacktestTaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBacktestTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BacktestTask model
+   */
+  readonly fields: BacktestTaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BacktestTask.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BacktestTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    strategyTemplate<T extends StrategyTemplateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StrategyTemplateDefaultArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    results<T extends BacktestTask$resultsArgs<ExtArgs> = {}>(args?: Subset<T, BacktestTask$resultsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BacktestTask model
+   */
+  interface BacktestTaskFieldRefs {
+    readonly id: FieldRef<"BacktestTask", 'String'>
+    readonly strategyTemplateId: FieldRef<"BacktestTask", 'String'>
+    readonly name: FieldRef<"BacktestTask", 'String'>
+    readonly symbol: FieldRef<"BacktestTask", 'String'>
+    readonly interval: FieldRef<"BacktestTask", 'String'>
+    readonly startDate: FieldRef<"BacktestTask", 'DateTime'>
+    readonly endDate: FieldRef<"BacktestTask", 'DateTime'>
+    readonly searchStrategy: FieldRef<"BacktestTask", 'SearchStrategy'>
+    readonly optimizationParams: FieldRef<"BacktestTask", 'Json'>
+    readonly optimizationMetrics: FieldRef<"BacktestTask", 'String[]'>
+    readonly trials: FieldRef<"BacktestTask", 'Int'>
+    readonly status: FieldRef<"BacktestTask", 'BacktestTaskStatus'>
+    readonly assignedWorkerId: FieldRef<"BacktestTask", 'String'>
+    readonly leaseExpiresAt: FieldRef<"BacktestTask", 'DateTime'>
+    readonly lastHeartbeat: FieldRef<"BacktestTask", 'DateTime'>
+    readonly totalConfigs: FieldRef<"BacktestTask", 'Int'>
+    readonly processedConfigs: FieldRef<"BacktestTask", 'Int'>
+    readonly currentConfig: FieldRef<"BacktestTask", 'String'>
+    readonly trialProgress: FieldRef<"BacktestTask", 'String'>
+    readonly bestConfigIds: FieldRef<"BacktestTask", 'String[]'>
+    readonly errorMessage: FieldRef<"BacktestTask", 'String'>
+    readonly startedAt: FieldRef<"BacktestTask", 'DateTime'>
+    readonly completedAt: FieldRef<"BacktestTask", 'DateTime'>
+    readonly createdAt: FieldRef<"BacktestTask", 'DateTime'>
+    readonly updatedAt: FieldRef<"BacktestTask", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BacktestTask findUnique
+   */
+  export type BacktestTaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTask to fetch.
+     */
+    where: BacktestTaskWhereUniqueInput
+  }
+
+  /**
+   * BacktestTask findUniqueOrThrow
+   */
+  export type BacktestTaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTask to fetch.
+     */
+    where: BacktestTaskWhereUniqueInput
+  }
+
+  /**
+   * BacktestTask findFirst
+   */
+  export type BacktestTaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTask to fetch.
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestTasks to fetch.
+     */
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BacktestTasks.
+     */
+    cursor?: BacktestTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestTasks.
+     */
+    distinct?: BacktestTaskScalarFieldEnum | BacktestTaskScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestTask findFirstOrThrow
+   */
+  export type BacktestTaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTask to fetch.
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestTasks to fetch.
+     */
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BacktestTasks.
+     */
+    cursor?: BacktestTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestTasks.
+     */
+    distinct?: BacktestTaskScalarFieldEnum | BacktestTaskScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestTask findMany
+   */
+  export type BacktestTaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTasks to fetch.
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestTasks to fetch.
+     */
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BacktestTasks.
+     */
+    cursor?: BacktestTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestTasks.
+     */
+    distinct?: BacktestTaskScalarFieldEnum | BacktestTaskScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestTask create
+   */
+  export type BacktestTaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BacktestTask.
+     */
+    data: XOR<BacktestTaskCreateInput, BacktestTaskUncheckedCreateInput>
+  }
+
+  /**
+   * BacktestTask createMany
+   */
+  export type BacktestTaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BacktestTasks.
+     */
+    data: BacktestTaskCreateManyInput | BacktestTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BacktestTask createManyAndReturn
+   */
+  export type BacktestTaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many BacktestTasks.
+     */
+    data: BacktestTaskCreateManyInput | BacktestTaskCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BacktestTask update
+   */
+  export type BacktestTaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BacktestTask.
+     */
+    data: XOR<BacktestTaskUpdateInput, BacktestTaskUncheckedUpdateInput>
+    /**
+     * Choose, which BacktestTask to update.
+     */
+    where: BacktestTaskWhereUniqueInput
+  }
+
+  /**
+   * BacktestTask updateMany
+   */
+  export type BacktestTaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BacktestTasks.
+     */
+    data: XOR<BacktestTaskUpdateManyMutationInput, BacktestTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which BacktestTasks to update
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * Limit how many BacktestTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BacktestTask updateManyAndReturn
+   */
+  export type BacktestTaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * The data used to update BacktestTasks.
+     */
+    data: XOR<BacktestTaskUpdateManyMutationInput, BacktestTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which BacktestTasks to update
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * Limit how many BacktestTasks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BacktestTask upsert
+   */
+  export type BacktestTaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BacktestTask to update in case it exists.
+     */
+    where: BacktestTaskWhereUniqueInput
+    /**
+     * In case the BacktestTask found by the `where` argument doesn't exist, create a new BacktestTask with this data.
+     */
+    create: XOR<BacktestTaskCreateInput, BacktestTaskUncheckedCreateInput>
+    /**
+     * In case the BacktestTask was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BacktestTaskUpdateInput, BacktestTaskUncheckedUpdateInput>
+  }
+
+  /**
+   * BacktestTask delete
+   */
+  export type BacktestTaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter which BacktestTask to delete.
+     */
+    where: BacktestTaskWhereUniqueInput
+  }
+
+  /**
+   * BacktestTask deleteMany
+   */
+  export type BacktestTaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BacktestTasks to delete
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * Limit how many BacktestTasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BacktestTask.results
+   */
+  export type BacktestTask$resultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    where?: BacktestResultWhereInput
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    cursor?: BacktestResultWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BacktestResultScalarFieldEnum | BacktestResultScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestTask without action
+   */
+  export type BacktestTaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BacktestResult
+   */
+
+  export type AggregateBacktestResult = {
+    _count: BacktestResultCountAggregateOutputType | null
+    _min: BacktestResultMinAggregateOutputType | null
+    _max: BacktestResultMaxAggregateOutputType | null
+  }
+
+  export type BacktestResultMinAggregateOutputType = {
+    id: string | null
+    taskId: string | null
+    configId: string | null
+    resultFolder: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BacktestResultMaxAggregateOutputType = {
+    id: string | null
+    taskId: string | null
+    configId: string | null
+    resultFolder: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BacktestResultCountAggregateOutputType = {
+    id: number
+    taskId: number
+    configId: number
+    strategyConfig: number
+    metrics: number
+    resultFolder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BacktestResultMinAggregateInputType = {
+    id?: true
+    taskId?: true
+    configId?: true
+    resultFolder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BacktestResultMaxAggregateInputType = {
+    id?: true
+    taskId?: true
+    configId?: true
+    resultFolder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BacktestResultCountAggregateInputType = {
+    id?: true
+    taskId?: true
+    configId?: true
+    strategyConfig?: true
+    metrics?: true
+    resultFolder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BacktestResultAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BacktestResult to aggregate.
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestResults to fetch.
+     */
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BacktestResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BacktestResults
+    **/
+    _count?: true | BacktestResultCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BacktestResultMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BacktestResultMaxAggregateInputType
+  }
+
+  export type GetBacktestResultAggregateType<T extends BacktestResultAggregateArgs> = {
+        [P in keyof T & keyof AggregateBacktestResult]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBacktestResult[P]>
+      : GetScalarType<T[P], AggregateBacktestResult[P]>
+  }
+
+
+
+
+  export type BacktestResultGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BacktestResultWhereInput
+    orderBy?: BacktestResultOrderByWithAggregationInput | BacktestResultOrderByWithAggregationInput[]
+    by: BacktestResultScalarFieldEnum[] | BacktestResultScalarFieldEnum
+    having?: BacktestResultScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BacktestResultCountAggregateInputType | true
+    _min?: BacktestResultMinAggregateInputType
+    _max?: BacktestResultMaxAggregateInputType
+  }
+
+  export type BacktestResultGroupByOutputType = {
+    id: string
+    taskId: string
+    configId: string
+    strategyConfig: JsonValue
+    metrics: JsonValue
+    resultFolder: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BacktestResultCountAggregateOutputType | null
+    _min: BacktestResultMinAggregateOutputType | null
+    _max: BacktestResultMaxAggregateOutputType | null
+  }
+
+  type GetBacktestResultGroupByPayload<T extends BacktestResultGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BacktestResultGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BacktestResultGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BacktestResultGroupByOutputType[P]>
+            : GetScalarType<T[P], BacktestResultGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BacktestResultSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    configId?: boolean
+    strategyConfig?: boolean
+    metrics?: boolean
+    resultFolder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestResult"]>
+
+  export type BacktestResultSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    configId?: boolean
+    strategyConfig?: boolean
+    metrics?: boolean
+    resultFolder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestResult"]>
+
+  export type BacktestResultSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    configId?: boolean
+    strategyConfig?: boolean
+    metrics?: boolean
+    resultFolder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestResult"]>
+
+  export type BacktestResultSelectScalar = {
+    id?: boolean
+    taskId?: boolean
+    configId?: boolean
+    strategyConfig?: boolean
+    metrics?: boolean
+    resultFolder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BacktestResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "configId" | "strategyConfig" | "metrics" | "resultFolder" | "createdAt" | "updatedAt", ExtArgs["result"]["backtestResult"]>
+  export type BacktestResultInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }
+  export type BacktestResultIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }
+  export type BacktestResultIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }
+
+  export type $BacktestResultPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BacktestResult"
+    objects: {
+      task: Prisma.$BacktestTaskPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      taskId: string
+      configId: string
+      strategyConfig: Prisma.JsonValue
+      metrics: Prisma.JsonValue
+      resultFolder: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["backtestResult"]>
+    composites: {}
+  }
+
+  type BacktestResultGetPayload<S extends boolean | null | undefined | BacktestResultDefaultArgs> = $Result.GetResult<Prisma.$BacktestResultPayload, S>
+
+  type BacktestResultCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BacktestResultFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BacktestResultCountAggregateInputType | true
+    }
+
+  export interface BacktestResultDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BacktestResult'], meta: { name: 'BacktestResult' } }
+    /**
+     * Find zero or one BacktestResult that matches the filter.
+     * @param {BacktestResultFindUniqueArgs} args - Arguments to find a BacktestResult
+     * @example
+     * // Get one BacktestResult
+     * const backtestResult = await prisma.backtestResult.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BacktestResultFindUniqueArgs>(args: SelectSubset<T, BacktestResultFindUniqueArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BacktestResult that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BacktestResultFindUniqueOrThrowArgs} args - Arguments to find a BacktestResult
+     * @example
+     * // Get one BacktestResult
+     * const backtestResult = await prisma.backtestResult.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BacktestResultFindUniqueOrThrowArgs>(args: SelectSubset<T, BacktestResultFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BacktestResult that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultFindFirstArgs} args - Arguments to find a BacktestResult
+     * @example
+     * // Get one BacktestResult
+     * const backtestResult = await prisma.backtestResult.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BacktestResultFindFirstArgs>(args?: SelectSubset<T, BacktestResultFindFirstArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BacktestResult that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultFindFirstOrThrowArgs} args - Arguments to find a BacktestResult
+     * @example
+     * // Get one BacktestResult
+     * const backtestResult = await prisma.backtestResult.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BacktestResultFindFirstOrThrowArgs>(args?: SelectSubset<T, BacktestResultFindFirstOrThrowArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BacktestResults that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BacktestResults
+     * const backtestResults = await prisma.backtestResult.findMany()
+     * 
+     * // Get first 10 BacktestResults
+     * const backtestResults = await prisma.backtestResult.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const backtestResultWithIdOnly = await prisma.backtestResult.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BacktestResultFindManyArgs>(args?: SelectSubset<T, BacktestResultFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BacktestResult.
+     * @param {BacktestResultCreateArgs} args - Arguments to create a BacktestResult.
+     * @example
+     * // Create one BacktestResult
+     * const BacktestResult = await prisma.backtestResult.create({
+     *   data: {
+     *     // ... data to create a BacktestResult
+     *   }
+     * })
+     * 
+     */
+    create<T extends BacktestResultCreateArgs>(args: SelectSubset<T, BacktestResultCreateArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BacktestResults.
+     * @param {BacktestResultCreateManyArgs} args - Arguments to create many BacktestResults.
+     * @example
+     * // Create many BacktestResults
+     * const backtestResult = await prisma.backtestResult.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BacktestResultCreateManyArgs>(args?: SelectSubset<T, BacktestResultCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BacktestResults and returns the data saved in the database.
+     * @param {BacktestResultCreateManyAndReturnArgs} args - Arguments to create many BacktestResults.
+     * @example
+     * // Create many BacktestResults
+     * const backtestResult = await prisma.backtestResult.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BacktestResults and only return the `id`
+     * const backtestResultWithIdOnly = await prisma.backtestResult.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BacktestResultCreateManyAndReturnArgs>(args?: SelectSubset<T, BacktestResultCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BacktestResult.
+     * @param {BacktestResultDeleteArgs} args - Arguments to delete one BacktestResult.
+     * @example
+     * // Delete one BacktestResult
+     * const BacktestResult = await prisma.backtestResult.delete({
+     *   where: {
+     *     // ... filter to delete one BacktestResult
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BacktestResultDeleteArgs>(args: SelectSubset<T, BacktestResultDeleteArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BacktestResult.
+     * @param {BacktestResultUpdateArgs} args - Arguments to update one BacktestResult.
+     * @example
+     * // Update one BacktestResult
+     * const backtestResult = await prisma.backtestResult.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BacktestResultUpdateArgs>(args: SelectSubset<T, BacktestResultUpdateArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BacktestResults.
+     * @param {BacktestResultDeleteManyArgs} args - Arguments to filter BacktestResults to delete.
+     * @example
+     * // Delete a few BacktestResults
+     * const { count } = await prisma.backtestResult.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BacktestResultDeleteManyArgs>(args?: SelectSubset<T, BacktestResultDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BacktestResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BacktestResults
+     * const backtestResult = await prisma.backtestResult.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BacktestResultUpdateManyArgs>(args: SelectSubset<T, BacktestResultUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BacktestResults and returns the data updated in the database.
+     * @param {BacktestResultUpdateManyAndReturnArgs} args - Arguments to update many BacktestResults.
+     * @example
+     * // Update many BacktestResults
+     * const backtestResult = await prisma.backtestResult.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BacktestResults and only return the `id`
+     * const backtestResultWithIdOnly = await prisma.backtestResult.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BacktestResultUpdateManyAndReturnArgs>(args: SelectSubset<T, BacktestResultUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BacktestResult.
+     * @param {BacktestResultUpsertArgs} args - Arguments to update or create a BacktestResult.
+     * @example
+     * // Update or create a BacktestResult
+     * const backtestResult = await prisma.backtestResult.upsert({
+     *   create: {
+     *     // ... data to create a BacktestResult
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BacktestResult we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BacktestResultUpsertArgs>(args: SelectSubset<T, BacktestResultUpsertArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BacktestResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultCountArgs} args - Arguments to filter BacktestResults to count.
+     * @example
+     * // Count the number of BacktestResults
+     * const count = await prisma.backtestResult.count({
+     *   where: {
+     *     // ... the filter for the BacktestResults we want to count
+     *   }
+     * })
+    **/
+    count<T extends BacktestResultCountArgs>(
+      args?: Subset<T, BacktestResultCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BacktestResultCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BacktestResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BacktestResultAggregateArgs>(args: Subset<T, BacktestResultAggregateArgs>): Prisma.PrismaPromise<GetBacktestResultAggregateType<T>>
+
+    /**
+     * Group by BacktestResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BacktestResultGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BacktestResultGroupByArgs['orderBy'] }
+        : { orderBy?: BacktestResultGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BacktestResultGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBacktestResultGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BacktestResult model
+   */
+  readonly fields: BacktestResultFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BacktestResult.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BacktestResultClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    task<T extends BacktestTaskDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BacktestTaskDefaultArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BacktestResult model
+   */
+  interface BacktestResultFieldRefs {
+    readonly id: FieldRef<"BacktestResult", 'String'>
+    readonly taskId: FieldRef<"BacktestResult", 'String'>
+    readonly configId: FieldRef<"BacktestResult", 'String'>
+    readonly strategyConfig: FieldRef<"BacktestResult", 'Json'>
+    readonly metrics: FieldRef<"BacktestResult", 'Json'>
+    readonly resultFolder: FieldRef<"BacktestResult", 'String'>
+    readonly createdAt: FieldRef<"BacktestResult", 'DateTime'>
+    readonly updatedAt: FieldRef<"BacktestResult", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BacktestResult findUnique
+   */
+  export type BacktestResultFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResult to fetch.
+     */
+    where: BacktestResultWhereUniqueInput
+  }
+
+  /**
+   * BacktestResult findUniqueOrThrow
+   */
+  export type BacktestResultFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResult to fetch.
+     */
+    where: BacktestResultWhereUniqueInput
+  }
+
+  /**
+   * BacktestResult findFirst
+   */
+  export type BacktestResultFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResult to fetch.
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestResults to fetch.
+     */
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BacktestResults.
+     */
+    cursor?: BacktestResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestResults.
+     */
+    distinct?: BacktestResultScalarFieldEnum | BacktestResultScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestResult findFirstOrThrow
+   */
+  export type BacktestResultFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResult to fetch.
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestResults to fetch.
+     */
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BacktestResults.
+     */
+    cursor?: BacktestResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestResults.
+     */
+    distinct?: BacktestResultScalarFieldEnum | BacktestResultScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestResult findMany
+   */
+  export type BacktestResultFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResults to fetch.
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestResults to fetch.
+     */
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BacktestResults.
+     */
+    cursor?: BacktestResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestResults.
+     */
+    distinct?: BacktestResultScalarFieldEnum | BacktestResultScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestResult create
+   */
+  export type BacktestResultCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BacktestResult.
+     */
+    data: XOR<BacktestResultCreateInput, BacktestResultUncheckedCreateInput>
+  }
+
+  /**
+   * BacktestResult createMany
+   */
+  export type BacktestResultCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BacktestResults.
+     */
+    data: BacktestResultCreateManyInput | BacktestResultCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BacktestResult createManyAndReturn
+   */
+  export type BacktestResultCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * The data used to create many BacktestResults.
+     */
+    data: BacktestResultCreateManyInput | BacktestResultCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BacktestResult update
+   */
+  export type BacktestResultUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BacktestResult.
+     */
+    data: XOR<BacktestResultUpdateInput, BacktestResultUncheckedUpdateInput>
+    /**
+     * Choose, which BacktestResult to update.
+     */
+    where: BacktestResultWhereUniqueInput
+  }
+
+  /**
+   * BacktestResult updateMany
+   */
+  export type BacktestResultUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BacktestResults.
+     */
+    data: XOR<BacktestResultUpdateManyMutationInput, BacktestResultUncheckedUpdateManyInput>
+    /**
+     * Filter which BacktestResults to update
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * Limit how many BacktestResults to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BacktestResult updateManyAndReturn
+   */
+  export type BacktestResultUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * The data used to update BacktestResults.
+     */
+    data: XOR<BacktestResultUpdateManyMutationInput, BacktestResultUncheckedUpdateManyInput>
+    /**
+     * Filter which BacktestResults to update
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * Limit how many BacktestResults to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BacktestResult upsert
+   */
+  export type BacktestResultUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BacktestResult to update in case it exists.
+     */
+    where: BacktestResultWhereUniqueInput
+    /**
+     * In case the BacktestResult found by the `where` argument doesn't exist, create a new BacktestResult with this data.
+     */
+    create: XOR<BacktestResultCreateInput, BacktestResultUncheckedCreateInput>
+    /**
+     * In case the BacktestResult was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BacktestResultUpdateInput, BacktestResultUncheckedUpdateInput>
+  }
+
+  /**
+   * BacktestResult delete
+   */
+  export type BacktestResultDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter which BacktestResult to delete.
+     */
+    where: BacktestResultWhereUniqueInput
+  }
+
+  /**
+   * BacktestResult deleteMany
+   */
+  export type BacktestResultDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BacktestResults to delete
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * Limit how many BacktestResults to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BacktestResult without action
+   */
+  export type BacktestResultDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -17486,11 +22623,29 @@ export namespace Prisma {
     version: 'version',
     status: 'status',
     lastSeenAt: 'lastSeenAt',
+    targetVersion: 'targetVersion',
+    upgradeStatus: 'upgradeStatus',
+    upgradeMessage: 'upgradeMessage',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type WorkerScalarFieldEnum = (typeof WorkerScalarFieldEnum)[keyof typeof WorkerScalarFieldEnum]
+
+
+  export const EdgeReleaseScalarFieldEnum: {
+    id: 'id',
+    version: 'version',
+    windowsUrl: 'windowsUrl',
+    linuxUrl: 'linuxUrl',
+    checksum: 'checksum',
+    signature: 'signature',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EdgeReleaseScalarFieldEnum = (typeof EdgeReleaseScalarFieldEnum)[keyof typeof EdgeReleaseScalarFieldEnum]
 
 
   export const WorkerCredentialScalarFieldEnum: {
@@ -17508,12 +22663,77 @@ export namespace Prisma {
   export type WorkerCredentialScalarFieldEnum = (typeof WorkerCredentialScalarFieldEnum)[keyof typeof WorkerCredentialScalarFieldEnum]
 
 
+  export const StrategyTemplateScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    category: 'category',
+    factoryConfig: 'factoryConfig',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StrategyTemplateScalarFieldEnum = (typeof StrategyTemplateScalarFieldEnum)[keyof typeof StrategyTemplateScalarFieldEnum]
+
+
+  export const BacktestTaskScalarFieldEnum: {
+    id: 'id',
+    strategyTemplateId: 'strategyTemplateId',
+    name: 'name',
+    symbol: 'symbol',
+    interval: 'interval',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    searchStrategy: 'searchStrategy',
+    optimizationParams: 'optimizationParams',
+    optimizationMetrics: 'optimizationMetrics',
+    trials: 'trials',
+    status: 'status',
+    assignedWorkerId: 'assignedWorkerId',
+    leaseExpiresAt: 'leaseExpiresAt',
+    lastHeartbeat: 'lastHeartbeat',
+    totalConfigs: 'totalConfigs',
+    processedConfigs: 'processedConfigs',
+    currentConfig: 'currentConfig',
+    trialProgress: 'trialProgress',
+    bestConfigIds: 'bestConfigIds',
+    errorMessage: 'errorMessage',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BacktestTaskScalarFieldEnum = (typeof BacktestTaskScalarFieldEnum)[keyof typeof BacktestTaskScalarFieldEnum]
+
+
+  export const BacktestResultScalarFieldEnum: {
+    id: 'id',
+    taskId: 'taskId',
+    configId: 'configId',
+    strategyConfig: 'strategyConfig',
+    metrics: 'metrics',
+    resultFolder: 'resultFolder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BacktestResultScalarFieldEnum = (typeof BacktestResultScalarFieldEnum)[keyof typeof BacktestResultScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -17530,6 +22750,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -17608,6 +22837,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'WorkerUpgradeStatus'
+   */
+  export type EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerUpgradeStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerUpgradeStatus[]'
+   */
+  export type ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerUpgradeStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'WorkerCredentialStatus'
    */
   export type EnumWorkerCredentialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerCredentialStatus'>
@@ -17618,6 +22861,55 @@ export namespace Prisma {
    * Reference to a field of type 'WorkerCredentialStatus[]'
    */
   export type ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerCredentialStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'SearchStrategy'
+   */
+  export type EnumSearchStrategyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SearchStrategy'>
+    
+
+
+  /**
+   * Reference to a field of type 'SearchStrategy[]'
+   */
+  export type ListEnumSearchStrategyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SearchStrategy[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BacktestTaskStatus'
+   */
+  export type EnumBacktestTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BacktestTaskStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'BacktestTaskStatus[]'
+   */
+  export type ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BacktestTaskStatus[]'>
     
 
 
@@ -18522,6 +23814,9 @@ export namespace Prisma {
     version?: StringNullableFilter<"Worker"> | string | null
     status?: EnumWorkerStatusFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
+    targetVersion?: StringNullableFilter<"Worker"> | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: StringNullableFilter<"Worker"> | string | null
     createdAt?: DateTimeFilter<"Worker"> | Date | string
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
     credentials?: WorkerCredentialListRelationFilter
@@ -18534,6 +23829,9 @@ export namespace Prisma {
     version?: SortOrderInput | SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrderInput | SortOrder
+    targetVersion?: SortOrderInput | SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     credentials?: WorkerCredentialOrderByRelationAggregateInput
@@ -18549,6 +23847,9 @@ export namespace Prisma {
     version?: StringNullableFilter<"Worker"> | string | null
     status?: EnumWorkerStatusFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
+    targetVersion?: StringNullableFilter<"Worker"> | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: StringNullableFilter<"Worker"> | string | null
     createdAt?: DateTimeFilter<"Worker"> | Date | string
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
     credentials?: WorkerCredentialListRelationFilter
@@ -18561,6 +23862,9 @@ export namespace Prisma {
     version?: SortOrderInput | SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrderInput | SortOrder
+    targetVersion?: SortOrderInput | SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: WorkerCountOrderByAggregateInput
@@ -18578,8 +23882,83 @@ export namespace Prisma {
     version?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     status?: EnumWorkerStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableWithAggregatesFilter<"Worker"> | Date | string | null
+    targetVersion?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
+  }
+
+  export type EdgeReleaseWhereInput = {
+    AND?: EdgeReleaseWhereInput | EdgeReleaseWhereInput[]
+    OR?: EdgeReleaseWhereInput[]
+    NOT?: EdgeReleaseWhereInput | EdgeReleaseWhereInput[]
+    id?: StringFilter<"EdgeRelease"> | string
+    version?: StringFilter<"EdgeRelease"> | string
+    windowsUrl?: StringFilter<"EdgeRelease"> | string
+    linuxUrl?: StringFilter<"EdgeRelease"> | string
+    checksum?: StringFilter<"EdgeRelease"> | string
+    signature?: StringFilter<"EdgeRelease"> | string
+    notes?: StringNullableFilter<"EdgeRelease"> | string | null
+    createdAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+  }
+
+  export type EdgeReleaseOrderByWithRelationInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    version?: string
+    AND?: EdgeReleaseWhereInput | EdgeReleaseWhereInput[]
+    OR?: EdgeReleaseWhereInput[]
+    NOT?: EdgeReleaseWhereInput | EdgeReleaseWhereInput[]
+    windowsUrl?: StringFilter<"EdgeRelease"> | string
+    linuxUrl?: StringFilter<"EdgeRelease"> | string
+    checksum?: StringFilter<"EdgeRelease"> | string
+    signature?: StringFilter<"EdgeRelease"> | string
+    notes?: StringNullableFilter<"EdgeRelease"> | string | null
+    createdAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+  }, "id" | "version">
+
+  export type EdgeReleaseOrderByWithAggregationInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EdgeReleaseCountOrderByAggregateInput
+    _max?: EdgeReleaseMaxOrderByAggregateInput
+    _min?: EdgeReleaseMinOrderByAggregateInput
+  }
+
+  export type EdgeReleaseScalarWhereWithAggregatesInput = {
+    AND?: EdgeReleaseScalarWhereWithAggregatesInput | EdgeReleaseScalarWhereWithAggregatesInput[]
+    OR?: EdgeReleaseScalarWhereWithAggregatesInput[]
+    NOT?: EdgeReleaseScalarWhereWithAggregatesInput | EdgeReleaseScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    version?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    windowsUrl?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    linuxUrl?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    checksum?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    signature?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    notes?: StringNullableWithAggregatesFilter<"EdgeRelease"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EdgeRelease"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EdgeRelease"> | Date | string
   }
 
   export type WorkerCredentialWhereInput = {
@@ -18655,6 +24034,302 @@ export namespace Prisma {
     rotatedAt?: DateTimeNullableWithAggregatesFilter<"WorkerCredential"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"WorkerCredential"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"WorkerCredential"> | Date | string
+  }
+
+  export type StrategyTemplateWhereInput = {
+    AND?: StrategyTemplateWhereInput | StrategyTemplateWhereInput[]
+    OR?: StrategyTemplateWhereInput[]
+    NOT?: StrategyTemplateWhereInput | StrategyTemplateWhereInput[]
+    id?: StringFilter<"StrategyTemplate"> | string
+    name?: StringFilter<"StrategyTemplate"> | string
+    category?: StringNullableFilter<"StrategyTemplate"> | string | null
+    factoryConfig?: JsonFilter<"StrategyTemplate">
+    isActive?: BoolFilter<"StrategyTemplate"> | boolean
+    createdAt?: DateTimeFilter<"StrategyTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"StrategyTemplate"> | Date | string
+    tasks?: BacktestTaskListRelationFilter
+  }
+
+  export type StrategyTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrderInput | SortOrder
+    factoryConfig?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tasks?: BacktestTaskOrderByRelationAggregateInput
+  }
+
+  export type StrategyTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StrategyTemplateWhereInput | StrategyTemplateWhereInput[]
+    OR?: StrategyTemplateWhereInput[]
+    NOT?: StrategyTemplateWhereInput | StrategyTemplateWhereInput[]
+    name?: StringFilter<"StrategyTemplate"> | string
+    category?: StringNullableFilter<"StrategyTemplate"> | string | null
+    factoryConfig?: JsonFilter<"StrategyTemplate">
+    isActive?: BoolFilter<"StrategyTemplate"> | boolean
+    createdAt?: DateTimeFilter<"StrategyTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"StrategyTemplate"> | Date | string
+    tasks?: BacktestTaskListRelationFilter
+  }, "id">
+
+  export type StrategyTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrderInput | SortOrder
+    factoryConfig?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StrategyTemplateCountOrderByAggregateInput
+    _max?: StrategyTemplateMaxOrderByAggregateInput
+    _min?: StrategyTemplateMinOrderByAggregateInput
+  }
+
+  export type StrategyTemplateScalarWhereWithAggregatesInput = {
+    AND?: StrategyTemplateScalarWhereWithAggregatesInput | StrategyTemplateScalarWhereWithAggregatesInput[]
+    OR?: StrategyTemplateScalarWhereWithAggregatesInput[]
+    NOT?: StrategyTemplateScalarWhereWithAggregatesInput | StrategyTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StrategyTemplate"> | string
+    name?: StringWithAggregatesFilter<"StrategyTemplate"> | string
+    category?: StringNullableWithAggregatesFilter<"StrategyTemplate"> | string | null
+    factoryConfig?: JsonWithAggregatesFilter<"StrategyTemplate">
+    isActive?: BoolWithAggregatesFilter<"StrategyTemplate"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"StrategyTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StrategyTemplate"> | Date | string
+  }
+
+  export type BacktestTaskWhereInput = {
+    AND?: BacktestTaskWhereInput | BacktestTaskWhereInput[]
+    OR?: BacktestTaskWhereInput[]
+    NOT?: BacktestTaskWhereInput | BacktestTaskWhereInput[]
+    id?: StringFilter<"BacktestTask"> | string
+    strategyTemplateId?: StringFilter<"BacktestTask"> | string
+    name?: StringFilter<"BacktestTask"> | string
+    symbol?: StringFilter<"BacktestTask"> | string
+    interval?: StringFilter<"BacktestTask"> | string
+    startDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    endDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    searchStrategy?: EnumSearchStrategyFilter<"BacktestTask"> | $Enums.SearchStrategy
+    optimizationParams?: JsonFilter<"BacktestTask">
+    optimizationMetrics?: StringNullableListFilter<"BacktestTask">
+    trials?: IntFilter<"BacktestTask"> | number
+    status?: EnumBacktestTaskStatusFilter<"BacktestTask"> | $Enums.BacktestTaskStatus
+    assignedWorkerId?: StringNullableFilter<"BacktestTask"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    lastHeartbeat?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    totalConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    processedConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    currentConfig?: StringNullableFilter<"BacktestTask"> | string | null
+    trialProgress?: StringNullableFilter<"BacktestTask"> | string | null
+    bestConfigIds?: StringNullableListFilter<"BacktestTask">
+    errorMessage?: StringNullableFilter<"BacktestTask"> | string | null
+    startedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    strategyTemplate?: XOR<StrategyTemplateScalarRelationFilter, StrategyTemplateWhereInput>
+    results?: BacktestResultListRelationFilter
+  }
+
+  export type BacktestTaskOrderByWithRelationInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    optimizationParams?: SortOrder
+    optimizationMetrics?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrderInput | SortOrder
+    leaseExpiresAt?: SortOrderInput | SortOrder
+    lastHeartbeat?: SortOrderInput | SortOrder
+    totalConfigs?: SortOrderInput | SortOrder
+    processedConfigs?: SortOrderInput | SortOrder
+    currentConfig?: SortOrderInput | SortOrder
+    trialProgress?: SortOrderInput | SortOrder
+    bestConfigIds?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    strategyTemplate?: StrategyTemplateOrderByWithRelationInput
+    results?: BacktestResultOrderByRelationAggregateInput
+  }
+
+  export type BacktestTaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BacktestTaskWhereInput | BacktestTaskWhereInput[]
+    OR?: BacktestTaskWhereInput[]
+    NOT?: BacktestTaskWhereInput | BacktestTaskWhereInput[]
+    strategyTemplateId?: StringFilter<"BacktestTask"> | string
+    name?: StringFilter<"BacktestTask"> | string
+    symbol?: StringFilter<"BacktestTask"> | string
+    interval?: StringFilter<"BacktestTask"> | string
+    startDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    endDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    searchStrategy?: EnumSearchStrategyFilter<"BacktestTask"> | $Enums.SearchStrategy
+    optimizationParams?: JsonFilter<"BacktestTask">
+    optimizationMetrics?: StringNullableListFilter<"BacktestTask">
+    trials?: IntFilter<"BacktestTask"> | number
+    status?: EnumBacktestTaskStatusFilter<"BacktestTask"> | $Enums.BacktestTaskStatus
+    assignedWorkerId?: StringNullableFilter<"BacktestTask"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    lastHeartbeat?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    totalConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    processedConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    currentConfig?: StringNullableFilter<"BacktestTask"> | string | null
+    trialProgress?: StringNullableFilter<"BacktestTask"> | string | null
+    bestConfigIds?: StringNullableListFilter<"BacktestTask">
+    errorMessage?: StringNullableFilter<"BacktestTask"> | string | null
+    startedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    strategyTemplate?: XOR<StrategyTemplateScalarRelationFilter, StrategyTemplateWhereInput>
+    results?: BacktestResultListRelationFilter
+  }, "id">
+
+  export type BacktestTaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    optimizationParams?: SortOrder
+    optimizationMetrics?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrderInput | SortOrder
+    leaseExpiresAt?: SortOrderInput | SortOrder
+    lastHeartbeat?: SortOrderInput | SortOrder
+    totalConfigs?: SortOrderInput | SortOrder
+    processedConfigs?: SortOrderInput | SortOrder
+    currentConfig?: SortOrderInput | SortOrder
+    trialProgress?: SortOrderInput | SortOrder
+    bestConfigIds?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BacktestTaskCountOrderByAggregateInput
+    _avg?: BacktestTaskAvgOrderByAggregateInput
+    _max?: BacktestTaskMaxOrderByAggregateInput
+    _min?: BacktestTaskMinOrderByAggregateInput
+    _sum?: BacktestTaskSumOrderByAggregateInput
+  }
+
+  export type BacktestTaskScalarWhereWithAggregatesInput = {
+    AND?: BacktestTaskScalarWhereWithAggregatesInput | BacktestTaskScalarWhereWithAggregatesInput[]
+    OR?: BacktestTaskScalarWhereWithAggregatesInput[]
+    NOT?: BacktestTaskScalarWhereWithAggregatesInput | BacktestTaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BacktestTask"> | string
+    strategyTemplateId?: StringWithAggregatesFilter<"BacktestTask"> | string
+    name?: StringWithAggregatesFilter<"BacktestTask"> | string
+    symbol?: StringWithAggregatesFilter<"BacktestTask"> | string
+    interval?: StringWithAggregatesFilter<"BacktestTask"> | string
+    startDate?: DateTimeWithAggregatesFilter<"BacktestTask"> | Date | string
+    endDate?: DateTimeWithAggregatesFilter<"BacktestTask"> | Date | string
+    searchStrategy?: EnumSearchStrategyWithAggregatesFilter<"BacktestTask"> | $Enums.SearchStrategy
+    optimizationParams?: JsonWithAggregatesFilter<"BacktestTask">
+    optimizationMetrics?: StringNullableListFilter<"BacktestTask">
+    trials?: IntWithAggregatesFilter<"BacktestTask"> | number
+    status?: EnumBacktestTaskStatusWithAggregatesFilter<"BacktestTask"> | $Enums.BacktestTaskStatus
+    assignedWorkerId?: StringNullableWithAggregatesFilter<"BacktestTask"> | string | null
+    leaseExpiresAt?: DateTimeNullableWithAggregatesFilter<"BacktestTask"> | Date | string | null
+    lastHeartbeat?: DateTimeNullableWithAggregatesFilter<"BacktestTask"> | Date | string | null
+    totalConfigs?: IntNullableWithAggregatesFilter<"BacktestTask"> | number | null
+    processedConfigs?: IntNullableWithAggregatesFilter<"BacktestTask"> | number | null
+    currentConfig?: StringNullableWithAggregatesFilter<"BacktestTask"> | string | null
+    trialProgress?: StringNullableWithAggregatesFilter<"BacktestTask"> | string | null
+    bestConfigIds?: StringNullableListFilter<"BacktestTask">
+    errorMessage?: StringNullableWithAggregatesFilter<"BacktestTask"> | string | null
+    startedAt?: DateTimeNullableWithAggregatesFilter<"BacktestTask"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"BacktestTask"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BacktestTask"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BacktestTask"> | Date | string
+  }
+
+  export type BacktestResultWhereInput = {
+    AND?: BacktestResultWhereInput | BacktestResultWhereInput[]
+    OR?: BacktestResultWhereInput[]
+    NOT?: BacktestResultWhereInput | BacktestResultWhereInput[]
+    id?: StringFilter<"BacktestResult"> | string
+    taskId?: StringFilter<"BacktestResult"> | string
+    configId?: StringFilter<"BacktestResult"> | string
+    strategyConfig?: JsonFilter<"BacktestResult">
+    metrics?: JsonFilter<"BacktestResult">
+    resultFolder?: StringNullableFilter<"BacktestResult"> | string | null
+    createdAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    task?: XOR<BacktestTaskScalarRelationFilter, BacktestTaskWhereInput>
+  }
+
+  export type BacktestResultOrderByWithRelationInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    strategyConfig?: SortOrder
+    metrics?: SortOrder
+    resultFolder?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    task?: BacktestTaskOrderByWithRelationInput
+  }
+
+  export type BacktestResultWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    taskId_configId?: BacktestResultTaskIdConfigIdCompoundUniqueInput
+    AND?: BacktestResultWhereInput | BacktestResultWhereInput[]
+    OR?: BacktestResultWhereInput[]
+    NOT?: BacktestResultWhereInput | BacktestResultWhereInput[]
+    taskId?: StringFilter<"BacktestResult"> | string
+    configId?: StringFilter<"BacktestResult"> | string
+    strategyConfig?: JsonFilter<"BacktestResult">
+    metrics?: JsonFilter<"BacktestResult">
+    resultFolder?: StringNullableFilter<"BacktestResult"> | string | null
+    createdAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    task?: XOR<BacktestTaskScalarRelationFilter, BacktestTaskWhereInput>
+  }, "id" | "taskId_configId">
+
+  export type BacktestResultOrderByWithAggregationInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    strategyConfig?: SortOrder
+    metrics?: SortOrder
+    resultFolder?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BacktestResultCountOrderByAggregateInput
+    _max?: BacktestResultMaxOrderByAggregateInput
+    _min?: BacktestResultMinOrderByAggregateInput
+  }
+
+  export type BacktestResultScalarWhereWithAggregatesInput = {
+    AND?: BacktestResultScalarWhereWithAggregatesInput | BacktestResultScalarWhereWithAggregatesInput[]
+    OR?: BacktestResultScalarWhereWithAggregatesInput[]
+    NOT?: BacktestResultScalarWhereWithAggregatesInput | BacktestResultScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BacktestResult"> | string
+    taskId?: StringWithAggregatesFilter<"BacktestResult"> | string
+    configId?: StringWithAggregatesFilter<"BacktestResult"> | string
+    strategyConfig?: JsonWithAggregatesFilter<"BacktestResult">
+    metrics?: JsonWithAggregatesFilter<"BacktestResult">
+    resultFolder?: StringNullableWithAggregatesFilter<"BacktestResult"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BacktestResult"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BacktestResult"> | Date | string
   }
 
   export type ProfileCreateInput = {
@@ -19614,6 +25289,9 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialCreateNestedManyWithoutWorkerInput
@@ -19626,6 +25304,9 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput
@@ -19638,6 +25319,9 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUpdateManyWithoutWorkerNestedInput
@@ -19650,6 +25334,9 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput
@@ -19662,6 +25349,9 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19673,6 +25363,9 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19684,6 +25377,93 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseCreateInput = {
+    id?: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseUncheckedCreateInput = {
+    id?: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseCreateManyInput = {
+    id?: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19767,6 +25547,355 @@ export namespace Prisma {
     status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StrategyTemplateCreateInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tasks?: BacktestTaskCreateNestedManyWithoutStrategyTemplateInput
+  }
+
+  export type StrategyTemplateUncheckedCreateInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tasks?: BacktestTaskUncheckedCreateNestedManyWithoutStrategyTemplateInput
+  }
+
+  export type StrategyTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: BacktestTaskUpdateManyWithoutStrategyTemplateNestedInput
+  }
+
+  export type StrategyTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: BacktestTaskUncheckedUpdateManyWithoutStrategyTemplateNestedInput
+  }
+
+  export type StrategyTemplateCreateManyInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StrategyTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StrategyTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestTaskCreateInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    strategyTemplate: StrategyTemplateCreateNestedOneWithoutTasksInput
+    results?: BacktestResultCreateNestedManyWithoutTaskInput
+  }
+
+  export type BacktestTaskUncheckedCreateInput = {
+    id?: string
+    strategyTemplateId: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    results?: BacktestResultUncheckedCreateNestedManyWithoutTaskInput
+  }
+
+  export type BacktestTaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    strategyTemplate?: StrategyTemplateUpdateOneRequiredWithoutTasksNestedInput
+    results?: BacktestResultUpdateManyWithoutTaskNestedInput
+  }
+
+  export type BacktestTaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategyTemplateId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: BacktestResultUncheckedUpdateManyWithoutTaskNestedInput
+  }
+
+  export type BacktestTaskCreateManyInput = {
+    id?: string
+    strategyTemplateId: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestTaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestTaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategyTemplateId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultCreateInput = {
+    id?: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    task: BacktestTaskCreateNestedOneWithoutResultsInput
+  }
+
+  export type BacktestResultUncheckedCreateInput = {
+    id?: string
+    taskId: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    task?: BacktestTaskUpdateOneRequiredWithoutResultsNestedInput
+  }
+
+  export type BacktestResultUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    taskId?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultCreateManyInput = {
+    id?: string
+    taskId: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    taskId?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20531,6 +26660,13 @@ export namespace Prisma {
     not?: NestedEnumWorkerStatusFilter<$PrismaModel> | $Enums.WorkerStatus
   }
 
+  export type EnumWorkerUpgradeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerUpgradeStatus | EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
+  }
+
   export type WorkerCredentialListRelationFilter = {
     every?: WorkerCredentialWhereInput
     some?: WorkerCredentialWhereInput
@@ -20548,6 +26684,9 @@ export namespace Prisma {
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
+    targetVersion?: SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20559,6 +26698,9 @@ export namespace Prisma {
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
+    targetVersion?: SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20570,6 +26712,9 @@ export namespace Prisma {
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
+    targetVersion?: SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20582,6 +26727,52 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerStatusFilter<$PrismaModel>
+  }
+
+  export type EnumWorkerUpgradeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerUpgradeStatus | EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerUpgradeStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+  }
+
+  export type EdgeReleaseCountOrderByAggregateInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseMaxOrderByAggregateInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseMinOrderByAggregateInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EnumWorkerCredentialStatusFilter<$PrismaModel = never> = {
@@ -20640,6 +26831,311 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type BacktestTaskListRelationFilter = {
+    every?: BacktestTaskWhereInput
+    some?: BacktestTaskWhereInput
+    none?: BacktestTaskWhereInput
+  }
+
+  export type BacktestTaskOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StrategyTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrder
+    factoryConfig?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StrategyTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StrategyTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumSearchStrategyFilter<$PrismaModel = never> = {
+    equals?: $Enums.SearchStrategy | EnumSearchStrategyFieldRefInput<$PrismaModel>
+    in?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    not?: NestedEnumSearchStrategyFilter<$PrismaModel> | $Enums.SearchStrategy
+  }
+
+  export type EnumBacktestTaskStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BacktestTaskStatus | EnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBacktestTaskStatusFilter<$PrismaModel> | $Enums.BacktestTaskStatus
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type StrategyTemplateScalarRelationFilter = {
+    is?: StrategyTemplateWhereInput
+    isNot?: StrategyTemplateWhereInput
+  }
+
+  export type BacktestResultListRelationFilter = {
+    every?: BacktestResultWhereInput
+    some?: BacktestResultWhereInput
+    none?: BacktestResultWhereInput
+  }
+
+  export type BacktestResultOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BacktestTaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    optimizationParams?: SortOrder
+    optimizationMetrics?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrder
+    leaseExpiresAt?: SortOrder
+    lastHeartbeat?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+    currentConfig?: SortOrder
+    trialProgress?: SortOrder
+    bestConfigIds?: SortOrder
+    errorMessage?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestTaskAvgOrderByAggregateInput = {
+    trials?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+  }
+
+  export type BacktestTaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrder
+    leaseExpiresAt?: SortOrder
+    lastHeartbeat?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+    currentConfig?: SortOrder
+    trialProgress?: SortOrder
+    errorMessage?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestTaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrder
+    leaseExpiresAt?: SortOrder
+    lastHeartbeat?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+    currentConfig?: SortOrder
+    trialProgress?: SortOrder
+    errorMessage?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestTaskSumOrderByAggregateInput = {
+    trials?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+  }
+
+  export type EnumSearchStrategyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SearchStrategy | EnumSearchStrategyFieldRefInput<$PrismaModel>
+    in?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    not?: NestedEnumSearchStrategyWithAggregatesFilter<$PrismaModel> | $Enums.SearchStrategy
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSearchStrategyFilter<$PrismaModel>
+    _max?: NestedEnumSearchStrategyFilter<$PrismaModel>
+  }
+
+  export type EnumBacktestTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BacktestTaskStatus | EnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBacktestTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.BacktestTaskStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
+    _max?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type BacktestTaskScalarRelationFilter = {
+    is?: BacktestTaskWhereInput
+    isNot?: BacktestTaskWhereInput
+  }
+
+  export type BacktestResultTaskIdConfigIdCompoundUniqueInput = {
+    taskId: string
+    configId: string
+  }
+
+  export type BacktestResultCountOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    strategyConfig?: SortOrder
+    metrics?: SortOrder
+    resultFolder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestResultMaxOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    resultFolder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestResultMinOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    resultFolder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ProjectCreateNestedManyWithoutProfileInput = {
@@ -21342,6 +27838,10 @@ export namespace Prisma {
     set?: $Enums.WorkerStatus
   }
 
+  export type EnumWorkerUpgradeStatusFieldUpdateOperationsInput = {
+    set?: $Enums.WorkerUpgradeStatus
+  }
+
   export type WorkerCredentialUpdateManyWithoutWorkerNestedInput = {
     create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
     connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
@@ -21386,6 +27886,156 @@ export namespace Prisma {
     upsert?: WorkerUpsertWithoutCredentialsInput
     connect?: WorkerWhereUniqueInput
     update?: XOR<XOR<WorkerUpdateToOneWithWhereWithoutCredentialsInput, WorkerUpdateWithoutCredentialsInput>, WorkerUncheckedUpdateWithoutCredentialsInput>
+  }
+
+  export type BacktestTaskCreateNestedManyWithoutStrategyTemplateInput = {
+    create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
+    createMany?: BacktestTaskCreateManyStrategyTemplateInputEnvelope
+    connect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+  }
+
+  export type BacktestTaskUncheckedCreateNestedManyWithoutStrategyTemplateInput = {
+    create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
+    createMany?: BacktestTaskCreateManyStrategyTemplateInputEnvelope
+    connect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type BacktestTaskUpdateManyWithoutStrategyTemplateNestedInput = {
+    create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
+    upsert?: BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput | BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput[]
+    createMany?: BacktestTaskCreateManyStrategyTemplateInputEnvelope
+    set?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    disconnect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    delete?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    connect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    update?: BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput | BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput[]
+    updateMany?: BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput | BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput[]
+    deleteMany?: BacktestTaskScalarWhereInput | BacktestTaskScalarWhereInput[]
+  }
+
+  export type BacktestTaskUncheckedUpdateManyWithoutStrategyTemplateNestedInput = {
+    create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
+    upsert?: BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput | BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput[]
+    createMany?: BacktestTaskCreateManyStrategyTemplateInputEnvelope
+    set?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    disconnect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    delete?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    connect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    update?: BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput | BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput[]
+    updateMany?: BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput | BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput[]
+    deleteMany?: BacktestTaskScalarWhereInput | BacktestTaskScalarWhereInput[]
+  }
+
+  export type BacktestTaskCreateoptimizationMetricsInput = {
+    set: string[]
+  }
+
+  export type BacktestTaskCreatebestConfigIdsInput = {
+    set: string[]
+  }
+
+  export type StrategyTemplateCreateNestedOneWithoutTasksInput = {
+    create?: XOR<StrategyTemplateCreateWithoutTasksInput, StrategyTemplateUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: StrategyTemplateCreateOrConnectWithoutTasksInput
+    connect?: StrategyTemplateWhereUniqueInput
+  }
+
+  export type BacktestResultCreateNestedManyWithoutTaskInput = {
+    create?: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput> | BacktestResultCreateWithoutTaskInput[] | BacktestResultUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: BacktestResultCreateOrConnectWithoutTaskInput | BacktestResultCreateOrConnectWithoutTaskInput[]
+    createMany?: BacktestResultCreateManyTaskInputEnvelope
+    connect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+  }
+
+  export type BacktestResultUncheckedCreateNestedManyWithoutTaskInput = {
+    create?: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput> | BacktestResultCreateWithoutTaskInput[] | BacktestResultUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: BacktestResultCreateOrConnectWithoutTaskInput | BacktestResultCreateOrConnectWithoutTaskInput[]
+    createMany?: BacktestResultCreateManyTaskInputEnvelope
+    connect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+  }
+
+  export type EnumSearchStrategyFieldUpdateOperationsInput = {
+    set?: $Enums.SearchStrategy
+  }
+
+  export type BacktestTaskUpdateoptimizationMetricsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type EnumBacktestTaskStatusFieldUpdateOperationsInput = {
+    set?: $Enums.BacktestTaskStatus
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type BacktestTaskUpdatebestConfigIdsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type StrategyTemplateUpdateOneRequiredWithoutTasksNestedInput = {
+    create?: XOR<StrategyTemplateCreateWithoutTasksInput, StrategyTemplateUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: StrategyTemplateCreateOrConnectWithoutTasksInput
+    upsert?: StrategyTemplateUpsertWithoutTasksInput
+    connect?: StrategyTemplateWhereUniqueInput
+    update?: XOR<XOR<StrategyTemplateUpdateToOneWithWhereWithoutTasksInput, StrategyTemplateUpdateWithoutTasksInput>, StrategyTemplateUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type BacktestResultUpdateManyWithoutTaskNestedInput = {
+    create?: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput> | BacktestResultCreateWithoutTaskInput[] | BacktestResultUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: BacktestResultCreateOrConnectWithoutTaskInput | BacktestResultCreateOrConnectWithoutTaskInput[]
+    upsert?: BacktestResultUpsertWithWhereUniqueWithoutTaskInput | BacktestResultUpsertWithWhereUniqueWithoutTaskInput[]
+    createMany?: BacktestResultCreateManyTaskInputEnvelope
+    set?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    disconnect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    delete?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    connect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    update?: BacktestResultUpdateWithWhereUniqueWithoutTaskInput | BacktestResultUpdateWithWhereUniqueWithoutTaskInput[]
+    updateMany?: BacktestResultUpdateManyWithWhereWithoutTaskInput | BacktestResultUpdateManyWithWhereWithoutTaskInput[]
+    deleteMany?: BacktestResultScalarWhereInput | BacktestResultScalarWhereInput[]
+  }
+
+  export type BacktestResultUncheckedUpdateManyWithoutTaskNestedInput = {
+    create?: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput> | BacktestResultCreateWithoutTaskInput[] | BacktestResultUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: BacktestResultCreateOrConnectWithoutTaskInput | BacktestResultCreateOrConnectWithoutTaskInput[]
+    upsert?: BacktestResultUpsertWithWhereUniqueWithoutTaskInput | BacktestResultUpsertWithWhereUniqueWithoutTaskInput[]
+    createMany?: BacktestResultCreateManyTaskInputEnvelope
+    set?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    disconnect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    delete?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    connect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    update?: BacktestResultUpdateWithWhereUniqueWithoutTaskInput | BacktestResultUpdateWithWhereUniqueWithoutTaskInput[]
+    updateMany?: BacktestResultUpdateManyWithWhereWithoutTaskInput | BacktestResultUpdateManyWithWhereWithoutTaskInput[]
+    deleteMany?: BacktestResultScalarWhereInput | BacktestResultScalarWhereInput[]
+  }
+
+  export type BacktestTaskCreateNestedOneWithoutResultsInput = {
+    create?: XOR<BacktestTaskCreateWithoutResultsInput, BacktestTaskUncheckedCreateWithoutResultsInput>
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutResultsInput
+    connect?: BacktestTaskWhereUniqueInput
+  }
+
+  export type BacktestTaskUpdateOneRequiredWithoutResultsNestedInput = {
+    create?: XOR<BacktestTaskCreateWithoutResultsInput, BacktestTaskUncheckedCreateWithoutResultsInput>
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutResultsInput
+    upsert?: BacktestTaskUpsertWithoutResultsInput
+    connect?: BacktestTaskWhereUniqueInput
+    update?: XOR<XOR<BacktestTaskUpdateToOneWithWhereWithoutResultsInput, BacktestTaskUpdateWithoutResultsInput>, BacktestTaskUncheckedUpdateWithoutResultsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -21573,6 +28223,13 @@ export namespace Prisma {
     not?: NestedEnumWorkerStatusFilter<$PrismaModel> | $Enums.WorkerStatus
   }
 
+  export type NestedEnumWorkerUpgradeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerUpgradeStatus | EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
+  }
+
   export type NestedEnumWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.WorkerStatus | EnumWorkerStatusFieldRefInput<$PrismaModel>
     in?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
@@ -21581,6 +28238,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWorkerUpgradeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerUpgradeStatus | EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerUpgradeStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumWorkerCredentialStatusFilter<$PrismaModel = never> = {
@@ -21598,6 +28265,103 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSearchStrategyFilter<$PrismaModel = never> = {
+    equals?: $Enums.SearchStrategy | EnumSearchStrategyFieldRefInput<$PrismaModel>
+    in?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    not?: NestedEnumSearchStrategyFilter<$PrismaModel> | $Enums.SearchStrategy
+  }
+
+  export type NestedEnumBacktestTaskStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BacktestTaskStatus | EnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBacktestTaskStatusFilter<$PrismaModel> | $Enums.BacktestTaskStatus
+  }
+
+  export type NestedEnumSearchStrategyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SearchStrategy | EnumSearchStrategyFieldRefInput<$PrismaModel>
+    in?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    not?: NestedEnumSearchStrategyWithAggregatesFilter<$PrismaModel> | $Enums.SearchStrategy
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSearchStrategyFilter<$PrismaModel>
+    _max?: NestedEnumSearchStrategyFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBacktestTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BacktestTaskStatus | EnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBacktestTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.BacktestTaskStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
+    _max?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type ProjectCreateWithoutProfileInput = {
@@ -23471,6 +30235,9 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23482,6 +30249,9 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23509,6 +30279,9 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23520,6 +30293,366 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestTaskCreateWithoutStrategyTemplateInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    results?: BacktestResultCreateNestedManyWithoutTaskInput
+  }
+
+  export type BacktestTaskUncheckedCreateWithoutStrategyTemplateInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    results?: BacktestResultUncheckedCreateNestedManyWithoutTaskInput
+  }
+
+  export type BacktestTaskCreateOrConnectWithoutStrategyTemplateInput = {
+    where: BacktestTaskWhereUniqueInput
+    create: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput>
+  }
+
+  export type BacktestTaskCreateManyStrategyTemplateInputEnvelope = {
+    data: BacktestTaskCreateManyStrategyTemplateInput | BacktestTaskCreateManyStrategyTemplateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput = {
+    where: BacktestTaskWhereUniqueInput
+    update: XOR<BacktestTaskUpdateWithoutStrategyTemplateInput, BacktestTaskUncheckedUpdateWithoutStrategyTemplateInput>
+    create: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput>
+  }
+
+  export type BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput = {
+    where: BacktestTaskWhereUniqueInput
+    data: XOR<BacktestTaskUpdateWithoutStrategyTemplateInput, BacktestTaskUncheckedUpdateWithoutStrategyTemplateInput>
+  }
+
+  export type BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput = {
+    where: BacktestTaskScalarWhereInput
+    data: XOR<BacktestTaskUpdateManyMutationInput, BacktestTaskUncheckedUpdateManyWithoutStrategyTemplateInput>
+  }
+
+  export type BacktestTaskScalarWhereInput = {
+    AND?: BacktestTaskScalarWhereInput | BacktestTaskScalarWhereInput[]
+    OR?: BacktestTaskScalarWhereInput[]
+    NOT?: BacktestTaskScalarWhereInput | BacktestTaskScalarWhereInput[]
+    id?: StringFilter<"BacktestTask"> | string
+    strategyTemplateId?: StringFilter<"BacktestTask"> | string
+    name?: StringFilter<"BacktestTask"> | string
+    symbol?: StringFilter<"BacktestTask"> | string
+    interval?: StringFilter<"BacktestTask"> | string
+    startDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    endDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    searchStrategy?: EnumSearchStrategyFilter<"BacktestTask"> | $Enums.SearchStrategy
+    optimizationParams?: JsonFilter<"BacktestTask">
+    optimizationMetrics?: StringNullableListFilter<"BacktestTask">
+    trials?: IntFilter<"BacktestTask"> | number
+    status?: EnumBacktestTaskStatusFilter<"BacktestTask"> | $Enums.BacktestTaskStatus
+    assignedWorkerId?: StringNullableFilter<"BacktestTask"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    lastHeartbeat?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    totalConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    processedConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    currentConfig?: StringNullableFilter<"BacktestTask"> | string | null
+    trialProgress?: StringNullableFilter<"BacktestTask"> | string | null
+    bestConfigIds?: StringNullableListFilter<"BacktestTask">
+    errorMessage?: StringNullableFilter<"BacktestTask"> | string | null
+    startedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestTask"> | Date | string
+  }
+
+  export type StrategyTemplateCreateWithoutTasksInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StrategyTemplateUncheckedCreateWithoutTasksInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StrategyTemplateCreateOrConnectWithoutTasksInput = {
+    where: StrategyTemplateWhereUniqueInput
+    create: XOR<StrategyTemplateCreateWithoutTasksInput, StrategyTemplateUncheckedCreateWithoutTasksInput>
+  }
+
+  export type BacktestResultCreateWithoutTaskInput = {
+    id?: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultUncheckedCreateWithoutTaskInput = {
+    id?: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultCreateOrConnectWithoutTaskInput = {
+    where: BacktestResultWhereUniqueInput
+    create: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput>
+  }
+
+  export type BacktestResultCreateManyTaskInputEnvelope = {
+    data: BacktestResultCreateManyTaskInput | BacktestResultCreateManyTaskInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StrategyTemplateUpsertWithoutTasksInput = {
+    update: XOR<StrategyTemplateUpdateWithoutTasksInput, StrategyTemplateUncheckedUpdateWithoutTasksInput>
+    create: XOR<StrategyTemplateCreateWithoutTasksInput, StrategyTemplateUncheckedCreateWithoutTasksInput>
+    where?: StrategyTemplateWhereInput
+  }
+
+  export type StrategyTemplateUpdateToOneWithWhereWithoutTasksInput = {
+    where?: StrategyTemplateWhereInput
+    data: XOR<StrategyTemplateUpdateWithoutTasksInput, StrategyTemplateUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type StrategyTemplateUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StrategyTemplateUncheckedUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultUpsertWithWhereUniqueWithoutTaskInput = {
+    where: BacktestResultWhereUniqueInput
+    update: XOR<BacktestResultUpdateWithoutTaskInput, BacktestResultUncheckedUpdateWithoutTaskInput>
+    create: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput>
+  }
+
+  export type BacktestResultUpdateWithWhereUniqueWithoutTaskInput = {
+    where: BacktestResultWhereUniqueInput
+    data: XOR<BacktestResultUpdateWithoutTaskInput, BacktestResultUncheckedUpdateWithoutTaskInput>
+  }
+
+  export type BacktestResultUpdateManyWithWhereWithoutTaskInput = {
+    where: BacktestResultScalarWhereInput
+    data: XOR<BacktestResultUpdateManyMutationInput, BacktestResultUncheckedUpdateManyWithoutTaskInput>
+  }
+
+  export type BacktestResultScalarWhereInput = {
+    AND?: BacktestResultScalarWhereInput | BacktestResultScalarWhereInput[]
+    OR?: BacktestResultScalarWhereInput[]
+    NOT?: BacktestResultScalarWhereInput | BacktestResultScalarWhereInput[]
+    id?: StringFilter<"BacktestResult"> | string
+    taskId?: StringFilter<"BacktestResult"> | string
+    configId?: StringFilter<"BacktestResult"> | string
+    strategyConfig?: JsonFilter<"BacktestResult">
+    metrics?: JsonFilter<"BacktestResult">
+    resultFolder?: StringNullableFilter<"BacktestResult"> | string | null
+    createdAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestResult"> | Date | string
+  }
+
+  export type BacktestTaskCreateWithoutResultsInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    strategyTemplate: StrategyTemplateCreateNestedOneWithoutTasksInput
+  }
+
+  export type BacktestTaskUncheckedCreateWithoutResultsInput = {
+    id?: string
+    strategyTemplateId: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestTaskCreateOrConnectWithoutResultsInput = {
+    where: BacktestTaskWhereUniqueInput
+    create: XOR<BacktestTaskCreateWithoutResultsInput, BacktestTaskUncheckedCreateWithoutResultsInput>
+  }
+
+  export type BacktestTaskUpsertWithoutResultsInput = {
+    update: XOR<BacktestTaskUpdateWithoutResultsInput, BacktestTaskUncheckedUpdateWithoutResultsInput>
+    create: XOR<BacktestTaskCreateWithoutResultsInput, BacktestTaskUncheckedCreateWithoutResultsInput>
+    where?: BacktestTaskWhereInput
+  }
+
+  export type BacktestTaskUpdateToOneWithWhereWithoutResultsInput = {
+    where?: BacktestTaskWhereInput
+    data: XOR<BacktestTaskUpdateWithoutResultsInput, BacktestTaskUncheckedUpdateWithoutResultsInput>
+  }
+
+  export type BacktestTaskUpdateWithoutResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    strategyTemplate?: StrategyTemplateUpdateOneRequiredWithoutTasksNestedInput
+  }
+
+  export type BacktestTaskUncheckedUpdateWithoutResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategyTemplateId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24034,6 +31167,156 @@ export namespace Prisma {
     status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestTaskCreateManyStrategyTemplateInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestTaskUpdateWithoutStrategyTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: BacktestResultUpdateManyWithoutTaskNestedInput
+  }
+
+  export type BacktestTaskUncheckedUpdateWithoutStrategyTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: BacktestResultUncheckedUpdateManyWithoutTaskNestedInput
+  }
+
+  export type BacktestTaskUncheckedUpdateManyWithoutStrategyTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultCreateManyTaskInput = {
+    id?: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultUpdateWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultUncheckedUpdateWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultUncheckedUpdateManyWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

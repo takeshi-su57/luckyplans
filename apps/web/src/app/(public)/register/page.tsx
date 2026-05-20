@@ -103,22 +103,12 @@ function RegisterForm() {
             <div className="grid grid-cols-2 gap-3">
               <TextField onChange={setFirstName}>
                 <Label>First name</Label>
-                <Input
-                  type="text"
-                  autoComplete="given-name"
-                  placeholder="Jane"
-                  value={firstName}
-                />
+                <Input type="text" autoComplete="given-name" placeholder="Jane" value={firstName} />
               </TextField>
 
               <TextField onChange={setLastName}>
                 <Label>Last name</Label>
-                <Input
-                  type="text"
-                  autoComplete="family-name"
-                  placeholder="Doe"
-                  value={lastName}
-                />
+                <Input type="text" autoComplete="family-name" placeholder="Doe" value={lastName} />
               </TextField>
             </div>
 
@@ -144,12 +134,7 @@ function RegisterForm() {
               />
             </TextField>
 
-            <Button
-              type="submit"
-              isPending={loading}
-              className="w-full"
-              onPress={() => {}}
-            >
+            <Button type="submit" isPending={loading} className="w-full" onPress={() => {}}>
               {({ isPending }) =>
                 isPending ? (
                   <>

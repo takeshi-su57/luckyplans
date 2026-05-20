@@ -115,12 +115,7 @@ function LoginForm() {
               />
             </TextField>
 
-            <Button
-              type="submit"
-              isPending={loading}
-              className="w-full"
-              onPress={() => {}}
-            >
+            <Button type="submit" isPending={loading} className="w-full" onPress={() => {}}>
               {({ isPending }) =>
                 isPending ? (
                   <>

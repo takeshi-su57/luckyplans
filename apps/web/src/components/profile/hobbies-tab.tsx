@@ -1,15 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import {
-  Button,
-  Card,
-  Skeleton,
-  TextField,
-  Label,
-  Input,
-  TextArea,
-} from '@heroui/react';
+import { Button, Card, Skeleton, TextField, Label, Input, TextArea } from '@heroui/react';
 import { Heart, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { usePublicProfile } from '@/hooks/use-public-profile';
 import { useCreateHobby } from '@/hooks/use-create-hobby';
@@ -49,11 +41,7 @@ export function HobbiesTab({ userId }: HobbiesTabProps) {
   }, []);
 
   const startEdit = useCallback(
-    (hobby: {
-      id: string;
-      name: string;
-      description?: string | null;
-    }) => {
+    (hobby: { id: string; name: string; description?: string | null }) => {
       setForm({
         name: hobby.name,
         description: hobby.description ?? '',
@@ -121,11 +109,7 @@ export function HobbiesTab({ userId }: HobbiesTabProps) {
             </TextField>
           </Card.Content>
           <Card.Footer className="gap-2">
-            <Button
-              isPending={creating || updating}
-              isDisabled={!form.name}
-              onPress={handleSave}
-            >
+            <Button isPending={creating || updating} isDisabled={!form.name} onPress={handleSave}>
               {({ isPending }) =>
                 isPending ? (
                   <>

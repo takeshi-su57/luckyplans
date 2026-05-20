@@ -11,10 +11,7 @@ describe('WorkerAuthGuard', () => {
     });
     const guard = new WorkerAuthGuard({ verifyCredential } as never);
 
-    const req = { headers: { authorization: 'Bearer wk_live_xxx_yyy' } } as Record<
-      string,
-      unknown
-    >;
+    const req = { headers: { authorization: 'Bearer wk_live_xxx_yyy' } } as Record<string, unknown>;
     const context = {
       switchToHttp: () => ({ getRequest: () => req }),
     } as ExecutionContext;

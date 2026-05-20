@@ -1,15 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import {
-  Button,
-  Card,
-  Skeleton,
-  TextField,
-  Label,
-  Input,
-  TextArea,
-} from '@heroui/react';
+import { Button, Card, Skeleton, TextField, Label, Input, TextArea } from '@heroui/react';
 import { Loader2, Pencil, Plus, Trash2, Trophy } from 'lucide-react';
 import { usePublicProfile } from '@/hooks/use-public-profile';
 import { useCreateAward } from '@/hooks/use-create-award';
@@ -139,11 +131,7 @@ export function AwardsTab({ userId }: AwardsTabProps) {
             </TextField>
           </Card.Content>
           <Card.Footer className="gap-2">
-            <Button
-              isPending={creating || updating}
-              isDisabled={!form.title}
-              onPress={handleSave}
-            >
+            <Button isPending={creating || updating} isDisabled={!form.title} onPress={handleSave}>
               {({ isPending }) =>
                 isPending ? (
                   <>
@@ -174,9 +162,7 @@ export function AwardsTab({ userId }: AwardsTabProps) {
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-medium text-[#37352f]">{award.title}</h3>
-                {award.issuer && (
-                  <p className="text-sm text-[#37352f]">{award.issuer}</p>
-                )}
+                {award.issuer && <p className="text-sm text-[#37352f]">{award.issuer}</p>}
                 {award.date && (
                   <span className="mt-1 text-xs text-[#a3a29e]">
                     {new Date(award.date).toLocaleDateString('en-US', {
@@ -186,9 +172,7 @@ export function AwardsTab({ userId }: AwardsTabProps) {
                   </span>
                 )}
                 {award.description && (
-                  <p className="mt-2 text-sm text-[#37352f] leading-relaxed">
-                    {award.description}
-                  </p>
+                  <p className="mt-2 text-sm text-[#37352f] leading-relaxed">{award.description}</p>
                 )}
               </div>
               <div className="flex gap-2">

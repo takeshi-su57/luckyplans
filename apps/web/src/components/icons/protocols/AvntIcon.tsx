@@ -1,12 +1,6 @@
-import { SVGProps } from "../types";
+import { SVGProps } from '../types';
 
-export function AvntIcon({
-  fill = "#0052FF",
-  size = 24,
-  height,
-  width,
-  ...props
-}: SVGProps) {
+export function AvntIcon({ fill = '#0052FF', size = 24, height, width, ...props }: SVGProps) {
   return (
     <svg
       width={width || size}

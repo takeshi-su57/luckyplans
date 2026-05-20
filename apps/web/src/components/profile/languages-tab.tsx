@@ -53,11 +53,7 @@ export function LanguagesTab({ userId }: LanguagesTabProps) {
   }, []);
 
   const startEdit = useCallback(
-    (lang: {
-      id: string;
-      name: string;
-      proficiency?: string | null;
-    }) => {
+    (lang: { id: string; name: string; proficiency?: string | null }) => {
       setForm({
         name: lang.name,
         proficiency: lang.proficiency ?? 'Conversational',
@@ -141,11 +137,7 @@ export function LanguagesTab({ userId }: LanguagesTabProps) {
             </Select>
           </Card.Content>
           <Card.Footer className="gap-2">
-            <Button
-              isPending={creating || updating}
-              isDisabled={!form.name}
-              onPress={handleSave}
-            >
+            <Button isPending={creating || updating} isDisabled={!form.name} onPress={handleSave}>
               {({ isPending }) =>
                 isPending ? (
                   <>
@@ -204,9 +196,7 @@ export function LanguagesTab({ userId }: LanguagesTabProps) {
         <Card className="border border-dashed border-[#e8e7e4]">
           <Card.Content className="flex flex-col items-center gap-3 py-12">
             <Languages className="size-10 text-[#a3a29e]" />
-            <p className="text-sm text-[#a3a29e]">
-              No languages yet. Add the languages you speak.
-            </p>
+            <p className="text-sm text-[#a3a29e]">No languages yet. Add the languages you speak.</p>
           </Card.Content>
         </Card>
       )}

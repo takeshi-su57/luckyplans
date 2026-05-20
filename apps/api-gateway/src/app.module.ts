@@ -47,4 +47,3 @@ import { EdgesInternalModule } from './edges-internal/edges-internal.module';
   ],
 })
 export class AppModule {}
-

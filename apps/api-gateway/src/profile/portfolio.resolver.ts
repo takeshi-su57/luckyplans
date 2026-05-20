@@ -107,10 +107,7 @@ export class PortfolioResolver {
 
   @Mutation(() => DeleteResult)
   @UseGuards(SessionGuard)
-  async deleteSkill(
-    @CurrentUser() user: AuthUser,
-    @Args('id') id: string,
-  ): Promise<DeleteResult> {
+  async deleteSkill(@CurrentUser() user: AuthUser, @Args('id') id: string): Promise<DeleteResult> {
     return this.profileService.deleteSkill(user.userId, id);
   }
 
@@ -363,10 +360,7 @@ export class PortfolioResolver {
 
   @Mutation(() => DeleteResult)
   @UseGuards(SessionGuard)
-  async deleteAward(
-    @CurrentUser() user: AuthUser,
-    @Args('id') id: string,
-  ): Promise<DeleteResult> {
+  async deleteAward(@CurrentUser() user: AuthUser, @Args('id') id: string): Promise<DeleteResult> {
     return this.profileService.deleteAward(user.userId, id);
   }
 
@@ -400,10 +394,7 @@ export class PortfolioResolver {
 
   @Mutation(() => DeleteResult)
   @UseGuards(SessionGuard)
-  async deleteHobby(
-    @CurrentUser() user: AuthUser,
-    @Args('id') id: string,
-  ): Promise<DeleteResult> {
+  async deleteHobby(@CurrentUser() user: AuthUser, @Args('id') id: string): Promise<DeleteResult> {
     return this.profileService.deleteHobby(user.userId, id);
   }
 

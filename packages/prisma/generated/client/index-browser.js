@@ -258,6 +258,21 @@ exports.Prisma.WorkerScalarFieldEnum = {
   version: 'version',
   status: 'status',
   lastSeenAt: 'lastSeenAt',
+  targetVersion: 'targetVersion',
+  upgradeStatus: 'upgradeStatus',
+  upgradeMessage: 'upgradeMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EdgeReleaseScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  windowsUrl: 'windowsUrl',
+  linuxUrl: 'linuxUrl',
+  checksum: 'checksum',
+  signature: 'signature',
+  notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -274,9 +289,62 @@ exports.Prisma.WorkerCredentialScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.StrategyTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  category: 'category',
+  factoryConfig: 'factoryConfig',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BacktestTaskScalarFieldEnum = {
+  id: 'id',
+  strategyTemplateId: 'strategyTemplateId',
+  name: 'name',
+  symbol: 'symbol',
+  interval: 'interval',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  searchStrategy: 'searchStrategy',
+  optimizationParams: 'optimizationParams',
+  optimizationMetrics: 'optimizationMetrics',
+  trials: 'trials',
+  status: 'status',
+  assignedWorkerId: 'assignedWorkerId',
+  leaseExpiresAt: 'leaseExpiresAt',
+  lastHeartbeat: 'lastHeartbeat',
+  totalConfigs: 'totalConfigs',
+  processedConfigs: 'processedConfigs',
+  currentConfig: 'currentConfig',
+  trialProgress: 'trialProgress',
+  bestConfigIds: 'bestConfigIds',
+  errorMessage: 'errorMessage',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BacktestResultScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  configId: 'configId',
+  strategyConfig: 'strategyConfig',
+  metrics: 'metrics',
+  resultFolder: 'resultFolder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -287,6 +355,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Proficiency = exports.$Enums.Proficiency = {
   BEGINNER: 'BEGINNER',
@@ -300,10 +374,35 @@ exports.WorkerStatus = exports.$Enums.WorkerStatus = {
   DISABLED: 'DISABLED'
 };
 
+exports.WorkerUpgradeStatus = exports.$Enums.WorkerUpgradeStatus = {
+  IDLE: 'IDLE',
+  UPGRADE_PENDING: 'UPGRADE_PENDING',
+  DOWNLOADING: 'DOWNLOADING',
+  VERIFYING: 'VERIFYING',
+  RESTARTING: 'RESTARTING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
 exports.WorkerCredentialStatus = exports.$Enums.WorkerCredentialStatus = {
   ACTIVE: 'ACTIVE',
   REVOKED: 'REVOKED',
   EXPIRED: 'EXPIRED'
+};
+
+exports.SearchStrategy = exports.$Enums.SearchStrategy = {
+  GRID: 'GRID',
+  OPTUNA: 'OPTUNA'
+};
+
+exports.BacktestTaskStatus = exports.$Enums.BacktestTaskStatus = {
+  AWAIT: 'AWAIT',
+  ASSIGNED: 'ASSIGNED',
+  PROCESSING: 'PROCESSING',
+  DONE: 'DONE',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.Prisma.ModelName = {
@@ -319,7 +418,11 @@ exports.Prisma.ModelName = {
   Award: 'Award',
   Hobby: 'Hobby',
   Worker: 'Worker',
-  WorkerCredential: 'WorkerCredential'
+  EdgeRelease: 'EdgeRelease',
+  WorkerCredential: 'WorkerCredential',
+  StrategyTemplate: 'StrategyTemplate',
+  BacktestTask: 'BacktestTask',
+  BacktestResult: 'BacktestResult'
 };
 
 /**

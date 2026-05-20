@@ -4,15 +4,15 @@ import {
   AGGREGATE_PAIRS,
   PROTOCOL_COUNT,
   CHAIN_COUNT,
-} from "./data/protocols";
+} from './data/protocols';
 
 const stats = [
-  { label: "Combined Volume", value: AGGREGATE_VOLUME, emphasis: true },
-  { label: "Protocols", value: String(PROTOCOL_COUNT) },
-  { label: "EVM Chains", value: String(CHAIN_COUNT) },
-  { label: "Max Leverage", value: "500x" },
-  { label: "Trading Pairs", value: AGGREGATE_PAIRS },
-  { label: "Active Traders", value: AGGREGATE_TRADERS },
+  { label: 'Combined Volume', value: AGGREGATE_VOLUME, emphasis: true },
+  { label: 'Protocols', value: String(PROTOCOL_COUNT) },
+  { label: 'EVM Chains', value: String(CHAIN_COUNT) },
+  { label: 'Max Leverage', value: '500x' },
+  { label: 'Trading Pairs', value: AGGREGATE_PAIRS },
+  { label: 'Active Traders', value: AGGREGATE_TRADERS },
 ];
 
 export function StatsSection() {
@@ -26,14 +26,12 @@ export function StatsSection() {
           >
             <span
               className={`text-2xl font-bold tracking-tight md:text-3xl ${
-                stat.emphasis ? "text-[#0f7b6c]" : "text-[#37352f]"
+                stat.emphasis ? 'text-[#0f7b6c]' : 'text-[#37352f]'
               }`}
             >
               {stat.value}
             </span>
-            <span className="mt-1 text-xs font-medium text-[#787774]">
-              {stat.label}
-            </span>
+            <span className="mt-1 text-xs font-medium text-[#787774]">{stat.label}</span>
           </div>
         ))}
       </div>

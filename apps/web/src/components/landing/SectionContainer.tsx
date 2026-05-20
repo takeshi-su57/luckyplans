@@ -1,4 +1,4 @@
-import { twMerge } from "tailwind-merge";
+import { twMerge } from 'tailwind-merge';
 
 interface SectionContainerProps {
   children: React.ReactNode;
@@ -6,16 +6,12 @@ interface SectionContainerProps {
   className?: string;
 }
 
-export function SectionContainer({
-  children,
-  id,
-  className,
-}: SectionContainerProps) {
+export function SectionContainer({ children, id, className }: SectionContainerProps) {
   return (
     <section
       id={id}
       className={twMerge(
-        "mx-auto w-full max-w-5xl scroll-mt-20 px-6 py-20 md:px-8 md:py-28",
+        'mx-auto w-full max-w-5xl scroll-mt-20 px-6 py-20 md:px-8 md:py-28',
         className,
       )}
     >

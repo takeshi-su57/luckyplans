@@ -1,12 +1,6 @@
-import { SVGProps } from "../types";
+import { SVGProps } from '../types';
 
-export function EthereumIcon({
-  fill = "#627EEA",
-  size = 24,
-  height,
-  width,
-  ...props
-}: SVGProps) {
+export function EthereumIcon({ fill = '#627EEA', size = 24, height, width, ...props }: SVGProps) {
   return (
     <svg
       width={width || size}

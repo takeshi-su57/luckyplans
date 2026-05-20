@@ -85,27 +85,22 @@ export class OidcController {
 
     // Create user via Keycloak Admin REST API
     const adminUrl = getEnvVar('KEYCLOAK_ADMIN_URL', 'http://localhost:8080');
-    const createUserRes = await fetch(
-      `${adminUrl}/admin/realms/luckyplans/users`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${adminToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: email,
-          email,
-          firstName: firstName || undefined,
-          lastName: lastName || undefined,
-          enabled: true,
-          emailVerified: true,
-          credentials: [
-            { type: 'password', value: password, temporary: false },
-          ],
-        }),
+    const createUserRes = await fetch(`${adminUrl}/admin/realms/luckyplans/users`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        username: email,
+        email,
+        firstName: firstName || undefined,
+        lastName: lastName || undefined,
+        enabled: true,
+        emailVerified: true,
+        credentials: [{ type: 'password', value: password, temporary: false }],
+      }),
+    });
 
     if (createUserRes.status === 409) {
       throw new ConflictException('A user with this email already exists');
@@ -130,10 +125,7 @@ export class OidcController {
    */
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  async logout(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const sessionId = req.cookies?.['session_id'] as string | undefined;
 
     if (sessionId) {
@@ -147,10 +139,7 @@ export class OidcController {
 
   // --- Private helpers ---
 
-  private async authenticateWithRopc(
-    email: string,
-    password: string,
-  ): Promise<TokenResponse> {
+  private async authenticateWithRopc(email: string, password: string): Promise<TokenResponse> {
     const issuer = getEnvVar('KEYCLOAK_ISSUER');
     const tokenUrl = `${issuer}/protocol/openid-connect/token`;
 
@@ -204,9 +193,7 @@ export class OidcController {
     const issuer = getEnvVar('KEYCLOAK_ISSUER');
     const { payload } = await jwtVerify(idToken, getJWKS(), { issuer });
 
-    const realmAccess = payload['realm_access'] as
-      | { roles?: string[] }
-      | undefined;
+    const realmAccess = payload['realm_access'] as { roles?: string[] } | undefined;
 
     return {
       userId: payload.sub ?? '',
@@ -237,8 +224,7 @@ export class OidcController {
       secure: isProduction,
       sameSite: 'lax',
       path: '/',
-      maxAge:
-        parseInt(getEnvVar('SESSION_TTL_SECONDS', '36000'), 10) * 1000,
+      maxAge: parseInt(getEnvVar('SESSION_TTL_SECONDS', '36000'), 10) * 1000,
     });
   }
 }

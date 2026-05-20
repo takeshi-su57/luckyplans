@@ -34,11 +34,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main content */}
-      <div
-        className={`flex-1 transition-all duration-200 ${
-          collapsed ? 'lg:pl-13' : 'lg:pl-60'
-        }`}
-      >
+      <div className={`flex-1 transition-all duration-200 ${collapsed ? 'lg:pl-13' : 'lg:pl-60'}`}>
         {/* Mobile header — Notion style: minimal, no heavy border */}
         <div className="sticky top-0 z-20 flex h-11 items-center justify-between bg-white px-3 lg:hidden">
           <Link href="/dashboard" className="flex items-center gap-2">
@@ -56,9 +52,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Content — centered like Notion */}
-        <main className="mx-auto w-full max-w-6xl px-10 py-8 max-lg:px-6">
-          {children}
-        </main>
+        <main className="mx-auto w-full max-w-6xl px-10 py-8 max-lg:px-6">{children}</main>
       </div>
     </div>
   );

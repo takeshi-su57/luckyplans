@@ -1,7 +1,7 @@
-import { SVGProps } from "./types";
+import { SVGProps } from './types';
 
 export function ExternalLinkIcon({
-  fill = "currentColor",
+  fill = 'currentColor',
   size = 24,
   height,
   width,

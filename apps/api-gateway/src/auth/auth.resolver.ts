@@ -55,15 +55,11 @@ export class AuthResolver {
         name: user.name,
       });
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : (err as { message?: string })?.message;
+      const message = err instanceof Error ? err.message : (err as { message?: string })?.message;
       this.logger.error(`Failed to fetch profile for user ${user.userId}: ${message}`);
-      throw new InternalServerErrorException(
-        message || 'Failed to fetch user profile',
-      );
+      throw new InternalServerErrorException(message || 'Failed to fetch user profile');
     }
 
     return { ...profile, roles: user.roles };
   }
 }
-

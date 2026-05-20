@@ -1,12 +1,7 @@
-import { useId } from "react";
-import { SVGProps } from "../types";
+import { useId } from 'react';
+import { SVGProps } from '../types';
 
-export function GmxIcon({
-  size = 24,
-  height,
-  width,
-  ...props
-}: SVGProps) {
+export function GmxIcon({ size = 24, height, width, ...props }: SVGProps) {
   const uid = useId();
   return (
     <svg
@@ -19,7 +14,14 @@ export function GmxIcon({
     >
       {/* Official GMX logo from gmx-io/gmx-interface */}
       <defs>
-        <linearGradient id={uid} gradientUnits="objectBoundingBox" x1=".536" x2=".011" y1=".026" y2="1">
+        <linearGradient
+          id={uid}
+          gradientUnits="objectBoundingBox"
+          x1=".536"
+          x2=".011"
+          y1=".026"
+          y2="1"
+        >
           <stop offset="0" stopColor="#03d1cf" />
           <stop offset="1" stopColor="#4e09f8" />
         </linearGradient>

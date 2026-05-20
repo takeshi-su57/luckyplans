@@ -48,7 +48,9 @@ export function AppSidebar({ collapsed, onToggle, onNavigate }: AppSidebarProps)
       }`}
     >
       {/* Header */}
-      <div className={`flex h-11 items-center ${collapsed ? 'justify-center' : 'justify-between px-3'}`}>
+      <div
+        className={`flex h-11 items-center ${collapsed ? 'justify-center' : 'justify-between px-3'}`}
+      >
         {!collapsed && (
           <Link href="/dashboard" className="flex items-center gap-2">
             <Image src="/brand.png" alt="LuckyPlans" width={20} height={20} />
@@ -61,7 +63,11 @@ export function AppSidebar({ collapsed, onToggle, onNavigate }: AppSidebarProps)
           onClick={onToggle}
           className="flex size-6 items-center justify-center rounded text-[#a6a299] transition-colors hover:bg-[#f1f1ef] hover:text-[#37352f]"
         >
-          {collapsed ? <ChevronsRight className="size-3.5" /> : <ChevronsLeft className="size-3.5" />}
+          {collapsed ? (
+            <ChevronsRight className="size-3.5" />
+          ) : (
+            <ChevronsLeft className="size-3.5" />
+          )}
         </button>
       </div>
 

@@ -21,9 +21,7 @@ export function BlogCard({ post }: BlogCardProps) {
           {post.title}
         </h3>
         {post.excerpt && (
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#787774]">
-            {post.excerpt}
-          </p>
+          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#787774]">{post.excerpt}</p>
         )}
         {post.publishedAt && (
           <div className="mt-auto pt-5 text-xs text-[#a3a29e]">

@@ -1,25 +1,25 @@
-import { SectionContainer } from "./SectionContainer";
+import { SectionContainer } from './SectionContainer';
 
 const problems = [
   {
-    title: "Perp DEX data is siloed",
+    title: 'Perp DEX data is siloed',
     description:
-      "GNS, GMX, and AVNT each have their own data formats, APIs, and leaderboards. No unified view across protocols or chains.",
+      'GNS, GMX, and AVNT each have their own data formats, APIs, and leaderboards. No unified view across protocols or chains.',
   },
   {
-    title: "Leaderboards are incomplete",
+    title: 'Leaderboards are incomplete',
     description:
-      "Existing leaderboards show PnL but hide risk metrics, drawdowns, and position history. Surface-level rankings mislead followers.",
+      'Existing leaderboards show PnL but hide risk metrics, drawdowns, and position history. Surface-level rankings mislead followers.',
   },
   {
-    title: "Backtesting perp strategies is manual",
+    title: 'Backtesting perp strategies is manual',
     description:
-      "No standard tooling exists for backtesting algorithmic strategies against historical perp DEX data. Most traders rely on spreadsheets.",
+      'No standard tooling exists for backtesting algorithmic strategies against historical perp DEX data. Most traders rely on spreadsheets.',
   },
   {
-    title: "Performance claims are unverifiable",
+    title: 'Performance claims are unverifiable',
     description:
-      "Strategy results live in screenshots. No reproducible proof. No on-chain attestation. No way to independently audit execution history.",
+      'Strategy results live in screenshots. No reproducible proof. No on-chain attestation. No way to independently audit execution history.',
   },
 ];
 
@@ -31,8 +31,8 @@ export function ProblemSection() {
           Perpetual DEX trading lacks infrastructure
         </h2>
         <p className="max-w-2xl text-base text-[#787774]">
-          Fragmented data. Incomplete analytics. No backtesting standard.
-          Performance claims you cannot verify. This is the gap we are closing.
+          Fragmented data. Incomplete analytics. No backtesting standard. Performance claims you
+          cannot verify. This is the gap we are closing.
         </p>
       </div>
 
@@ -42,12 +42,8 @@ export function ProblemSection() {
             key={problem.title}
             className="rounded-xl border border-[#e8e7e4] border-l-2 border-l-green-600/60 bg-[#fbfbfa] p-6"
           >
-            <h3 className="text-lg font-semibold text-[#37352f]">
-              {problem.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#787774]">
-              {problem.description}
-            </p>
+            <h3 className="text-lg font-semibold text-[#37352f]">{problem.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[#787774]">{problem.description}</p>
           </div>
         ))}
       </div>
@@ -56,16 +52,11 @@ export function ProblemSection() {
         <span className="text-xs font-medium uppercase tracking-wide text-[#a3a29e]">
           Protocols backed by
         </span>
-        {["Pantera Capital", "Coinbase Ventures", "Chainlink"].map(
-          (backer) => (
-            <span
-              key={backer}
-              className="text-sm font-medium text-[#787774]"
-            >
-              {backer}
-            </span>
-          ),
-        )}
+        {['Pantera Capital', 'Coinbase Ventures', 'Chainlink'].map((backer) => (
+          <span key={backer} className="text-sm font-medium text-[#787774]">
+            {backer}
+          </span>
+        ))}
       </div>
     </SectionContainer>
   );

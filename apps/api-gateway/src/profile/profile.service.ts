@@ -89,7 +89,6 @@ export class ProfileService {
     return this.normalizeProfile(updated);
   }
 
-
   async getPublicProfile(userId: string) {
     return this.prisma.profile.findUnique({
       where: { userId },
@@ -107,7 +106,6 @@ export class ProfileService {
       },
     });
   }
-
 
   async getProjects(userId: string) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
@@ -202,7 +200,6 @@ export class ProfileService {
     return { success: true };
   }
 
-
   async getSkills(userId: string) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) return [];
@@ -291,7 +288,6 @@ export class ProfileService {
     );
     return { success: true };
   }
-
 
   async getExperiences(userId: string) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
@@ -383,7 +379,6 @@ export class ProfileService {
     return { success: true };
   }
 
-
   async createSocialLink(userId: string, data: { platform: string; url: string; label?: string }) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) throw new Error('Profile not found');
@@ -448,7 +443,6 @@ export class ProfileService {
     return { success: true };
   }
 
-
   async getSkillCategories(userId: string) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) return [];
@@ -500,7 +494,6 @@ export class ProfileService {
     await this.prisma.skillCategory.delete({ where: { id } });
     return { success: true };
   }
-
 
   async createEducation(
     userId: string,
@@ -586,7 +579,6 @@ export class ProfileService {
     return { success: true };
   }
 
-
   async createCertification(
     userId: string,
     data: {
@@ -668,7 +660,6 @@ export class ProfileService {
     return { success: true };
   }
 
-
   async createLanguage(userId: string, data: { name: string; proficiency?: string }) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) throw new Error('Profile not found');
@@ -727,7 +718,6 @@ export class ProfileService {
     );
     return { success: true };
   }
-
 
   async createAward(
     userId: string,
@@ -797,7 +787,6 @@ export class ProfileService {
     return { success: true };
   }
 
-
   async createHobby(userId: string, data: { name: string; description?: string }) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) throw new Error('Profile not found');
@@ -857,6 +846,3 @@ export class ProfileService {
     return { success: true };
   }
 }
-
-
-

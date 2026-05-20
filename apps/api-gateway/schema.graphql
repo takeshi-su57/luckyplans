@@ -167,6 +167,18 @@ type IssuedWorkerCredential {
   credential: String!
 }
 
+type EdgeRelease {
+  id: ID!
+  version: String!
+  windowsUrl: String!
+  linuxUrl: String!
+  checksum: String!
+  signature: String!
+  notes: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Worker {
   id: ID!
   name: String!
@@ -189,6 +201,7 @@ type Query {
   getPublicProfile(userId: String!): PublicProfile
   getSkillCategories: [SkillCategory!]!
   workers: [Worker!]!
+  edgeReleases: [EdgeRelease!]!
 }
 
 type Mutation {
@@ -237,6 +250,8 @@ type Mutation {
   issueWorkerCredential(id: String!): IssuedWorkerCredential!
   revokeWorkerCredential(id: String!): Boolean!
   rotateWorkerCredential(id: String!): IssuedWorkerCredential!
+  createEdgeRelease(version: String!, windowsUrl: String!, linuxUrl: String!, checksum: String!, signature: String!, notes: String): EdgeRelease!
+  setWorkerTargetVersion(workerIds: [String!]!, targetVersion: String!): Int!
 }
 
 input UpdateProfileInput {

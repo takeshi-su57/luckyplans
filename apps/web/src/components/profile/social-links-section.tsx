@@ -13,15 +13,7 @@ import {
   Select,
   ListBox,
 } from '@heroui/react';
-import {
-  ExternalLink,
-  Globe,
-  Link as LinkIcon,
-  Loader2,
-  Pencil,
-  Plus,
-  Trash2,
-} from 'lucide-react';
+import { ExternalLink, Globe, Link as LinkIcon, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { usePublicProfile } from '@/hooks/use-public-profile';
 import { useCreateSocialLink } from '@/hooks/use-create-social-link';
 import { useUpdateSocialLink } from '@/hooks/use-update-social-link';
@@ -174,11 +166,7 @@ export function SocialLinksSection({ userId }: SocialLinksSectionProps) {
               </TextField>
             </Card.Content>
             <Card.Footer className="gap-2">
-              <Button
-                isPending={creating || updating}
-                isDisabled={!form.url}
-                onPress={handleSave}
-              >
+              <Button isPending={creating || updating} isDisabled={!form.url} onPress={handleSave}>
                 {({ isPending }) =>
                   isPending ? (
                     <>
@@ -223,9 +211,7 @@ export function SocialLinksSection({ userId }: SocialLinksSectionProps) {
                   >
                     {link.url}
                   </a>
-                  {link.label && (
-                    <Chip size="sm">{link.label}</Chip>
-                  )}
+                  {link.label && <Chip size="sm">{link.label}</Chip>}
                 </div>
                 <div className="flex gap-2">
                   <Button isIconOnly variant="ghost" size="sm" onPress={() => startEdit(link)}>

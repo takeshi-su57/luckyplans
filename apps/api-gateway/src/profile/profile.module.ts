@@ -6,16 +6,8 @@ import { PortfolioResolver } from './portfolio.resolver';
 import { ProfileService } from './profile.service';
 
 @Module({
-  imports: [
-    forwardRef(() => AuthModule),
-    DatabaseModule,
-  ],
-  providers: [
-    ProfileService,
-    ProfileResolver,
-    PortfolioResolver,
-  ],
+  imports: [forwardRef(() => AuthModule), DatabaseModule],
+  providers: [ProfileService, ProfileResolver, PortfolioResolver],
   exports: [ProfileService],
 })
 export class ProfileModule {}
-

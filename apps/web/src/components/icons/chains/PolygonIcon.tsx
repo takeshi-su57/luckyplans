@@ -1,12 +1,6 @@
-import { SVGProps } from "../types";
+import { SVGProps } from '../types';
 
-export function PolygonIcon({
-  fill = "#8247E5",
-  size = 24,
-  height,
-  width,
-  ...props
-}: SVGProps) {
+export function PolygonIcon({ fill = '#8247E5', size = 24, height, width, ...props }: SVGProps) {
   return (
     <svg
       width={width || size}

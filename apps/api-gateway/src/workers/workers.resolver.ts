@@ -1,4 +1,13 @@
-import { Args, Field, ID, Mutation, ObjectType, Query, Resolver, registerEnumType } from '@nestjs/graphql';
+import {
+  Args,
+  Field,
+  ID,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { WorkersService } from './workers.service';
 
 const WorkerStatus = {

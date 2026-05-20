@@ -34,16 +34,21 @@ function isUnauthenticatedError(error: unknown): boolean {
   if (isAuthMessage(err.message)) return true;
 
   // Check each graphQLError
-  return err.graphQLErrors?.some((e) =>
-    e.extensions?.code === 'UNAUTHENTICATED' ||
-    e.extensions?.originalError?.statusCode === 401 ||
-    isAuthMessage(e.message),
-  ) ?? false;
+  return (
+    err.graphQLErrors?.some(
+      (e) =>
+        e.extensions?.code === 'UNAUTHENTICATED' ||
+        e.extensions?.originalError?.statusCode === 401 ||
+        isAuthMessage(e.message),
+    ) ?? false
+  );
 }
 
 function isAuthMessage(msg?: string): boolean {
   if (!msg) return false;
-  return /session expired|invalid.*session|expired.*session|missing session|unauthorized|please log in/i.test(msg);
+  return /session expired|invalid.*session|expired.*session|missing session|unauthorized|please log in/i.test(
+    msg,
+  );
 }
 
 export function useCurrentUser() {
