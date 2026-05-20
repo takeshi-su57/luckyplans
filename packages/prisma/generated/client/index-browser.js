@@ -262,6 +262,18 @@ exports.Prisma.WorkerScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.WorkerCredentialScalarFieldEnum = {
+  id: 'id',
+  workerId: 'workerId',
+  keyPrefix: 'keyPrefix',
+  keyHash: 'keyHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  rotatedAt: 'rotatedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -288,6 +300,12 @@ exports.WorkerStatus = exports.$Enums.WorkerStatus = {
   DISABLED: 'DISABLED'
 };
 
+exports.WorkerCredentialStatus = exports.$Enums.WorkerCredentialStatus = {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.Prisma.ModelName = {
   Profile: 'Profile',
   SocialLink: 'SocialLink',
@@ -300,7 +318,8 @@ exports.Prisma.ModelName = {
   Language: 'Language',
   Award: 'Award',
   Hobby: 'Hobby',
-  Worker: 'Worker'
+  Worker: 'Worker',
+  WorkerCredential: 'WorkerCredential'
 };
 
 /**

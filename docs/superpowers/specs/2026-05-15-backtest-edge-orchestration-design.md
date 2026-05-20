@@ -1,61 +1,69 @@
-# Backtest Edge Orchestration Design
+# Backtest Edge Orchestration Design (V2)
 
-Date: 2026-05-15
-Status: Approved (direction) - detailed spec
+Date: 2026-05-20  
+Status: Draft refresh (aligned to current beta repo)  
 Owner: LuckyPlans
 
-## 1. Goal
+## 1. Purpose
 
-Bring back the alpha backtest capability into beta with an edge-compute architecture:
-- Orchestration layer (beta backend) manages templates, tasks, assignment, status, retries, and results.
-- Edge agents perform CPU-heavy strategy search (grid or Optuna) and backtest execution locally.
-- Beta web UI allows template creation, task creation, live monitoring, and result exploration.
+Restore alpha backtesting capability in beta using edge execution while keeping orchestration centralized in the beta backend.
+
+V2 keeps the same functional requirements as the 2026-05-15 spec, but updates architecture and scope layout to match the current codebase and service-decomposition rules.
 
 ## 2. Scope
 
-### In scope (Phase 1)
+### 2.1 In Scope (Phase 1)
 - Strategy template CRUD.
-- Backtest task creation using a template.
-- Search modes: `grid` and `optuna`.
-- Explicit edge assignment (`task -> specific edge`) at creation time.
-- Worker lease + heartbeat + cancellation + retry.
-- Result persistence and top-candidate retrieval.
-- Minimal UI to create templates/tasks and view task progress/results.
+- Backtest task creation from template.
+- Search modes: `grid`, `optuna`.
+- Explicit assignment at task creation (`assignedWorkerId`).
+- Lease + heartbeat + cancellation + retry.
+- Result persistence + top-candidate retrieval.
+- Worker credential lifecycle (issue/verify/revoke/rotate).
+- Edge distribution metadata and orchestrator-driven upgrade control plane.
+- Minimal UI for templates, tasks, workers, status, and results.
 
-### Out of scope (Phase 1)
-- Full validation pipeline (walk-forward, robustness steps) as first delivery requirement.
-- Multi-tenant billing/rate limits.
+### 2.2 Out of Scope (Phase 1)
+- Full validation pipeline (walk-forward, robustness).
+- Multi-tenant billing and rate limits.
 - Public edge marketplace.
 
-## 3. Architecture
+## 3. Architecture (Current-State Aligned)
 
 ### 3.1 Components
-- `apps/web`:
-  - Backtest pages for templates/tasks/results.
-- `apps/api-gateway`:
-  - GraphQL API for UI actions and queries.
-  - Internal edge API (HTTP) for poll/heartbeat/report.
+- `apps/web`
+  - Backtest templates/tasks/results pages.
+  - Worker registry and upgrade-control pages.
+- `apps/api-gateway`
+  - GraphQL API for user operations.
+  - Internal edge HTTP API for poll/heartbeat/results/complete/fail.
+  - Orchestration business logic in gateway modules/services for V1.
   - Session-based user auth for humans.
-- `apps/service-core`:
-  - Business logic and persistence operations via Redis message patterns.
-- `Edge Agent` (new deployable client app):
-  - Authenticates as a worker.
-  - Polls for assigned work.
-  - Executes search + backtests.
-  - Reports progress and results.
-- `packages/shared`:
-  - Shared enums/types/message patterns for backtest domain.
-- `packages/prisma`:
-  - Backtest data models and migrations.
+- `Edge Agent` (new deployable app)
+  - Authenticates as worker.
+  - Polls for assigned tasks.
+  - Executes `grid`/`optuna` search and backtest runtime.
+  - Sends heartbeats, results, terminal events, and upgrade status.
+- `packages/shared`
+  - Shared enums/types/message contracts for backtest and worker domains.
+- `packages/prisma`
+  - Data models and migrations.
 
-### 3.2 Responsibility split
-- Orchestrator is source of truth for task state.
-- Edge agent is stateless executor from orchestrator perspective.
-- Backtest compute engine from alpha is reused in edge runtime, not in gateway request path.
+### 3.2 Service-Decomposition Rule (Binding)
+- V1 implementation default: extend `apps/api-gateway` modules.
+- New microservice is allowed only with explicit justification using `docs/architecture/microservice-decision-matrix.md`:
+  - CPU-heavy or long-running backend workload that must run server-side.
+  - Independent scaling/SLO/deploy lifecycle needs.
+  - Accepted platform overhead (Docker/Helm/ArgoCD/observability ownership).
+- Edge compute itself does not require a backend microservice because execution is offloaded to edge agents.
 
-## 4. Domain Model (Beta)
+### 3.3 Responsibility Split
+- Orchestrator (gateway) is source of truth for task and worker state.
+- Edge agent is a stateless executor from orchestrator perspective.
+- Compute runtime executes only on edge agent, never in synchronous gateway request path.
 
-Adopt alpha-inspired models with worker-awareness:
+## 4. Domain Model (V1)
+
 - `StrategyTemplate`
   - `id, name, category, factoryConfig, isActive, createdAt, updatedAt`
 - `BacktestTask`
@@ -67,155 +75,22 @@ Adopt alpha-inspired models with worker-awareness:
   - `errorMessage, createdAt, startedAt, completedAt`
 - `BacktestResult`
   - `id, taskId, configId, strategyConfig`
-  - metrics (`pnl`, `winRate`, `drawdown`, `sharpe`, `profitFactor`, etc.)
+  - metrics (`totalTrades, winningTrades, losingTrades, winRate, totalPnlUsdt, totalPnlPercent, maxDrawdownUsdt, maxDrawdownPercent, sharpeRatio, profitFactor, ...`)
   - `resultFolder, createdAt`
 - `Worker`
-  - `id, name, status, capabilities, trustLevel, version, lastSeenAt`
+  - `id, name, status (ACTIVE|DISABLED for current codebase; QUARANTINED extension in Scope 8), platform, version, lastSeenAt, targetVersion, upgradeStatus`
 - `WorkerCredential`
   - `workerId, keyPrefix, keyHash, status, expiresAt, rotatedAt`
 
-Notes:
-- Keep required-new-column safety: introduce nullable/default-first migration, backfill, then tighten.
-- Store only hashed credentials; never raw worker secrets.
+Migration safety:
+- Required-column additions follow nullable/default-first, then backfill, then tighten.
+- Raw credentials are never stored.
 
-## 5. Task Lifecycle
+## 5. V1 Contract Freeze (Authoritative)
 
-1. User creates template.
-2. User creates task from template with search mode and target edge.
-3. Task state: `AWAIT`.
-4. Edge polls `/internal/edges/tasks/next`.
-5. Orchestrator validates edge identity and assignment; returns leased task.
-6. Task state: `ASSIGNED` -> `PROCESSING`.
-7. Edge runs search (`grid` or `optuna`) and executes backtests.
-8. Edge heartbeats every 10s with progress.
-9. Edge posts results in batches + final completion payload (`bestConfigIds`).
-10. Task state: `DONE` (or `FAILED`/`CANCELLED`).
-11. If heartbeat timeout or lease expiry: orchestrator re-queues or fails by policy.
+If any later section conflicts, this section wins.
 
-## 6. API Contracts
-
-### 6.1 User-facing GraphQL (gateway)
-- `createStrategyTemplate(input)`
-- `updateStrategyTemplate(input)`
-- `createBacktestTask(input)` including `assignedWorkerId`
-- `cancelBacktestTask(taskId)`
-- `retryBacktestTask(taskId)`
-- Queries: `backtestTasks`, `backtestTask(id)`, `backtestResults(taskId, sort/paging)`
-- Subscription: `backtestTaskUpdated`, `backtestResultCreated`
-
-### 6.2 Internal edge API (gateway HTTP)
-- `POST /internal/edges/auth/register` (bootstrap path, optional)
-- `POST /internal/edges/tasks/next` (poll)
-- `POST /internal/edges/tasks/:id/heartbeat`
-- `POST /internal/edges/tasks/:id/results` (batch)
-- `POST /internal/edges/tasks/:id/complete`
-- `POST /internal/edges/tasks/:id/fail`
-
-All internal endpoints require worker auth + authorization checks.
-
-## 7. Security Design
-
-- Separate auth domains:
-  - User auth: existing gateway session (`session_id` cookie).
-  - Edge auth: worker credentials (not user API keys).
-- Worker credential model:
-  - Prefix + hashed secret storage.
-  - Rotation + revocation support.
-  - Optional short-lived signed session token after initial auth.
-- Optional network hardening:
-  - Start with HTTPS + strict auth.
-  - Add private network (WireGuard) in production hardening phase.
-- Task integrity:
-  - Include nonce and lease metadata.
-  - Reject stale/expired updates.
-- Abuse controls:
-  - Heartbeat timeout handling.
-  - Retry limits and quarantine worker status on repeated failures.
-- Data minimization:
-  - Send only required strategy config + date range + symbol.
-
-## 8. Migration Plan from Alpha
-
-### Phase A: Extract and package compute runtime
-- Reuse alpha `src/backtest` engine, components, indicators, and worker execution logic.
-- Refactor into beta-compatible module/package for edge runtime consumption.
-- Remove direct coupling to alpha path assumptions.
-
-### Phase B: Persistence + contracts
-- Add Prisma models in `packages/prisma`.
-- Add shared message patterns/types in `packages/shared`.
-- Implement service-core backtest services/controllers.
-
-### Phase C: Gateway + internal edge API
-- Add GraphQL resolvers for templates/tasks/results.
-- Add internal edge controller for poll/heartbeat/results/complete/fail.
-- Add auth guard for worker credentials.
-
-### Phase D: Edge agent app
-- New edge executable/service:
-  - Authenticate, poll, execute grid/optuna, heartbeat, report.
-- Integrate alpha optimizer flow (Optuna) behind edge runtime.
-
-### Phase E: UI
-- Port minimal alpha backtest UI patterns into `apps/web`:
-  - Template list/create/edit.
-  - Task creation (choose template/search mode/assigned edge).
-  - Task list with live progress.
-  - Results table.
-
-### Phase F: Reliability hardening
-- Lease expiry/requeue policy.
-- Idempotent result ingestion by `(taskId, configId)`.
-- Resume support for interrupted optuna tasks.
-
-## 9. Testing Strategy
-
-- Unit:
-  - task state transitions
-  - lease/heartbeat timeout logic
-  - worker auth validation
-- Integration:
-  - create task -> assigned edge poll -> processing -> done
-  - cancel and retry flows
-  - duplicate result submissions (idempotency)
-- E2E:
-  - UI template/task workflow with one local edge agent
-- Non-functional:
-  - long-running task stability
-  - concurrent tasks across multiple edges
-
-## 10. Risks and Mitigations
-
-- Risk: edge compromise or incorrect results.
-  - Mitigation: worker trust levels, optional duplicate verification for high-value tasks.
-- Risk: orchestrator restart during long jobs.
-  - Mitigation: DB-backed task state + lease model; edge reconnect logic.
-- Risk: optuna/python dependency drift on edge.
-  - Mitigation: containerized edge runtime versioning.
-
-## 11. Delivery Slices
-
-- Slice 1: Template CRUD + task CRUD + assignment + mock edge completion.
-- Slice 2: Real edge agent with grid search execution.
-- Slice 3: Optuna execution on edge + progress + resume handling.
-- Slice 4: UI polish + operational metrics/alerts.
-
-## 12. Acceptance Criteria (Phase 1)
-
-- User can create a strategy template and a task with `grid` or `optuna` mode.
-- User can assign task to a specific edge.
-- Assigned edge can poll and execute task end-to-end.
-- Orchestrator tracks progress via heartbeat and surfaces status in UI.
-- Results and top configs are queryable in UI.
-- Cancellation and retry work without data corruption.
-- Worker credentials are hashed at rest and revocable.
-
-## 13. V1 Contract Freeze (Authoritative)
-
-This section is normative for implementation scopes. If any later section conflicts, this section wins.
-
-### 13.1 Task State Machine
-
+### 5.1 Task State Machine
 Allowed statuses:
 - `AWAIT`
 - `ASSIGNED`
@@ -236,38 +111,37 @@ Allowed transitions only:
 - `FAILED -> AWAIT` (retry)
 - `CANCELLED -> AWAIT` (retry)
 
-Forbidden transitions:
+Forbidden:
 - Any transition from `DONE`
-- `AWAIT -> PROCESSING` (must be leased first)
+- `AWAIT -> PROCESSING`
 - `PROCESSING -> ASSIGNED`
 
-### 13.2 Assignment and Lease Rules
+### 5.2 Assignment and Lease Rules
+- `assignedWorkerId` is required while task is `ASSIGNED` or `PROCESSING`.
+- Worker can lease only tasks where `assignedWorkerId == worker.id`.
+- Lease duration: 60s.
+- Heartbeat target: every 10s.
+- Valid heartbeat extends lease to `now + 60s`.
+- If lease expires during `ASSIGNED` or `PROCESSING`:
+  - task returns to `AWAIT`
+  - `currentConfig` is cleared
+  - assignment remains sticky (`assignedWorkerId` unchanged) for V1
+- `CANCELLED` tasks are never leasable.
 
-- A task must have exactly one `assignedWorkerId` while in `ASSIGNED` or `PROCESSING`.
-- A worker can only poll and lease tasks where `assignedWorkerId == worker.id`.
-- Lease duration: 60 seconds.
-- Heartbeat interval target: 10 seconds.
-- Lease extension rule: each valid heartbeat extends `leaseExpiresAt = now + 60s`.
-- Requeue rule: if `now > leaseExpiresAt` and task is `ASSIGNED` or `PROCESSING`, task moves to `AWAIT`, `currentConfig` is cleared, and assignment remains unchanged (sticky assignment for V1).
-- Cancel rule: cancelled tasks cannot be leased.
-
-### 13.3 Internal Edge API Contract (V1)
-
+### 5.3 Internal Edge API Contract
 All endpoints require worker authentication.
 
 1. `POST /internal/edges/tasks/next`
-- Request body:
+- Request:
 ```json
-{
-  "workerId": "uuid"
-}
+{ "workerId": "worker-id-string" }
 ```
-- Success response (task available):
+- Success (task):
 ```json
 {
   "success": true,
   "task": {
-    "taskId": "uuid",
+    "taskId": "task-id-string",
     "name": "string",
     "symbol": "BTCUSDT",
     "interval": "1m",
@@ -277,26 +151,23 @@ All endpoints require worker authentication.
     "optimizationParams": {},
     "optimizationMetrics": ["sharpeRatio"],
     "trials": 200,
-    "leaseExpiresAt": "2026-05-15T12:00:00.000Z"
+    "leaseExpiresAt": "2026-05-20T12:00:00.000Z"
   }
 }
 ```
-- Success response (no task):
+- Success (no task):
 ```json
-{
-  "success": true,
-  "task": null
-}
+{ "success": true, "task": null }
 ```
 
 2. `POST /internal/edges/tasks/:id/heartbeat`
-- Request body:
+- Request:
 ```json
 {
-  "workerId": "uuid",
+  "workerId": "worker-id-string",
   "processedConfigs": 12,
   "totalConfigs": 100,
-  "currentConfig": "config-uuid",
+  "currentConfig": "config-id-string",
   "trialProgress": "sampling"
 }
 ```
@@ -305,19 +176,19 @@ All endpoints require worker authentication.
 {
   "success": true,
   "status": "PROCESSING",
-  "leaseExpiresAt": "2026-05-15T12:00:10.000Z",
+  "leaseExpiresAt": "2026-05-20T12:00:10.000Z",
   "cancelRequested": false
 }
 ```
 
 3. `POST /internal/edges/tasks/:id/results`
-- Request body:
+- Request:
 ```json
 {
-  "workerId": "uuid",
+  "workerId": "worker-id-string",
   "results": [
     {
-      "configId": "uuid",
+      "configId": "config-id-string",
       "strategyConfig": {},
       "metrics": {
         "totalTrades": 10,
@@ -331,401 +202,171 @@ All endpoints require worker authentication.
         "sharpeRatio": 1.4,
         "profitFactor": 1.8
       },
-      "resultFolder": "result/2026-05-15/task-id/config-id"
+      "resultFolder": "result/2026-05-20/task-id/config-id"
     }
   ]
 }
 ```
 - Response:
 ```json
-{
-  "success": true,
-  "accepted": 1,
-  "deduplicated": 0
-}
+{ "success": true, "accepted": 1, "deduplicated": 0 }
 ```
 
 4. `POST /internal/edges/tasks/:id/complete`
-- Request body:
+- Request:
 ```json
 {
-  "workerId": "uuid",
-  "bestConfigIds": ["uuid-1", "uuid-2"],
+  "workerId": "worker-id-string",
+  "bestConfigIds": ["config-id-1", "config-id-2"],
   "processedConfigs": 100,
   "totalConfigs": 100
 }
 ```
 - Response:
 ```json
-{
-  "success": true,
-  "status": "DONE"
-}
+{ "success": true, "status": "DONE" }
 ```
 
 5. `POST /internal/edges/tasks/:id/fail`
-- Request body:
+- Request:
 ```json
-{
-  "workerId": "uuid",
-  "error": "message"
-}
+{ "workerId": "worker-id-string", "error": "message" }
 ```
 - Response:
 ```json
-{
-  "success": true,
-  "status": "FAILED"
-}
+{ "success": true, "status": "FAILED" }
 ```
 
-### 13.4 Idempotency Rules
+### 5.4 Idempotency Rules
+- Unique key: `(taskId, configId)` for results.
+- Duplicate result submissions are deduplicated.
+- `complete` is idempotent for repeated same-worker completion calls.
+- If task is terminal (`DONE|FAILED|CANCELLED`), `results/complete/fail` returns success with unchanged terminal status.
 
-- Result uniqueness key: `(taskId, configId)`.
-- Duplicate result submissions must not create additional rows.
-- `complete` endpoint must be idempotent when repeated by same worker for same task.
-- If task is already terminal (`DONE|FAILED|CANCELLED`), `results/complete/fail` returns success with unchanged terminal status.
-
-### 13.5 Worker Credential Contract
-
-- Raw credential is shown once at creation:
-  - format: `wk_live_<prefix>_<secret>`
+### 5.5 Worker Credential Contract
+- One-time shown raw format: `wk_live_<prefix>_<secret>`.
 - Stored fields:
   - `keyPrefix`
-  - `keyHash` (HMAC-SHA256 with server pepper)
+  - `keyHash` (HMAC-SHA256 + server pepper)
   - `status` (`ACTIVE|REVOKED|EXPIRED`)
   - `expiresAt`
-- Verification:
+- Verify flow:
   1. parse prefix
-  2. find by prefix
+  2. lookup credential by prefix
   3. hash presented secret with server pepper
   4. constant-time compare
-  5. enforce status/expiry
+  5. enforce status and expiry
 - Rotation:
-  - create new credential
-  - overlap window (both active) max 24h
+  - issue new credential
+  - overlap window max 24h
   - auto-revoke old credential after overlap
 
-### 13.6 V1 Security Baseline
-
+### 5.6 Security Baseline
 - HTTPS required for all internal edge traffic.
-- Worker endpoints reject user session auth; only worker credentials allowed.
-- Every internal write endpoint checks `workerId` in payload matches authenticated worker identity.
-- Audit log required for:
+- Worker endpoints reject user session auth.
+- Internal write endpoints must verify request `workerId` matches authenticated worker identity.
+- Audit logs required for:
   - credential create/rotate/revoke
   - task lease granted
-  - task terminal state change
-
-### 13.7 Scope Coupling Rules
-
-- Scope 1 must not implement task leasing or compute.
-- Scope 2 must not implement search execution.
-- Scope 3 may use mocked compute only.
-- Real grid execution starts in Scope 5.
-- Real optuna execution starts in Scope 6.
-
-## 14. Implementation Scopes (Session-Based)
-
-This section defines deliverable, testable, verifiable scopes designed for limited-token sessions.
-Each scope depends on completion of the previous scope.
-
-### Scope 0: Contract Freeze and Alignment
-
-Depends on: none
-
-Deliverables:
-- Approve this spec as authoritative.
-- Freeze V1 state machine, edge API payloads, and worker credential rules.
-- Freeze out-of-scope list for Phase 1.
-
-Required tests:
-- Review checklist only (no code).
-
-Verification gate:
-- Human approval recorded for this document.
-
-Stop condition:
-- No code changes until this scope is approved.
-
-### Scope 1: Edge Registry and Orchestration UI Foundation
-
-Depends on: Scope 0
-
-Deliverables:
-- Add worker registry persistence and service CRUD.
-- Add gateway GraphQL/API endpoints for worker registration/list/disable.
-- Add minimal UI page for edge list/status and assignment readiness.
-
-Required tests:
-- Unit: worker service create/list/disable.
-- Integration: endpoint behavior for create/list/disable.
-- UI smoke: edge list renders and disable action updates status.
-
-Verification gate:
-- User can register an edge and see/update it in UI.
-
-Stop condition:
-- No task lease/poll/heartbeat behavior yet.
-
-### Scope 2: Worker Credential Security
-
-Depends on: Scope 1
-
-Deliverables:
-- Implement worker credential issue/verify/revoke/rotate.
-- Hash-only storage for credentials with prefix lookup.
-- Internal worker auth guard/middleware.
-
-Required tests:
-- Unit: hash verify, expiry, revoked credential rejection, rotation overlap.
-- Integration: authorized internal request passes; revoked/expired fails.
-
-Verification gate:
-- Revoked credential cannot poll internal endpoints.
-
-Stop condition:
-- No task execution logic yet.
-
-### Scope 3: Task Skeleton with Lease and Heartbeat (Mock Execution)
-
-Depends on: Scope 2
-
-Deliverables:
-- Add backtest task persistence and status transitions.
-- Implement internal endpoints: `tasks/next`, `heartbeat`, `complete`, `fail`.
-- Implement lease timeout and requeue behavior.
-- Use mocked result payloads only.
-
-Required tests:
-- Unit: state transition guardrails and lease expiry logic.
-- Integration: `AWAIT -> ASSIGNED -> PROCESSING -> DONE`.
-- Integration: heartbeat extends lease; expired lease requeues.
-
-Verification gate:
-- One worker can claim and complete a mocked task end-to-end.
-
-Stop condition:
-- No real backtest engine invoked.
-
-### Scope 3.5: Edge Packaging, Distribution, and Upgrade Control Plane
-
-Depends on: Scope 3
-
-Deliverables:
-- Publish edge release artifact contract (Windows/Linux binaries + checksums/signatures).
-- Implement orchestration metadata model for edge releases and `targetVersion`.
-- Add orchestration UI actions to trigger upgrade for selected edges.
-- Add edge-side upgrade state reporting contract (without requiring real compute tasks).
-
-Required tests:
-- Integration: create release metadata and set target version for selected edges.
-- Integration: edge reports upgrade lifecycle status (`UPGRADE_PENDING` ... `SUCCEEDED|FAILED`).
-- Security test: invalid checksum/signature upgrade attempt must fail.
-
-Verification gate:
-- User can trigger upgrade intent from UI and observe per-edge upgrade status transitions.
-
-Stop condition:
-- Real backtest engine execution still out of scope.
-
-### Scope 4: Shared Composable Backtest Runtime Import
-
-Depends on: Scope 3.5
-
-Deliverables:
-- Port alpha composable backtest runtime into beta shared compute module.
-- Ensure runtime callable in isolation from orchestration.
-- Remove alpha-specific path assumptions.
-
-Required tests:
-- Unit/integration: deterministic run with fixed strategy config fixture.
-- Build/type-check for shared module.
-
-Verification gate:
-- Same input produces stable output metrics in repeated runs.
-
-Stop condition:
-- Runtime integrated but not yet wired into real distributed task flow.
-
-### Scope 5: Real Grid Search Execution on Edge
-
-Depends on: Scope 4
-
-Deliverables:
-- Edge agent executes real grid search for leased task.
-- Batch result reporting via `results` endpoint.
-- Idempotent result ingest by `(taskId, configId)`.
-
-Required tests:
-- Unit: grid parameter expansion correctness.
-- Integration: duplicate result submission deduplicates correctly.
-- Integration: full task completion with persisted results.
-
-Verification gate:
-- User runs a small grid task and sees ranked results in UI/backend queries.
-
-Stop condition:
-- Optuna remains disabled.
-
-### Scope 6: Real Optuna Execution on Edge
-
-Depends on: Scope 5
-
-Deliverables:
-- Edge agent supports optuna trials with progress heartbeats.
-- Completion reports `bestConfigIds`.
-- Resume-safe behavior for interrupted runs.
-
-Required tests:
-- Integration: optuna task completes and stores best configs.
-- Integration: edge restart/reconnect does not corrupt task state.
-- Integration: cancel mid-run transitions cleanly to `CANCELLED`.
-
-Verification gate:
-- User can run optuna task end-to-end and inspect best configs.
-
-Stop condition:
-- Validation pipeline remains out of scope.
-
-### Scope 7: Task and Result UX Hardening
-
-Depends on: Scope 6
-
-Deliverables:
-- Task list/detail pages with live progress and terminal states.
-- Cancel/retry actions in UI.
-- Result table sorting/filtering and top-candidate view.
-
-Required tests:
-- UI integration: create, monitor, cancel, retry flows.
-- GraphQL integration: task/result query pagination and sorting.
-
-Verification gate:
-- User can operate task lifecycle entirely from UI.
-
-Stop condition:
-- No advanced validation pipeline UI yet.
-
-### Scope 8: Reliability and Operational Baseline
-
-Depends on: Scope 7
-
-Deliverables:
-- Retry limits, worker quarantine policy, and stale-task recovery.
-- Audit log coverage required by V1 security baseline.
-- Basic observability metrics for workers/tasks.
-
-Required tests:
-- Integration: repeated worker failure triggers quarantine policy.
-- Integration: stale processing task auto-requeues per lease rule.
-- Ops smoke: metrics/log signals emitted on task lifecycle.
-
-Verification gate:
-- System recovers from worker drop without manual DB repair.
-
-Stop condition:
-- Scope complete when recovery and audit paths are validated.
-
-### Execution Rule for All Scopes
-
-- A scope is not complete unless all are true:
-  - targeted unit/integration tests pass
-  - `pnpm lint` passes
-  - `pnpm type-check` passes
-  - demo checklist for that scope is verified manually
-- No next scope starts until previous scope verification gate is met.
-
-## 15. Edge Distribution and Upgrade Contract
-
-This section defines where users download edge binaries and how centralized upgrade is triggered from orchestration UI.
-
-### 15.1 Distribution Channel
-
-Versioned release artifacts must be published per edge version.
-
-Preferred base URL pattern:
+  - task terminal-state change
+
+## 6. User-Facing GraphQL Surface
+
+Mutations:
+- `createStrategyTemplate(input)`
+- `updateStrategyTemplate(input)`
+- `createBacktestTask(input)` including `assignedWorkerId`
+- `cancelBacktestTask(taskId)`
+- `retryBacktestTask(taskId)`
+- `createWorker(name, platform, version)`
+- `disableWorker(id)`
+- `issueWorkerCredential(id)`
+- `revokeWorkerCredential(credentialId)`
+- `rotateWorkerCredential(id)`
+- `setWorkerTargetVersion(workerIds, targetVersion)`
+
+Queries:
+- `backtestTasks`
+- `backtestTask(id)`
+- `backtestResults(taskId, sort, paging)`
+- `workers`
+- `worker(id)`
+- `edgeReleases`
+
+Subscriptions:
+- `backtestTaskUpdated`
+- `backtestResultCreated`
+- `workerStatusUpdated`
+- `workerUpgradeStatusUpdated`
+
+## 7. Edge Distribution and Upgrade Contract
+
+### 7.1 Distribution Channel
+Preferred pattern:
 - `https://downloads.luckyplans.io/edge/v<version>/...`
 
 Alternative:
-- GitHub release assets under `edge-v<version>` tag.
+- GitHub releases under `edge-v<version>` tag.
 
-Required published files per version:
+Required artifacts per version:
 - `lucky-edge-windows-x64-installer.exe`
 - `lucky-edge-linux-x64.tar.gz`
 - `SHA256SUMS`
 - `SHA256SUMS.sig`
 - `RELEASE_NOTES.md`
 
-Recommended stable aliases:
-- `/edge/latest/windows` -> redirects to latest Windows installer
-- `/edge/latest/linux` -> redirects to latest Linux tarball
+Stable aliases (recommended):
+- `/edge/latest/windows`
+- `/edge/latest/linux`
 
-### 15.2 Installation Layout (Contract)
-
-Windows (immutable binaries):
+### 7.2 Installation Layout
+Windows immutable:
 - `C:\Program Files\LuckyPlans Edge\`
-  - `lucky-edge.exe`
-  - `VERSION`
 
-Windows (mutable runtime):
-- `C:\ProgramData\LuckyPlans\edge\`
-  - `config\edge.config.json`
-  - `secrets\worker.key`
-  - `state\edge-state.db`
-  - `logs\edge.log`
-  - `work\`
-  - `results\`
+Windows mutable:
+- `C:\ProgramData\LuckyPlans\edge\config\edge.config.json`
+- `C:\ProgramData\LuckyPlans\edge\secrets\worker.key`
+- `C:\ProgramData\LuckyPlans\edge\state\edge-state.db`
+- `C:\ProgramData\LuckyPlans\edge\logs\edge.log`
+- `C:\ProgramData\LuckyPlans\edge\work\`
+- `C:\ProgramData\LuckyPlans\edge\results\`
 
-Linux (immutable binaries):
+Linux immutable:
 - `/opt/luckyplans-edge/`
-  - `lucky-edge`
-  - `VERSION`
 
-Linux (mutable runtime):
-- `/var/lib/luckyplans-edge/`
-  - `config/edge.config.json`
-  - `secrets/worker.key`
-  - `state/edge-state.db`
-  - `work/`
-  - `results/`
+Linux mutable:
+- `/var/lib/luckyplans-edge/config/edge.config.json`
+- `/var/lib/luckyplans-edge/secrets/worker.key`
+- `/var/lib/luckyplans-edge/state/edge-state.db`
+- `/var/lib/luckyplans-edge/work/`
+- `/var/lib/luckyplans-edge/results/`
 
 Linux logs:
-- primary: `journald` via systemd
-- optional: `/var/log/luckyplans-edge/edge.log`
+- primary `journald`
+- optional `/var/log/luckyplans-edge/edge.log`
 
-### 15.3 Upgrade Model (Orchestrator-Triggered, Edge-Executed)
+### 7.3 Upgrade Flow
+1. Orchestrator stores release metadata (version, URLs, checksum/signature, compatibility).
+2. User triggers upgrade in UI for selected workers.
+3. Orchestrator sets `targetVersion`.
+4. Edge polls and detects `targetVersion > currentVersion`.
+5. Edge waits safe point (unless forced policy).
+6. Edge downloads + verifies artifact.
+7. Edge stages, restarts, reports status + version.
 
-Upgrades are centrally initiated but locally executed by each edge agent.
-Orchestrator never shells into edge hosts.
-
-Flow:
-1. Orchestrator stores release metadata (version, per-OS URL, checksum/signature, compatibility constraints).
-2. User clicks upgrade action in orchestration UI for selected edges (or group).
-3. Orchestrator sets `targetVersion` for selected edges.
-4. Edge polls and sees `targetVersion > currentVersion`.
-5. Edge waits for safe point (not running critical task unless forced policy).
-6. Edge downloads artifact, validates checksum and signature.
-7. Edge stages update, restarts service, reports new version and status.
-
-### 15.4 Upgrade Safety Rules
-
-- Artifact verification is mandatory:
-  - verify SHA256 checksum
-  - verify signature (`SHA256SUMS.sig`)
+### 7.4 Upgrade Safety Rules
+- Must verify SHA256 checksum.
+- Must verify `SHA256SUMS.sig` signature.
 - Compatibility gate:
   - orchestrator enforces minimum edge version
   - edge enforces minimum orchestrator API version
-- Rollout strategy:
-  - canary first, then phased rollout
-- Task-safety policy:
-  - default: do not upgrade while task is processing
-  - optional force mode with explicit user action
-- Rollback support:
-  - orchestrator can set previous stable `targetVersion`
+- Rollout strategy: canary then phased.
+- Default policy: no in-flight-task upgrade.
+- Force mode requires explicit user action.
+- Rollback supported by resetting prior stable `targetVersion`.
 
-### 15.5 Upgrade Status Model
-
-Per edge upgrade status enum:
+### 7.5 Upgrade Status Model
+Enum:
 - `IDLE`
 - `UPGRADE_PENDING`
 - `DOWNLOADING`
@@ -735,7 +376,7 @@ Per edge upgrade status enum:
 - `FAILED`
 - `ROLLED_BACK`
 
-Required status payload fields:
+Status payload:
 - `edgeId`
 - `fromVersion`
 - `targetVersion`
@@ -743,28 +384,256 @@ Required status payload fields:
 - `message`
 - `updatedAt`
 
-### 15.6 Scope Binding
+## 8. Implementation Roadmap (Session Scopes)
 
-- Distribution page and downloadable artifact links are required by Scope 1 UI foundation.
-- Upgrade control plane (set `targetVersion`, monitor status) is required by Scope 3.5.
-- In-place auto-upgrade execution on edge agent baseline is required by Scope 3.5 before compute scopes.
+### Scope 0: Contract Freeze Refresh
+Depends on: none
 
-## 16. Scope 0 Completion Record
+Deliverables:
+- Confirm V2 sections 5 and 7 as authoritative contract.
+- Confirm no `service-core` dependency exists in this initiative.
 
-Scope: `Scope 0: Contract Freeze and Alignment`  
-Date: `2026-05-15`
+Gate:
+- Human approval recorded.
+
+### Scope 1: Worker Registry + UI Foundation
+Depends on: Scope 0
+
+Deliverables:
+- Worker registry persistence + CRUD in gateway modules.
+- Gateway GraphQL for register/list/disable workers.
+- Minimal web UI: worker list/status/assignment readiness.
+- Distribution page with downloadable artifact links.
+
+Tests:
+- Unit: worker service create/list/disable.
+- Integration: worker GraphQL behavior.
+- UI smoke: list renders, disable updates.
+
+Stop condition:
+- No lease/poll/heartbeat yet.
+
+### Scope 2: Credential Security + Worker Auth Guard
+Depends on: Scope 1
+
+Deliverables:
+- Credential issue/verify/revoke/rotate.
+- Hash-only storage + prefix lookup.
+- Internal worker auth guard/middleware.
+
+Tests:
+- Unit: verify, expiry, revoked, overlap rotation.
+- Integration: authorized internal call passes; revoked/expired fails.
+
+Stop condition:
+- No task execution logic yet.
+
+### Scope 3: Task Skeleton + Lease/Heartbeat (Mock Compute)
+Depends on: Scope 2
+
+Deliverables:
+- Backtest task persistence + transition guardrails.
+- Internal endpoints: `tasks/next`, `heartbeat`, `complete`, `fail`.
+- Lease timeout + requeue logic.
+- Mock completion path only.
+
+Tests:
+- Unit: state transitions, lease expiry.
+- Integration: `AWAIT -> ASSIGNED -> PROCESSING -> DONE`.
+- Integration: heartbeat extends lease; expired lease requeues.
+
+Stop condition:
+- No real compute runtime execution.
+
+### Scope 3.5: Upgrade Control Plane
+Depends on: Scope 3
+
+Deliverables:
+- Release metadata model and APIs.
+- UI actions to set `targetVersion` for selected workers.
+- Edge upgrade status ingest/report contract.
+
+Tests:
+- Integration: create release + set target version.
+- Integration: status lifecycle ingestion.
+- Security: invalid checksum/signature attempt fails.
+
+Stop condition:
+- Real compute still out of scope.
+
+### Scope 4: Shared Backtest Runtime Import
+Depends on: Scope 3.5
+
+Deliverables:
+- Port alpha composable runtime into beta shared compute module.
+- Remove alpha path assumptions.
+- Runtime callable in isolation.
+
+Tests:
+- Unit/integration deterministic fixture runs.
+- Build/type-check pass for shared module.
+
+Stop condition:
+- Runtime not yet wired to distributed execution.
+
+### Scope 5: Real Grid Execution on Edge
+Depends on: Scope 4
+
+Deliverables:
+- Edge executes real grid search on leased tasks.
+- Batch result reporting.
+- Idempotent ingestion by `(taskId, configId)`.
+
+Tests:
+- Unit: grid expansion correctness.
+- Integration: duplicate result dedupe.
+- Integration: end-to-end task completion persists ranked results.
+
+Stop condition:
+- Optuna still disabled.
+
+### Scope 6: Real Optuna Execution on Edge
+Depends on: Scope 5
+
+Deliverables:
+- Optuna trials + progress heartbeat.
+- Completion includes `bestConfigIds`.
+- Resume-safe interrupted run behavior.
+
+Tests:
+- Integration: end-to-end optuna completion.
+- Integration: edge restart/reconnect stability.
+- Integration: cancel mid-run to `CANCELLED`.
+
+Stop condition:
+- Validation pipeline still out of scope.
+
+### Scope 7: UX Hardening
+Depends on: Scope 6
+
+Deliverables:
+- Task list/detail live progress.
+- Cancel/retry actions.
+- Result sorting/filtering and top candidates.
+
+Tests:
+- UI integration: create/monitor/cancel/retry.
+- GraphQL integration: task/result paging/sorting.
+
+### Scope 8: Reliability + Ops Baseline
+Depends on: Scope 7
+
+Deliverables:
+- Retry limits + worker quarantine policy.
+- Stale task recovery.
+- Audit log coverage.
+- Basic task/worker metrics.
+
+Tests:
+- Integration: repeated worker failures trigger quarantine.
+- Integration: stale processing task auto-requeues.
+- Ops smoke: lifecycle metrics/logs emitted.
+
+## 9. Testing and Verification Rules
+
+A scope is complete only when all are true:
+- Targeted unit/integration tests pass.
+- `pnpm lint` passes.
+- `pnpm type-check` passes.
+- `pnpm build` passes.
+- `pnpm format:check` passes.
+- Scope demo checklist is manually verified.
+
+## 10. Risks and Mitigations
+
+- Edge compromise or incorrect output.
+  - Mitigation: trust levels, quarantine, optional duplicate verification path.
+- Orchestrator restart during long jobs.
+  - Mitigation: DB-backed state, lease model, edge reconnect behavior.
+- Dependency drift in edge runtime.
+  - Mitigation: versioned/containerized edge runtime and upgrade controls.
+
+## 11. Acceptance Criteria (Phase 1)
+
+- User can create strategy templates and tasks with `grid` or `optuna`.
+- User can assign tasks to specific workers.
+- Assigned worker can poll, execute, and report end-to-end.
+- Orchestrator tracks progress via heartbeat and shows status in UI.
+- Results/top configs are queryable in UI/API.
+- Cancel and retry operate without data corruption.
+- Worker credentials are hashed-at-rest and revocable.
+- Upgrade target version can be set from UI and per-worker status is visible.
+
+## 12. Change-Control Rule
+
+Sections 5 and 7 are contract-frozen for V1. Any changes require explicit approval before implementation updates.
+
+
+
+
+## Appendix A: Naming Canon (Binding for New Backtest/Edge Modules)
+
+Use this appendix when adding new schema, resolver, DTO, or API fields for this initiative.
+
+### A.1 Case and Format Rules
+- Type and model names: `PascalCase` (example: `BacktestTask`, `WorkerCredential`).
+- Field names: `camelCase` (example: `assignedWorkerId`, `leaseExpiresAt`).
+- Enum values: `UPPER_SNAKE_CASE` (example: `PROCESSING`, `UPGRADE_PENDING`).
+- Database table names via Prisma `@@map`: `snake_case` plural (example: `backtest_tasks`, `worker_credentials`).
+- Internal HTTP paths: lowercase kebab-style segments where applicable (example: `/internal/edges/tasks/next`).
+
+### A.2 Identifier Rules
+- Primary IDs are string IDs generated by Prisma defaults (current codebase pattern: `cuid`).
+- Foreign key naming pattern: `<entity>NameId` (example: `taskId`, `workerId`, `assignedWorkerId`).
+- API examples should use generic string placeholders (`worker-id-string`, `task-id-string`) instead of UUID-only assumptions.
+
+### A.3 Time and Lifecycle Fields
+- Standard timestamps: `createdAt`, `updatedAt`.
+- Runtime timestamps: `startedAt`, `completedAt`, `lastHeartbeat`, `lastSeenAt`, `leaseExpiresAt`.
+- Expiry/revocation fields: `expiresAt`, `rotatedAt`.
+
+### A.4 Worker Naming Canon
+- GraphQL query: `workers`.
+- GraphQL mutations (current baseline): `createWorker`, `disableWorker`.
+- Worker status baseline: `ACTIVE | DISABLED`.
+- Planned extension status (Scope 8): `QUARANTINED`.
+- Version-management fields: `version` (current), `targetVersion` (orchestrator intent).
+
+### A.5 Backtest Naming Canon
+- Task state field: `status`.
+- Assignment field: `assignedWorkerId`.
+- Progress fields: `processedConfigs`, `totalConfigs`, `currentConfig`.
+- Search config fields: `searchStrategy`, `optimizationParams`, `optimizationMetrics`, `trials`.
+- Terminal fields: `errorMessage`, `bestConfigIds`.
+
+### A.6 Credential Naming Canon
+- Persisted fields: `keyPrefix`, `keyHash`, `status`, `expiresAt`, `rotatedAt`.
+- Raw credential format (shown once): `wk_live_<prefix>_<secret>`.
+- Never store raw secrets in DB or logs.
+
+### A.7 GraphQL vs Internal API Boundary
+- GraphQL is the user-facing contract for UI and operator actions.
+- Internal edge API is worker-facing and always requires worker auth.
+- Internal write payloads include `workerId` and must match authenticated worker identity.
+
+### A.8 Reserved Terms (Do Not Reintroduce)
+- Do not reintroduce `service-core` references in this initiative unless a new explicit architecture decision is approved.
+- Keep “edge”, “worker”, and “orchestrator” terminology consistent:
+  - `worker` = registered edge runtime identity
+  - `edge agent` = deployed executable/service running on user-managed machine
+  - `orchestrator` = backend coordination logic in `apps/api-gateway` for V1
+
+## Appendix B: BE-001 Completion Record (Scope 0 Refresh)
+
+Issue: `BE-001`  
+Date: `2026-05-20`
 
 Verification checklist:
-- [x] Architecture goal approved.
-- [x] Phase-1 in-scope and out-of-scope boundaries defined.
-- [x] V1 task state machine frozen.
-- [x] Lease/heartbeat/assignment rules frozen.
-- [x] Internal edge API payload contract frozen.
-- [x] Worker credential security contract frozen.
-- [x] Distribution and upgrade contract frozen.
-- [x] Session-based scope ladder defined with dependencies.
-- [x] Pre-compute platform prerequisite added (`Scope 3.5` before Scope 4).
+- [x] Reconfirmed Section 5 (`V1 Contract Freeze`) as authoritative.
+- [x] Reconfirmed Section 7 (`Edge Distribution and Upgrade Contract`) as authoritative.
+- [x] Reconfirmed Appendix A (`Naming Canon`) as binding for new modules in this initiative.
+- [x] Reconfirmed this initiative has no `service-core` dependency and defaults to `apps/api-gateway` extension.
 
 Gate decision:
-- Scope 0 is **APPROVED** and considered the authoritative baseline for subsequent scopes.
-- Any future changes to contracts in Sections 13-15 require explicit approval before implementation updates.
+- `BE-001` is complete.
+- Contract and naming changes now require explicit approval before implementation updates.

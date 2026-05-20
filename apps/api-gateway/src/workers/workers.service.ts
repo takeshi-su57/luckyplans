@@ -10,9 +10,14 @@ export class WorkersService {
   }
 
   async createWorker(data: { name: string; platform?: string; version?: string }) {
+    const name = data.name.trim();
+    if (!name) {
+      throw new Error('Worker name is required');
+    }
+
     return this.prisma.worker.create({
       data: {
-        name: data.name,
+        name,
         platform: data.platform,
         version: data.version,
       },

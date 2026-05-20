@@ -152,6 +152,14 @@ export type Hobby = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type IssuedWorkerCredential = {
+  __typename?: 'IssuedWorkerCredential';
+  credential: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  keyPrefix: Scalars['String']['output'];
+  workerId: Scalars['String']['output'];
+};
+
 export type Language = {
   __typename?: 'Language';
   createdAt: Scalars['DateTime']['output'];
@@ -186,6 +194,7 @@ export type Mutation = {
   deleteSkillCategory: DeleteResult;
   deleteSocialLink: DeleteResult;
   disableWorker?: Maybe<Worker>;
+  issueWorkerCredential: IssuedWorkerCredential;
   reorderAwards: DeleteResult;
   reorderCertifications: DeleteResult;
   reorderEducation: DeleteResult;
@@ -195,6 +204,8 @@ export type Mutation = {
   reorderProjects: DeleteResult;
   reorderSkills: DeleteResult;
   reorderSocialLinks: DeleteResult;
+  revokeWorkerCredential: Scalars['Boolean']['output'];
+  rotateWorkerCredential: IssuedWorkerCredential;
   updateAward?: Maybe<Award>;
   updateCertification?: Maybe<Certification>;
   updateEducation?: Maybe<Education>;
@@ -321,6 +332,11 @@ export type MutationDisableWorkerArgs = {
 };
 
 
+export type MutationIssueWorkerCredentialArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationReorderAwardsArgs = {
   input: ReorderInput;
 };
@@ -363,6 +379,16 @@ export type MutationReorderSkillsArgs = {
 
 export type MutationReorderSocialLinksArgs = {
   input: ReorderInput;
+};
+
+
+export type MutationRevokeWorkerCredentialArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationRotateWorkerCredentialArgs = {
+  id: Scalars['String']['input'];
 };
 
 

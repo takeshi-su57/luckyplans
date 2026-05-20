@@ -160,6 +160,13 @@ type DeleteResult {
   success: Boolean!
 }
 
+type IssuedWorkerCredential {
+  id: ID!
+  workerId: String!
+  keyPrefix: String!
+  credential: String!
+}
+
 type Worker {
   id: ID!
   name: String!
@@ -227,6 +234,9 @@ type Mutation {
   reorderHobbies(input: ReorderInput!): DeleteResult!
   createWorker(name: String!, platform: String, version: String): Worker!
   disableWorker(id: String!): Worker
+  issueWorkerCredential(id: String!): IssuedWorkerCredential!
+  revokeWorkerCredential(id: String!): Boolean!
+  rotateWorkerCredential(id: String!): IssuedWorkerCredential!
 }
 
 input UpdateProfileInput {

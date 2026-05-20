@@ -72,6 +72,31 @@ Required behavior:
 - `scaffold-microservice`: create new microservice app + Docker + Helm + ArgoCD path.
 - `docs/architecture/microservice-decision-matrix.md`: required decision reference before new service creation.
 
+### Skill Routing Matrix (Always Check Before Work)
+
+Process skills (run first when applicable):
+- `using-superpowers`: mandatory at task start.
+- `brainstorming`: before creative feature/design work.
+- `systematic-debugging`: before fixing bugs/failures.
+- `test-driven-development`: before implementing feature/behavior changes.
+- `writing-plans`: after spec approval, before implementation.
+- `executing-plans` or `subagent-driven-development`: when executing an approved plan.
+- `verification-before-completion`: before claiming done.
+
+Implementation skills:
+- Frontend: use relevant `frontend/*` skills for page/component/hook/route/auth/apollo changes.
+- Services: `create-gateway-module` for gateway module work.
+- Microservices: `scaffold-microservice` only after decision matrix justification.
+- Packages: `update-shared-kernel` for shared contracts/utils, `prisma-safe-migrations` for schema changes.
+
+Completion and collaboration skills:
+- `add-testing-foundation`: when adding or expanding tests.
+- `maintain-project-docs`: when behavior/contracts/docs diverge.
+- `requesting-code-review` and `receiving-code-review`: for review loops.
+- `prepare-pull-request`: before opening/updating PR.
+- `write-conventional-commit`: before any commit message.
+- `write-github-issue`: when creating scope/feature/bug issues.
+
 ## Prisma Safety
 
 - Never add required columns to populated tables without defaults/backfills.

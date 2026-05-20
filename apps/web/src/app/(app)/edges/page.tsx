@@ -62,7 +62,7 @@ export default function EdgesPage() {
   const [platform, setPlatform] = useState('');
   const [version, setVersion] = useState('');
 
-  const { data, loading, refetch } = useQuery<WorkersQueryData>(WorkersQuery);
+  const { data, loading, error, refetch } = useQuery<WorkersQueryData>(WorkersQuery);
   const [createWorker, { loading: creating }] = useMutation(CreateWorkerMutation);
   const [disableWorker, { loading: disabling }] = useMutation(DisableWorkerMutation);
 
@@ -138,6 +138,9 @@ export default function EdgesPage() {
         <h2 className="mb-3 font-medium text-[#111827]">Registered Edges</h2>
         <div className="space-y-3">
           {loading ? <p className="text-sm text-[#6b7280]">Loading edges...</p> : null}
+          {error ? (
+            <p className="text-sm text-red-600">Failed to load edges. Please try again.</p>
+          ) : null}
           {!loading && workers.length === 0 ? (
             <p className="text-sm text-[#6b7280]">No edges registered yet.</p>
           ) : null}

@@ -12,6 +12,12 @@ enum WorkerStatus {
   DISABLED
 }
 
+enum WorkerCredentialStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
 model Profile {
   id          String   @id @default(cuid())
   userId      String   @unique
@@ -206,7 +212,24 @@ model Worker {
   lastSeenAt DateTime?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
+  credentials WorkerCredential[]
 
   @@index([status])
   @@map("workers")
+}
+
+model WorkerCredential {
+  id        String                 @id @default(cuid())
+  workerId  String
+  worker    Worker                 @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  keyPrefix String                 @unique
+  keyHash   String
+  status    WorkerCredentialStatus @default(ACTIVE)
+  expiresAt DateTime?
+  rotatedAt DateTime?
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+
+  @@index([workerId, status])
+  @@map("worker_credentials")
 }

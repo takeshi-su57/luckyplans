@@ -73,6 +73,11 @@ export type Hobby = $Result.DefaultSelection<Prisma.$HobbyPayload>
  * 
  */
 export type Worker = $Result.DefaultSelection<Prisma.$WorkerPayload>
+/**
+ * Model WorkerCredential
+ * 
+ */
+export type WorkerCredential = $Result.DefaultSelection<Prisma.$WorkerCredentialPayload>
 
 /**
  * Enums
@@ -84,6 +89,15 @@ export namespace $Enums {
 };
 
 export type WorkerStatus = (typeof WorkerStatus)[keyof typeof WorkerStatus]
+
+
+export const WorkerCredentialStatus: {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED',
+  EXPIRED: 'EXPIRED'
+};
+
+export type WorkerCredentialStatus = (typeof WorkerCredentialStatus)[keyof typeof WorkerCredentialStatus]
 
 
 export const Proficiency: {
@@ -100,6 +114,10 @@ export type Proficiency = (typeof Proficiency)[keyof typeof Proficiency]
 export type WorkerStatus = $Enums.WorkerStatus
 
 export const WorkerStatus: typeof $Enums.WorkerStatus
+
+export type WorkerCredentialStatus = $Enums.WorkerCredentialStatus
+
+export const WorkerCredentialStatus: typeof $Enums.WorkerCredentialStatus
 
 export type Proficiency = $Enums.Proficiency
 
@@ -345,6 +363,16 @@ export class PrismaClient<
     * ```
     */
   get worker(): Prisma.WorkerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workerCredential`: Exposes CRUD operations for the **WorkerCredential** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkerCredentials
+    * const workerCredentials = await prisma.workerCredential.findMany()
+    * ```
+    */
+  get workerCredential(): Prisma.WorkerCredentialDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -790,7 +818,8 @@ export namespace Prisma {
     Language: 'Language',
     Award: 'Award',
     Hobby: 'Hobby',
-    Worker: 'Worker'
+    Worker: 'Worker',
+    WorkerCredential: 'WorkerCredential'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -806,7 +835,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker"
+      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker" | "workerCredential"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1698,6 +1727,80 @@ export namespace Prisma {
           }
         }
       }
+      WorkerCredential: {
+        payload: Prisma.$WorkerCredentialPayload<ExtArgs>
+        fields: Prisma.WorkerCredentialFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkerCredentialFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkerCredentialFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkerCredentialFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkerCredentialFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          findMany: {
+            args: Prisma.WorkerCredentialFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>[]
+          }
+          create: {
+            args: Prisma.WorkerCredentialCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          createMany: {
+            args: Prisma.WorkerCredentialCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkerCredentialCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkerCredentialDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          update: {
+            args: Prisma.WorkerCredentialUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkerCredentialDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkerCredentialUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkerCredentialUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkerCredentialUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkerCredentialAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkerCredential>
+          }
+          groupBy: {
+            args: Prisma.WorkerCredentialGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkerCredentialGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkerCredentialCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkerCredentialCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1818,6 +1921,7 @@ export namespace Prisma {
     award?: AwardOmit
     hobby?: HobbyOmit
     worker?: WorkerOmit
+    workerCredential?: WorkerCredentialOmit
   }
 
   /* Types for Logging */
@@ -2033,6 +2137,37 @@ export namespace Prisma {
    */
   export type SkillCategoryCountOutputTypeCountSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SkillWhereInput
+  }
+
+
+  /**
+   * Count Type WorkerCountOutputType
+   */
+
+  export type WorkerCountOutputType = {
+    credentials: number
+  }
+
+  export type WorkerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    credentials?: boolean | WorkerCountOutputTypeCountCredentialsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * WorkerCountOutputType without action
+   */
+  export type WorkerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCountOutputType
+     */
+    select?: WorkerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * WorkerCountOutputType without action
+   */
+  export type WorkerCountOutputTypeCountCredentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkerCredentialWhereInput
   }
 
 
@@ -15125,6 +15260,8 @@ export namespace Prisma {
     lastSeenAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    credentials?: boolean | Worker$credentialsArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["worker"]>
 
   export type WorkerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -15161,10 +15298,18 @@ export namespace Prisma {
   }
 
   export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "platform" | "version" | "status" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
+  export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    credentials?: boolean | Worker$credentialsArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type WorkerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type WorkerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $WorkerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Worker"
-    objects: {}
+    objects: {
+      credentials: Prisma.$WorkerCredentialPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
@@ -15568,6 +15713,7 @@ export namespace Prisma {
    */
   export interface Prisma__WorkerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    credentials<T extends Worker$credentialsArgs<ExtArgs> = {}>(args?: Subset<T, Worker$credentialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15622,6 +15768,10 @@ export namespace Prisma {
      */
     omit?: WorkerOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
      * Filter, which Worker to fetch.
      */
     where: WorkerWhereUniqueInput
@@ -15640,6 +15790,10 @@ export namespace Prisma {
      */
     omit?: WorkerOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
      * Filter, which Worker to fetch.
      */
     where: WorkerWhereUniqueInput
@@ -15657,6 +15811,10 @@ export namespace Prisma {
      * Omit specific fields from the Worker
      */
     omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * Filter, which Worker to fetch.
      */
@@ -15706,6 +15864,10 @@ export namespace Prisma {
      */
     omit?: WorkerOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
      * Filter, which Worker to fetch.
      */
     where?: WorkerWhereInput
@@ -15753,6 +15915,10 @@ export namespace Prisma {
      * Omit specific fields from the Worker
      */
     omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * Filter, which Workers to fetch.
      */
@@ -15802,6 +15968,10 @@ export namespace Prisma {
      */
     omit?: WorkerOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
      * The data needed to create a Worker.
      */
     data: XOR<WorkerCreateInput, WorkerUncheckedCreateInput>
@@ -15849,6 +16019,10 @@ export namespace Prisma {
      * Omit specific fields from the Worker
      */
     omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
     /**
      * The data needed to update a Worker.
      */
@@ -15916,6 +16090,10 @@ export namespace Prisma {
      */
     omit?: WorkerOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
      * The filter to search for the Worker to update in case it exists.
      */
     where: WorkerWhereUniqueInput
@@ -15942,6 +16120,10 @@ export namespace Prisma {
      */
     omit?: WorkerOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
      * Filter which Worker to delete.
      */
     where: WorkerWhereUniqueInput
@@ -15962,6 +16144,30 @@ export namespace Prisma {
   }
 
   /**
+   * Worker.credentials
+   */
+  export type Worker$credentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    where?: WorkerCredentialWhereInput
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    cursor?: WorkerCredentialWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkerCredentialScalarFieldEnum | WorkerCredentialScalarFieldEnum[]
+  }
+
+  /**
    * Worker without action
    */
   export type WorkerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15973,6 +16179,1125 @@ export namespace Prisma {
      * Omit specific fields from the Worker
      */
     omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkerCredential
+   */
+
+  export type AggregateWorkerCredential = {
+    _count: WorkerCredentialCountAggregateOutputType | null
+    _min: WorkerCredentialMinAggregateOutputType | null
+    _max: WorkerCredentialMaxAggregateOutputType | null
+  }
+
+  export type WorkerCredentialMinAggregateOutputType = {
+    id: string | null
+    workerId: string | null
+    keyPrefix: string | null
+    keyHash: string | null
+    status: $Enums.WorkerCredentialStatus | null
+    expiresAt: Date | null
+    rotatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkerCredentialMaxAggregateOutputType = {
+    id: string | null
+    workerId: string | null
+    keyPrefix: string | null
+    keyHash: string | null
+    status: $Enums.WorkerCredentialStatus | null
+    expiresAt: Date | null
+    rotatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkerCredentialCountAggregateOutputType = {
+    id: number
+    workerId: number
+    keyPrefix: number
+    keyHash: number
+    status: number
+    expiresAt: number
+    rotatedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkerCredentialMinAggregateInputType = {
+    id?: true
+    workerId?: true
+    keyPrefix?: true
+    keyHash?: true
+    status?: true
+    expiresAt?: true
+    rotatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkerCredentialMaxAggregateInputType = {
+    id?: true
+    workerId?: true
+    keyPrefix?: true
+    keyHash?: true
+    status?: true
+    expiresAt?: true
+    rotatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkerCredentialCountAggregateInputType = {
+    id?: true
+    workerId?: true
+    keyPrefix?: true
+    keyHash?: true
+    status?: true
+    expiresAt?: true
+    rotatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkerCredentialAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkerCredential to aggregate.
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkerCredentials to fetch.
+     */
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkerCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkerCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkerCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkerCredentials
+    **/
+    _count?: true | WorkerCredentialCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkerCredentialMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkerCredentialMaxAggregateInputType
+  }
+
+  export type GetWorkerCredentialAggregateType<T extends WorkerCredentialAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkerCredential]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkerCredential[P]>
+      : GetScalarType<T[P], AggregateWorkerCredential[P]>
+  }
+
+
+
+
+  export type WorkerCredentialGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkerCredentialWhereInput
+    orderBy?: WorkerCredentialOrderByWithAggregationInput | WorkerCredentialOrderByWithAggregationInput[]
+    by: WorkerCredentialScalarFieldEnum[] | WorkerCredentialScalarFieldEnum
+    having?: WorkerCredentialScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkerCredentialCountAggregateInputType | true
+    _min?: WorkerCredentialMinAggregateInputType
+    _max?: WorkerCredentialMaxAggregateInputType
+  }
+
+  export type WorkerCredentialGroupByOutputType = {
+    id: string
+    workerId: string
+    keyPrefix: string
+    keyHash: string
+    status: $Enums.WorkerCredentialStatus
+    expiresAt: Date | null
+    rotatedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkerCredentialCountAggregateOutputType | null
+    _min: WorkerCredentialMinAggregateOutputType | null
+    _max: WorkerCredentialMaxAggregateOutputType | null
+  }
+
+  type GetWorkerCredentialGroupByPayload<T extends WorkerCredentialGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkerCredentialGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkerCredentialGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkerCredentialGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkerCredentialGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkerCredentialSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workerId?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    rotatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workerCredential"]>
+
+  export type WorkerCredentialSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workerId?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    rotatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workerCredential"]>
+
+  export type WorkerCredentialSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workerId?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    rotatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workerCredential"]>
+
+  export type WorkerCredentialSelectScalar = {
+    id?: boolean
+    workerId?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    rotatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkerCredentialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workerId" | "keyPrefix" | "keyHash" | "status" | "expiresAt" | "rotatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["workerCredential"]>
+  export type WorkerCredentialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+  export type WorkerCredentialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+  export type WorkerCredentialIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkerCredentialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkerCredential"
+    objects: {
+      worker: Prisma.$WorkerPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      workerId: string
+      keyPrefix: string
+      keyHash: string
+      status: $Enums.WorkerCredentialStatus
+      expiresAt: Date | null
+      rotatedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workerCredential"]>
+    composites: {}
+  }
+
+  type WorkerCredentialGetPayload<S extends boolean | null | undefined | WorkerCredentialDefaultArgs> = $Result.GetResult<Prisma.$WorkerCredentialPayload, S>
+
+  type WorkerCredentialCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkerCredentialFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkerCredentialCountAggregateInputType | true
+    }
+
+  export interface WorkerCredentialDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkerCredential'], meta: { name: 'WorkerCredential' } }
+    /**
+     * Find zero or one WorkerCredential that matches the filter.
+     * @param {WorkerCredentialFindUniqueArgs} args - Arguments to find a WorkerCredential
+     * @example
+     * // Get one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkerCredentialFindUniqueArgs>(args: SelectSubset<T, WorkerCredentialFindUniqueArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkerCredential that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkerCredentialFindUniqueOrThrowArgs} args - Arguments to find a WorkerCredential
+     * @example
+     * // Get one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkerCredentialFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkerCredentialFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkerCredential that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialFindFirstArgs} args - Arguments to find a WorkerCredential
+     * @example
+     * // Get one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkerCredentialFindFirstArgs>(args?: SelectSubset<T, WorkerCredentialFindFirstArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkerCredential that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialFindFirstOrThrowArgs} args - Arguments to find a WorkerCredential
+     * @example
+     * // Get one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkerCredentialFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkerCredentialFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkerCredentials that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkerCredentials
+     * const workerCredentials = await prisma.workerCredential.findMany()
+     * 
+     * // Get first 10 WorkerCredentials
+     * const workerCredentials = await prisma.workerCredential.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workerCredentialWithIdOnly = await prisma.workerCredential.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkerCredentialFindManyArgs>(args?: SelectSubset<T, WorkerCredentialFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkerCredential.
+     * @param {WorkerCredentialCreateArgs} args - Arguments to create a WorkerCredential.
+     * @example
+     * // Create one WorkerCredential
+     * const WorkerCredential = await prisma.workerCredential.create({
+     *   data: {
+     *     // ... data to create a WorkerCredential
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkerCredentialCreateArgs>(args: SelectSubset<T, WorkerCredentialCreateArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkerCredentials.
+     * @param {WorkerCredentialCreateManyArgs} args - Arguments to create many WorkerCredentials.
+     * @example
+     * // Create many WorkerCredentials
+     * const workerCredential = await prisma.workerCredential.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkerCredentialCreateManyArgs>(args?: SelectSubset<T, WorkerCredentialCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkerCredentials and returns the data saved in the database.
+     * @param {WorkerCredentialCreateManyAndReturnArgs} args - Arguments to create many WorkerCredentials.
+     * @example
+     * // Create many WorkerCredentials
+     * const workerCredential = await prisma.workerCredential.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkerCredentials and only return the `id`
+     * const workerCredentialWithIdOnly = await prisma.workerCredential.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkerCredentialCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkerCredentialCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkerCredential.
+     * @param {WorkerCredentialDeleteArgs} args - Arguments to delete one WorkerCredential.
+     * @example
+     * // Delete one WorkerCredential
+     * const WorkerCredential = await prisma.workerCredential.delete({
+     *   where: {
+     *     // ... filter to delete one WorkerCredential
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkerCredentialDeleteArgs>(args: SelectSubset<T, WorkerCredentialDeleteArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkerCredential.
+     * @param {WorkerCredentialUpdateArgs} args - Arguments to update one WorkerCredential.
+     * @example
+     * // Update one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkerCredentialUpdateArgs>(args: SelectSubset<T, WorkerCredentialUpdateArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkerCredentials.
+     * @param {WorkerCredentialDeleteManyArgs} args - Arguments to filter WorkerCredentials to delete.
+     * @example
+     * // Delete a few WorkerCredentials
+     * const { count } = await prisma.workerCredential.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkerCredentialDeleteManyArgs>(args?: SelectSubset<T, WorkerCredentialDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkerCredentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkerCredentials
+     * const workerCredential = await prisma.workerCredential.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkerCredentialUpdateManyArgs>(args: SelectSubset<T, WorkerCredentialUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkerCredentials and returns the data updated in the database.
+     * @param {WorkerCredentialUpdateManyAndReturnArgs} args - Arguments to update many WorkerCredentials.
+     * @example
+     * // Update many WorkerCredentials
+     * const workerCredential = await prisma.workerCredential.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkerCredentials and only return the `id`
+     * const workerCredentialWithIdOnly = await prisma.workerCredential.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkerCredentialUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkerCredentialUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkerCredential.
+     * @param {WorkerCredentialUpsertArgs} args - Arguments to update or create a WorkerCredential.
+     * @example
+     * // Update or create a WorkerCredential
+     * const workerCredential = await prisma.workerCredential.upsert({
+     *   create: {
+     *     // ... data to create a WorkerCredential
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkerCredential we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkerCredentialUpsertArgs>(args: SelectSubset<T, WorkerCredentialUpsertArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkerCredentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialCountArgs} args - Arguments to filter WorkerCredentials to count.
+     * @example
+     * // Count the number of WorkerCredentials
+     * const count = await prisma.workerCredential.count({
+     *   where: {
+     *     // ... the filter for the WorkerCredentials we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkerCredentialCountArgs>(
+      args?: Subset<T, WorkerCredentialCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkerCredentialCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkerCredential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkerCredentialAggregateArgs>(args: Subset<T, WorkerCredentialAggregateArgs>): Prisma.PrismaPromise<GetWorkerCredentialAggregateType<T>>
+
+    /**
+     * Group by WorkerCredential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkerCredentialGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkerCredentialGroupByArgs['orderBy'] }
+        : { orderBy?: WorkerCredentialGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkerCredentialGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkerCredentialGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkerCredential model
+   */
+  readonly fields: WorkerCredentialFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkerCredential.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkerCredentialClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    worker<T extends WorkerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkerDefaultArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkerCredential model
+   */
+  interface WorkerCredentialFieldRefs {
+    readonly id: FieldRef<"WorkerCredential", 'String'>
+    readonly workerId: FieldRef<"WorkerCredential", 'String'>
+    readonly keyPrefix: FieldRef<"WorkerCredential", 'String'>
+    readonly keyHash: FieldRef<"WorkerCredential", 'String'>
+    readonly status: FieldRef<"WorkerCredential", 'WorkerCredentialStatus'>
+    readonly expiresAt: FieldRef<"WorkerCredential", 'DateTime'>
+    readonly rotatedAt: FieldRef<"WorkerCredential", 'DateTime'>
+    readonly createdAt: FieldRef<"WorkerCredential", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkerCredential", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkerCredential findUnique
+   */
+  export type WorkerCredentialFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredential to fetch.
+     */
+    where: WorkerCredentialWhereUniqueInput
+  }
+
+  /**
+   * WorkerCredential findUniqueOrThrow
+   */
+  export type WorkerCredentialFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredential to fetch.
+     */
+    where: WorkerCredentialWhereUniqueInput
+  }
+
+  /**
+   * WorkerCredential findFirst
+   */
+  export type WorkerCredentialFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredential to fetch.
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkerCredentials to fetch.
+     */
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkerCredentials.
+     */
+    cursor?: WorkerCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkerCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkerCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkerCredentials.
+     */
+    distinct?: WorkerCredentialScalarFieldEnum | WorkerCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WorkerCredential findFirstOrThrow
+   */
+  export type WorkerCredentialFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredential to fetch.
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkerCredentials to fetch.
+     */
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkerCredentials.
+     */
+    cursor?: WorkerCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkerCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkerCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkerCredentials.
+     */
+    distinct?: WorkerCredentialScalarFieldEnum | WorkerCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WorkerCredential findMany
+   */
+  export type WorkerCredentialFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredentials to fetch.
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkerCredentials to fetch.
+     */
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkerCredentials.
+     */
+    cursor?: WorkerCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkerCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkerCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkerCredentials.
+     */
+    distinct?: WorkerCredentialScalarFieldEnum | WorkerCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WorkerCredential create
+   */
+  export type WorkerCredentialCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkerCredential.
+     */
+    data: XOR<WorkerCredentialCreateInput, WorkerCredentialUncheckedCreateInput>
+  }
+
+  /**
+   * WorkerCredential createMany
+   */
+  export type WorkerCredentialCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkerCredentials.
+     */
+    data: WorkerCredentialCreateManyInput | WorkerCredentialCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkerCredential createManyAndReturn
+   */
+  export type WorkerCredentialCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkerCredentials.
+     */
+    data: WorkerCredentialCreateManyInput | WorkerCredentialCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkerCredential update
+   */
+  export type WorkerCredentialUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkerCredential.
+     */
+    data: XOR<WorkerCredentialUpdateInput, WorkerCredentialUncheckedUpdateInput>
+    /**
+     * Choose, which WorkerCredential to update.
+     */
+    where: WorkerCredentialWhereUniqueInput
+  }
+
+  /**
+   * WorkerCredential updateMany
+   */
+  export type WorkerCredentialUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkerCredentials.
+     */
+    data: XOR<WorkerCredentialUpdateManyMutationInput, WorkerCredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkerCredentials to update
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * Limit how many WorkerCredentials to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkerCredential updateManyAndReturn
+   */
+  export type WorkerCredentialUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkerCredentials.
+     */
+    data: XOR<WorkerCredentialUpdateManyMutationInput, WorkerCredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkerCredentials to update
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * Limit how many WorkerCredentials to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkerCredential upsert
+   */
+  export type WorkerCredentialUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkerCredential to update in case it exists.
+     */
+    where: WorkerCredentialWhereUniqueInput
+    /**
+     * In case the WorkerCredential found by the `where` argument doesn't exist, create a new WorkerCredential with this data.
+     */
+    create: XOR<WorkerCredentialCreateInput, WorkerCredentialUncheckedCreateInput>
+    /**
+     * In case the WorkerCredential was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkerCredentialUpdateInput, WorkerCredentialUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkerCredential delete
+   */
+  export type WorkerCredentialDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter which WorkerCredential to delete.
+     */
+    where: WorkerCredentialWhereUniqueInput
+  }
+
+  /**
+   * WorkerCredential deleteMany
+   */
+  export type WorkerCredentialDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkerCredentials to delete
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * Limit how many WorkerCredentials to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkerCredential without action
+   */
+  export type WorkerCredentialDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
   }
 
 
@@ -16168,6 +17493,21 @@ export namespace Prisma {
   export type WorkerScalarFieldEnum = (typeof WorkerScalarFieldEnum)[keyof typeof WorkerScalarFieldEnum]
 
 
+  export const WorkerCredentialScalarFieldEnum: {
+    id: 'id',
+    workerId: 'workerId',
+    keyPrefix: 'keyPrefix',
+    keyHash: 'keyHash',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    rotatedAt: 'rotatedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkerCredentialScalarFieldEnum = (typeof WorkerCredentialScalarFieldEnum)[keyof typeof WorkerCredentialScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -16264,6 +17604,20 @@ export namespace Prisma {
    * Reference to a field of type 'WorkerStatus[]'
    */
   export type ListEnumWorkerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerCredentialStatus'
+   */
+  export type EnumWorkerCredentialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerCredentialStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerCredentialStatus[]'
+   */
+  export type ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerCredentialStatus[]'>
     
 
 
@@ -17170,6 +18524,7 @@ export namespace Prisma {
     lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
     createdAt?: DateTimeFilter<"Worker"> | Date | string
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
+    credentials?: WorkerCredentialListRelationFilter
   }
 
   export type WorkerOrderByWithRelationInput = {
@@ -17181,6 +18536,7 @@ export namespace Prisma {
     lastSeenAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    credentials?: WorkerCredentialOrderByRelationAggregateInput
   }
 
   export type WorkerWhereUniqueInput = Prisma.AtLeast<{
@@ -17195,6 +18551,7 @@ export namespace Prisma {
     lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
     createdAt?: DateTimeFilter<"Worker"> | Date | string
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
+    credentials?: WorkerCredentialListRelationFilter
   }, "id">
 
   export type WorkerOrderByWithAggregationInput = {
@@ -17223,6 +18580,81 @@ export namespace Prisma {
     lastSeenAt?: DateTimeNullableWithAggregatesFilter<"Worker"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
+  }
+
+  export type WorkerCredentialWhereInput = {
+    AND?: WorkerCredentialWhereInput | WorkerCredentialWhereInput[]
+    OR?: WorkerCredentialWhereInput[]
+    NOT?: WorkerCredentialWhereInput | WorkerCredentialWhereInput[]
+    id?: StringFilter<"WorkerCredential"> | string
+    workerId?: StringFilter<"WorkerCredential"> | string
+    keyPrefix?: StringFilter<"WorkerCredential"> | string
+    keyHash?: StringFilter<"WorkerCredential"> | string
+    status?: EnumWorkerCredentialStatusFilter<"WorkerCredential"> | $Enums.WorkerCredentialStatus
+    expiresAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    rotatedAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
+  }
+
+  export type WorkerCredentialOrderByWithRelationInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    rotatedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    worker?: WorkerOrderByWithRelationInput
+  }
+
+  export type WorkerCredentialWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    keyPrefix?: string
+    AND?: WorkerCredentialWhereInput | WorkerCredentialWhereInput[]
+    OR?: WorkerCredentialWhereInput[]
+    NOT?: WorkerCredentialWhereInput | WorkerCredentialWhereInput[]
+    workerId?: StringFilter<"WorkerCredential"> | string
+    keyHash?: StringFilter<"WorkerCredential"> | string
+    status?: EnumWorkerCredentialStatusFilter<"WorkerCredential"> | $Enums.WorkerCredentialStatus
+    expiresAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    rotatedAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
+  }, "id" | "keyPrefix">
+
+  export type WorkerCredentialOrderByWithAggregationInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    rotatedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkerCredentialCountOrderByAggregateInput
+    _max?: WorkerCredentialMaxOrderByAggregateInput
+    _min?: WorkerCredentialMinOrderByAggregateInput
+  }
+
+  export type WorkerCredentialScalarWhereWithAggregatesInput = {
+    AND?: WorkerCredentialScalarWhereWithAggregatesInput | WorkerCredentialScalarWhereWithAggregatesInput[]
+    OR?: WorkerCredentialScalarWhereWithAggregatesInput[]
+    NOT?: WorkerCredentialScalarWhereWithAggregatesInput | WorkerCredentialScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkerCredential"> | string
+    workerId?: StringWithAggregatesFilter<"WorkerCredential"> | string
+    keyPrefix?: StringWithAggregatesFilter<"WorkerCredential"> | string
+    keyHash?: StringWithAggregatesFilter<"WorkerCredential"> | string
+    status?: EnumWorkerCredentialStatusWithAggregatesFilter<"WorkerCredential"> | $Enums.WorkerCredentialStatus
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"WorkerCredential"> | Date | string | null
+    rotatedAt?: DateTimeNullableWithAggregatesFilter<"WorkerCredential"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WorkerCredential"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkerCredential"> | Date | string
   }
 
   export type ProfileCreateInput = {
@@ -18184,6 +19616,7 @@ export namespace Prisma {
     lastSeenAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    credentials?: WorkerCredentialCreateNestedManyWithoutWorkerInput
   }
 
   export type WorkerUncheckedCreateInput = {
@@ -18195,6 +19628,7 @@ export namespace Prisma {
     lastSeenAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    credentials?: WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput
   }
 
   export type WorkerUpdateInput = {
@@ -18206,6 +19640,7 @@ export namespace Prisma {
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentials?: WorkerCredentialUpdateManyWithoutWorkerNestedInput
   }
 
   export type WorkerUncheckedUpdateInput = {
@@ -18217,6 +19652,7 @@ export namespace Prisma {
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentials?: WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput
   }
 
   export type WorkerCreateManyInput = {
@@ -18248,6 +19684,89 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialCreateInput = {
+    id?: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    worker: WorkerCreateNestedOneWithoutCredentialsInput
+  }
+
+  export type WorkerCredentialUncheckedCreateInput = {
+    id?: string
+    workerId: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    worker?: WorkerUpdateOneRequiredWithoutCredentialsNestedInput
+  }
+
+  export type WorkerCredentialUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialCreateManyInput = {
+    id?: string
+    workerId: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19012,6 +20531,16 @@ export namespace Prisma {
     not?: NestedEnumWorkerStatusFilter<$PrismaModel> | $Enums.WorkerStatus
   }
 
+  export type WorkerCredentialListRelationFilter = {
+    every?: WorkerCredentialWhereInput
+    some?: WorkerCredentialWhereInput
+    none?: WorkerCredentialWhereInput
+  }
+
+  export type WorkerCredentialOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type WorkerCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -19053,6 +20582,64 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerStatusFilter<$PrismaModel>
+  }
+
+  export type EnumWorkerCredentialStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerCredentialStatus | EnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel> | $Enums.WorkerCredentialStatus
+  }
+
+  export type WorkerScalarRelationFilter = {
+    is?: WorkerWhereInput
+    isNot?: WorkerWhereInput
+  }
+
+  export type WorkerCredentialCountOrderByAggregateInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    rotatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerCredentialMaxOrderByAggregateInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    rotatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerCredentialMinOrderByAggregateInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    rotatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumWorkerCredentialStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerCredentialStatus | EnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerCredentialStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerCredentialStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
   }
 
   export type ProjectCreateNestedManyWithoutProfileInput = {
@@ -19737,8 +21324,68 @@ export namespace Prisma {
     update?: XOR<XOR<ProfileUpdateToOneWithWhereWithoutHobbiesInput, ProfileUpdateWithoutHobbiesInput>, ProfileUncheckedUpdateWithoutHobbiesInput>
   }
 
+  export type WorkerCredentialCreateNestedManyWithoutWorkerInput = {
+    create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
+    createMany?: WorkerCredentialCreateManyWorkerInputEnvelope
+    connect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+  }
+
+  export type WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput = {
+    create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
+    createMany?: WorkerCredentialCreateManyWorkerInputEnvelope
+    connect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+  }
+
   export type EnumWorkerStatusFieldUpdateOperationsInput = {
     set?: $Enums.WorkerStatus
+  }
+
+  export type WorkerCredentialUpdateManyWithoutWorkerNestedInput = {
+    create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
+    upsert?: WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput | WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput[]
+    createMany?: WorkerCredentialCreateManyWorkerInputEnvelope
+    set?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    disconnect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    delete?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    connect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    update?: WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput | WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput[]
+    updateMany?: WorkerCredentialUpdateManyWithWhereWithoutWorkerInput | WorkerCredentialUpdateManyWithWhereWithoutWorkerInput[]
+    deleteMany?: WorkerCredentialScalarWhereInput | WorkerCredentialScalarWhereInput[]
+  }
+
+  export type WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput = {
+    create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
+    upsert?: WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput | WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput[]
+    createMany?: WorkerCredentialCreateManyWorkerInputEnvelope
+    set?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    disconnect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    delete?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    connect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    update?: WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput | WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput[]
+    updateMany?: WorkerCredentialUpdateManyWithWhereWithoutWorkerInput | WorkerCredentialUpdateManyWithWhereWithoutWorkerInput[]
+    deleteMany?: WorkerCredentialScalarWhereInput | WorkerCredentialScalarWhereInput[]
+  }
+
+  export type WorkerCreateNestedOneWithoutCredentialsInput = {
+    create?: XOR<WorkerCreateWithoutCredentialsInput, WorkerUncheckedCreateWithoutCredentialsInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutCredentialsInput
+    connect?: WorkerWhereUniqueInput
+  }
+
+  export type EnumWorkerCredentialStatusFieldUpdateOperationsInput = {
+    set?: $Enums.WorkerCredentialStatus
+  }
+
+  export type WorkerUpdateOneRequiredWithoutCredentialsNestedInput = {
+    create?: XOR<WorkerCreateWithoutCredentialsInput, WorkerUncheckedCreateWithoutCredentialsInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutCredentialsInput
+    upsert?: WorkerUpsertWithoutCredentialsInput
+    connect?: WorkerWhereUniqueInput
+    update?: XOR<XOR<WorkerUpdateToOneWithWhereWithoutCredentialsInput, WorkerUpdateWithoutCredentialsInput>, WorkerUncheckedUpdateWithoutCredentialsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -19934,6 +21581,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWorkerCredentialStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerCredentialStatus | EnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel> | $Enums.WorkerCredentialStatus
+  }
+
+  export type NestedEnumWorkerCredentialStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerCredentialStatus | EnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerCredentialStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerCredentialStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
   }
 
   export type ProjectCreateWithoutProfileInput = {
@@ -21737,6 +23401,129 @@ export namespace Prisma {
     awards?: AwardUncheckedUpdateManyWithoutProfileNestedInput
   }
 
+  export type WorkerCredentialCreateWithoutWorkerInput = {
+    id?: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialUncheckedCreateWithoutWorkerInput = {
+    id?: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialCreateOrConnectWithoutWorkerInput = {
+    where: WorkerCredentialWhereUniqueInput
+    create: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput>
+  }
+
+  export type WorkerCredentialCreateManyWorkerInputEnvelope = {
+    data: WorkerCredentialCreateManyWorkerInput | WorkerCredentialCreateManyWorkerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput = {
+    where: WorkerCredentialWhereUniqueInput
+    update: XOR<WorkerCredentialUpdateWithoutWorkerInput, WorkerCredentialUncheckedUpdateWithoutWorkerInput>
+    create: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput>
+  }
+
+  export type WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput = {
+    where: WorkerCredentialWhereUniqueInput
+    data: XOR<WorkerCredentialUpdateWithoutWorkerInput, WorkerCredentialUncheckedUpdateWithoutWorkerInput>
+  }
+
+  export type WorkerCredentialUpdateManyWithWhereWithoutWorkerInput = {
+    where: WorkerCredentialScalarWhereInput
+    data: XOR<WorkerCredentialUpdateManyMutationInput, WorkerCredentialUncheckedUpdateManyWithoutWorkerInput>
+  }
+
+  export type WorkerCredentialScalarWhereInput = {
+    AND?: WorkerCredentialScalarWhereInput | WorkerCredentialScalarWhereInput[]
+    OR?: WorkerCredentialScalarWhereInput[]
+    NOT?: WorkerCredentialScalarWhereInput | WorkerCredentialScalarWhereInput[]
+    id?: StringFilter<"WorkerCredential"> | string
+    workerId?: StringFilter<"WorkerCredential"> | string
+    keyPrefix?: StringFilter<"WorkerCredential"> | string
+    keyHash?: StringFilter<"WorkerCredential"> | string
+    status?: EnumWorkerCredentialStatusFilter<"WorkerCredential"> | $Enums.WorkerCredentialStatus
+    expiresAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    rotatedAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+  }
+
+  export type WorkerCreateWithoutCredentialsInput = {
+    id?: string
+    name: string
+    platform?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerUncheckedCreateWithoutCredentialsInput = {
+    id?: string
+    name: string
+    platform?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCreateOrConnectWithoutCredentialsInput = {
+    where: WorkerWhereUniqueInput
+    create: XOR<WorkerCreateWithoutCredentialsInput, WorkerUncheckedCreateWithoutCredentialsInput>
+  }
+
+  export type WorkerUpsertWithoutCredentialsInput = {
+    update: XOR<WorkerUpdateWithoutCredentialsInput, WorkerUncheckedUpdateWithoutCredentialsInput>
+    create: XOR<WorkerCreateWithoutCredentialsInput, WorkerUncheckedCreateWithoutCredentialsInput>
+    where?: WorkerWhereInput
+  }
+
+  export type WorkerUpdateToOneWithWhereWithoutCredentialsInput = {
+    where?: WorkerWhereInput
+    data: XOR<WorkerUpdateWithoutCredentialsInput, WorkerUncheckedUpdateWithoutCredentialsInput>
+  }
+
+  export type WorkerUpdateWithoutCredentialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerUncheckedUpdateWithoutCredentialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ProjectCreateManyProfileInput = {
     id?: string
     title: string
@@ -22203,6 +23990,50 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     proficiency?: EnumProficiencyFieldUpdateOperationsInput | $Enums.Proficiency
     sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialCreateManyWorkerInput = {
+    id?: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialUpdateWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialUncheckedUpdateWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialUncheckedUpdateManyWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
