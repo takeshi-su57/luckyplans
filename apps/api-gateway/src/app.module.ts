@@ -6,8 +6,8 @@ import { LoggerModule } from 'nestjs-pino';
 import { trace } from '@opentelemetry/api';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
-import { CoreModule } from './core/core.module';
 import { ProfileModule } from './profile/profile.module';
+import { WorkersModule } from './workers/workers.module';
 import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
@@ -37,9 +37,10 @@ import { UploadsModule } from './uploads/uploads.module';
     }),
     HealthModule,
     AuthModule,
-    CoreModule,
     ProfileModule,
+    WorkersModule,
     UploadsModule,
   ],
 })
 export class AppModule {}
+

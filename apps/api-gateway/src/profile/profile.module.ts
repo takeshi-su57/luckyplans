@@ -1,14 +1,21 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
-import { CoreModule } from '../core/core.module';
+import { DatabaseModule } from '../database/database.module';
 import { ProfileResolver } from './profile.resolver';
 import { PortfolioResolver } from './portfolio.resolver';
+import { ProfileService } from './profile.service';
 
 @Module({
   imports: [
-    AuthModule,
-    CoreModule,
+    forwardRef(() => AuthModule),
+    DatabaseModule,
   ],
-  providers: [ProfileResolver, PortfolioResolver],
+  providers: [
+    ProfileService,
+    ProfileResolver,
+    PortfolioResolver,
+  ],
+  exports: [ProfileService],
 })
 export class ProfileModule {}
+

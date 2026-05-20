@@ -1,387 +1,43 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { from, Observable } from 'rxjs';
-import { generateId } from '@luckyplans/shared';
-import { CoreMessagePattern } from '@luckyplans/shared';
 import type { UserProfileData } from '@luckyplans/shared';
-import { PrismaService } from './prisma.service';
-
-export interface Item {
-  id: string;
-  name: string;
-  description?: string;
-  createdAt: Date;
-}
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
-export class CoreService {
-  private readonly logger = new Logger(CoreService.name);
-
-  // In-memory store placeholder — replace with database
-  private items: Item[] = [];
+export class ProfileService {
+  private readonly logger = new Logger(ProfileService.name);
 
   constructor(private readonly prisma: PrismaService) {}
 
-  private stripTraceContext<T extends Record<string, unknown>>(data: T): T {
-    const { __traceContext: _traceContext, ...payload } = data as T & {
-      __traceContext?: unknown;
-    };
-    return payload as T;
-  }
-
-  send(pattern: CoreMessagePattern, data: Record<string, unknown>): Observable<unknown> {
-    const payload = this.stripTraceContext(data);
-
-    const dispatch = async () => {
-      switch (pattern) {
-        case CoreMessagePattern.GET_ITEMS:
-          return this.getItems(payload.page as number, payload.limit as number);
-        case CoreMessagePattern.GET_ITEM:
-          return this.getItem(payload.id as string);
-        case CoreMessagePattern.CREATE_ITEM:
-          return this.createItem(payload.name as string, payload.description as string | undefined);
-        case CoreMessagePattern.UPDATE_ITEM:
-          return this.updateItem(
-            payload.id as string,
-            payload.name as string | undefined,
-            payload.description as string | undefined,
-          );
-        case CoreMessagePattern.DELETE_ITEM:
-          return this.deleteItem(payload.id as string);
-        case CoreMessagePattern.GET_PROFILE:
-          return this.getProfile(payload.userId as string);
-        case CoreMessagePattern.GET_OR_CREATE_PROFILE:
-          return this.getOrCreateProfile({
-            userId: payload.userId as string,
-            email: payload.email as string,
-            name: payload.name as string | undefined,
-          });
-        case CoreMessagePattern.UPDATE_PROFILE: {
-          const { userId, ...updateData } = payload as {
-            userId: string;
-            firstName?: string;
-            lastName?: string;
-            avatarUrl?: string;
-            bio?: string;
-            headline?: string;
-            location?: string;
-          };
-          return this.updateProfile(userId, updateData);
-        }
-        case CoreMessagePattern.GET_PUBLIC_PROFILE:
-          return this.getPublicProfile(payload.userId as string);
-        case CoreMessagePattern.GET_PROJECTS:
-          return this.getProjects(payload.userId as string);
-        case CoreMessagePattern.CREATE_PROJECT: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            title: string;
-            description?: string;
-            images?: string[];
-            liveUrl?: string;
-            repoUrl?: string;
-            tags?: string[];
-          };
-          return this.createProject(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_PROJECT: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            title?: string;
-            description?: string;
-            images?: string[];
-            liveUrl?: string;
-            repoUrl?: string;
-            tags?: string[];
-          };
-          return this.updateProject(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_PROJECT:
-          return this.deleteProject(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_PROJECTS:
-          return this.reorderProjects(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.GET_SKILLS:
-          return this.getSkills(payload.userId as string);
-        case CoreMessagePattern.CREATE_SKILL: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            name: string;
-            categoryId?: string;
-            proficiency?: string;
-          };
-          return this.createSkill(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_SKILL: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            name?: string;
-            categoryId?: string;
-            proficiency?: string;
-          };
-          return this.updateSkill(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_SKILL:
-          return this.deleteSkill(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_SKILLS:
-          return this.reorderSkills(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.GET_EXPERIENCES:
-          return this.getExperiences(payload.userId as string);
-        case CoreMessagePattern.CREATE_EXPERIENCE: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            company: string;
-            role: string;
-            description?: string[];
-            startDate: Date;
-            endDate?: Date;
-          };
-          return this.createExperience(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_EXPERIENCE: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            company?: string;
-            role?: string;
-            description?: string[];
-            startDate?: Date;
-            endDate?: Date;
-          };
-          return this.updateExperience(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_EXPERIENCE:
-          return this.deleteExperience(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_EXPERIENCES:
-          return this.reorderExperiences(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.CREATE_SOCIAL_LINK: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            platform: string;
-            url: string;
-            label?: string;
-          };
-          return this.createSocialLink(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_SOCIAL_LINK: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            platform?: string;
-            url?: string;
-            label?: string;
-          };
-          return this.updateSocialLink(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_SOCIAL_LINK:
-          return this.deleteSocialLink(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_SOCIAL_LINKS:
-          return this.reorderSocialLinks(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.GET_SKILL_CATEGORIES:
-          return this.getSkillCategories(payload.userId as string);
-        case CoreMessagePattern.CREATE_SKILL_CATEGORY: {
-          const { userId, ...createData } = payload as { userId: string; name: string };
-          return this.createSkillCategory(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_SKILL_CATEGORY: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            name?: string;
-          };
-          return this.updateSkillCategory(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_SKILL_CATEGORY:
-          return this.deleteSkillCategory(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.CREATE_EDUCATION: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            school: string;
-            degree?: string;
-            field?: string;
-            startDate: Date;
-            endDate?: Date;
-            description?: string[];
-          };
-          return this.createEducation(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_EDUCATION: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            school?: string;
-            degree?: string;
-            field?: string;
-            startDate?: Date;
-            endDate?: Date;
-            description?: string[];
-          };
-          return this.updateEducation(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_EDUCATION:
-          return this.deleteEducation(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_EDUCATION:
-          return this.reorderEducation(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.CREATE_CERTIFICATION: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            name: string;
-            issuer: string;
-            issueDate?: Date;
-            expiryDate?: Date;
-            url?: string;
-          };
-          return this.createCertification(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_CERTIFICATION: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            name?: string;
-            issuer?: string;
-            issueDate?: Date;
-            expiryDate?: Date;
-            url?: string;
-          };
-          return this.updateCertification(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_CERTIFICATION:
-          return this.deleteCertification(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_CERTIFICATIONS:
-          return this.reorderCertifications(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.CREATE_LANGUAGE: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            name: string;
-            proficiency?: string;
-          };
-          return this.createLanguage(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_LANGUAGE: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            name?: string;
-            proficiency?: string;
-          };
-          return this.updateLanguage(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_LANGUAGE:
-          return this.deleteLanguage(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_LANGUAGES:
-          return this.reorderLanguages(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.CREATE_AWARD: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            title: string;
-            issuer?: string;
-            date?: Date;
-            description?: string;
-          };
-          return this.createAward(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_AWARD: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            title?: string;
-            issuer?: string;
-            date?: Date;
-            description?: string;
-          };
-          return this.updateAward(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_AWARD:
-          return this.deleteAward(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_AWARDS:
-          return this.reorderAwards(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.CREATE_HOBBY: {
-          const { userId, ...createData } = payload as {
-            userId: string;
-            name: string;
-            description?: string;
-          };
-          return this.createHobby(userId, createData);
-        }
-        case CoreMessagePattern.UPDATE_HOBBY: {
-          const { userId, id, ...updateData } = payload as {
-            userId: string;
-            id: string;
-            name?: string;
-            description?: string;
-          };
-          return this.updateHobby(userId, id, updateData);
-        }
-        case CoreMessagePattern.DELETE_HOBBY:
-          return this.deleteHobby(payload.userId as string, payload.id as string);
-        case CoreMessagePattern.REORDER_HOBBIES:
-          return this.reorderHobbies(payload.userId as string, payload.orderedIds as string[]);
-        case CoreMessagePattern.GET_WORKERS:
-          return this.getWorkers();
-        case CoreMessagePattern.CREATE_WORKER:
-          return this.createWorker({
-            name: payload.name as string,
-            platform: payload.platform as string | undefined,
-            version: payload.version as string | undefined,
-          });
-        case CoreMessagePattern.DISABLE_WORKER:
-          return this.disableWorker(payload.id as string);
-        default:
-          throw new Error(`Unsupported CoreMessagePattern: ${pattern}`);
-      }
-    };
-
-    return from(dispatch());
-  }
-
-  // ── Items (in-memory placeholder) ──────────────────────────────
-
-  async getItems(page: number, limit: number) {
-    const start = (page - 1) * limit;
-    const paginatedItems = this.items.slice(start, start + limit);
-
+  private normalizeProfile(
+    profile: {
+      id: string;
+      userId: string;
+      email: string;
+      firstName: string | null;
+      lastName: string | null;
+      avatarUrl: string | null;
+      bio: string | null;
+      headline: string | null;
+      location: string | null;
+      createdAt: Date;
+      updatedAt: Date;
+    } | null,
+  ): UserProfileData | null {
+    if (!profile) return null;
     return {
-      items: paginatedItems,
-      total: this.items.length,
+      ...profile,
+      firstName: profile.firstName ?? undefined,
+      lastName: profile.lastName ?? undefined,
+      avatarUrl: profile.avatarUrl ?? undefined,
+      bio: profile.bio ?? undefined,
+      headline: profile.headline ?? undefined,
+      location: profile.location ?? undefined,
     };
   }
-
-  async getItem(id: string) {
-    return this.items.find((item) => item.id === id) ?? null;
-  }
-
-  async createItem(name: string, description?: string) {
-    const item: Item = {
-      id: generateId(),
-      name,
-      description,
-      createdAt: new Date(),
-    };
-    this.items.push(item);
-    return item;
-  }
-
-  async updateItem(id: string, name?: string, description?: string) {
-    const item = this.items.find((i) => i.id === id);
-    if (!item) return null;
-
-    if (name !== undefined) item.name = name;
-    if (description !== undefined) item.description = description;
-    return item;
-  }
-
-  async deleteItem(id: string) {
-    const index = this.items.findIndex((i) => i.id === id);
-    if (index === -1) return { success: false };
-
-    this.items.splice(index, 1);
-    return { success: true };
-  }
-
-  // ── Profile (PostgreSQL via Prisma) ────────────────────────────
 
   async getProfile(userId: string): Promise<UserProfileData | null> {
-    return this.prisma.profile.findUnique({ where: { userId } });
+    const profile = await this.prisma.profile.findUnique({ where: { userId } });
+    return this.normalizeProfile(profile);
   }
 
   async getOrCreateProfile(data: {
@@ -392,14 +48,14 @@ export class CoreService {
     const existing = await this.prisma.profile.findUnique({
       where: { userId: data.userId },
     });
-    if (existing) return existing;
+    if (existing) return this.normalizeProfile(existing) as UserProfileData;
 
     this.logger.log(`Creating profile for user ${data.userId}`);
 
     const [firstName, ...lastParts] = (data.name ?? '').split(' ');
     const lastName = lastParts.join(' ') || undefined;
 
-    return this.prisma.profile.create({
+    const created = await this.prisma.profile.create({
       data: {
         userId: data.userId,
         email: data.email,
@@ -407,6 +63,7 @@ export class CoreService {
         lastName,
       },
     });
+    return this.normalizeProfile(created) as UserProfileData;
   }
 
   async updateProfile(
@@ -425,13 +82,13 @@ export class CoreService {
     });
     if (!existing) return null;
 
-    return this.prisma.profile.update({
+    const updated = await this.prisma.profile.update({
       where: { userId },
       data,
     });
+    return this.normalizeProfile(updated);
   }
 
-  // ── Public Profile (full portfolio) ──────────────────────────
 
   async getPublicProfile(userId: string) {
     return this.prisma.profile.findUnique({
@@ -451,7 +108,6 @@ export class CoreService {
     });
   }
 
-  // ── Projects ─────────────────────────────────────────────────
 
   async getProjects(userId: string) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
@@ -546,7 +202,6 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Skills ───────────────────────────────────────────────────
 
   async getSkills(userId: string) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
@@ -575,7 +230,9 @@ export class CoreService {
         profileId: profile.id,
         name: data.name,
         categoryId: data.categoryId,
-        proficiency: (data.proficiency as 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT') ?? 'INTERMEDIATE',
+        proficiency:
+          (data.proficiency as 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT') ??
+          'INTERMEDIATE',
         sortOrder: (maxOrder._max.sortOrder ?? -1) + 1,
       },
       include: { category: true },
@@ -600,7 +257,11 @@ export class CoreService {
     if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
     if (data.proficiency !== undefined) updateData.proficiency = data.proficiency;
 
-    return this.prisma.skill.update({ where: { id }, data: updateData, include: { category: true } });
+    return this.prisma.skill.update({
+      where: { id },
+      data: updateData,
+      include: { category: true },
+    });
   }
 
   async deleteSkill(userId: string, id: string): Promise<{ success: boolean }> {
@@ -631,7 +292,6 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Experience ───────────────────────────────────────────────
 
   async getExperiences(userId: string) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
@@ -723,12 +383,8 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Social Links ─────────────────────────────────────────────
 
-  async createSocialLink(
-    userId: string,
-    data: { platform: string; url: string; label?: string },
-  ) {
+  async createSocialLink(userId: string, data: { platform: string; url: string; label?: string }) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) throw new Error('Profile not found');
 
@@ -792,7 +448,6 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Skill Categories ─────────────────────────────────────────
 
   async getSkillCategories(userId: string) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
@@ -846,7 +501,6 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Education ───────────────────────────────────────────────
 
   async createEducation(
     userId: string,
@@ -932,7 +586,6 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Certifications ─────────────────────────────────────────
 
   async createCertification(
     userId: string,
@@ -1015,12 +668,8 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Languages ──────────────────────────────────────────────
 
-  async createLanguage(
-    userId: string,
-    data: { name: string; proficiency?: string },
-  ) {
+  async createLanguage(userId: string, data: { name: string; proficiency?: string }) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) throw new Error('Profile not found');
 
@@ -1039,11 +688,7 @@ export class CoreService {
     });
   }
 
-  async updateLanguage(
-    userId: string,
-    id: string,
-    data: { name?: string; proficiency?: string },
-  ) {
+  async updateLanguage(userId: string, id: string, data: { name?: string; proficiency?: string }) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) return null;
 
@@ -1083,7 +728,6 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Awards ─────────────────────────────────────────────────
 
   async createAward(
     userId: string,
@@ -1153,12 +797,8 @@ export class CoreService {
     return { success: true };
   }
 
-  // ── Hobbies ────────────────────────────────────────────────
 
-  async createHobby(
-    userId: string,
-    data: { name: string; description?: string },
-  ) {
+  async createHobby(userId: string, data: { name: string; description?: string }) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) throw new Error('Profile not found');
 
@@ -1177,11 +817,7 @@ export class CoreService {
     });
   }
 
-  async updateHobby(
-    userId: string,
-    id: string,
-    data: { name?: string; description?: string },
-  ) {
+  async updateHobby(userId: string, id: string, data: { name?: string; description?: string }) {
     const profile = await this.prisma.profile.findUnique({ where: { userId } });
     if (!profile) return null;
 
@@ -1220,36 +856,7 @@ export class CoreService {
     );
     return { success: true };
   }
-
-  // —— Edge Registry ———————————————————————————————————————————————————————————————
-
-  async getWorkers() {
-    return this.prisma.worker.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
-  }
-
-  async createWorker(data: {
-    name: string;
-    platform?: string;
-    version?: string;
-  }) {
-    return this.prisma.worker.create({
-      data: {
-        name: data.name,
-        platform: data.platform,
-        version: data.version,
-      },
-    });
-  }
-
-  async disableWorker(id: string) {
-    const existing = await this.prisma.worker.findUnique({ where: { id } });
-    if (!existing) return null;
-
-    return this.prisma.worker.update({
-      where: { id },
-      data: { status: 'DISABLED' },
-    });
-  }
 }
+
+
+

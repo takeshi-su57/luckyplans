@@ -208,11 +208,6 @@ export interface WorkerData {
 }
 
 export enum CoreMessagePattern {
-  GET_ITEMS = 'core.getItems',
-  GET_ITEM = 'core.getItem',
-  CREATE_ITEM = 'core.createItem',
-  UPDATE_ITEM = 'core.updateItem',
-  DELETE_ITEM = 'core.deleteItem',
   GET_PROFILE = 'core.getProfile',
   GET_OR_CREATE_PROFILE = 'core.getOrCreateProfile',
   UPDATE_PROFILE = 'core.updateProfile',
@@ -283,8 +278,4 @@ export enum CoreMessagePattern {
   DELETE_HOBBY = 'core.deleteHobby',
   REORDER_HOBBIES = 'core.reorderHobbies',
 
-  // Edge registry
-  GET_WORKERS = 'core.getWorkers',
-  CREATE_WORKER = 'core.createWorker',
-  DISABLE_WORKER = 'core.disableWorker',
 }

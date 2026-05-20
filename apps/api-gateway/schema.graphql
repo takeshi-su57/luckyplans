@@ -15,23 +15,6 @@ type UserProfile {
   location: String
 }
 
-type Item {
-  id: ID!
-  name: String!
-  description: String
-  createdAt: DateTime!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type ItemsResponse {
-  items: [Item!]!
-  total: Float!
-}
-
 type Project {
   id: ID!
   title: String!
@@ -44,6 +27,11 @@ type Project {
   createdAt: DateTime!
   updatedAt: DateTime!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type SkillCategory {
   id: ID!
@@ -172,17 +160,31 @@ type DeleteResult {
   success: Boolean!
 }
 
+type Worker {
+  id: ID!
+  name: String!
+  platform: String
+  version: String
+  status: WorkerStatus!
+  lastSeenAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum WorkerStatus {
+  ACTIVE
+  DISABLED
+}
+
 type Query {
   health: String!
   me: UserProfile!
-  getItems(page: Float! = 1, limit: Float! = 10): ItemsResponse!
-  getItem(id: String!): Item
   getPublicProfile(userId: String!): PublicProfile
   getSkillCategories: [SkillCategory!]!
+  workers: [Worker!]!
 }
 
 type Mutation {
-  createItem(name: String!, description: String): Item!
   updateProfile(input: UpdateProfileInput!): UserProfile!
   createProject(input: CreateProjectInput!): Project!
   updateProject(id: String!, input: UpdateProjectInput!): Project
@@ -223,6 +225,8 @@ type Mutation {
   updateHobby(id: String!, input: UpdateHobbyInput!): Hobby
   deleteHobby(id: String!): DeleteResult!
   reorderHobbies(input: ReorderInput!): DeleteResult!
+  createWorker(name: String!, platform: String, version: String): Worker!
+  disableWorker(id: String!): Worker
 }
 
 input UpdateProfileInput {

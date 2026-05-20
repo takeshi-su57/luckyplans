@@ -14,12 +14,14 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  query Workers {\n    workers {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.WorkersDocument,
+    "\n  mutation CreateWorker($name: String!, $platform: String, $version: String) {\n    createWorker(name: $name, platform: $platform, version: $version) {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateWorkerDocument,
+    "\n  mutation DisableWorker($id: String!) {\n    disableWorker(id: $id) {\n      id\n      status\n    }\n  }\n": typeof types.DisableWorkerDocument,
     "\n  mutation CreateAward($input: CreateAwardInput!) {\n    createAward(input: $input) {\n      id\n      title\n      issuer\n      date\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateAwardDocument,
     "\n  mutation CreateCertification($input: CreateCertificationInput!) {\n    createCertification(input: $input) {\n      id\n      name\n      issuer\n      issueDate\n      expiryDate\n      url\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateCertificationDocument,
     "\n  mutation CreateEducation($input: CreateEducationInput!) {\n    createEducation(input: $input) {\n      id\n      school\n      degree\n      field\n      startDate\n      endDate\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateEducationDocument,
     "\n  mutation CreateExperience($input: CreateExperienceInput!) {\n    createExperience(input: $input) {\n      id\n      company\n      role\n      description\n      startDate\n      endDate\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateExperienceDocument,
     "\n  mutation CreateHobby($input: CreateHobbyInput!) {\n    createHobby(input: $input) {\n      id\n      name\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateHobbyDocument,
-    "\n  mutation CreateItem($name: String!, $description: String) {\n    createItem(name: $name, description: $description) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n": typeof types.CreateItemDocument,
     "\n  mutation CreateLanguage($input: CreateLanguageInput!) {\n    createLanguage(input: $input) {\n      id\n      name\n      proficiency\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateLanguageDocument,
     "\n  mutation CreateProject($input: CreateProjectInput!) {\n    createProject(input: $input) {\n      id\n      title\n      description\n      images\n      liveUrl\n      repoUrl\n      tags\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateProjectDocument,
     "\n  mutation CreateSkillCategory($input: CreateSkillCategoryInput!) {\n    createSkillCategory(input: $input) {\n      id\n      name\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateSkillCategoryDocument,
@@ -37,8 +39,6 @@ type Documents = {
     "\n  mutation DeleteSkill($id: String!) {\n    deleteSkill(id: $id) {\n      success\n    }\n  }\n": typeof types.DeleteSkillDocument,
     "\n  mutation DeleteSocialLink($id: String!) {\n    deleteSocialLink(id: $id) {\n      success\n    }\n  }\n": typeof types.DeleteSocialLinkDocument,
     "\n  query Health {\n    health\n  }\n": typeof types.HealthDocument,
-    "\n  query GetItem($id: String!) {\n    getItem(id: $id) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n": typeof types.GetItemDocument,
-    "\n  query GetItems($page: Float = 1, $limit: Float = 10) {\n    getItems(page: $page, limit: $limit) {\n      items {\n        id\n        name\n        description\n        createdAt\n      }\n      total\n    }\n  }\n": typeof types.GetItemsDocument,
     "\n  query GetPublicProfile($userId: String!) {\n    getPublicProfile(userId: $userId) {\n      userId\n      email\n      firstName\n      lastName\n      avatarUrl\n      bio\n      headline\n      location\n      socialLinks {\n        id\n        platform\n        url\n        label\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      projects {\n        id\n        title\n        description\n        images\n        liveUrl\n        repoUrl\n        tags\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      skillCategories {\n        id\n        name\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      skills {\n        id\n        name\n        categoryId\n        category {\n          id\n          name\n        }\n        proficiency\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      experiences {\n        id\n        company\n        role\n        description\n        startDate\n        endDate\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      education {\n        id\n        school\n        degree\n        field\n        startDate\n        endDate\n        description\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      certifications {\n        id\n        name\n        issuer\n        issueDate\n        expiryDate\n        url\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      languages {\n        id\n        name\n        proficiency\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      awards {\n        id\n        title\n        issuer\n        date\n        description\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      hobbies {\n        id\n        name\n        description\n        sortOrder\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": typeof types.GetPublicProfileDocument,
     "\n  mutation ReorderAwards($input: ReorderInput!) {\n    reorderAwards(input: $input) {\n      success\n    }\n  }\n": typeof types.ReorderAwardsDocument,
     "\n  mutation ReorderCertifications($input: ReorderInput!) {\n    reorderCertifications(input: $input) {\n      success\n    }\n  }\n": typeof types.ReorderCertificationsDocument,
@@ -62,12 +62,14 @@ type Documents = {
     "\n  mutation UpdateSocialLink($id: String!, $input: UpdateSocialLinkInput!) {\n    updateSocialLink(id: $id, input: $input) {\n      id\n      platform\n      url\n      label\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.UpdateSocialLinkDocument,
 };
 const documents: Documents = {
+    "\n  query Workers {\n    workers {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n": types.WorkersDocument,
+    "\n  mutation CreateWorker($name: String!, $platform: String, $version: String) {\n    createWorker(name: $name, platform: $platform, version: $version) {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateWorkerDocument,
+    "\n  mutation DisableWorker($id: String!) {\n    disableWorker(id: $id) {\n      id\n      status\n    }\n  }\n": types.DisableWorkerDocument,
     "\n  mutation CreateAward($input: CreateAwardInput!) {\n    createAward(input: $input) {\n      id\n      title\n      issuer\n      date\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateAwardDocument,
     "\n  mutation CreateCertification($input: CreateCertificationInput!) {\n    createCertification(input: $input) {\n      id\n      name\n      issuer\n      issueDate\n      expiryDate\n      url\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateCertificationDocument,
     "\n  mutation CreateEducation($input: CreateEducationInput!) {\n    createEducation(input: $input) {\n      id\n      school\n      degree\n      field\n      startDate\n      endDate\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateEducationDocument,
     "\n  mutation CreateExperience($input: CreateExperienceInput!) {\n    createExperience(input: $input) {\n      id\n      company\n      role\n      description\n      startDate\n      endDate\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateExperienceDocument,
     "\n  mutation CreateHobby($input: CreateHobbyInput!) {\n    createHobby(input: $input) {\n      id\n      name\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateHobbyDocument,
-    "\n  mutation CreateItem($name: String!, $description: String) {\n    createItem(name: $name, description: $description) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n": types.CreateItemDocument,
     "\n  mutation CreateLanguage($input: CreateLanguageInput!) {\n    createLanguage(input: $input) {\n      id\n      name\n      proficiency\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateLanguageDocument,
     "\n  mutation CreateProject($input: CreateProjectInput!) {\n    createProject(input: $input) {\n      id\n      title\n      description\n      images\n      liveUrl\n      repoUrl\n      tags\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateProjectDocument,
     "\n  mutation CreateSkillCategory($input: CreateSkillCategoryInput!) {\n    createSkillCategory(input: $input) {\n      id\n      name\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateSkillCategoryDocument,
@@ -85,8 +87,6 @@ const documents: Documents = {
     "\n  mutation DeleteSkill($id: String!) {\n    deleteSkill(id: $id) {\n      success\n    }\n  }\n": types.DeleteSkillDocument,
     "\n  mutation DeleteSocialLink($id: String!) {\n    deleteSocialLink(id: $id) {\n      success\n    }\n  }\n": types.DeleteSocialLinkDocument,
     "\n  query Health {\n    health\n  }\n": types.HealthDocument,
-    "\n  query GetItem($id: String!) {\n    getItem(id: $id) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n": types.GetItemDocument,
-    "\n  query GetItems($page: Float = 1, $limit: Float = 10) {\n    getItems(page: $page, limit: $limit) {\n      items {\n        id\n        name\n        description\n        createdAt\n      }\n      total\n    }\n  }\n": types.GetItemsDocument,
     "\n  query GetPublicProfile($userId: String!) {\n    getPublicProfile(userId: $userId) {\n      userId\n      email\n      firstName\n      lastName\n      avatarUrl\n      bio\n      headline\n      location\n      socialLinks {\n        id\n        platform\n        url\n        label\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      projects {\n        id\n        title\n        description\n        images\n        liveUrl\n        repoUrl\n        tags\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      skillCategories {\n        id\n        name\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      skills {\n        id\n        name\n        categoryId\n        category {\n          id\n          name\n        }\n        proficiency\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      experiences {\n        id\n        company\n        role\n        description\n        startDate\n        endDate\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      education {\n        id\n        school\n        degree\n        field\n        startDate\n        endDate\n        description\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      certifications {\n        id\n        name\n        issuer\n        issueDate\n        expiryDate\n        url\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      languages {\n        id\n        name\n        proficiency\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      awards {\n        id\n        title\n        issuer\n        date\n        description\n        sortOrder\n        createdAt\n        updatedAt\n      }\n      hobbies {\n        id\n        name\n        description\n        sortOrder\n        createdAt\n        updatedAt\n      }\n    }\n  }\n": types.GetPublicProfileDocument,
     "\n  mutation ReorderAwards($input: ReorderInput!) {\n    reorderAwards(input: $input) {\n      success\n    }\n  }\n": types.ReorderAwardsDocument,
     "\n  mutation ReorderCertifications($input: ReorderInput!) {\n    reorderCertifications(input: $input) {\n      success\n    }\n  }\n": types.ReorderCertificationsDocument,
@@ -127,6 +127,18 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query Workers {\n    workers {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query Workers {\n    workers {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateWorker($name: String!, $platform: String, $version: String) {\n    createWorker(name: $name, platform: $platform, version: $version) {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation CreateWorker($name: String!, $platform: String, $version: String) {\n    createWorker(name: $name, platform: $platform, version: $version) {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DisableWorker($id: String!) {\n    disableWorker(id: $id) {\n      id\n      status\n    }\n  }\n"): (typeof documents)["\n  mutation DisableWorker($id: String!) {\n    disableWorker(id: $id) {\n      id\n      status\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  mutation CreateAward($input: CreateAwardInput!) {\n    createAward(input: $input) {\n      id\n      title\n      issuer\n      date\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation CreateAward($input: CreateAwardInput!) {\n    createAward(input: $input) {\n      id\n      title\n      issuer\n      date\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -144,10 +156,6 @@ export function graphql(source: "\n  mutation CreateExperience($input: CreateExp
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation CreateHobby($input: CreateHobbyInput!) {\n    createHobby(input: $input) {\n      id\n      name\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  mutation CreateHobby($input: CreateHobbyInput!) {\n    createHobby(input: $input) {\n      id\n      name\n      description\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  mutation CreateItem($name: String!, $description: String) {\n    createItem(name: $name, description: $description) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n"): (typeof documents)["\n  mutation CreateItem($name: String!, $description: String) {\n    createItem(name: $name, description: $description) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -216,14 +224,6 @@ export function graphql(source: "\n  mutation DeleteSocialLink($id: String!) {\n
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query Health {\n    health\n  }\n"): (typeof documents)["\n  query Health {\n    health\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query GetItem($id: String!) {\n    getItem(id: $id) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n"): (typeof documents)["\n  query GetItem($id: String!) {\n    getItem(id: $id) {\n      id\n      name\n      description\n      createdAt\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query GetItems($page: Float = 1, $limit: Float = 10) {\n    getItems(page: $page, limit: $limit) {\n      items {\n        id\n        name\n        description\n        createdAt\n      }\n      total\n    }\n  }\n"): (typeof documents)["\n  query GetItems($page: Float = 1, $limit: Float = 10) {\n    getItems(page: $page, limit: $limit) {\n      items {\n        id\n        name\n        description\n        createdAt\n      }\n      total\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
