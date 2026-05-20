@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { WorkersModule } from './workers/workers.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { BacktestModule } from './backtest/backtest.module';
+import { EdgesInternalModule } from './edges-internal/edges-internal.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { UploadsModule } from './uploads/uploads.module';
     ProfileModule,
     WorkersModule,
     UploadsModule,
+    BacktestModule,
+    EdgesInternalModule,
   ],
 })
 export class AppModule {}

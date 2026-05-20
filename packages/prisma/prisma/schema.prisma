@@ -18,6 +18,20 @@ enum WorkerCredentialStatus {
   EXPIRED
 }
 
+enum SearchStrategy {
+  GRID
+  OPTUNA
+}
+
+enum BacktestTaskStatus {
+  AWAIT
+  ASSIGNED
+  PROCESSING
+  DONE
+  FAILED
+  CANCELLED
+}
+
 model Profile {
   id          String   @id @default(cuid())
   userId      String   @unique
@@ -232,4 +246,66 @@ model WorkerCredential {
 
   @@index([workerId, status])
   @@map("worker_credentials")
+}
+
+model StrategyTemplate {
+  id            String   @id @default(cuid())
+  name          String
+  category      String?
+  factoryConfig Json
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tasks         BacktestTask[]
+
+  @@map("strategy_templates")
+}
+
+model BacktestTask {
+  id                  String             @id @default(cuid())
+  strategyTemplateId  String
+  strategyTemplate    StrategyTemplate   @relation(fields: [strategyTemplateId], references: [id], onDelete: Cascade)
+  name                String
+  symbol              String
+  interval            String
+  startDate           DateTime
+  endDate             DateTime
+  searchStrategy      SearchStrategy
+  optimizationParams  Json
+  optimizationMetrics String[]
+  trials              Int
+  status              BacktestTaskStatus @default(AWAIT)
+  assignedWorkerId    String?
+  leaseExpiresAt      DateTime?
+  lastHeartbeat       DateTime?
+  totalConfigs        Int?
+  processedConfigs    Int?
+  currentConfig       String?
+  trialProgress       String?
+  bestConfigIds       String[]
+  errorMessage        String?
+  startedAt           DateTime?
+  completedAt         DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  results             BacktestResult[]
+
+  @@index([status, assignedWorkerId])
+  @@index([leaseExpiresAt])
+  @@map("backtest_tasks")
+}
+
+model BacktestResult {
+  id             String      @id @default(cuid())
+  taskId         String
+  task           BacktestTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  configId       String
+  strategyConfig Json
+  metrics        Json
+  resultFolder   String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@unique([taskId, configId])
+  @@map("backtest_results")
 }
