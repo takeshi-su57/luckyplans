@@ -10,6 +10,16 @@ type CreateReleaseInput = {
   notes?: string;
 };
 
+type WorkerUpgradeStatus =
+  | 'IDLE'
+  | 'UPGRADE_PENDING'
+  | 'DOWNLOADING'
+  | 'VERIFYING'
+  | 'RESTARTING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'ROLLED_BACK';
+
 type EdgeReleaseRecord = {
   id: string;
   version: string;
@@ -58,5 +68,19 @@ export class ReleasesService {
       },
     });
     return result.count;
+  }
+
+  async reportWorkerUpgradeStatus(
+    workerId: string,
+    status: WorkerUpgradeStatus,
+    message?: string,
+  ) {
+    return this.prisma.worker.update({
+      where: { id: workerId },
+      data: {
+        upgradeStatus: status,
+        upgradeMessage: message ?? null,
+      },
+    });
   }
 }

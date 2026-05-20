@@ -74,4 +74,26 @@ export class ReleasesResolver {
   ): Promise<number> {
     return this.releasesService.setWorkerTargetVersion(workerIds, targetVersion);
   }
+
+  @Mutation(() => Boolean)
+  async reportWorkerUpgradeStatus(
+    @Args('workerId') workerId: string,
+    @Args('status') status: string,
+    @Args('message', { nullable: true }) message?: string,
+  ): Promise<boolean> {
+    await this.releasesService.reportWorkerUpgradeStatus(
+      workerId,
+      status as
+        | 'IDLE'
+        | 'UPGRADE_PENDING'
+        | 'DOWNLOADING'
+        | 'VERIFYING'
+        | 'RESTARTING'
+        | 'SUCCEEDED'
+        | 'FAILED'
+        | 'ROLLED_BACK',
+      message,
+    );
+    return true;
+  }
 }

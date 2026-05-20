@@ -9,6 +9,7 @@ describe('ReleasesService', () => {
     },
     worker: {
       updateMany: vi.fn(),
+      update: vi.fn(),
     },
   };
 
@@ -52,5 +53,22 @@ describe('ReleasesService', () => {
 
     expect(updated).toBe(2);
     expect(prisma.worker.updateMany).toHaveBeenCalledOnce();
+  });
+
+  it('updates worker upgrade status payload', async () => {
+    prisma.worker.update.mockResolvedValue({
+      id: 'w1',
+      upgradeStatus: 'DOWNLOADING',
+      upgradeMessage: 'fetching package',
+    });
+
+    const updated = await service.reportWorkerUpgradeStatus(
+      'w1',
+      'DOWNLOADING',
+      'fetching package',
+    );
+
+    expect(updated.upgradeStatus).toBe('DOWNLOADING');
+    expect(prisma.worker.update).toHaveBeenCalledOnce();
   });
 });

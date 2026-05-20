@@ -13,6 +13,9 @@ const WorkersQuery = gql`
       version
       status
       lastSeenAt
+      targetVersion
+      upgradeStatus
+      upgradeMessage
       createdAt
       updatedAt
     }
@@ -43,12 +46,29 @@ const DisableWorkerMutation = gql`
   }
 `;
 
+const SetWorkerTargetVersionMutation = gql`
+  mutation SetWorkerTargetVersion($workerIds: [String!]!, $targetVersion: String!) {
+    setWorkerTargetVersion(workerIds: $workerIds, targetVersion: $targetVersion)
+  }
+`;
+
 type Worker = {
   id: string;
   name: string;
   platform?: string | null;
   version?: string | null;
   status: 'ACTIVE' | 'DISABLED';
+  targetVersion?: string | null;
+  upgradeStatus:
+    | 'IDLE'
+    | 'UPGRADE_PENDING'
+    | 'DOWNLOADING'
+    | 'VERIFYING'
+    | 'RESTARTING'
+    | 'SUCCEEDED'
+    | 'FAILED'
+    | 'ROLLED_BACK';
+  upgradeMessage?: string | null;
   lastSeenAt?: string | null;
   createdAt: string;
 };
@@ -61,10 +81,14 @@ export default function EdgesPage() {
   const [name, setName] = useState('');
   const [platform, setPlatform] = useState('');
   const [version, setVersion] = useState('');
+  const [targetVersionByWorker, setTargetVersionByWorker] = useState<Record<string, string>>({});
 
   const { data, loading, error, refetch } = useQuery<WorkersQueryData>(WorkersQuery);
   const [createWorker, { loading: creating }] = useMutation(CreateWorkerMutation);
   const [disableWorker, { loading: disabling }] = useMutation(DisableWorkerMutation);
+  const [setWorkerTargetVersion, { loading: settingTargetVersion }] = useMutation(
+    SetWorkerTargetVersionMutation,
+  );
 
   const workers = useMemo(() => data?.workers ?? [], [data?.workers]);
 
@@ -88,6 +112,19 @@ export default function EdgesPage() {
 
   const onDisable = async (id: string) => {
     await disableWorker({ variables: { id } });
+    await refetch();
+  };
+
+  const onSetTargetVersion = async (workerId: string) => {
+    const targetVersion = targetVersionByWorker[workerId]?.trim();
+    if (!targetVersion) return;
+
+    await setWorkerTargetVersion({
+      variables: {
+        workerIds: [workerId],
+        targetVersion,
+      },
+    });
     await refetch();
   };
 
@@ -157,6 +194,13 @@ export default function EdgesPage() {
                 <p className="text-xs text-[#9ca3af]">
                   Created: {new Date(worker.createdAt).toLocaleString()}
                 </p>
+                <p className="text-xs text-[#9ca3af]">
+                  Upgrade: {worker.upgradeStatus}
+                  {worker.targetVersion ? ` -> ${worker.targetVersion}` : ''}
+                </p>
+                {worker.upgradeMessage ? (
+                  <p className="text-xs text-[#9ca3af]">Message: {worker.upgradeMessage}</p>
+                ) : null}
               </div>
               <div className="flex items-center gap-2">
                 <span
@@ -175,6 +219,22 @@ export default function EdgesPage() {
                   className="rounded-md border border-red-200 px-3 py-1 text-sm text-red-600 disabled:opacity-50"
                 >
                   {disabling ? 'Disabling...' : 'Disable'}
+                </button>
+                <input
+                  placeholder="Target version (1.0.1)"
+                  value={targetVersionByWorker[worker.id] ?? ''}
+                  onChange={(e) =>
+                    setTargetVersionByWorker((prev) => ({ ...prev, [worker.id]: e.target.value }))
+                  }
+                  className="rounded-md border border-[#d1d5db] px-2 py-1 text-xs"
+                />
+                <button
+                  type="button"
+                  disabled={settingTargetVersion}
+                  onClick={() => onSetTargetVersion(worker.id)}
+                  className="rounded-md border border-blue-200 px-3 py-1 text-sm text-blue-700 disabled:opacity-50"
+                >
+                  Set Target
                 </button>
               </div>
             </div>

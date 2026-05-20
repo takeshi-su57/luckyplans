@@ -18,6 +18,20 @@ type WorkerStatus = (typeof WorkerStatus)[keyof typeof WorkerStatus];
 
 registerEnumType(WorkerStatus, { name: 'WorkerStatus' });
 
+const WorkerUpgradeStatus = {
+  IDLE: 'IDLE',
+  UPGRADE_PENDING: 'UPGRADE_PENDING',
+  DOWNLOADING: 'DOWNLOADING',
+  VERIFYING: 'VERIFYING',
+  RESTARTING: 'RESTARTING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK',
+} as const;
+type WorkerUpgradeStatus = (typeof WorkerUpgradeStatus)[keyof typeof WorkerUpgradeStatus];
+
+registerEnumType(WorkerUpgradeStatus, { name: 'WorkerUpgradeStatus' });
+
 @ObjectType()
 class Worker {
   @Field(() => ID)
@@ -37,6 +51,15 @@ class Worker {
 
   @Field({ nullable: true })
   lastSeenAt?: Date;
+
+  @Field({ nullable: true })
+  targetVersion?: string;
+
+  @Field(() => WorkerUpgradeStatus)
+  upgradeStatus!: WorkerUpgradeStatus;
+
+  @Field({ nullable: true })
+  upgradeMessage?: string;
 
   @Field()
   createdAt!: Date;
