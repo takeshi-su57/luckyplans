@@ -1,9 +1,4 @@
-export type UpgradeStatus =
-  | 'DOWNLOADING'
-  | 'VERIFYING'
-  | 'RESTARTING'
-  | 'SUCCEEDED'
-  | 'FAILED';
+export type UpgradeStatus = 'DOWNLOADING' | 'VERIFYING' | 'RESTARTING' | 'SUCCEEDED' | 'FAILED';
 
 export type MaybeUpgradeInput = {
   activeTask: boolean;

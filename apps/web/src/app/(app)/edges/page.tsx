@@ -198,9 +198,13 @@ export default function EdgesPage() {
                   <p className="text-xs text-[#6b7280]">
                     {worker.platform ?? 'unknown platform'} | {worker.version ?? 'no version'}
                   </p>
-                  <p className="text-xs text-[#9ca3af]">Device Number: {worker.deviceNumber ?? 'N/A'}</p>
+                  <p className="text-xs text-[#9ca3af]">
+                    Device Number: {worker.deviceNumber ?? 'N/A'}
+                  </p>
                   <p className="text-xs text-[#9ca3af]">Connectivity (Last Seen): {lastSeen}</p>
-                  <p className="text-xs text-[#9ca3af]">Current Version: {worker.version ?? 'N/A'}</p>
+                  <p className="text-xs text-[#9ca3af]">
+                    Current Version: {worker.version ?? 'N/A'}
+                  </p>
                   <p className="text-xs text-[#9ca3af]">
                     Target Version: {worker.targetVersion ?? 'Not set'}
                   </p>

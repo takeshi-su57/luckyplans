@@ -83,7 +83,9 @@ export class EdgeApiClient {
     });
 
     if (!response.ok) {
-      const error = new Error(`Edge registration failed with status ${response.status}`) as Error & {
+      const error = new Error(
+        `Edge registration failed with status ${response.status}`,
+      ) as Error & {
         status?: number;
       };
       error.status = response.status;

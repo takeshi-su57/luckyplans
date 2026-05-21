@@ -149,10 +149,10 @@ describe('runSinglePollExecution', () => {
 
     await runSinglePollExecution(client as never, { currentVersion: '1.0.0' });
 
-    const statuses = client.sendConnectivityHeartbeat.mock.calls
-      .map((call: unknown[]) => call[0])
-      .filter((payload: { upgradeStatus?: string }) => payload.upgradeStatus)
-      .map((payload: { upgradeStatus?: string }) => payload.upgradeStatus);
+    const statuses = (client.sendConnectivityHeartbeat.mock.calls as unknown[][])
+      .map((call) => call[0] as { upgradeStatus?: string } | undefined)
+      .filter((payload): payload is { upgradeStatus: string } => Boolean(payload?.upgradeStatus))
+      .map((payload) => payload.upgradeStatus);
     expect(statuses).toContain('FAILED');
     expect(statuses).not.toContain('SUCCEEDED');
   });

@@ -12,7 +12,9 @@ export type EdgeLocalConfig = {
 
 const DEFAULT_CONFIG_FILE = 'config.json';
 
-export function resolveEdgeConfigPath(baseDir = join(homedir(), '.luckyplans', 'edge-agent')): string {
+export function resolveEdgeConfigPath(
+  baseDir = join(homedir(), '.luckyplans', 'edge-agent'),
+): string {
   return join(baseDir, DEFAULT_CONFIG_FILE);
 }
 

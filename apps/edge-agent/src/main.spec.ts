@@ -3,7 +3,9 @@ import { resolveRuntimeConfig } from './main';
 
 describe('resolveRuntimeConfig', () => {
   it('fails fast in non-interactive mode when env and config are unavailable', async () => {
-    const loadConfig = vi.fn().mockRejectedValue(Object.assign(new Error('missing'), { code: 'ENOENT' }));
+    const loadConfig = vi
+      .fn()
+      .mockRejectedValue(Object.assign(new Error('missing'), { code: 'ENOENT' }));
     const runOnboarding = vi.fn();
 
     await expect(
@@ -21,7 +23,9 @@ describe('resolveRuntimeConfig', () => {
   });
 
   it('runs onboarding when config is missing and interactive mode is available', async () => {
-    const loadConfig = vi.fn().mockRejectedValue(Object.assign(new Error('missing'), { code: 'ENOENT' }));
+    const loadConfig = vi
+      .fn()
+      .mockRejectedValue(Object.assign(new Error('missing'), { code: 'ENOENT' }));
     const runOnboarding = vi.fn().mockResolvedValue({
       serverUrl: 'https://api.example.com',
       workerId: 'w1',

@@ -55,7 +55,8 @@ export async function resolveRuntimeConfig(
       throw error;
     }
 
-    const isInteractive = deps.isInteractive ?? Boolean(process.stdin.isTTY && process.stdout.isTTY);
+    const isInteractive =
+      deps.isInteractive ?? Boolean(process.stdin.isTTY && process.stdout.isTTY);
     const onboardingOptIn = env.EDGE_AGENT_ENABLE_ONBOARDING === '1';
     if (!isInteractive && !onboardingOptIn) {
       throw new Error(
