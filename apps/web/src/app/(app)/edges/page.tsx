@@ -9,6 +9,7 @@ const WorkersQuery = gql`
     workers {
       id
       name
+      deviceNumber
       platform
       version
       status
@@ -55,6 +56,7 @@ const SetWorkerTargetVersionMutation = gql`
 type Worker = {
   id: string;
   name: string;
+  deviceNumber?: string | null;
   platform?: string | null;
   version?: string | null;
   status: 'ACTIVE' | 'DISABLED';
@@ -181,64 +183,73 @@ export default function EdgesPage() {
           {!loading && workers.length === 0 ? (
             <p className="text-sm text-[#6b7280]">No edges registered yet.</p>
           ) : null}
-          {workers.map((worker) => (
-            <div
-              key={worker.id}
-              className="flex flex-col justify-between gap-3 rounded-lg border border-[#e5e7eb] p-4 sm:flex-row sm:items-center"
-            >
-              <div className="space-y-1">
-                <p className="font-medium text-[#111827]">{worker.name}</p>
-                <p className="text-xs text-[#6b7280]">
-                  {worker.platform ?? 'unknown platform'} | {worker.version ?? 'no version'}
-                </p>
-                <p className="text-xs text-[#9ca3af]">
-                  Created: {new Date(worker.createdAt).toLocaleString()}
-                </p>
-                <p className="text-xs text-[#9ca3af]">
-                  Upgrade: {worker.upgradeStatus}
-                  {worker.targetVersion ? ` -> ${worker.targetVersion}` : ''}
-                </p>
-                {worker.upgradeMessage ? (
-                  <p className="text-xs text-[#9ca3af]">Message: {worker.upgradeMessage}</p>
-                ) : null}
+          {workers.map((worker) => {
+            const lastSeen = worker.lastSeenAt
+              ? new Date(worker.lastSeenAt).toLocaleString()
+              : 'Never seen';
+
+            return (
+              <div
+                key={worker.id}
+                className="flex flex-col justify-between gap-3 rounded-lg border border-[#e5e7eb] p-4 sm:flex-row sm:items-center"
+              >
+                <div className="space-y-1">
+                  <p className="font-medium text-[#111827]">{worker.name}</p>
+                  <p className="text-xs text-[#6b7280]">
+                    {worker.platform ?? 'unknown platform'} | {worker.version ?? 'no version'}
+                  </p>
+                  <p className="text-xs text-[#9ca3af]">Device Number: {worker.deviceNumber ?? 'N/A'}</p>
+                  <p className="text-xs text-[#9ca3af]">Connectivity (Last Seen): {lastSeen}</p>
+                  <p className="text-xs text-[#9ca3af]">Current Version: {worker.version ?? 'N/A'}</p>
+                  <p className="text-xs text-[#9ca3af]">
+                    Target Version: {worker.targetVersion ?? 'Not set'}
+                  </p>
+                  <p className="text-xs text-[#9ca3af]">Upgrade Status: {worker.upgradeStatus}</p>
+                  <p className="text-xs text-[#9ca3af]">
+                    Created: {new Date(worker.createdAt).toLocaleString()}
+                  </p>
+                  {worker.upgradeMessage ? (
+                    <p className="text-xs text-[#9ca3af]">Message: {worker.upgradeMessage}</p>
+                  ) : null}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`rounded-full px-2 py-1 text-xs ${
+                      worker.status === 'ACTIVE'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {worker.status}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={worker.status === 'DISABLED' || disabling}
+                    onClick={() => onDisable(worker.id)}
+                    className="rounded-md border border-red-200 px-3 py-1 text-sm text-red-600 disabled:opacity-50"
+                  >
+                    {disabling ? 'Disabling...' : 'Disable'}
+                  </button>
+                  <input
+                    placeholder="Target version (1.0.1)"
+                    value={targetVersionByWorker[worker.id] ?? ''}
+                    onChange={(e) =>
+                      setTargetVersionByWorker((prev) => ({ ...prev, [worker.id]: e.target.value }))
+                    }
+                    className="rounded-md border border-[#d1d5db] px-2 py-1 text-xs"
+                  />
+                  <button
+                    type="button"
+                    disabled={settingTargetVersion}
+                    onClick={() => onSetTargetVersion(worker.id)}
+                    className="rounded-md border border-blue-200 px-3 py-1 text-sm text-blue-700 disabled:opacity-50"
+                  >
+                    Set Target
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`rounded-full px-2 py-1 text-xs ${
-                    worker.status === 'ACTIVE'
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-gray-100 text-gray-600'
-                  }`}
-                >
-                  {worker.status}
-                </span>
-                <button
-                  type="button"
-                  disabled={worker.status === 'DISABLED' || disabling}
-                  onClick={() => onDisable(worker.id)}
-                  className="rounded-md border border-red-200 px-3 py-1 text-sm text-red-600 disabled:opacity-50"
-                >
-                  {disabling ? 'Disabling...' : 'Disable'}
-                </button>
-                <input
-                  placeholder="Target version (1.0.1)"
-                  value={targetVersionByWorker[worker.id] ?? ''}
-                  onChange={(e) =>
-                    setTargetVersionByWorker((prev) => ({ ...prev, [worker.id]: e.target.value }))
-                  }
-                  className="rounded-md border border-[#d1d5db] px-2 py-1 text-xs"
-                />
-                <button
-                  type="button"
-                  disabled={settingTargetVersion}
-                  onClick={() => onSetTargetVersion(worker.id)}
-                  className="rounded-md border border-blue-200 px-3 py-1 text-sm text-blue-700 disabled:opacity-50"
-                >
-                  Set Target
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </div>

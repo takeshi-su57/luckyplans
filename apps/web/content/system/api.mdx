@@ -38,6 +38,20 @@ File uploads use REST (multipart/form-data) instead of GraphQL. These endpoints 
 | `/uploads` | POST | Upload an image file (multipart, auth required, 5MB limit). Returns `{ key }`. |
 | `/uploads/:key` | GET | Serve an uploaded file (public, cached). |
 
+## Internal Edge Endpoints
+
+These endpoints are served by the API Gateway for trusted edge runtime communication.
+
+### Internal Edge Registration
+
+- **Endpoint:** `POST /internal/edges/register`
+- **Purpose:** Register an edge device and issue worker credentials tied to the device identity.
+
+### Internal Edge Connectivity Heartbeat
+
+- **Endpoint:** `POST /internal/edges/connectivity`
+- **Purpose:** Report edge connectivity/last-seen status and receive upgrade intent metadata.
+
 ## Message Patterns
 
 All message patterns are defined in `packages/shared/src/types/index.ts`.
@@ -331,3 +345,4 @@ Variables:
   }
 }
 ```
+

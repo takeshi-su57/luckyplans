@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import EdgesPage from './page';
 
 const useQueryMock = vi.fn();
@@ -16,6 +16,10 @@ vi.mock('@apollo/client', () => ({
 }));
 
 describe('EdgesPage', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders query error state when workers query fails', () => {
     useQueryMock.mockReturnValue({
       data: undefined,
@@ -28,5 +32,39 @@ describe('EdgesPage', () => {
     render(<EdgesPage />);
 
     expect(screen.getByText('Failed to load edges. Please try again.')).toBeInTheDocument();
+  });
+
+  it('renders device number and connectivity last seen details', () => {
+    useQueryMock.mockReturnValue({
+      data: {
+        workers: [
+          {
+            id: 'worker-1',
+            name: 'Seoul Lab',
+            platform: 'windows-x64',
+            version: '1.0.0',
+            status: 'ACTIVE',
+            deviceNumber: 'edge-seoul-lab-a7k29f',
+            lastSeenAt: '2026-05-21T12:00:00.000Z',
+            targetVersion: '1.0.1',
+            upgradeStatus: 'UPGRADE_PENDING',
+            upgradeMessage: null,
+            createdAt: '2026-05-20T12:00:00.000Z',
+            updatedAt: '2026-05-21T12:00:00.000Z',
+          },
+        ],
+      },
+      loading: false,
+      error: undefined,
+      refetch: vi.fn(),
+    });
+    useMutationMock.mockReturnValue([vi.fn(), { loading: false }]);
+
+    render(<EdgesPage />);
+
+    expect(screen.getByText(/Device Number:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Connectivity \(Last Seen\):/i)).toBeInTheDocument();
+    expect(screen.getByText(/edge-seoul-lab-a7k29f/i)).toBeInTheDocument();
+    expect(screen.getByText(/last seen/i)).toBeInTheDocument();
   });
 });
