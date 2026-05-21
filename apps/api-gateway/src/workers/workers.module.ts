@@ -17,6 +17,6 @@ import { WorkersService } from './workers.service';
     ReleasesService,
     ReleasesResolver,
   ],
-  exports: [CredentialsService],
+  exports: [CredentialsService, WorkersService, ReleasesService],
 })
 export class WorkersModule {}

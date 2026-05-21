@@ -44,7 +44,13 @@ class Worker {
   name!: string;
 
   @Field({ nullable: true })
+  deviceNumber?: string;
+
+  @Field({ nullable: true })
   platform?: string;
+
+  @Field({ nullable: true })
+  arch?: string;
 
   @Field({ nullable: true })
   version?: string;
@@ -86,10 +92,18 @@ export class WorkersResolver {
   @Mutation(() => Worker)
   async createWorker(
     @Args('name') name: string,
+    @Args('deviceNumber', { nullable: true }) deviceNumber?: string,
     @Args('platform', { nullable: true }) platform?: string,
+    @Args('arch', { nullable: true }) arch?: string,
     @Args('version', { nullable: true }) version?: string,
   ): Promise<Worker> {
-    const created = await this.workersService.createWorker({ name, platform, version });
+    const created = await this.workersService.createWorker({
+      name,
+      deviceNumber,
+      platform,
+      arch,
+      version,
+    });
     await this.realtimeEvents.publishWorkerStatusUpdated(created);
     return created;
   }

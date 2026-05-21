@@ -240,9 +240,53 @@ The `traceId` and `spanId` are injected automatically by the Pino `mixin()` conf
 pnpm --filter @luckyplans/web dev
 pnpm --filter @luckyplans/api-gateway dev
 pnpm --filter @luckyplans/service-core dev
+pnpm --filter @luckyplans/edge-agent build
+node apps/edge-agent/dist/main.js
 ```
 
 > Infrastructure (Redis, Keycloak) must be running via `docker compose up -d` regardless of which app services you start.
+
+## Running the Edge Agent Locally
+
+The edge runtime now supports first-run onboarding and local config persistence.
+
+### First run (interactive onboarding)
+
+```bash
+pnpm --filter @luckyplans/edge-agent build
+node apps/edge-agent/dist/main.js
+```
+
+On first run, the edge asks for:
+
+1. Edge display name
+2. Server URL
+3. Registration token
+
+It then generates a device number in this format:
+
+`edge-<human-name>-<shortid>`
+
+Example: `edge-seoul-lab-a7k29f`
+
+### Non-interactive/headless behavior
+
+In non-interactive environments, onboarding is blocked by default. You must either:
+
+1. Provide valid runtime configuration/env values, or
+2. Explicitly opt in with `EDGE_AGENT_ENABLE_ONBOARDING=1`
+
+This prevents accidental hangs in CI/containers waiting for terminal input.
+
+### Runtime contract
+
+The edge runtime now:
+
+1. Registers with the gateway (`POST /internal/edges/register`)
+2. Sends periodic connectivity heartbeat (`POST /internal/edges/connectivity`)
+3. Polls and executes backtest tasks as before
+4. Defers upgrades while active work is running
+5. Runs upgrade only when idle and reports upgrade states
 
 ### Build a single service
 

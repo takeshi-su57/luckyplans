@@ -156,6 +156,41 @@ Every log line is structured JSON with these fields:
 
 When viewing a log line that contains a `traceId`, click the **TraceID** link to jump to the full trace in Tempo.
 
+## Observing Edge Connectivity and Upgrades
+
+Edge fleet operations are visible through worker state and upgrade status transitions.
+
+### What to watch
+
+1. `lastSeenAt` freshness for each worker (connectivity heartbeat health)
+2. `version` vs `targetVersion` drift (pending upgrade intent)
+3. `upgradeStatus` transitions:
+   - `UPGRADE_PENDING`
+   - `DOWNLOADING`
+   - `VERIFYING`
+   - `RESTARTING`
+   - `SUCCEEDED` / `FAILED`
+
+### Useful log queries for edge flows
+
+```logql
+# Registration and connectivity endpoint logs
+{service_name="api-gateway"} |= "/internal/edges/register"
+{service_name="api-gateway"} |= "/internal/edges/connectivity"
+
+# Upgrade lifecycle status logs
+{service_name="api-gateway"} |= "upgradeStatus"
+
+# Credential audit events
+{service_name="api-gateway"} |= "audit credential."
+```
+
+### Common edge operational signals
+
+1. **Stale `lastSeenAt`**: worker likely offline, blocked, or unable to reach gateway.
+2. **`targetVersion` set but status never leaves `UPGRADE_PENDING`**: worker is likely busy (idle-only upgrade policy) or connectivity is unstable.
+3. **Frequent `FAILED` upgrades**: verify release URLs, checksum/signature metadata, and edge host permissions.
+
 ## Querying Metrics
 
 ### Using Prometheus directly

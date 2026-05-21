@@ -38,6 +38,13 @@ export type BacktestResult = {
   metrics: Scalars['String']['output'];
 };
 
+export type BacktestResultsOptionsInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type BacktestTask = {
   __typename?: 'BacktestTask';
   assignedWorkerId?: Maybe<Scalars['String']['output']>;
@@ -221,6 +228,7 @@ export type Language = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  advanceUpgradeCampaign: UpgradeCampaign;
   cancelBacktestTask: BacktestTask;
   createAward: Award;
   createBacktestTask: BacktestTask;
@@ -260,8 +268,10 @@ export type Mutation = {
   reportWorkerUpgradeStatus: Scalars['Boolean']['output'];
   retryBacktestTask: BacktestTask;
   revokeWorkerCredential: Scalars['Boolean']['output'];
+  rollbackUpgradeCampaign: UpgradeCampaign;
   rotateWorkerCredential: IssuedWorkerCredential;
   setWorkerTargetVersion: Scalars['Int']['output'];
+  startUpgradeCampaign: UpgradeCampaign;
   updateAward?: Maybe<Award>;
   updateCertification?: Maybe<Certification>;
   updateEducation?: Maybe<Education>;
@@ -273,6 +283,12 @@ export type Mutation = {
   updateSkill?: Maybe<Skill>;
   updateSkillCategory?: Maybe<SkillCategory>;
   updateSocialLink?: Maybe<SocialLink>;
+  updateStrategyTemplate: StrategyTemplate;
+};
+
+
+export type MutationAdvanceUpgradeCampaignArgs = {
+  campaignId: Scalars['String']['input'];
 };
 
 
@@ -352,6 +368,8 @@ export type MutationCreateStrategyTemplateArgs = {
 
 
 export type MutationCreateWorkerArgs = {
+  arch?: InputMaybe<Scalars['String']['input']>;
+  deviceNumber?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   platform?: InputMaybe<Scalars['String']['input']>;
   version?: InputMaybe<Scalars['String']['input']>;
@@ -480,12 +498,27 @@ export type MutationRevokeWorkerCredentialArgs = {
 };
 
 
+export type MutationRollbackUpgradeCampaignArgs = {
+  campaignId: Scalars['String']['input'];
+};
+
+
 export type MutationRotateWorkerCredentialArgs = {
   id: Scalars['String']['input'];
 };
 
 
 export type MutationSetWorkerTargetVersionArgs = {
+  targetVersion: Scalars['String']['input'];
+  workerIds: Array<Scalars['String']['input']>;
+};
+
+
+export type MutationStartUpgradeCampaignArgs = {
+  failureThreshold?: InputMaybe<Scalars['Float']['input']>;
+  forceMode?: InputMaybe<Scalars['Boolean']['input']>;
+  phaseSize?: InputMaybe<Scalars['Float']['input']>;
+  successThreshold?: InputMaybe<Scalars['Float']['input']>;
   targetVersion: Scalars['String']['input'];
   workerIds: Array<Scalars['String']['input']>;
 };
@@ -555,6 +588,11 @@ export type MutationUpdateSocialLinkArgs = {
   input: UpdateSocialLinkInput;
 };
 
+
+export type MutationUpdateStrategyTemplateArgs = {
+  input: UpdateStrategyTemplateInput;
+};
+
 export type Proficiency =
   | 'ADVANCED'
   | 'BEGINNER'
@@ -600,6 +638,7 @@ export type PublicProfile = {
 export type Query = {
   __typename?: 'Query';
   backtestResults: Array<BacktestResult>;
+  backtestTask?: Maybe<BacktestTask>;
   backtestTasks: Array<BacktestTask>;
   edgeReleases: Array<EdgeRelease>;
   getPublicProfile?: Maybe<PublicProfile>;
@@ -611,7 +650,13 @@ export type Query = {
 
 
 export type QueryBacktestResultsArgs = {
+  options?: InputMaybe<BacktestResultsOptionsInput>;
   taskId: Scalars['String']['input'];
+};
+
+
+export type QueryBacktestTaskArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -662,6 +707,14 @@ export type StrategyTemplate = {
   id: Scalars['ID']['output'];
   isActive: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  backtestResultCreated: BacktestResult;
+  backtestTaskUpdated: BacktestTask;
+  workerStatusUpdated: Worker;
+  workerUpgradeStatusUpdated: Worker;
 };
 
 export type UpdateAwardInput = {
@@ -740,6 +793,27 @@ export type UpdateSocialLinkInput = {
   url?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateStrategyTemplateInput = {
+  category?: InputMaybe<Scalars['String']['input']>;
+  factoryConfig?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpgradeCampaign = {
+  __typename?: 'UpgradeCampaign';
+  currentPhase: Scalars['Float']['output'];
+  failureThreshold: Scalars['Float']['output'];
+  forceMode: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
+  phaseSize: Scalars['Float']['output'];
+  previousVersion?: Maybe<Scalars['String']['output']>;
+  status: Scalars['String']['output'];
+  successThreshold: Scalars['Float']['output'];
+  targetVersion: Scalars['String']['output'];
+};
+
 export type UserProfile = {
   __typename?: 'UserProfile';
   avatarUrl?: Maybe<Scalars['String']['output']>;
@@ -756,7 +830,9 @@ export type UserProfile = {
 
 export type Worker = {
   __typename?: 'Worker';
+  arch?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  deviceNumber?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   lastSeenAt?: Maybe<Scalars['DateTime']['output']>;
   name: Scalars['String']['output'];
@@ -787,7 +863,7 @@ export type WorkerUpgradeStatus =
 export type WorkersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, targetVersion?: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage?: string | null, createdAt: string, updatedAt: string }> };
+export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, deviceNumber?: string | null, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, targetVersion?: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage?: string | null, createdAt: string, updatedAt: string }> };
 
 export type CreateWorkerMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -1158,7 +1234,7 @@ export type UpdateSocialLinkMutationVariables = Exact<{
 export type UpdateSocialLinkMutation = { __typename?: 'Mutation', updateSocialLink?: { __typename?: 'SocialLink', id: string, platform: string, url: string, label?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 
-export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"targetVersion"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeStatus"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;
+export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"targetVersion"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeStatus"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;
 export const CreateWorkerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateWorker"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"platform"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"version"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createWorker"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"platform"},"value":{"kind":"Variable","name":{"kind":"Name","value":"platform"}}},{"kind":"Argument","name":{"kind":"Name","value":"version"},"value":{"kind":"Variable","name":{"kind":"Name","value":"version"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateWorkerMutation, CreateWorkerMutationVariables>;
 export const DisableWorkerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DisableWorker"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"disableWorker"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<DisableWorkerMutation, DisableWorkerMutationVariables>;
 export const SetWorkerTargetVersionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetWorkerTargetVersion"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workerIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetVersion"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setWorkerTargetVersion"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workerIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workerIds"}}},{"kind":"Argument","name":{"kind":"Name","value":"targetVersion"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetVersion"}}}]}]}}]} as unknown as DocumentNode<SetWorkerTargetVersionMutation, SetWorkerTargetVersionMutationVariables>;

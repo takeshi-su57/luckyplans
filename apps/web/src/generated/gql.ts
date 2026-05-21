@@ -14,7 +14,7 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query Workers {\n    workers {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.WorkersDocument,
+    "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.WorkersDocument,
     "\n  mutation CreateWorker($name: String!, $platform: String, $version: String) {\n    createWorker(name: $name, platform: $platform, version: $version) {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateWorkerDocument,
     "\n  mutation DisableWorker($id: String!) {\n    disableWorker(id: $id) {\n      id\n      status\n    }\n  }\n": typeof types.DisableWorkerDocument,
     "\n  mutation SetWorkerTargetVersion($workerIds: [String!]!, $targetVersion: String!) {\n    setWorkerTargetVersion(workerIds: $workerIds, targetVersion: $targetVersion)\n  }\n": typeof types.SetWorkerTargetVersionDocument,
@@ -69,7 +69,7 @@ type Documents = {
     "\n  mutation UpdateSocialLink($id: String!, $input: UpdateSocialLinkInput!) {\n    updateSocialLink(id: $id, input: $input) {\n      id\n      platform\n      url\n      label\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.UpdateSocialLinkDocument,
 };
 const documents: Documents = {
-    "\n  query Workers {\n    workers {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n": types.WorkersDocument,
+    "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n": types.WorkersDocument,
     "\n  mutation CreateWorker($name: String!, $platform: String, $version: String) {\n    createWorker(name: $name, platform: $platform, version: $version) {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateWorkerDocument,
     "\n  mutation DisableWorker($id: String!) {\n    disableWorker(id: $id) {\n      id\n      status\n    }\n  }\n": types.DisableWorkerDocument,
     "\n  mutation SetWorkerTargetVersion($workerIds: [String!]!, $targetVersion: String!) {\n    setWorkerTargetVersion(workerIds: $workerIds, targetVersion: $targetVersion)\n  }\n": types.SetWorkerTargetVersionDocument,
@@ -141,7 +141,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Workers {\n    workers {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query Workers {\n    workers {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n"];
+export function graphql(source: "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

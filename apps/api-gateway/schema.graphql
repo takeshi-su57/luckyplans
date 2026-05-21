@@ -194,7 +194,9 @@ type UpgradeCampaign {
 type Worker {
   id: ID!
   name: String!
+  deviceNumber: String
   platform: String
+  arch: String
   version: String
   status: WorkerStatus!
   lastSeenAt: DateTime
@@ -309,7 +311,7 @@ type Mutation {
   updateHobby(id: String!, input: UpdateHobbyInput!): Hobby
   deleteHobby(id: String!): DeleteResult!
   reorderHobbies(input: ReorderInput!): DeleteResult!
-  createWorker(name: String!, platform: String, version: String): Worker!
+  createWorker(name: String!, deviceNumber: String, platform: String, arch: String, version: String): Worker!
   disableWorker(id: String!): Worker
   issueWorkerCredential(id: String!): IssuedWorkerCredential!
   revokeWorkerCredential(id: String!): Boolean!

@@ -10,4 +10,6 @@ export default {
   '2026-03-13-bitnami-sealed-secrets': 'Bitnami Sealed Secrets for Production',
   '2026-03-13-full-stack-observability': 'Full-Stack Observability',
   '2026-03-16-prisma-postgresql-persistence': 'PostgreSQL Persistence with Prisma ORM',
+  '2026-05-21-gateway-edge-orchestration':
+    'Gateway-Owned Domain Logic with External Edge Orchestration',
 };

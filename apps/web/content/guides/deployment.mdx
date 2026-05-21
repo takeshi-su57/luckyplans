@@ -320,6 +320,32 @@ kubectl -n monitoring port-forward svc/prometheus 9090:9090
 
 NestJS services push traces and metrics via OTLP to the OTel Collector. Promtail ships pod logs to Loki. Grafana provides unified dashboards with trace↔log correlation.
 
+## Edge Agent Release and Rollout
+
+The edge lifecycle now includes release metadata and target-version orchestration.
+
+### Release registration flow
+
+1. Build and publish edge artifacts to GitHub Releases (Windows + Linux assets).
+2. Register the release in LuckyPlans with:
+   - `version`
+   - `windowsUrl`
+   - `linuxUrl`
+   - `checksum`
+   - `signature`
+3. Set `targetVersion` for selected workers or start an upgrade campaign.
+
+### Edge rollout behavior
+
+1. Edge sends connectivity heartbeats to the gateway.
+2. Gateway returns upgrade intent when `targetVersion` differs from `version`.
+3. Edge upgrades only when idle (no active task).
+4. Edge reports upgrade statuses (`DOWNLOADING`, `VERIFYING`, `RESTARTING`, `SUCCEEDED`, `FAILED`).
+
+### Registration token requirement
+
+Edge registration requires `EDGE_REGISTRATION_TOKEN` to be configured server-side. There is no permissive default token fallback.
+
 ## Viewing Logs
 
 ```bash
