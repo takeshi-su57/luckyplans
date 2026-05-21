@@ -43,4 +43,61 @@ export class WorkersService {
       data: { status: 'DISABLED' },
     });
   }
+
+  async upsertWorkerByDeviceNumber(data: {
+    deviceNumber: string;
+    name: string;
+    platform?: string;
+    arch?: string;
+    version?: string;
+  }) {
+    const name = data.name.trim();
+    const deviceNumber = data.deviceNumber.trim();
+    if (!name) {
+      throw new Error('Worker name is required');
+    }
+    if (!deviceNumber) {
+      throw new Error('Worker deviceNumber is required');
+    }
+
+    return this.prisma.worker.upsert({
+      where: { deviceNumber },
+      create: {
+        name,
+        deviceNumber,
+        platform: data.platform,
+        arch: data.arch?.trim() || undefined,
+        version: data.version,
+        lastSeenAt: new Date(),
+      },
+      update: {
+        name,
+        platform: data.platform,
+        arch: data.arch?.trim() || undefined,
+        version: data.version,
+        lastSeenAt: new Date(),
+      },
+    });
+  }
+
+  async findWorkerById(id: string) {
+    return this.prisma.worker.findUnique({ where: { id } });
+  }
+
+  async markConnectivity(data: {
+    workerId: string;
+    version?: string;
+    platform?: string;
+    arch?: string;
+  }) {
+    return this.prisma.worker.update({
+      where: { id: data.workerId },
+      data: {
+        lastSeenAt: new Date(),
+        version: data.version,
+        platform: data.platform,
+        arch: data.arch?.trim() || undefined,
+      },
+    });
+  }
 }
