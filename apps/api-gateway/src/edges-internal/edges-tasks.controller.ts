@@ -1,11 +1,15 @@
 import { Body, Controller, ForbiddenException, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { BacktestService } from '../backtest/backtest.service';
+import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { WorkerAuthGuard } from './worker-auth.guard';
 
 @Controller('internal/edges/tasks')
 @UseGuards(WorkerAuthGuard)
 export class EdgesTasksController {
-  constructor(private readonly backtestService: BacktestService) {}
+  constructor(
+    private readonly backtestService: BacktestService,
+    private readonly realtimeEvents: RealtimeEventsService,
+  ) {}
 
   @Post('next')
   async next(@Body() body: { workerId: string }, @Req() req: { worker?: { workerId: string } }) {
@@ -71,6 +75,15 @@ export class EdgesTasksController {
   ) {
     this.assertWorkerIdentity(body.workerId, req);
     const summary = await this.backtestService.ingestResults(id, body.workerId, body.results);
+    if (summary.accepted > 0 && body.results.length > 0) {
+      const latest = body.results[body.results.length - 1];
+      await this.realtimeEvents.publishBacktestResultCreated({
+        id: `${id}:${latest.configId}`,
+        configId: latest.configId,
+        metrics: JSON.stringify(latest.metrics ?? {}),
+        createdAt: new Date(),
+      });
+    }
     return {
       success: true,
       accepted: summary.accepted,

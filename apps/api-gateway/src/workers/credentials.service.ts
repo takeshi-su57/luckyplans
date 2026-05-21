@@ -1,5 +1,5 @@
 import { createHmac, randomBytes, timingSafeEqual } from 'crypto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { getEnvVar } from '@luckyplans/shared';
 import { PrismaService } from '../database/prisma.service';
 
@@ -10,6 +10,8 @@ type VerifiedCredential = {
 
 @Injectable()
 export class CredentialsService {
+  private readonly logger = new Logger(CredentialsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async issueCredential(workerId: string) {
@@ -25,6 +27,7 @@ export class CredentialsService {
         status: 'ACTIVE',
       },
     });
+    this.logger.log(`audit credential.issue workerId=${workerId} credentialId=${created.id}`);
 
     return {
       id: created.id,
@@ -57,15 +60,17 @@ export class CredentialsService {
   }
 
   async revokeCredential(id: string) {
-    return this.prisma.workerCredential.update({
+    const revoked = await this.prisma.workerCredential.update({
       where: { id },
       data: { status: 'REVOKED' },
     });
+    this.logger.log(`audit credential.revoke workerId=${revoked.workerId} credentialId=${id}`);
+    return revoked;
   }
 
   async rotateCredential(workerId: string) {
     const overlapExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    await this.prisma.workerCredential.updateMany({
+    const rotated = await this.prisma.workerCredential.updateMany({
       where: {
         workerId,
         status: 'ACTIVE',
@@ -75,6 +80,7 @@ export class CredentialsService {
         expiresAt: overlapExpiresAt,
       },
     });
+    this.logger.log(`audit credential.rotate workerId=${workerId} rotatedCount=${rotated.count}`);
 
     return this.issueCredential(workerId);
   }

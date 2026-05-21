@@ -6,8 +6,10 @@ import {
   ObjectType,
   Query,
   Resolver,
+  Subscription,
   registerEnumType,
 } from '@nestjs/graphql';
+import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { WorkersService } from './workers.service';
 
 const WorkerStatus = {
@@ -71,7 +73,10 @@ class Worker {
 
 @Resolver()
 export class WorkersResolver {
-  constructor(private readonly workersService: WorkersService) {}
+  constructor(
+    private readonly workersService: WorkersService,
+    private readonly realtimeEvents: RealtimeEventsService,
+  ) {}
 
   @Query(() => [Worker])
   async workers(): Promise<Worker[]> {
@@ -84,11 +89,27 @@ export class WorkersResolver {
     @Args('platform', { nullable: true }) platform?: string,
     @Args('version', { nullable: true }) version?: string,
   ): Promise<Worker> {
-    return this.workersService.createWorker({ name, platform, version });
+    const created = await this.workersService.createWorker({ name, platform, version });
+    await this.realtimeEvents.publishWorkerStatusUpdated(created);
+    return created;
   }
 
   @Mutation(() => Worker, { nullable: true })
   async disableWorker(@Args('id') id: string): Promise<Worker | null> {
-    return this.workersService.disableWorker(id);
+    const updated = await this.workersService.disableWorker(id);
+    if (updated) {
+      await this.realtimeEvents.publishWorkerStatusUpdated(updated);
+    }
+    return updated;
+  }
+
+  @Subscription(() => Worker)
+  workerStatusUpdated() {
+    return this.realtimeEvents.workerStatusUpdatedIterator();
+  }
+
+  @Subscription(() => Worker)
+  workerUpgradeStatusUpdated() {
+    return this.realtimeEvents.workerUpgradeStatusUpdatedIterator();
   }
 }

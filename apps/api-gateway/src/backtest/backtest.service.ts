@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 
 type HeartbeatInput = {
@@ -79,6 +79,7 @@ export type BacktestResultView = {
 @Injectable()
 export class BacktestService {
   private readonly leaseDurationMs = 60_000;
+  private readonly logger = new Logger(BacktestService.name);
 
   constructor(private readonly prisma: PrismaService) {}
 
@@ -211,6 +212,7 @@ export class BacktestService {
         completedAt: new Date(),
       },
     });
+    this.logger.log(`audit task.cancel taskId=${taskId}`);
     return this.toTaskView(updated);
   }
 
@@ -331,13 +333,15 @@ export class BacktestService {
     if (!task) return null;
 
     const leaseExpiresAt = new Date(Date.now() + this.leaseDurationMs);
-    return this.tasks.update({
+    const leased = await this.tasks.update({
       where: { id: task.id },
       data: {
         status: 'ASSIGNED',
         leaseExpiresAt,
       },
     });
+    this.logger.log(`audit task.lease taskId=${task.id} workerId=${workerId}`);
+    return leased;
   }
 
   async heartbeat(taskId: string, workerId: string, payload: HeartbeatInput) {
@@ -396,6 +400,7 @@ export class BacktestService {
         bestConfigIds: payload.bestConfigIds,
       },
     });
+    this.logger.log(`audit task.complete taskId=${taskId} workerId=${workerId}`);
     return { status: updated.status };
   }
 
@@ -422,6 +427,7 @@ export class BacktestService {
         completedAt: new Date(),
       },
     });
+    this.logger.log(`audit task.fail taskId=${taskId} workerId=${workerId}`);
 
     await this.prisma.worker.update({
       where: { id: workerId },

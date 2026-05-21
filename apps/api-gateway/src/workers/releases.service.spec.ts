@@ -5,6 +5,7 @@ describe('ReleasesService', () => {
   const prisma = {
     edgeRelease: {
       create: vi.fn(),
+      findFirst: vi.fn(),
       findMany: vi.fn(),
     },
     worker: {
@@ -47,12 +48,22 @@ describe('ReleasesService', () => {
   });
 
   it('sets target version for selected workers', async () => {
+    prisma.edgeRelease.findFirst.mockResolvedValue({ id: 'rel_1', version: '1.0.1' });
     prisma.worker.updateMany.mockResolvedValue({ count: 2 });
 
     const updated = await service.setWorkerTargetVersion(['w1', 'w2'], '1.0.1');
 
     expect(updated).toBe(2);
     expect(prisma.worker.updateMany).toHaveBeenCalledOnce();
+  });
+
+  it('rejects target version update when release is not registered', async () => {
+    prisma.edgeRelease.findFirst.mockResolvedValue(null);
+
+    await expect(service.setWorkerTargetVersion(['w1'], '9.9.9')).rejects.toThrow(
+      'Target version is not registered as an edge release',
+    );
+    expect(prisma.worker.updateMany).not.toHaveBeenCalled();
   });
 
   it('updates worker upgrade status payload', async () => {

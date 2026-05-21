@@ -481,3 +481,10 @@ input CreateBacktestTaskInput {
   searchStrategy: String!
   strategyTemplateId: ID
 }
+
+type Subscription {
+  workerStatusUpdated: Worker!
+  workerUpgradeStatusUpdated: Worker!
+  backtestTaskUpdated: BacktestTask!
+  backtestResultCreated: BacktestResult!
+}

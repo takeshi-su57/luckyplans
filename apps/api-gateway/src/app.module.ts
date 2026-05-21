@@ -11,6 +11,7 @@ import { WorkersModule } from './workers/workers.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { BacktestModule } from './backtest/backtest.module';
 import { EdgesInternalModule } from './edges-internal/edges-internal.module';
+import { GraphqlSharedModule } from './graphql/graphql-shared.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { EdgesInternalModule } from './edges-internal/edges-internal.module';
       context: ({ req, res }: { req: unknown; res: unknown }) => ({ req, res }),
     }),
     HealthModule,
+    GraphqlSharedModule,
     AuthModule,
     ProfileModule,
     WorkersModule,

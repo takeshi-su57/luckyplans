@@ -10,8 +10,11 @@ describe('EdgesTasksController', () => {
     complete: vi.fn(),
     fail: vi.fn(),
   };
+  const realtimeEvents = {
+    publishBacktestResultCreated: vi.fn(),
+  };
 
-  const controller = new EdgesTasksController(backtestService as never);
+  const controller = new EdgesTasksController(backtestService as never, realtimeEvents as never);
 
   beforeEach(() => {
     vi.clearAllMocks();

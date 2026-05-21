@@ -8,7 +8,9 @@ import {
   ObjectType,
   Query,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql';
+import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { BacktestService } from './backtest.service';
 
 @ObjectType()
@@ -142,7 +144,10 @@ class BacktestResultsOptionsInput {
 
 @Resolver()
 export class BacktestResolver {
-  constructor(private readonly backtestService: BacktestService) {}
+  constructor(
+    private readonly backtestService: BacktestService,
+    private readonly realtimeEvents: RealtimeEventsService,
+  ) {}
 
   @Mutation(() => StrategyTemplate)
   async createStrategyTemplate(
@@ -160,17 +165,23 @@ export class BacktestResolver {
 
   @Mutation(() => BacktestTask)
   async createBacktestTask(@Args('input') input: CreateBacktestTaskInput): Promise<BacktestTask> {
-    return this.backtestService.createBacktestTask(input);
+    const created = await this.backtestService.createBacktestTask(input);
+    await this.realtimeEvents.publishBacktestTaskUpdated(created);
+    return created;
   }
 
   @Mutation(() => BacktestTask)
   async cancelBacktestTask(@Args('taskId') taskId: string): Promise<BacktestTask> {
-    return this.backtestService.cancelBacktestTask(taskId);
+    const updated = await this.backtestService.cancelBacktestTask(taskId);
+    await this.realtimeEvents.publishBacktestTaskUpdated(updated);
+    return updated;
   }
 
   @Mutation(() => BacktestTask)
   async retryBacktestTask(@Args('taskId') taskId: string): Promise<BacktestTask> {
-    return this.backtestService.retryBacktestTask(taskId);
+    const updated = await this.backtestService.retryBacktestTask(taskId);
+    await this.realtimeEvents.publishBacktestTaskUpdated(updated);
+    return updated;
   }
 
   @Query(() => [BacktestTask])
@@ -189,5 +200,15 @@ export class BacktestResolver {
     @Args('options', { nullable: true }) options?: BacktestResultsOptionsInput,
   ): Promise<BacktestResult[]> {
     return this.backtestService.listBacktestResults(taskId, options);
+  }
+
+  @Subscription(() => BacktestTask)
+  backtestTaskUpdated() {
+    return this.realtimeEvents.backtestTaskUpdatedIterator();
+  }
+
+  @Subscription(() => BacktestResult)
+  backtestResultCreated() {
+    return this.realtimeEvents.backtestResultCreatedIterator();
   }
 }

@@ -1,4 +1,5 @@
 import { Args, Field, ID, Int, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
+import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { ReleasesService } from './releases.service';
 
 @ObjectType()
@@ -33,7 +34,10 @@ class EdgeRelease {
 
 @Resolver()
 export class ReleasesResolver {
-  constructor(private readonly releasesService: ReleasesService) {}
+  constructor(
+    private readonly releasesService: ReleasesService,
+    private readonly realtimeEvents: RealtimeEventsService,
+  ) {}
 
   @Mutation(() => EdgeRelease)
   async createEdgeRelease(
@@ -81,7 +85,7 @@ export class ReleasesResolver {
     @Args('status') status: string,
     @Args('message', { nullable: true }) message?: string,
   ): Promise<boolean> {
-    await this.releasesService.reportWorkerUpgradeStatus(
+    const updated = await this.releasesService.reportWorkerUpgradeStatus(
       workerId,
       status as
         | 'IDLE'
@@ -94,6 +98,7 @@ export class ReleasesResolver {
         | 'ROLLED_BACK',
       message,
     );
+    await this.realtimeEvents.publishWorkerUpgradeStatusUpdated(updated);
     return true;
   }
 }

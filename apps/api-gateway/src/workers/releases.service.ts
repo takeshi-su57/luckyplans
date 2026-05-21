@@ -41,6 +41,7 @@ export class ReleasesService {
       this.prisma as unknown as {
         edgeRelease: {
           create: (args: unknown) => Promise<EdgeReleaseRecord>;
+          findFirst: (args: unknown) => Promise<EdgeReleaseRecord | null>;
           findMany: (args: unknown) => Promise<EdgeReleaseRecord[]>;
         };
       }
@@ -61,6 +62,10 @@ export class ReleasesService {
   }
 
   async setWorkerTargetVersion(workerIds: string[], targetVersion: string) {
+    const release = await this.releases.findFirst({ where: { version: targetVersion } });
+    if (!release) {
+      throw new BadRequestException('Target version is not registered as an edge release');
+    }
     const result = await this.prisma.worker.updateMany({
       where: { id: { in: workerIds } },
       data: {
