@@ -44,6 +44,22 @@ enum WorkerUpgradeStatus {
   ROLLED_BACK
 }
 
+enum UpgradeCampaignStatus {
+  RUNNING
+  PAUSED
+  SUCCEEDED
+  FAILED
+  ROLLED_BACK
+}
+
+enum UpgradeCampaignWorkerStatus {
+  PENDING
+  IN_PROGRESS
+  SUCCEEDED
+  FAILED
+  ROLLED_BACK
+}
+
 model Profile {
   id        String   @id @default(cuid())
   userId    String   @unique
@@ -230,37 +246,75 @@ model Hobby {
 }
 
 model Worker {
-  id                  String              @id @default(cuid())
-  name                String
-  platform            String?
-  version             String?
-  status              WorkerStatus        @default(ACTIVE)
-  lastSeenAt          DateTime?
-  consecutiveFailures Int                 @default(0)
-  quarantinedAt       DateTime?
-  targetVersion       String?
-  upgradeStatus       WorkerUpgradeStatus @default(IDLE)
-  upgradeMessage      String?
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
-  credentials         WorkerCredential[]
+  id                     String                  @id @default(cuid())
+  name                   String
+  platform               String?
+  version                String?
+  status                 WorkerStatus            @default(ACTIVE)
+  lastSeenAt             DateTime?
+  consecutiveFailures    Int                     @default(0)
+  quarantinedAt          DateTime?
+  targetVersion          String?
+  upgradeStatus          WorkerUpgradeStatus     @default(IDLE)
+  upgradeMessage         String?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  credentials            WorkerCredential[]
+  upgradeCampaignWorkers UpgradeCampaignWorker[]
 
   @@index([status])
   @@map("workers")
 }
 
 model EdgeRelease {
-  id         String   @id @default(cuid())
-  version    String   @unique
-  windowsUrl String
-  linuxUrl   String
-  checksum   String
-  signature  String
-  notes      String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  version            String   @unique
+  windowsUrl         String
+  linuxUrl           String
+  checksum           String
+  signature          String
+  signatureAlgorithm String   @default("ed25519")
+  signingKeyId       String?
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   @@map("edge_releases")
+}
+
+model UpgradeCampaign {
+  id               String                  @id @default(cuid())
+  targetVersion    String
+  previousVersion  String?
+  forceMode        Boolean                 @default(false)
+  phaseSize        Int                     @default(1)
+  currentPhase     Int                     @default(0)
+  successThreshold Float                   @default(1)
+  failureThreshold Float                   @default(0.5)
+  status           UpgradeCampaignStatus   @default(RUNNING)
+  workers          UpgradeCampaignWorker[]
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  @@index([status, targetVersion])
+  @@map("upgrade_campaigns")
+}
+
+model UpgradeCampaignWorker {
+  id         String                      @id @default(cuid())
+  campaignId String
+  campaign   UpgradeCampaign             @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  workerId   String
+  worker     Worker                      @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  phase      Int
+  status     UpgradeCampaignWorkerStatus @default(PENDING)
+  message    String?
+  createdAt  DateTime                    @default(now())
+  updatedAt  DateTime                    @updatedAt
+
+  @@unique([campaignId, workerId])
+  @@index([campaignId, phase, status])
+  @@map("upgrade_campaign_workers")
 }
 
 model WorkerCredential {

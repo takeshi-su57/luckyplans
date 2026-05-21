@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { generateKeyPairSync, sign } from 'crypto';
 import { ReleasesService } from './releases.service';
 
 describe('ReleasesService', () => {
+  let signingPrivateKeyPem = '';
   const prisma = {
     edgeRelease: {
       create: vi.fn(),
@@ -11,6 +13,7 @@ describe('ReleasesService', () => {
     worker: {
       updateMany: vi.fn(),
       update: vi.fn(),
+      findMany: vi.fn(),
     },
   };
 
@@ -19,16 +22,31 @@ describe('ReleasesService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     service = new ReleasesService(prisma as never);
+    const { publicKey, privateKey } = generateKeyPairSync('ed25519');
+    signingPrivateKeyPem = privateKey.export({
+      type: 'pkcs8',
+      format: 'pem',
+    }) as string;
+    process.env.EDGE_RELEASE_SIGNING_PUBLIC_KEY = publicKey.export({
+      type: 'spki',
+      format: 'pem',
+    }) as string;
   });
 
   it('creates a release metadata record', async () => {
+    const checksum = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const signature = sign(null, Buffer.from(checksum, 'utf8'), signingPrivateKeyPem).toString(
+      'base64',
+    );
     prisma.edgeRelease.create.mockResolvedValue({
       id: 'rel_1',
       version: '1.0.0',
       windowsUrl: 'https://example.com/windows.exe',
       linuxUrl: 'https://example.com/linux.tar.gz',
-      checksum: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      signature: 'sig',
+      checksum,
+      signature,
+      signatureAlgorithm: 'ed25519',
+      signingKeyId: null,
       notes: 'initial',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -38,8 +56,8 @@ describe('ReleasesService', () => {
       version: '1.0.0',
       windowsUrl: 'https://example.com/windows.exe',
       linuxUrl: 'https://example.com/linux.tar.gz',
-      checksum: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      signature: 'sig',
+      checksum,
+      signature,
       notes: 'initial',
     });
 
@@ -55,6 +73,41 @@ describe('ReleasesService', () => {
 
     expect(updated).toBe(2);
     expect(prisma.worker.updateMany).toHaveBeenCalledOnce();
+  });
+
+  it('starts rollout campaign and seeds first phase workers', async () => {
+    prisma.edgeRelease.findFirst.mockResolvedValue({ id: 'rel_1', version: '1.0.1' });
+    prisma.worker.findMany.mockResolvedValue([
+      { id: 'w1', version: '1.0.0' },
+      { id: 'w2', version: '1.0.0' },
+    ]);
+    (prisma as unknown as Record<string, unknown>).upgradeCampaign = {
+      create: vi.fn().mockResolvedValue({
+        id: 'camp_1',
+        targetVersion: '1.0.1',
+        previousVersion: '1.0.0',
+        forceMode: false,
+        phaseSize: 1,
+        currentPhase: 0,
+        successThreshold: 1,
+        failureThreshold: 0.5,
+        status: 'RUNNING',
+      }),
+    };
+    (prisma as unknown as Record<string, unknown>).upgradeCampaignWorker = {
+      createMany: vi.fn().mockResolvedValue({ count: 2 }),
+      findMany: vi.fn(),
+      updateMany: vi.fn(),
+    };
+    prisma.worker.updateMany.mockResolvedValue({ count: 1 });
+
+    const created = await service.startUpgradeCampaign({
+      workerIds: ['w1', 'w2'],
+      targetVersion: '1.0.1',
+      phaseSize: 1,
+    });
+
+    expect(created.id).toBe('camp_1');
   });
 
   it('rejects target version update when release is not registered', async () => {

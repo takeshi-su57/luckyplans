@@ -274,7 +274,34 @@ exports.Prisma.EdgeReleaseScalarFieldEnum = {
   linuxUrl: 'linuxUrl',
   checksum: 'checksum',
   signature: 'signature',
+  signatureAlgorithm: 'signatureAlgorithm',
+  signingKeyId: 'signingKeyId',
   notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UpgradeCampaignScalarFieldEnum = {
+  id: 'id',
+  targetVersion: 'targetVersion',
+  previousVersion: 'previousVersion',
+  forceMode: 'forceMode',
+  phaseSize: 'phaseSize',
+  currentPhase: 'currentPhase',
+  successThreshold: 'successThreshold',
+  failureThreshold: 'failureThreshold',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UpgradeCampaignWorkerScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  workerId: 'workerId',
+  phase: 'phase',
+  status: 'status',
+  message: 'message',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -388,6 +415,22 @@ exports.WorkerUpgradeStatus = exports.$Enums.WorkerUpgradeStatus = {
   ROLLED_BACK: 'ROLLED_BACK'
 };
 
+exports.UpgradeCampaignStatus = exports.$Enums.UpgradeCampaignStatus = {
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
+exports.UpgradeCampaignWorkerStatus = exports.$Enums.UpgradeCampaignWorkerStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
 exports.WorkerCredentialStatus = exports.$Enums.WorkerCredentialStatus = {
   ACTIVE: 'ACTIVE',
   REVOKED: 'REVOKED',
@@ -422,6 +465,8 @@ exports.Prisma.ModelName = {
   Hobby: 'Hobby',
   Worker: 'Worker',
   EdgeRelease: 'EdgeRelease',
+  UpgradeCampaign: 'UpgradeCampaign',
+  UpgradeCampaignWorker: 'UpgradeCampaignWorker',
   WorkerCredential: 'WorkerCredential',
   StrategyTemplate: 'StrategyTemplate',
   BacktestTask: 'BacktestTask',

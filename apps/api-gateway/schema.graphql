@@ -179,6 +179,18 @@ type EdgeRelease {
   updatedAt: DateTime!
 }
 
+type UpgradeCampaign {
+  id: ID!
+  targetVersion: String!
+  previousVersion: String
+  forceMode: Boolean!
+  phaseSize: Float!
+  currentPhase: Float!
+  successThreshold: Float!
+  failureThreshold: Float!
+  status: String!
+}
+
 type Worker {
   id: ID!
   name: String!
@@ -305,6 +317,9 @@ type Mutation {
   createEdgeRelease(version: String!, windowsUrl: String!, linuxUrl: String!, checksum: String!, signature: String!, notes: String): EdgeRelease!
   setWorkerTargetVersion(workerIds: [String!]!, targetVersion: String!): Int!
   reportWorkerUpgradeStatus(workerId: String!, status: String!, message: String): Boolean!
+  startUpgradeCampaign(workerIds: [String!]!, targetVersion: String!, forceMode: Boolean, phaseSize: Float, successThreshold: Float, failureThreshold: Float): UpgradeCampaign!
+  advanceUpgradeCampaign(campaignId: String!): UpgradeCampaign!
+  rollbackUpgradeCampaign(campaignId: String!): UpgradeCampaign!
   createStrategyTemplate(input: CreateStrategyTemplateInput!): StrategyTemplate!
   updateStrategyTemplate(input: UpdateStrategyTemplateInput!): StrategyTemplate!
   createBacktestTask(input: CreateBacktestTaskInput!): BacktestTask!

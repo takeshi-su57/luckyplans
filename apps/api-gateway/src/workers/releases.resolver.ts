@@ -32,6 +32,36 @@ class EdgeRelease {
   updatedAt!: Date;
 }
 
+@ObjectType()
+class UpgradeCampaign {
+  @Field(() => ID)
+  id!: string;
+
+  @Field()
+  targetVersion!: string;
+
+  @Field({ nullable: true })
+  previousVersion?: string;
+
+  @Field()
+  forceMode!: boolean;
+
+  @Field()
+  phaseSize!: number;
+
+  @Field()
+  currentPhase!: number;
+
+  @Field()
+  successThreshold!: number;
+
+  @Field()
+  failureThreshold!: number;
+
+  @Field()
+  status!: string;
+}
+
 @Resolver()
 export class ReleasesResolver {
   constructor(
@@ -100,5 +130,34 @@ export class ReleasesResolver {
     );
     await this.realtimeEvents.publishWorkerUpgradeStatusUpdated(updated);
     return true;
+  }
+
+  @Mutation(() => UpgradeCampaign)
+  async startUpgradeCampaign(
+    @Args('workerIds', { type: () => [String] }) workerIds: string[],
+    @Args('targetVersion') targetVersion: string,
+    @Args('forceMode', { nullable: true }) forceMode?: boolean,
+    @Args('phaseSize', { nullable: true }) phaseSize?: number,
+    @Args('successThreshold', { nullable: true }) successThreshold?: number,
+    @Args('failureThreshold', { nullable: true }) failureThreshold?: number,
+  ): Promise<UpgradeCampaign> {
+    return this.releasesService.startUpgradeCampaign({
+      workerIds,
+      targetVersion,
+      forceMode,
+      phaseSize,
+      successThreshold,
+      failureThreshold,
+    });
+  }
+
+  @Mutation(() => UpgradeCampaign)
+  async advanceUpgradeCampaign(@Args('campaignId') campaignId: string): Promise<UpgradeCampaign> {
+    return this.releasesService.advanceUpgradeCampaign(campaignId);
+  }
+
+  @Mutation(() => UpgradeCampaign)
+  async rollbackUpgradeCampaign(@Args('campaignId') campaignId: string): Promise<UpgradeCampaign> {
+    return this.releasesService.rollbackUpgradeCampaign(campaignId);
   }
 }
