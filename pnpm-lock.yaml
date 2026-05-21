@@ -127,6 +127,28 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.13)(@types/node@25.8.0)(jiti@2.7.0)(jsdom@27.4.0)(lightningcss@1.32.0)(terser@5.47.1)(yaml@2.9.0)
 
+  apps/edge-agent:
+    dependencies:
+      '@luckyplans/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+    devDependencies:
+      '@luckyplans/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@types/node':
+        specifier: ^25.5.0
+        version: 25.8.0
+      eslint:
+        specifier: ^10.0.3
+        version: 10.3.0(jiti@2.7.0)
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@25.8.0)(jiti@2.7.0)(jsdom@27.4.0)(lightningcss@1.32.0)(terser@5.47.1)(yaml@2.9.0)
+
   apps/web:
     dependencies:
       '@apollo/client':
