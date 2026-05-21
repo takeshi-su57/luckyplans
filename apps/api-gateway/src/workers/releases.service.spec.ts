@@ -14,6 +14,7 @@ describe('ReleasesService', () => {
       updateMany: vi.fn(),
       update: vi.fn(),
       findMany: vi.fn(),
+      findUnique: vi.fn(),
     },
   };
 
@@ -148,5 +149,27 @@ describe('ReleasesService', () => {
     ).rejects.toThrow('Invalid release version format');
 
     expect(prisma.edgeRelease.create).not.toHaveBeenCalled();
+  });
+
+  it('returns release artifact metadata for a worker target version', async () => {
+    prisma.worker.findUnique.mockResolvedValue({ id: 'worker_1', targetVersion: '1.2.3' });
+    prisma.edgeRelease.findFirst.mockResolvedValue({
+      id: 'rel_123',
+      version: '1.2.3',
+      windowsUrl: 'https://example.com/releases/1.2.3/windows.exe',
+      linuxUrl: 'https://example.com/releases/1.2.3/linux.tar.gz',
+      checksum: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      signature: 'sig',
+      signatureAlgorithm: 'ed25519',
+      signingKeyId: null,
+      notes: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    const release = await service.getReleaseForWorkerTarget('worker_1');
+
+    expect(release?.version).toBe('1.2.3');
+    expect(release?.linuxUrl).toMatch(/^https:/);
   });
 });

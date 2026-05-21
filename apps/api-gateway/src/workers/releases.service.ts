@@ -113,6 +113,18 @@ export class ReleasesService {
     ).upgradeCampaignWorker;
   }
 
+  private get workers() {
+    return (
+      this.prisma as unknown as {
+        worker: {
+          findUnique: (
+            args: unknown,
+          ) => Promise<{ id: string; targetVersion?: string | null } | null>;
+        };
+      }
+    ).worker;
+  }
+
   async createRelease(input: CreateReleaseInput): Promise<EdgeReleaseRecord> {
     this.validateReleaseInput(input);
     this.verifyReleaseSignature(input);
@@ -128,6 +140,19 @@ export class ReleasesService {
   async listReleases(): Promise<EdgeReleaseRecord[]> {
     return this.releases.findMany({
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async getReleaseForWorkerTarget(workerId: string): Promise<EdgeReleaseRecord | null> {
+    const worker = await this.workers.findUnique({
+      where: { id: workerId },
+      select: { id: true, targetVersion: true },
+    });
+    if (!worker?.targetVersion) {
+      return null;
+    }
+    return this.releases.findFirst({
+      where: { version: worker.targetVersion },
     });
   }
 
