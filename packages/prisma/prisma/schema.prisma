@@ -10,6 +10,7 @@ datasource db {
 enum WorkerStatus {
   ACTIVE
   DISABLED
+  QUARANTINED
 }
 
 enum WorkerCredentialStatus {
@@ -235,6 +236,8 @@ model Worker {
   version    String?
   status     WorkerStatus @default(ACTIVE)
   lastSeenAt DateTime?
+  consecutiveFailures Int @default(0)
+  quarantinedAt DateTime?
   targetVersion String?
   upgradeStatus WorkerUpgradeStatus @default(IDLE)
   upgradeMessage String?

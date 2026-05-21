@@ -105,7 +105,8 @@ export type BacktestResult = $Result.DefaultSelection<Prisma.$BacktestResultPayl
 export namespace $Enums {
   export const WorkerStatus: {
   ACTIVE: 'ACTIVE',
-  DISABLED: 'DISABLED'
+  DISABLED: 'DISABLED',
+  QUARANTINED: 'QUARANTINED'
 };
 
 export type WorkerStatus = (typeof WorkerStatus)[keyof typeof WorkerStatus]
@@ -15550,8 +15551,18 @@ export namespace Prisma {
 
   export type AggregateWorker = {
     _count: WorkerCountAggregateOutputType | null
+    _avg: WorkerAvgAggregateOutputType | null
+    _sum: WorkerSumAggregateOutputType | null
     _min: WorkerMinAggregateOutputType | null
     _max: WorkerMaxAggregateOutputType | null
+  }
+
+  export type WorkerAvgAggregateOutputType = {
+    consecutiveFailures: number | null
+  }
+
+  export type WorkerSumAggregateOutputType = {
+    consecutiveFailures: number | null
   }
 
   export type WorkerMinAggregateOutputType = {
@@ -15561,6 +15572,8 @@ export namespace Prisma {
     version: string | null
     status: $Enums.WorkerStatus | null
     lastSeenAt: Date | null
+    consecutiveFailures: number | null
+    quarantinedAt: Date | null
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus | null
     upgradeMessage: string | null
@@ -15575,6 +15588,8 @@ export namespace Prisma {
     version: string | null
     status: $Enums.WorkerStatus | null
     lastSeenAt: Date | null
+    consecutiveFailures: number | null
+    quarantinedAt: Date | null
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus | null
     upgradeMessage: string | null
@@ -15589,6 +15604,8 @@ export namespace Prisma {
     version: number
     status: number
     lastSeenAt: number
+    consecutiveFailures: number
+    quarantinedAt: number
     targetVersion: number
     upgradeStatus: number
     upgradeMessage: number
@@ -15598,6 +15615,14 @@ export namespace Prisma {
   }
 
 
+  export type WorkerAvgAggregateInputType = {
+    consecutiveFailures?: true
+  }
+
+  export type WorkerSumAggregateInputType = {
+    consecutiveFailures?: true
+  }
+
   export type WorkerMinAggregateInputType = {
     id?: true
     name?: true
@@ -15605,6 +15630,8 @@ export namespace Prisma {
     version?: true
     status?: true
     lastSeenAt?: true
+    consecutiveFailures?: true
+    quarantinedAt?: true
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
@@ -15619,6 +15646,8 @@ export namespace Prisma {
     version?: true
     status?: true
     lastSeenAt?: true
+    consecutiveFailures?: true
+    quarantinedAt?: true
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
@@ -15633,6 +15662,8 @@ export namespace Prisma {
     version?: true
     status?: true
     lastSeenAt?: true
+    consecutiveFailures?: true
+    quarantinedAt?: true
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
@@ -15679,6 +15710,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: WorkerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: WorkerMinAggregateInputType
@@ -15709,6 +15752,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: WorkerCountAggregateInputType | true
+    _avg?: WorkerAvgAggregateInputType
+    _sum?: WorkerSumAggregateInputType
     _min?: WorkerMinAggregateInputType
     _max?: WorkerMaxAggregateInputType
   }
@@ -15720,12 +15765,16 @@ export namespace Prisma {
     version: string | null
     status: $Enums.WorkerStatus
     lastSeenAt: Date | null
+    consecutiveFailures: number
+    quarantinedAt: Date | null
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus
     upgradeMessage: string | null
     createdAt: Date
     updatedAt: Date
     _count: WorkerCountAggregateOutputType | null
+    _avg: WorkerAvgAggregateOutputType | null
+    _sum: WorkerSumAggregateOutputType | null
     _min: WorkerMinAggregateOutputType | null
     _max: WorkerMaxAggregateOutputType | null
   }
@@ -15751,6 +15800,8 @@ export namespace Prisma {
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
+    consecutiveFailures?: boolean
+    quarantinedAt?: boolean
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
@@ -15767,6 +15818,8 @@ export namespace Prisma {
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
+    consecutiveFailures?: boolean
+    quarantinedAt?: boolean
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
@@ -15781,6 +15834,8 @@ export namespace Prisma {
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
+    consecutiveFailures?: boolean
+    quarantinedAt?: boolean
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
@@ -15795,6 +15850,8 @@ export namespace Prisma {
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
+    consecutiveFailures?: boolean
+    quarantinedAt?: boolean
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
@@ -15802,7 +15859,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "platform" | "version" | "status" | "lastSeenAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
+  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "platform" | "version" | "status" | "lastSeenAt" | "consecutiveFailures" | "quarantinedAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
   export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     credentials?: boolean | Worker$credentialsArgs<ExtArgs>
     _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
@@ -15822,6 +15879,8 @@ export namespace Prisma {
       version: string | null
       status: $Enums.WorkerStatus
       lastSeenAt: Date | null
+      consecutiveFailures: number
+      quarantinedAt: Date | null
       targetVersion: string | null
       upgradeStatus: $Enums.WorkerUpgradeStatus
       upgradeMessage: string | null
@@ -16257,6 +16316,8 @@ export namespace Prisma {
     readonly version: FieldRef<"Worker", 'String'>
     readonly status: FieldRef<"Worker", 'WorkerStatus'>
     readonly lastSeenAt: FieldRef<"Worker", 'DateTime'>
+    readonly consecutiveFailures: FieldRef<"Worker", 'Int'>
+    readonly quarantinedAt: FieldRef<"Worker", 'DateTime'>
     readonly targetVersion: FieldRef<"Worker", 'String'>
     readonly upgradeStatus: FieldRef<"Worker", 'WorkerUpgradeStatus'>
     readonly upgradeMessage: FieldRef<"Worker", 'String'>
@@ -22623,6 +22684,8 @@ export namespace Prisma {
     version: 'version',
     status: 'status',
     lastSeenAt: 'lastSeenAt',
+    consecutiveFailures: 'consecutiveFailures',
+    quarantinedAt: 'quarantinedAt',
     targetVersion: 'targetVersion',
     upgradeStatus: 'upgradeStatus',
     upgradeMessage: 'upgradeMessage',
@@ -23814,6 +23877,8 @@ export namespace Prisma {
     version?: StringNullableFilter<"Worker"> | string | null
     status?: EnumWorkerStatusFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
+    consecutiveFailures?: IntFilter<"Worker"> | number
+    quarantinedAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
     targetVersion?: StringNullableFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableFilter<"Worker"> | string | null
@@ -23829,6 +23894,8 @@ export namespace Prisma {
     version?: SortOrderInput | SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrderInput | SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrderInput | SortOrder
     targetVersion?: SortOrderInput | SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrderInput | SortOrder
@@ -23847,6 +23914,8 @@ export namespace Prisma {
     version?: StringNullableFilter<"Worker"> | string | null
     status?: EnumWorkerStatusFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
+    consecutiveFailures?: IntFilter<"Worker"> | number
+    quarantinedAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
     targetVersion?: StringNullableFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableFilter<"Worker"> | string | null
@@ -23862,14 +23931,18 @@ export namespace Prisma {
     version?: SortOrderInput | SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrderInput | SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrderInput | SortOrder
     targetVersion?: SortOrderInput | SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: WorkerCountOrderByAggregateInput
+    _avg?: WorkerAvgOrderByAggregateInput
     _max?: WorkerMaxOrderByAggregateInput
     _min?: WorkerMinOrderByAggregateInput
+    _sum?: WorkerSumOrderByAggregateInput
   }
 
   export type WorkerScalarWhereWithAggregatesInput = {
@@ -23882,6 +23955,8 @@ export namespace Prisma {
     version?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     status?: EnumWorkerStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableWithAggregatesFilter<"Worker"> | Date | string | null
+    consecutiveFailures?: IntWithAggregatesFilter<"Worker"> | number
+    quarantinedAt?: DateTimeNullableWithAggregatesFilter<"Worker"> | Date | string | null
     targetVersion?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableWithAggregatesFilter<"Worker"> | string | null
@@ -25289,6 +25364,8 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
@@ -25304,6 +25381,8 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
@@ -25319,6 +25398,8 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25334,6 +25415,8 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25349,6 +25432,8 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
@@ -25363,6 +25448,8 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25377,6 +25464,8 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26684,11 +26773,17 @@ export namespace Prisma {
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrder
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type WorkerAvgOrderByAggregateInput = {
+    consecutiveFailures?: SortOrder
   }
 
   export type WorkerMaxOrderByAggregateInput = {
@@ -26698,6 +26793,8 @@ export namespace Prisma {
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrder
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
@@ -26712,11 +26809,17 @@ export namespace Prisma {
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrder
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type WorkerSumOrderByAggregateInput = {
+    consecutiveFailures?: SortOrder
   }
 
   export type EnumWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -30235,6 +30338,8 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
@@ -30249,6 +30354,8 @@ export namespace Prisma {
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
@@ -30279,6 +30386,8 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30293,6 +30402,8 @@ export namespace Prisma {
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null

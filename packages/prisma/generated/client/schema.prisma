@@ -10,6 +10,7 @@ datasource db {
 enum WorkerStatus {
   ACTIVE
   DISABLED
+  QUARANTINED
 }
 
 enum WorkerCredentialStatus {
@@ -229,18 +230,20 @@ model Hobby {
 }
 
 model Worker {
-  id             String              @id @default(cuid())
-  name           String
-  platform       String?
-  version        String?
-  status         WorkerStatus        @default(ACTIVE)
-  lastSeenAt     DateTime?
-  targetVersion  String?
-  upgradeStatus  WorkerUpgradeStatus @default(IDLE)
-  upgradeMessage String?
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  credentials    WorkerCredential[]
+  id                  String              @id @default(cuid())
+  name                String
+  platform            String?
+  version             String?
+  status              WorkerStatus        @default(ACTIVE)
+  lastSeenAt          DateTime?
+  consecutiveFailures Int                 @default(0)
+  quarantinedAt       DateTime?
+  targetVersion       String?
+  upgradeStatus       WorkerUpgradeStatus @default(IDLE)
+  upgradeMessage      String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  credentials         WorkerCredential[]
 
   @@index([status])
   @@map("workers")

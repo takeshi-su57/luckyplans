@@ -13,6 +13,7 @@ import { WorkersService } from './workers.service';
 const WorkerStatus = {
   ACTIVE: 'ACTIVE',
   DISABLED: 'DISABLED',
+  QUARANTINED: 'QUARANTINED',
 } as const;
 type WorkerStatus = (typeof WorkerStatus)[keyof typeof WorkerStatus];
 

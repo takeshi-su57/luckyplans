@@ -143,6 +143,16 @@ export class BacktestService {
         completedAt: new Date(),
       },
     });
+
+    await this.prisma.worker.update({
+      where: { id: workerId },
+      data: {
+        consecutiveFailures: { increment: 1 },
+        status: 'QUARANTINED',
+        quarantinedAt: new Date(),
+      },
+    });
+
     return { status: updated.status };
   }
 

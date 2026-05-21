@@ -258,6 +258,8 @@ exports.Prisma.WorkerScalarFieldEnum = {
   version: 'version',
   status: 'status',
   lastSeenAt: 'lastSeenAt',
+  consecutiveFailures: 'consecutiveFailures',
+  quarantinedAt: 'quarantinedAt',
   targetVersion: 'targetVersion',
   upgradeStatus: 'upgradeStatus',
   upgradeMessage: 'upgradeMessage',
@@ -371,7 +373,8 @@ exports.Proficiency = exports.$Enums.Proficiency = {
 
 exports.WorkerStatus = exports.$Enums.WorkerStatus = {
   ACTIVE: 'ACTIVE',
-  DISABLED: 'DISABLED'
+  DISABLED: 'DISABLED',
+  QUARANTINED: 'QUARANTINED'
 };
 
 exports.WorkerUpgradeStatus = exports.$Enums.WorkerUpgradeStatus = {

@@ -12,6 +12,9 @@ describe('BacktestService', () => {
     backtestResult: {
       createMany: vi.fn(),
     },
+    worker: {
+      update: vi.fn(),
+    },
   };
 
   let service: BacktestService;
@@ -114,5 +117,27 @@ describe('BacktestService', () => {
 
     expect(summary).toEqual({ accepted: 1, deduplicated: 1 });
     expect(prisma.backtestResult.createMany).toHaveBeenCalledOnce();
+  });
+
+  it('quarantines worker after repeated failures', async () => {
+    prisma.backtestTask.findUnique.mockResolvedValue({
+      id: 'task_1',
+      status: 'PROCESSING',
+      assignedWorkerId: 'worker_1',
+    });
+    prisma.backtestTask.update.mockResolvedValue({
+      id: 'task_1',
+      status: 'FAILED',
+    });
+    prisma.worker.update.mockResolvedValue({
+      id: 'worker_1',
+      consecutiveFailures: 3,
+      status: 'QUARANTINED',
+    });
+
+    const result = await service.fail('task_1', 'worker_1', 'runtime exploded');
+
+    expect(result.status).toBe('FAILED');
+    expect(prisma.worker.update).toHaveBeenCalledOnce();
   });
 });
