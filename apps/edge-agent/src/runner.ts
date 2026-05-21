@@ -1,9 +1,50 @@
 import { EdgeApiClient } from './client';
 import { runGridTask } from './grid';
 import { runOptunaTask } from './optuna';
+import { maybeUpgrade, type UpgradeStatus } from './upgrade';
 
-export async function runSinglePollExecution(client: EdgeApiClient) {
+type RunnerOptions = {
+  currentVersion?: string;
+  downloadUpgradeArtifact?: () => Promise<unknown>;
+  verifyUpgradeArtifact?: (artifact: unknown) => Promise<boolean>;
+  installUpgradeArtifact?: (artifact: unknown) => Promise<void>;
+};
+
+export async function runSinglePollExecution(client: EdgeApiClient, options: RunnerOptions = {}) {
   const lease = await client.pollNextTask();
+  const hasActiveTask = Boolean(lease.success && lease.task);
+
+  const reportUpgradeStatus = async (status: UpgradeStatus, details?: { reason?: string }) => {
+    if (typeof client.sendConnectivityHeartbeat !== 'function') {
+      return;
+    }
+    await client.sendConnectivityHeartbeat({
+      activeTask: hasActiveTask,
+      currentVersion: options.currentVersion ?? '0.0.0',
+      upgradeStatus: status,
+      reason: details?.reason,
+    });
+  };
+
+  if (typeof client.sendConnectivityHeartbeat === 'function') {
+    const connectivity = await client.sendConnectivityHeartbeat({
+      activeTask: hasActiveTask,
+      currentVersion: options.currentVersion ?? '0.0.0',
+    });
+
+    if (connectivity.targetVersion) {
+      await maybeUpgrade({
+        activeTask: hasActiveTask,
+        currentVersion: options.currentVersion ?? '0.0.0',
+        targetVersion: connectivity.targetVersion,
+        reportStatus: reportUpgradeStatus,
+        download: options.downloadUpgradeArtifact ?? (async () => ({})),
+        verify: options.verifyUpgradeArtifact ?? (async () => true),
+        install: options.installUpgradeArtifact ?? (async () => undefined),
+      });
+    }
+  }
+
   if (!lease.success || !lease.task) {
     return { executed: false };
   }

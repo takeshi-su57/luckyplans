@@ -32,6 +32,24 @@ export type RegisterEdgeResponse = {
   deviceNumber: string;
 };
 
+export type UpgradeLifecycleStatus =
+  | 'DOWNLOADING'
+  | 'VERIFYING'
+  | 'RESTARTING'
+  | 'SUCCEEDED'
+  | 'FAILED';
+
+export type ConnectivityHeartbeatInput = {
+  activeTask: boolean;
+  currentVersion: string;
+  upgradeStatus?: UpgradeLifecycleStatus;
+  reason?: string;
+};
+
+export type ConnectivityHeartbeatResponse = {
+  targetVersion?: string | null;
+};
+
 export class EdgeApiClient {
   constructor(
     private readonly baseUrl: string,
@@ -129,6 +147,28 @@ export class EdgeApiClient {
       }),
     });
     return response.json() as Promise<{ success: boolean; status: string }>;
+  }
+
+  async sendConnectivityHeartbeat(
+    input: ConnectivityHeartbeatInput,
+  ): Promise<ConnectivityHeartbeatResponse> {
+    const response = await fetch(`${this.baseUrl}/internal/edges/connectivity`, {
+      method: 'POST',
+      headers: this.headers(),
+      body: JSON.stringify({
+        workerId: this.workerId,
+        currentVersion: input.currentVersion,
+        activeTask: input.activeTask,
+        upgradeStatus: input.upgradeStatus,
+        reason: input.reason,
+      }),
+    });
+
+    if (!response.ok) {
+      return {};
+    }
+
+    return response.json() as Promise<ConnectivityHeartbeatResponse>;
   }
 
   private headers() {
