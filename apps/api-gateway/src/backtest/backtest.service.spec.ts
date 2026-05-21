@@ -9,6 +9,9 @@ describe('BacktestService', () => {
       update: vi.fn(),
       updateMany: vi.fn(),
     },
+    backtestResult: {
+      createMany: vi.fn(),
+    },
   };
 
   let service: BacktestService;
@@ -84,5 +87,32 @@ describe('BacktestService', () => {
 
     expect(count).toBe(2);
     expect(prisma.backtestTask.updateMany).toHaveBeenCalledOnce();
+  });
+
+  it('ingests results idempotently and reports accepted/deduplicated counts', async () => {
+    prisma.backtestTask.findUnique.mockResolvedValue({
+      id: 'task_1',
+      status: 'PROCESSING',
+      assignedWorkerId: 'worker_1',
+    });
+    prisma.backtestResult.createMany.mockResolvedValue({ count: 1 });
+
+    const summary = await service.ingestResults('task_1', 'worker_1', [
+      {
+        configId: 'cfg_1',
+        strategyConfig: { fast: 8, slow: 21 },
+        metrics: { sharpeRatio: 1.4, winRate: 60 },
+        resultFolder: 'result/2026-05-20/task_1/cfg_1',
+      },
+      {
+        configId: 'cfg_2',
+        strategyConfig: { fast: 12, slow: 34 },
+        metrics: { sharpeRatio: 1.2, winRate: 55 },
+        resultFolder: 'result/2026-05-20/task_1/cfg_2',
+      },
+    ]);
+
+    expect(summary).toEqual({ accepted: 1, deduplicated: 1 });
+    expect(prisma.backtestResult.createMany).toHaveBeenCalledOnce();
   });
 });

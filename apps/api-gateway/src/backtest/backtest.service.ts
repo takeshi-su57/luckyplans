@@ -22,6 +22,17 @@ type BacktestTaskDelegate = {
   updateMany: (args: unknown) => Promise<{ count: number }>;
 };
 
+type BacktestResultDelegate = {
+  createMany: (args: unknown) => Promise<{ count: number }>;
+};
+
+type ResultInput = {
+  configId: string;
+  strategyConfig: Record<string, unknown>;
+  metrics: Record<string, unknown>;
+  resultFolder?: string;
+};
+
 @Injectable()
 export class BacktestService {
   private readonly leaseDurationMs = 60_000;
@@ -30,6 +41,10 @@ export class BacktestService {
 
   private get tasks(): BacktestTaskDelegate {
     return (this.prisma as unknown as { backtestTask: BacktestTaskDelegate }).backtestTask;
+  }
+
+  private get results(): BacktestResultDelegate {
+    return (this.prisma as unknown as { backtestResult: BacktestResultDelegate }).backtestResult;
   }
 
   async leaseNextTask(workerId: string) {
@@ -144,5 +159,34 @@ export class BacktestService {
     });
 
     return result.count;
+  }
+
+  async ingestResults(taskId: string, workerId: string, payload: ResultInput[]) {
+    const task = await this.tasks.findUnique({ where: { id: taskId } });
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+    if (task.assignedWorkerId !== workerId) {
+      throw new BadRequestException('Task is not assigned to this worker');
+    }
+    if (task.status === 'DONE' || task.status === 'FAILED' || task.status === 'CANCELLED') {
+      return { accepted: 0, deduplicated: payload.length };
+    }
+
+    const created = await this.results.createMany({
+      data: payload.map((result) => ({
+        taskId,
+        configId: result.configId,
+        strategyConfig: result.strategyConfig,
+        metrics: result.metrics,
+        resultFolder: result.resultFolder ?? null,
+      })),
+      skipDuplicates: true,
+    });
+
+    return {
+      accepted: created.count,
+      deduplicated: payload.length - created.count,
+    };
   }
 }

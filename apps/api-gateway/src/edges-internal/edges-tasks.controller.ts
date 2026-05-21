@@ -49,6 +49,28 @@ export class EdgesTasksController {
     return { success: true, status: result.status };
   }
 
+  @Post(':id/results')
+  async results(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      workerId: string;
+      results: Array<{
+        configId: string;
+        strategyConfig: Record<string, unknown>;
+        metrics: Record<string, unknown>;
+        resultFolder?: string;
+      }>;
+    },
+  ) {
+    const summary = await this.backtestService.ingestResults(id, body.workerId, body.results);
+    return {
+      success: true,
+      accepted: summary.accepted,
+      deduplicated: summary.deduplicated,
+    };
+  }
+
   @Post(':id/fail')
   async fail(@Param('id') id: string, @Body() body: { workerId: string; error: string }) {
     const result = await this.backtestService.fail(id, body.workerId, body.error);

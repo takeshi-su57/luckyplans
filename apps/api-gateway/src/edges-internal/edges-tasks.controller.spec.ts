@@ -5,6 +5,7 @@ describe('EdgesTasksController', () => {
   const backtestService = {
     leaseNextTask: vi.fn(),
     heartbeat: vi.fn(),
+    ingestResults: vi.fn(),
     complete: vi.fn(),
     fail: vi.fn(),
   };
@@ -30,5 +31,23 @@ describe('EdgesTasksController', () => {
     });
 
     expect(result).toEqual({ success: true, status: 'DONE' });
+  });
+
+  it('returns accepted/deduplicated summary for results ingestion', async () => {
+    backtestService.ingestResults.mockResolvedValue({ accepted: 2, deduplicated: 1 });
+
+    const result = await controller.results('task_1', {
+      workerId: 'worker_1',
+      results: [
+        {
+          configId: 'cfg_1',
+          strategyConfig: {},
+          metrics: { sharpeRatio: 1.4 },
+          resultFolder: 'r1',
+        },
+      ],
+    });
+
+    expect(result).toEqual({ success: true, accepted: 2, deduplicated: 1 });
   });
 });
