@@ -13,7 +13,9 @@ export class RealtimeEventsService {
   private readonly pubsub = new PubSub();
 
   async publishBacktestTaskUpdated(payload: unknown) {
-    await this.pubsub.publish(REALTIME_EVENTS.BACKTEST_TASK_UPDATED, { backtestTaskUpdated: payload });
+    await this.pubsub.publish(REALTIME_EVENTS.BACKTEST_TASK_UPDATED, {
+      backtestTaskUpdated: payload,
+    });
   }
 
   async publishBacktestResultCreated(payload: unknown) {
@@ -23,7 +25,9 @@ export class RealtimeEventsService {
   }
 
   async publishWorkerStatusUpdated(payload: unknown) {
-    await this.pubsub.publish(REALTIME_EVENTS.WORKER_STATUS_UPDATED, { workerStatusUpdated: payload });
+    await this.pubsub.publish(REALTIME_EVENTS.WORKER_STATUS_UPDATED, {
+      workerStatusUpdated: payload,
+    });
   }
 
   async publishWorkerUpgradeStatusUpdated(payload: unknown) {
@@ -48,4 +52,3 @@ export class RealtimeEventsService {
     return this.pubsub.asyncIterableIterator(REALTIME_EVENTS.WORKER_UPGRADE_STATUS_UPDATED);
   }
 }
-

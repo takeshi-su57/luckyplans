@@ -7,4 +7,3 @@ import { RealtimeEventsService } from './realtime-events.service';
   exports: [RealtimeEventsService],
 })
 export class GraphqlSharedModule {}
-
