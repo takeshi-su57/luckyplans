@@ -245,7 +245,15 @@ type Query {
   workers: [Worker!]!
   edgeReleases: [EdgeRelease!]!
   backtestTasks: [BacktestTask!]!
-  backtestResults(taskId: String!): [BacktestResult!]!
+  backtestTask(id: String!): BacktestTask
+  backtestResults(taskId: String!, options: BacktestResultsOptionsInput): [BacktestResult!]!
+}
+
+input BacktestResultsOptionsInput {
+  sort: String
+  order: String
+  limit: Int
+  offset: Int
 }
 
 type Mutation {
@@ -298,6 +306,7 @@ type Mutation {
   setWorkerTargetVersion(workerIds: [String!]!, targetVersion: String!): Int!
   reportWorkerUpgradeStatus(workerId: String!, status: String!, message: String): Boolean!
   createStrategyTemplate(input: CreateStrategyTemplateInput!): StrategyTemplate!
+  updateStrategyTemplate(input: UpdateStrategyTemplateInput!): StrategyTemplate!
   createBacktestTask(input: CreateBacktestTaskInput!): BacktestTask!
   cancelBacktestTask(taskId: String!): BacktestTask!
   retryBacktestTask(taskId: String!): BacktestTask!
@@ -454,6 +463,14 @@ input CreateStrategyTemplateInput {
   name: String!
   category: String
   factoryConfig: String!
+}
+
+input UpdateStrategyTemplateInput {
+  id: ID!
+  name: String
+  category: String
+  factoryConfig: String
+  isActive: Boolean
 }
 
 input CreateBacktestTaskInput {
