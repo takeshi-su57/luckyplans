@@ -2,9 +2,33 @@ import { describe, expect, it, vi } from 'vitest';
 import { WorkersService } from './workers.service';
 
 describe('WorkersService', () => {
-  it('requires unique deviceNumber for registration flow', async () => {
-    const duplicateDeviceNumberError = new Error('Unique constraint failed on the fields: (`deviceNumber`)');
-    expect(duplicateDeviceNumberError.message).toContain('deviceNumber');
+  it('propagates duplicate deviceNumber failure during worker creation', async () => {
+    const duplicateError = new Error('Unique constraint failed on the fields: (`deviceNumber`)');
+    const prisma = {
+      worker: {
+        create: vi.fn().mockRejectedValue(duplicateError),
+      },
+    };
+    const service = new WorkersService(prisma as never);
+
+    await expect(
+      service.createWorker({
+        name: 'Edge Worker',
+        platform: 'linux',
+        version: '1.0.0',
+        deviceNumber: 'edge-seoul-lab-a7k29f',
+        arch: 'x64',
+      }),
+    ).rejects.toThrow('deviceNumber');
+    expect(prisma.worker.create).toHaveBeenCalledWith({
+      data: {
+        name: 'Edge Worker',
+        platform: 'linux',
+        version: '1.0.0',
+        deviceNumber: 'edge-seoul-lab-a7k29f',
+        arch: 'x64',
+      },
+    });
   });
 
   it('rejects creating a worker with a blank name', async () => {

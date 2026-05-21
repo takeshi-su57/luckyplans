@@ -9,7 +9,13 @@ export class WorkersService {
     return this.prisma.worker.findMany({ orderBy: { createdAt: 'desc' } });
   }
 
-  async createWorker(data: { name: string; platform?: string; version?: string }) {
+  async createWorker(data: {
+    name: string;
+    platform?: string;
+    version?: string;
+    deviceNumber?: string;
+    arch?: string;
+  }) {
     const name = data.name.trim();
     if (!name) {
       throw new Error('Worker name is required');
@@ -20,6 +26,8 @@ export class WorkersService {
         name,
         platform: data.platform,
         version: data.version,
+        deviceNumber: data.deviceNumber,
+        arch: data.arch,
       },
     });
   }
