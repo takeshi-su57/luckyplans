@@ -37,7 +37,9 @@ type BacktestResultDelegate = {
 
 type StrategyTemplateDelegate = {
   findFirst: (args?: unknown) => Promise<{ id: string } | null>;
+  findUnique: (args: unknown) => Promise<Record<string, unknown> | null>;
   create: (args: unknown) => Promise<Record<string, unknown>>;
+  update: (args: unknown) => Promise<Record<string, unknown>>;
 };
 
 type ResultInput = {
@@ -115,6 +117,38 @@ export class BacktestService {
       category: (created.category as string | null) ?? undefined,
       factoryConfig: String(created.factoryConfig),
       isActive: Boolean(created.isActive),
+    };
+  }
+
+  async updateStrategyTemplate(input: {
+    id: string;
+    name?: string;
+    category?: string;
+    factoryConfig?: unknown;
+    isActive?: boolean;
+  }): Promise<StrategyTemplateView> {
+    const payload =
+      input.factoryConfig === undefined
+        ? undefined
+        : typeof input.factoryConfig === 'string'
+          ? input.factoryConfig
+          : JSON.stringify(input.factoryConfig);
+
+    const updated = await this.templates.update({
+      where: { id: input.id },
+      data: {
+        ...(input.name !== undefined ? { name: input.name } : {}),
+        ...(input.category !== undefined ? { category: input.category } : {}),
+        ...(payload !== undefined ? { factoryConfig: payload } : {}),
+        ...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
+      },
+    });
+    return {
+      id: String(updated.id),
+      name: String(updated.name),
+      category: (updated.category as string | null) ?? undefined,
+      factoryConfig: String(updated.factoryConfig),
+      isActive: Boolean(updated.isActive),
     };
   }
 
@@ -213,18 +247,51 @@ export class BacktestService {
     return tasks.map((task) => this.toTaskView(task));
   }
 
-  async listBacktestResults(taskId: string): Promise<BacktestResultView[]> {
+  async getBacktestTask(taskId: string): Promise<BacktestTaskView | null> {
+    const task = await this.tasks.findUnique({
+      where: { id: taskId },
+    });
+    if (!task) return null;
+    return this.toTaskView(task as TaskRecord & Record<string, unknown>);
+  }
+
+  async listBacktestResults(
+    taskId: string,
+    options?: {
+      sort?: 'createdAt' | 'totalPnlPercent';
+      order?: 'asc' | 'desc';
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<BacktestResultView[]> {
     const results = await this.results.findMany({
       where: { taskId },
       orderBy: { createdAt: 'desc' },
     });
-    return results.map((result) => ({
+    const mapped = results.map((result) => ({
       id: String(result.id),
       configId: String(result.configId),
       metrics:
         typeof result.metrics === 'string' ? result.metrics : JSON.stringify(result.metrics ?? {}),
       createdAt: result.createdAt as Date,
     }));
+
+    const sort = options?.sort ?? 'createdAt';
+    const order = options?.order ?? 'desc';
+    const sorted = [...mapped].sort((a, b) => {
+      if (sort === 'totalPnlPercent') {
+        const aValue = this.extractTotalPnlPercent(a.metrics);
+        const bValue = this.extractTotalPnlPercent(b.metrics);
+        return order === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      const aTime = a.createdAt.getTime();
+      const bTime = b.createdAt.getTime();
+      return order === 'asc' ? aTime - bTime : bTime - aTime;
+    });
+
+    const offset = Math.max(0, options?.offset ?? 0);
+    const end = options?.limit ? offset + options.limit : undefined;
+    return sorted.slice(offset, end);
   }
 
   private toTaskView(task: TaskRecord & Record<string, unknown>): BacktestTaskView {
@@ -239,6 +306,16 @@ export class BacktestService {
       totalConfigs: (task.totalConfigs as number | null) ?? undefined,
       createdAt: task.createdAt as Date,
     };
+  }
+
+  private extractTotalPnlPercent(metrics: string): number {
+    try {
+      const parsed = JSON.parse(metrics) as { totalPnlPercent?: unknown };
+      const value = parsed.totalPnlPercent;
+      return typeof value === 'number' ? value : Number.NEGATIVE_INFINITY;
+    } catch {
+      return Number.NEGATIVE_INFINITY;
+    }
   }
 
   async leaseNextTask(workerId: string) {

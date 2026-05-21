@@ -87,6 +87,24 @@ class CreateStrategyTemplateInput {
 }
 
 @InputType()
+class UpdateStrategyTemplateInput {
+  @Field(() => ID)
+  id!: string;
+
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field({ nullable: true })
+  category?: string;
+
+  @Field(() => String, { nullable: true })
+  factoryConfig?: unknown;
+
+  @Field({ nullable: true })
+  isActive?: boolean;
+}
+
+@InputType()
 class CreateBacktestTaskInput {
   @Field()
   name!: string;
@@ -107,6 +125,21 @@ class CreateBacktestTaskInput {
   strategyTemplateId?: string;
 }
 
+@InputType()
+class BacktestResultsOptionsInput {
+  @Field({ nullable: true })
+  sort?: 'createdAt' | 'totalPnlPercent';
+
+  @Field({ nullable: true })
+  order?: 'asc' | 'desc';
+
+  @Field(() => Int, { nullable: true })
+  limit?: number;
+
+  @Field(() => Int, { nullable: true })
+  offset?: number;
+}
+
 @Resolver()
 export class BacktestResolver {
   constructor(private readonly backtestService: BacktestService) {}
@@ -116,6 +149,13 @@ export class BacktestResolver {
     @Args('input') input: CreateStrategyTemplateInput,
   ): Promise<StrategyTemplate> {
     return this.backtestService.createStrategyTemplate(input);
+  }
+
+  @Mutation(() => StrategyTemplate)
+  async updateStrategyTemplate(
+    @Args('input') input: UpdateStrategyTemplateInput,
+  ): Promise<StrategyTemplate> {
+    return this.backtestService.updateStrategyTemplate(input);
   }
 
   @Mutation(() => BacktestTask)
@@ -138,8 +178,16 @@ export class BacktestResolver {
     return this.backtestService.listBacktestTasks();
   }
 
+  @Query(() => BacktestTask, { nullable: true })
+  async backtestTask(@Args('id') id: string): Promise<BacktestTask | null> {
+    return this.backtestService.getBacktestTask(id);
+  }
+
   @Query(() => [BacktestResult])
-  async backtestResults(@Args('taskId') taskId: string): Promise<BacktestResult[]> {
-    return this.backtestService.listBacktestResults(taskId);
+  async backtestResults(
+    @Args('taskId') taskId: string,
+    @Args('options', { nullable: true }) options?: BacktestResultsOptionsInput,
+  ): Promise<BacktestResult[]> {
+    return this.backtestService.listBacktestResults(taskId, options);
   }
 }

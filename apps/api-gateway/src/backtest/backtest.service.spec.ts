@@ -17,7 +17,9 @@ describe('BacktestService', () => {
     },
     strategyTemplate: {
       findFirst: vi.fn(),
+      findUnique: vi.fn(),
       create: vi.fn(),
+      update: vi.fn(),
     },
     worker: {
       update: vi.fn(),
@@ -212,5 +214,31 @@ describe('BacktestService', () => {
 
     expect(created.id).toBe('task_2');
     expect(prisma.backtestTask.create).toHaveBeenCalledOnce();
+  });
+
+  it('updates a strategy template and returns mapped view', async () => {
+    prisma.strategyTemplate.update.mockResolvedValue({
+      id: 'tpl_1',
+      name: 'Template 1',
+      category: 'trend',
+      factoryConfig: '{"entry":"ema"}',
+      isActive: true,
+    });
+
+    const updated = await service.updateStrategyTemplate({
+      id: 'tpl_1',
+      name: 'Template 1',
+    });
+
+    expect(updated.id).toBe('tpl_1');
+    expect(prisma.strategyTemplate.update).toHaveBeenCalledOnce();
+  });
+
+  it('returns null when backtest task does not exist', async () => {
+    prisma.backtestTask.findUnique.mockResolvedValue(null);
+
+    const task = await service.getBacktestTask('missing');
+
+    expect(task).toBeNull();
   });
 });
