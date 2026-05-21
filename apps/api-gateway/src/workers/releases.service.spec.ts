@@ -26,7 +26,7 @@ describe('ReleasesService', () => {
       version: '1.0.0',
       windowsUrl: 'https://example.com/windows.exe',
       linuxUrl: 'https://example.com/linux.tar.gz',
-      checksum: 'abc',
+      checksum: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       signature: 'sig',
       notes: 'initial',
       createdAt: new Date(),
@@ -37,7 +37,7 @@ describe('ReleasesService', () => {
       version: '1.0.0',
       windowsUrl: 'https://example.com/windows.exe',
       linuxUrl: 'https://example.com/linux.tar.gz',
-      checksum: 'abc',
+      checksum: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       signature: 'sig',
       notes: 'initial',
     });
@@ -70,5 +70,19 @@ describe('ReleasesService', () => {
 
     expect(updated.upgradeStatus).toBe('DOWNLOADING');
     expect(prisma.worker.update).toHaveBeenCalledOnce();
+  });
+
+  it('rejects invalid release checksum/signature/version payloads', async () => {
+    await expect(
+      service.createRelease({
+        version: 'latest',
+        windowsUrl: 'https://example.com/windows.exe',
+        linuxUrl: 'https://example.com/linux.tar.gz',
+        checksum: 'not-sha256',
+        signature: '',
+      }),
+    ).rejects.toThrow('Invalid release version format');
+
+    expect(prisma.edgeRelease.create).not.toHaveBeenCalled();
   });
 });
