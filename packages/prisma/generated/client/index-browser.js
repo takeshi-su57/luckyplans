@@ -254,7 +254,9 @@ exports.Prisma.HobbyScalarFieldEnum = {
 exports.Prisma.WorkerScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  deviceNumber: 'deviceNumber',
   platform: 'platform',
+  arch: 'arch',
   version: 'version',
   status: 'status',
   lastSeenAt: 'lastSeenAt',

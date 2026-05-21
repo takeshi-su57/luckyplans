@@ -16,6 +16,22 @@ export type LeaseTaskResponse = {
   } | null;
 };
 
+export type RegisterEdgeInput = {
+  serverUrl: string;
+  deviceNumber: string;
+  displayName: string;
+  platform: string;
+  arch: string;
+  edgeVersion: string;
+  token: string;
+};
+
+export type RegisterEdgeResponse = {
+  workerId: string;
+  credential: string;
+  deviceNumber: string;
+};
+
 export class EdgeApiClient {
   constructor(
     private readonly baseUrl: string,
@@ -30,6 +46,33 @@ export class EdgeApiClient {
       body: JSON.stringify({ workerId: this.workerId }),
     });
     return response.json() as Promise<LeaseTaskResponse>;
+  }
+
+  async registerEdge(input: RegisterEdgeInput): Promise<RegisterEdgeResponse> {
+    const response = await fetch(`${input.serverUrl}/internal/edges/register`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${input.token}`,
+      },
+      body: JSON.stringify({
+        deviceNumber: input.deviceNumber,
+        displayName: input.displayName,
+        platform: input.platform,
+        arch: input.arch,
+        edgeVersion: input.edgeVersion,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = new Error(`Edge registration failed with status ${response.status}`) as Error & {
+        status?: number;
+      };
+      error.status = response.status;
+      throw error;
+    }
+
+    return response.json() as Promise<RegisterEdgeResponse>;
   }
 
   async sendResults(taskId: string, results: GridCandidateResult[]) {

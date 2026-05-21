@@ -248,7 +248,9 @@ model Hobby {
 model Worker {
   id                     String                  @id @default(cuid())
   name                   String
+  deviceNumber           String?                 @unique
   platform               String?
+  arch                   String?
   version                String?
   status                 WorkerStatus            @default(ACTIVE)
   lastSeenAt             DateTime?
@@ -263,6 +265,7 @@ model Worker {
   upgradeCampaignWorkers UpgradeCampaignWorker[]
 
   @@index([status])
+  @@index([lastSeenAt])
   @@map("workers")
 }
 

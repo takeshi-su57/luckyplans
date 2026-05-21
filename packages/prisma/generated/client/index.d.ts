@@ -15820,7 +15820,9 @@ export namespace Prisma {
   export type WorkerMinAggregateOutputType = {
     id: string | null
     name: string | null
+    deviceNumber: string | null
     platform: string | null
+    arch: string | null
     version: string | null
     status: $Enums.WorkerStatus | null
     lastSeenAt: Date | null
@@ -15836,7 +15838,9 @@ export namespace Prisma {
   export type WorkerMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    deviceNumber: string | null
     platform: string | null
+    arch: string | null
     version: string | null
     status: $Enums.WorkerStatus | null
     lastSeenAt: Date | null
@@ -15852,7 +15856,9 @@ export namespace Prisma {
   export type WorkerCountAggregateOutputType = {
     id: number
     name: number
+    deviceNumber: number
     platform: number
+    arch: number
     version: number
     status: number
     lastSeenAt: number
@@ -15878,7 +15884,9 @@ export namespace Prisma {
   export type WorkerMinAggregateInputType = {
     id?: true
     name?: true
+    deviceNumber?: true
     platform?: true
+    arch?: true
     version?: true
     status?: true
     lastSeenAt?: true
@@ -15894,7 +15902,9 @@ export namespace Prisma {
   export type WorkerMaxAggregateInputType = {
     id?: true
     name?: true
+    deviceNumber?: true
     platform?: true
+    arch?: true
     version?: true
     status?: true
     lastSeenAt?: true
@@ -15910,7 +15920,9 @@ export namespace Prisma {
   export type WorkerCountAggregateInputType = {
     id?: true
     name?: true
+    deviceNumber?: true
     platform?: true
+    arch?: true
     version?: true
     status?: true
     lastSeenAt?: true
@@ -16013,7 +16025,9 @@ export namespace Prisma {
   export type WorkerGroupByOutputType = {
     id: string
     name: string
+    deviceNumber: string | null
     platform: string | null
+    arch: string | null
     version: string | null
     status: $Enums.WorkerStatus
     lastSeenAt: Date | null
@@ -16048,7 +16062,9 @@ export namespace Prisma {
   export type WorkerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    deviceNumber?: boolean
     platform?: boolean
+    arch?: boolean
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
@@ -16067,7 +16083,9 @@ export namespace Prisma {
   export type WorkerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    deviceNumber?: boolean
     platform?: boolean
+    arch?: boolean
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
@@ -16083,7 +16101,9 @@ export namespace Prisma {
   export type WorkerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    deviceNumber?: boolean
     platform?: boolean
+    arch?: boolean
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
@@ -16099,7 +16119,9 @@ export namespace Prisma {
   export type WorkerSelectScalar = {
     id?: boolean
     name?: boolean
+    deviceNumber?: boolean
     platform?: boolean
+    arch?: boolean
     version?: boolean
     status?: boolean
     lastSeenAt?: boolean
@@ -16112,7 +16134,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "platform" | "version" | "status" | "lastSeenAt" | "consecutiveFailures" | "quarantinedAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
+  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "deviceNumber" | "platform" | "arch" | "version" | "status" | "lastSeenAt" | "consecutiveFailures" | "quarantinedAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
   export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     credentials?: boolean | Worker$credentialsArgs<ExtArgs>
     upgradeCampaignWorkers?: boolean | Worker$upgradeCampaignWorkersArgs<ExtArgs>
@@ -16130,7 +16152,9 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      deviceNumber: string | null
       platform: string | null
+      arch: string | null
       version: string | null
       status: $Enums.WorkerStatus
       lastSeenAt: Date | null
@@ -16568,7 +16592,9 @@ export namespace Prisma {
   interface WorkerFieldRefs {
     readonly id: FieldRef<"Worker", 'String'>
     readonly name: FieldRef<"Worker", 'String'>
+    readonly deviceNumber: FieldRef<"Worker", 'String'>
     readonly platform: FieldRef<"Worker", 'String'>
+    readonly arch: FieldRef<"Worker", 'String'>
     readonly version: FieldRef<"Worker", 'String'>
     readonly status: FieldRef<"Worker", 'WorkerStatus'>
     readonly lastSeenAt: FieldRef<"Worker", 'DateTime'>
@@ -25329,7 +25355,9 @@ export namespace Prisma {
   export const WorkerScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    deviceNumber: 'deviceNumber',
     platform: 'platform',
+    arch: 'arch',
     version: 'version',
     status: 'status',
     lastSeenAt: 'lastSeenAt',
@@ -26583,7 +26611,9 @@ export namespace Prisma {
     NOT?: WorkerWhereInput | WorkerWhereInput[]
     id?: StringFilter<"Worker"> | string
     name?: StringFilter<"Worker"> | string
+    deviceNumber?: StringNullableFilter<"Worker"> | string | null
     platform?: StringNullableFilter<"Worker"> | string | null
+    arch?: StringNullableFilter<"Worker"> | string | null
     version?: StringNullableFilter<"Worker"> | string | null
     status?: EnumWorkerStatusFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
@@ -26601,7 +26631,9 @@ export namespace Prisma {
   export type WorkerOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    deviceNumber?: SortOrderInput | SortOrder
     platform?: SortOrderInput | SortOrder
+    arch?: SortOrderInput | SortOrder
     version?: SortOrderInput | SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrderInput | SortOrder
@@ -26618,11 +26650,13 @@ export namespace Prisma {
 
   export type WorkerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    deviceNumber?: string
     AND?: WorkerWhereInput | WorkerWhereInput[]
     OR?: WorkerWhereInput[]
     NOT?: WorkerWhereInput | WorkerWhereInput[]
     name?: StringFilter<"Worker"> | string
     platform?: StringNullableFilter<"Worker"> | string | null
+    arch?: StringNullableFilter<"Worker"> | string | null
     version?: StringNullableFilter<"Worker"> | string | null
     status?: EnumWorkerStatusFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
@@ -26635,12 +26669,14 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
     credentials?: WorkerCredentialListRelationFilter
     upgradeCampaignWorkers?: UpgradeCampaignWorkerListRelationFilter
-  }, "id">
+  }, "id" | "deviceNumber">
 
   export type WorkerOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    deviceNumber?: SortOrderInput | SortOrder
     platform?: SortOrderInput | SortOrder
+    arch?: SortOrderInput | SortOrder
     version?: SortOrderInput | SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrderInput | SortOrder
@@ -26664,7 +26700,9 @@ export namespace Prisma {
     NOT?: WorkerScalarWhereWithAggregatesInput | WorkerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Worker"> | string
     name?: StringWithAggregatesFilter<"Worker"> | string
+    deviceNumber?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     platform?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    arch?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     version?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     status?: EnumWorkerStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerStatus
     lastSeenAt?: DateTimeNullableWithAggregatesFilter<"Worker"> | Date | string | null
@@ -28246,7 +28284,9 @@ export namespace Prisma {
   export type WorkerCreateInput = {
     id?: string
     name: string
+    deviceNumber?: string | null
     platform?: string | null
+    arch?: string | null
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
@@ -28264,7 +28304,9 @@ export namespace Prisma {
   export type WorkerUncheckedCreateInput = {
     id?: string
     name: string
+    deviceNumber?: string | null
     platform?: string | null
+    arch?: string | null
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
@@ -28282,7 +28324,9 @@ export namespace Prisma {
   export type WorkerUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28300,7 +28344,9 @@ export namespace Prisma {
   export type WorkerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28318,7 +28364,9 @@ export namespace Prisma {
   export type WorkerCreateManyInput = {
     id?: string
     name: string
+    deviceNumber?: string | null
     platform?: string | null
+    arch?: string | null
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
@@ -28334,7 +28382,9 @@ export namespace Prisma {
   export type WorkerUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -28350,7 +28400,9 @@ export namespace Prisma {
   export type WorkerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -29860,7 +29912,9 @@ export namespace Prisma {
   export type WorkerCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    deviceNumber?: SortOrder
     platform?: SortOrder
+    arch?: SortOrder
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
@@ -29880,7 +29934,9 @@ export namespace Prisma {
   export type WorkerMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    deviceNumber?: SortOrder
     platform?: SortOrder
+    arch?: SortOrder
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
@@ -29896,7 +29952,9 @@ export namespace Prisma {
   export type WorkerMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    deviceNumber?: SortOrder
     platform?: SortOrder
+    arch?: SortOrder
     version?: SortOrder
     status?: SortOrder
     lastSeenAt?: SortOrder
@@ -33916,7 +33974,9 @@ export namespace Prisma {
   export type WorkerCreateWithoutUpgradeCampaignWorkersInput = {
     id?: string
     name: string
+    deviceNumber?: string | null
     platform?: string | null
+    arch?: string | null
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
@@ -33933,7 +33993,9 @@ export namespace Prisma {
   export type WorkerUncheckedCreateWithoutUpgradeCampaignWorkersInput = {
     id?: string
     name: string
+    deviceNumber?: string | null
     platform?: string | null
+    arch?: string | null
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
@@ -34005,7 +34067,9 @@ export namespace Prisma {
   export type WorkerUpdateWithoutUpgradeCampaignWorkersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34022,7 +34086,9 @@ export namespace Prisma {
   export type WorkerUncheckedUpdateWithoutUpgradeCampaignWorkersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34039,7 +34105,9 @@ export namespace Prisma {
   export type WorkerCreateWithoutCredentialsInput = {
     id?: string
     name: string
+    deviceNumber?: string | null
     platform?: string | null
+    arch?: string | null
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
@@ -34056,7 +34124,9 @@ export namespace Prisma {
   export type WorkerUncheckedCreateWithoutCredentialsInput = {
     id?: string
     name: string
+    deviceNumber?: string | null
     platform?: string | null
+    arch?: string | null
     version?: string | null
     status?: $Enums.WorkerStatus
     lastSeenAt?: Date | string | null
@@ -34089,7 +34159,9 @@ export namespace Prisma {
   export type WorkerUpdateWithoutCredentialsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -34106,7 +34178,9 @@ export namespace Prisma {
   export type WorkerUncheckedUpdateWithoutCredentialsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
     platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
     version?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
