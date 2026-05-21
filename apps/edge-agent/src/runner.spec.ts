@@ -23,12 +23,15 @@ describe('runSinglePollExecution', () => {
         },
       }),
       sendResults: vi.fn().mockResolvedValue({ success: true, accepted: 1, deduplicated: 0 }),
+      sendHeartbeat: vi.fn().mockResolvedValue({ success: true, status: 'PROCESSING' }),
       completeTask: vi.fn().mockResolvedValue({ success: true, status: 'DONE' }),
+      failTask: vi.fn().mockResolvedValue({ success: true, status: 'FAILED' }),
     };
 
     const result = await runSinglePollExecution(client as never);
 
     expect(result.executed).toBe(true);
+    expect(client.sendHeartbeat).toHaveBeenCalled();
     expect(client.sendResults).toHaveBeenCalledOnce();
     expect(client.completeTask).toHaveBeenCalledOnce();
   });
@@ -54,13 +57,44 @@ describe('runSinglePollExecution', () => {
         },
       }),
       sendResults: vi.fn().mockResolvedValue({ success: true, accepted: 3, deduplicated: 0 }),
+      sendHeartbeat: vi.fn().mockResolvedValue({ success: true, status: 'PROCESSING' }),
       completeTask: vi.fn().mockResolvedValue({ success: true, status: 'DONE' }),
+      failTask: vi.fn().mockResolvedValue({ success: true, status: 'FAILED' }),
     };
 
     const result = await runSinglePollExecution(client as never);
 
     expect(result.executed).toBe(true);
+    expect(client.sendHeartbeat).toHaveBeenCalled();
     expect(client.sendResults).toHaveBeenCalledOnce();
     expect(client.completeTask).toHaveBeenCalledOnce();
+  });
+
+  it('reports failure when task execution throws', async () => {
+    const client = {
+      pollNextTask: vi.fn().mockResolvedValue({
+        success: true,
+        task: {
+          taskId: 'task_invalid',
+          name: 'invalid',
+          symbol: 'BTCUSDT',
+          interval: '1m',
+          searchStrategy: 'optuna',
+          optimizationParams: {},
+          optimizationMetrics: ['totalPnlPercent'],
+          trials: 2,
+        },
+      }),
+      sendResults: vi.fn().mockRejectedValue(new Error('upload failed')),
+      sendHeartbeat: vi.fn().mockResolvedValue({ success: true, status: 'PROCESSING' }),
+      completeTask: vi.fn(),
+      failTask: vi.fn().mockResolvedValue({ success: true, status: 'FAILED' }),
+    };
+
+    const result = await runSinglePollExecution(client as never);
+
+    expect(result.executed).toBe(false);
+    expect(client.failTask).toHaveBeenCalledOnce();
+    expect(client.completeTask).not.toHaveBeenCalled();
   });
 });
