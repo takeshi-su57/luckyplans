@@ -7,18 +7,28 @@ export default function BacktestTemplatesPage() {
   const [name, setName] = useState('');
   const [category, setCategory] = useState('');
   const [factoryConfig, setFactoryConfig] = useState('{"entry":"ema-cross"}');
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [createTemplate, { loading, data, error }] = useCreateTemplate();
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!name.trim()) return;
+    let parsedFactoryConfig: unknown;
+
+    try {
+      parsedFactoryConfig = JSON.parse(factoryConfig);
+      setValidationError(null);
+    } catch {
+      setValidationError('Factory config must be valid JSON.');
+      return;
+    }
 
     await createTemplate({
       variables: {
         input: {
           name: name.trim(),
           category: category.trim() || null,
-          factoryConfig: JSON.parse(factoryConfig),
+          factoryConfig: parsedFactoryConfig,
         },
       },
     });
@@ -65,6 +75,7 @@ export default function BacktestTemplatesPage() {
       {data?.createStrategyTemplate ? (
         <p className="text-sm text-green-700">Created: {data.createStrategyTemplate.name}</p>
       ) : null}
+      {validationError ? <p className="text-sm text-red-600">{validationError}</p> : null}
       {error ? <p className="text-sm text-red-600">Template creation failed.</p> : null}
     </div>
   );

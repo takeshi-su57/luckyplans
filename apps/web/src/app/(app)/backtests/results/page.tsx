@@ -6,12 +6,14 @@ import { useBacktestResults } from '@/hooks/backtests/use-backtests';
 type ResultRow = {
   id: string;
   configId: string;
-  metrics: {
-    totalPnlPercent?: number;
-    winRate?: number;
-    sharpeRatio?: number;
-  };
+  metrics: string;
   createdAt: string;
+};
+
+type ParsedMetrics = {
+  totalPnlPercent?: number;
+  winRate?: number;
+  sharpeRatio?: number;
 };
 
 export default function BacktestResultsPage() {
@@ -19,15 +21,14 @@ export default function BacktestResultsPage() {
   const { data, loading, error } = useBacktestResults(taskId.trim());
   const rows = ((data?.backtestResults ?? []) as ResultRow[]) ?? [];
 
-  const sorted = useMemo(
-    () =>
-      [...rows].sort(
-        (a, b) =>
-          (b.metrics?.totalPnlPercent ?? Number.NEGATIVE_INFINITY) -
-          (a.metrics?.totalPnlPercent ?? Number.NEGATIVE_INFINITY),
-      ),
-    [rows],
-  );
+  const sorted = useMemo(() => {
+    const enriched = rows.map((row) => ({ row, metrics: parseMetrics(row.metrics) }));
+    return enriched.sort(
+      (a, b) =>
+        (b.metrics.totalPnlPercent ?? Number.NEGATIVE_INFINITY) -
+        (a.metrics.totalPnlPercent ?? Number.NEGATIVE_INFINITY),
+    );
+  }, [rows]);
 
   return (
     <div className="space-y-6">
@@ -49,12 +50,12 @@ export default function BacktestResultsPage() {
         {!loading && !error && sorted.length === 0 ? (
           <p className="text-sm text-[#6b7280]">No results yet.</p>
         ) : null}
-        {sorted.map((row) => (
+        {sorted.map(({ row, metrics }) => (
           <div key={row.id} className="rounded-md border border-[#e5e7eb] p-3">
             <p className="font-medium text-[#111827]">{row.configId}</p>
             <p className="text-xs text-[#6b7280]">
-              pnl% {row.metrics?.totalPnlPercent ?? '-'} | winRate {row.metrics?.winRate ?? '-'} |
-              sharpe {row.metrics?.sharpeRatio ?? '-'}
+              pnl% {metrics.totalPnlPercent ?? '-'} | winRate {metrics.winRate ?? '-'} | sharpe{' '}
+              {metrics.sharpeRatio ?? '-'}
             </p>
             <p className="text-xs text-[#9ca3af]">{new Date(row.createdAt).toLocaleString()}</p>
           </div>
@@ -62,4 +63,13 @@ export default function BacktestResultsPage() {
       </section>
     </div>
   );
+}
+
+function parseMetrics(raw: string): ParsedMetrics {
+  try {
+    const parsed = JSON.parse(raw) as ParsedMetrics;
+    return parsed ?? {};
+  } catch {
+    return {};
+  }
 }
