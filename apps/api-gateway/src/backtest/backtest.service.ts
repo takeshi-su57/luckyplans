@@ -160,6 +160,14 @@ export class BacktestService {
   }
 
   async cancelBacktestTask(taskId: string): Promise<BacktestTaskView> {
+    const task = await this.tasks.findUnique({ where: { id: taskId } });
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+    if (!['AWAIT', 'ASSIGNED', 'PROCESSING'].includes(task.status)) {
+      throw new BadRequestException('Task cannot be cancelled in current state');
+    }
+
     const updated = await this.tasks.update({
       where: { id: taskId },
       data: {
@@ -171,6 +179,14 @@ export class BacktestService {
   }
 
   async retryBacktestTask(taskId: string): Promise<BacktestTaskView> {
+    const task = await this.tasks.findUnique({ where: { id: taskId } });
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+    if (!['FAILED', 'CANCELLED'].includes(task.status)) {
+      throw new BadRequestException('Task cannot be retried in current state');
+    }
+
     const updated = await this.tasks.update({
       where: { id: taskId },
       data: {
@@ -284,6 +300,9 @@ export class BacktestService {
     if (task.status === 'DONE' || task.status === 'FAILED' || task.status === 'CANCELLED') {
       return { status: task.status };
     }
+    if (task.status !== 'PROCESSING') {
+      throw new BadRequestException('Task cannot be completed in current state');
+    }
     if (task.assignedWorkerId !== workerId) {
       throw new BadRequestException('Task is not assigned to this worker');
     }
@@ -308,6 +327,9 @@ export class BacktestService {
     }
     if (task.status === 'DONE' || task.status === 'FAILED' || task.status === 'CANCELLED') {
       return { status: task.status };
+    }
+    if (task.status !== 'PROCESSING') {
+      throw new BadRequestException('Task cannot fail in current state');
     }
     if (task.assignedWorkerId !== workerId) {
       throw new BadRequestException('Task is not assigned to this worker');

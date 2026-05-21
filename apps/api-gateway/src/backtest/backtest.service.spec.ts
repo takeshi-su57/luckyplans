@@ -148,6 +148,50 @@ describe('BacktestService', () => {
     expect(prisma.worker.update).toHaveBeenCalledOnce();
   });
 
+  it('rejects complete when task is not PROCESSING', async () => {
+    prisma.backtestTask.findUnique.mockResolvedValue({
+      id: 'task_1',
+      status: 'ASSIGNED',
+      assignedWorkerId: 'worker_1',
+    });
+
+    await expect(
+      service.complete('task_1', 'worker_1', {
+        bestConfigIds: ['cfg_1'],
+        processedConfigs: 10,
+        totalConfigs: 10,
+      }),
+    ).rejects.toThrow('Task cannot be completed in current state');
+
+    expect(prisma.backtestTask.update).not.toHaveBeenCalled();
+  });
+
+  it('rejects fail when task is not PROCESSING', async () => {
+    prisma.backtestTask.findUnique.mockResolvedValue({
+      id: 'task_1',
+      status: 'ASSIGNED',
+      assignedWorkerId: 'worker_1',
+    });
+
+    await expect(service.fail('task_1', 'worker_1', 'boom')).rejects.toThrow(
+      'Task cannot fail in current state',
+    );
+    expect(prisma.backtestTask.update).not.toHaveBeenCalled();
+  });
+
+  it('rejects retry for non-terminal-retryable task states', async () => {
+    prisma.backtestTask.update.mockRejectedValue(new Error('should not be called'));
+    prisma.backtestTask.findUnique.mockResolvedValue({
+      id: 'task_1',
+      status: 'PROCESSING',
+      assignedWorkerId: 'worker_1',
+    });
+
+    await expect(service.retryBacktestTask('task_1')).rejects.toThrow(
+      'Task cannot be retried in current state',
+    );
+  });
+
   it('creates backtest task with active template fallback', async () => {
     prisma.strategyTemplate.findFirst.mockResolvedValue({ id: 'tpl_1' });
     prisma.backtestTask.create.mockResolvedValue({
