@@ -57,4 +57,46 @@ describe('WorkersService', () => {
     expect(result).toBeNull();
     expect(prisma.worker.update).not.toHaveBeenCalled();
   });
+
+  it('normalizes whitespace deviceNumber to undefined before persistence', async () => {
+    const prisma = {
+      worker: {
+        create: vi.fn().mockResolvedValue({ id: 'worker_1' }),
+      },
+    };
+    const service = new WorkersService(prisma as never);
+
+    await service.createWorker({
+      name: 'Edge Worker',
+      deviceNumber: '   ',
+      arch: 'x64',
+    });
+
+    expect(prisma.worker.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        deviceNumber: undefined,
+      }),
+    });
+  });
+
+  it('normalizes whitespace arch to undefined before persistence', async () => {
+    const prisma = {
+      worker: {
+        create: vi.fn().mockResolvedValue({ id: 'worker_1' }),
+      },
+    };
+    const service = new WorkersService(prisma as never);
+
+    await service.createWorker({
+      name: 'Edge Worker',
+      deviceNumber: 'edge-seoul-lab-a7k29f',
+      arch: '   ',
+    });
+
+    expect(prisma.worker.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        arch: undefined,
+      }),
+    });
+  });
 });

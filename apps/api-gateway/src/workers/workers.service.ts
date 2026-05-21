@@ -17,6 +17,8 @@ export class WorkersService {
     arch?: string;
   }) {
     const name = data.name.trim();
+    const deviceNumber = data.deviceNumber?.trim() || undefined;
+    const arch = data.arch?.trim() || undefined;
     if (!name) {
       throw new Error('Worker name is required');
     }
@@ -26,8 +28,8 @@ export class WorkersService {
         name,
         platform: data.platform,
         version: data.version,
-        deviceNumber: data.deviceNumber,
-        arch: data.arch,
+        deviceNumber,
+        arch,
       },
     });
   }
