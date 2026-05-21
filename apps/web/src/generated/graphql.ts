@@ -30,6 +30,27 @@ export type Award = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type BacktestResult = {
+  __typename?: 'BacktestResult';
+  configId: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  metrics: Scalars['String']['output'];
+};
+
+export type BacktestTask = {
+  __typename?: 'BacktestTask';
+  assignedWorkerId?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  interval: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  processedConfigs?: Maybe<Scalars['Int']['output']>;
+  status: Scalars['String']['output'];
+  symbol: Scalars['String']['output'];
+  totalConfigs?: Maybe<Scalars['Int']['output']>;
+};
+
 export type Certification = {
   __typename?: 'Certification';
   createdAt: Scalars['DateTime']['output'];
@@ -48,6 +69,15 @@ export type CreateAwardInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   issuer?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
+};
+
+export type CreateBacktestTaskInput = {
+  assignedWorkerId: Scalars['String']['input'];
+  interval: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  searchStrategy: Scalars['String']['input'];
+  strategyTemplateId?: InputMaybe<Scalars['ID']['input']>;
+  symbol: Scalars['String']['input'];
 };
 
 export type CreateCertificationInput = {
@@ -110,9 +140,28 @@ export type CreateSocialLinkInput = {
   url: Scalars['String']['input'];
 };
 
+export type CreateStrategyTemplateInput = {
+  category?: InputMaybe<Scalars['String']['input']>;
+  factoryConfig: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
 export type DeleteResult = {
   __typename?: 'DeleteResult';
   success: Scalars['Boolean']['output'];
+};
+
+export type EdgeRelease = {
+  __typename?: 'EdgeRelease';
+  checksum: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  linuxUrl: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  signature: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  version: Scalars['String']['output'];
+  windowsUrl: Scalars['String']['output'];
 };
 
 export type Education = {
@@ -172,8 +221,11 @@ export type Language = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  cancelBacktestTask: BacktestTask;
   createAward: Award;
+  createBacktestTask: BacktestTask;
   createCertification: Certification;
+  createEdgeRelease: EdgeRelease;
   createEducation: Education;
   createExperience: Experience;
   createHobby: Hobby;
@@ -182,6 +234,7 @@ export type Mutation = {
   createSkill: Skill;
   createSkillCategory: SkillCategory;
   createSocialLink: SocialLink;
+  createStrategyTemplate: StrategyTemplate;
   createWorker: Worker;
   deleteAward: DeleteResult;
   deleteCertification: DeleteResult;
@@ -204,8 +257,11 @@ export type Mutation = {
   reorderProjects: DeleteResult;
   reorderSkills: DeleteResult;
   reorderSocialLinks: DeleteResult;
+  reportWorkerUpgradeStatus: Scalars['Boolean']['output'];
+  retryBacktestTask: BacktestTask;
   revokeWorkerCredential: Scalars['Boolean']['output'];
   rotateWorkerCredential: IssuedWorkerCredential;
+  setWorkerTargetVersion: Scalars['Int']['output'];
   updateAward?: Maybe<Award>;
   updateCertification?: Maybe<Certification>;
   updateEducation?: Maybe<Education>;
@@ -220,13 +276,33 @@ export type Mutation = {
 };
 
 
+export type MutationCancelBacktestTaskArgs = {
+  taskId: Scalars['String']['input'];
+};
+
+
 export type MutationCreateAwardArgs = {
   input: CreateAwardInput;
 };
 
 
+export type MutationCreateBacktestTaskArgs = {
+  input: CreateBacktestTaskInput;
+};
+
+
 export type MutationCreateCertificationArgs = {
   input: CreateCertificationInput;
+};
+
+
+export type MutationCreateEdgeReleaseArgs = {
+  checksum: Scalars['String']['input'];
+  linuxUrl: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  signature: Scalars['String']['input'];
+  version: Scalars['String']['input'];
+  windowsUrl: Scalars['String']['input'];
 };
 
 
@@ -267,6 +343,11 @@ export type MutationCreateSkillCategoryArgs = {
 
 export type MutationCreateSocialLinkArgs = {
   input: CreateSocialLinkInput;
+};
+
+
+export type MutationCreateStrategyTemplateArgs = {
+  input: CreateStrategyTemplateInput;
 };
 
 
@@ -382,6 +463,18 @@ export type MutationReorderSocialLinksArgs = {
 };
 
 
+export type MutationReportWorkerUpgradeStatusArgs = {
+  message?: InputMaybe<Scalars['String']['input']>;
+  status: Scalars['String']['input'];
+  workerId: Scalars['String']['input'];
+};
+
+
+export type MutationRetryBacktestTaskArgs = {
+  taskId: Scalars['String']['input'];
+};
+
+
 export type MutationRevokeWorkerCredentialArgs = {
   id: Scalars['String']['input'];
 };
@@ -389,6 +482,12 @@ export type MutationRevokeWorkerCredentialArgs = {
 
 export type MutationRotateWorkerCredentialArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationSetWorkerTargetVersionArgs = {
+  targetVersion: Scalars['String']['input'];
+  workerIds: Array<Scalars['String']['input']>;
 };
 
 
@@ -500,11 +599,19 @@ export type PublicProfile = {
 
 export type Query = {
   __typename?: 'Query';
+  backtestResults: Array<BacktestResult>;
+  backtestTasks: Array<BacktestTask>;
+  edgeReleases: Array<EdgeRelease>;
   getPublicProfile?: Maybe<PublicProfile>;
   getSkillCategories: Array<SkillCategory>;
   health: Scalars['String']['output'];
   me: UserProfile;
   workers: Array<Worker>;
+};
+
+
+export type QueryBacktestResultsArgs = {
+  taskId: Scalars['String']['input'];
 };
 
 
@@ -546,6 +653,15 @@ export type SocialLink = {
   sortOrder: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
   url: Scalars['String']['output'];
+};
+
+export type StrategyTemplate = {
+  __typename?: 'StrategyTemplate';
+  category?: Maybe<Scalars['String']['output']>;
+  factoryConfig: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type UpdateAwardInput = {
@@ -646,18 +762,32 @@ export type Worker = {
   name: Scalars['String']['output'];
   platform?: Maybe<Scalars['String']['output']>;
   status: WorkerStatus;
+  targetVersion?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
+  upgradeMessage?: Maybe<Scalars['String']['output']>;
+  upgradeStatus: WorkerUpgradeStatus;
   version?: Maybe<Scalars['String']['output']>;
 };
 
 export type WorkerStatus =
   | 'ACTIVE'
-  | 'DISABLED';
+  | 'DISABLED'
+  | 'QUARANTINED';
+
+export type WorkerUpgradeStatus =
+  | 'DOWNLOADING'
+  | 'FAILED'
+  | 'IDLE'
+  | 'RESTARTING'
+  | 'ROLLED_BACK'
+  | 'SUCCEEDED'
+  | 'UPGRADE_PENDING'
+  | 'VERIFYING';
 
 export type WorkersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, createdAt: string, updatedAt: string }> };
+export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, targetVersion?: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage?: string | null, createdAt: string, updatedAt: string }> };
 
 export type CreateWorkerMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -674,6 +804,54 @@ export type DisableWorkerMutationVariables = Exact<{
 
 
 export type DisableWorkerMutation = { __typename?: 'Mutation', disableWorker?: { __typename?: 'Worker', id: string, status: WorkerStatus } | null };
+
+export type SetWorkerTargetVersionMutationVariables = Exact<{
+  workerIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  targetVersion: Scalars['String']['input'];
+}>;
+
+
+export type SetWorkerTargetVersionMutation = { __typename?: 'Mutation', setWorkerTargetVersion: number };
+
+export type BacktestTasksQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BacktestTasksQuery = { __typename?: 'Query', backtestTasks: Array<{ __typename?: 'BacktestTask', id: string, name: string, symbol: string, interval: string, status: string, assignedWorkerId?: string | null, processedConfigs?: number | null, totalConfigs?: number | null, createdAt: string }> };
+
+export type BacktestResultsQueryVariables = Exact<{
+  taskId: Scalars['String']['input'];
+}>;
+
+
+export type BacktestResultsQuery = { __typename?: 'Query', backtestResults: Array<{ __typename?: 'BacktestResult', id: string, configId: string, metrics: string, createdAt: string }> };
+
+export type CreateStrategyTemplateMutationVariables = Exact<{
+  input: CreateStrategyTemplateInput;
+}>;
+
+
+export type CreateStrategyTemplateMutation = { __typename?: 'Mutation', createStrategyTemplate: { __typename?: 'StrategyTemplate', id: string, name: string, category?: string | null, isActive: boolean } };
+
+export type CreateBacktestTaskMutationVariables = Exact<{
+  input: CreateBacktestTaskInput;
+}>;
+
+
+export type CreateBacktestTaskMutation = { __typename?: 'Mutation', createBacktestTask: { __typename?: 'BacktestTask', id: string, name: string, status: string } };
+
+export type CancelBacktestTaskMutationVariables = Exact<{
+  taskId: Scalars['String']['input'];
+}>;
+
+
+export type CancelBacktestTaskMutation = { __typename?: 'Mutation', cancelBacktestTask: { __typename?: 'BacktestTask', id: string, status: string } };
+
+export type RetryBacktestTaskMutationVariables = Exact<{
+  taskId: Scalars['String']['input'];
+}>;
+
+
+export type RetryBacktestTaskMutation = { __typename?: 'Mutation', retryBacktestTask: { __typename?: 'BacktestTask', id: string, status: string } };
 
 export type CreateAwardMutationVariables = Exact<{
   input: CreateAwardInput;
@@ -980,9 +1158,16 @@ export type UpdateSocialLinkMutationVariables = Exact<{
 export type UpdateSocialLinkMutation = { __typename?: 'Mutation', updateSocialLink?: { __typename?: 'SocialLink', id: string, platform: string, url: string, label?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 
-export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;
+export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"targetVersion"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeStatus"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;
 export const CreateWorkerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateWorker"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"platform"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"version"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createWorker"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"platform"},"value":{"kind":"Variable","name":{"kind":"Name","value":"platform"}}},{"kind":"Argument","name":{"kind":"Name","value":"version"},"value":{"kind":"Variable","name":{"kind":"Name","value":"version"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateWorkerMutation, CreateWorkerMutationVariables>;
 export const DisableWorkerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DisableWorker"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"disableWorker"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<DisableWorkerMutation, DisableWorkerMutationVariables>;
+export const SetWorkerTargetVersionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetWorkerTargetVersion"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workerIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetVersion"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setWorkerTargetVersion"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workerIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workerIds"}}},{"kind":"Argument","name":{"kind":"Name","value":"targetVersion"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetVersion"}}}]}]}}]} as unknown as DocumentNode<SetWorkerTargetVersionMutation, SetWorkerTargetVersionMutationVariables>;
+export const BacktestTasksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BacktestTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backtestTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"interval"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"assignedWorkerId"}},{"kind":"Field","name":{"kind":"Name","value":"processedConfigs"}},{"kind":"Field","name":{"kind":"Name","value":"totalConfigs"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<BacktestTasksQuery, BacktestTasksQueryVariables>;
+export const BacktestResultsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BacktestResults"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"taskId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backtestResults"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"taskId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"taskId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"configId"}},{"kind":"Field","name":{"kind":"Name","value":"metrics"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<BacktestResultsQuery, BacktestResultsQueryVariables>;
+export const CreateStrategyTemplateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateStrategyTemplate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateStrategyTemplateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createStrategyTemplate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}}]}}]}}]} as unknown as DocumentNode<CreateStrategyTemplateMutation, CreateStrategyTemplateMutationVariables>;
+export const CreateBacktestTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateBacktestTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateBacktestTaskInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createBacktestTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<CreateBacktestTaskMutation, CreateBacktestTaskMutationVariables>;
+export const CancelBacktestTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CancelBacktestTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"taskId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cancelBacktestTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"taskId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"taskId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<CancelBacktestTaskMutation, CancelBacktestTaskMutationVariables>;
+export const RetryBacktestTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RetryBacktestTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"taskId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"retryBacktestTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"taskId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"taskId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<RetryBacktestTaskMutation, RetryBacktestTaskMutationVariables>;
 export const CreateAwardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateAward"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateAwardInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createAward"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"sortOrder"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateAwardMutation, CreateAwardMutationVariables>;
 export const CreateCertificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateCertification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateCertificationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCertification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"}},{"kind":"Field","name":{"kind":"Name","value":"issueDate"}},{"kind":"Field","name":{"kind":"Name","value":"expiryDate"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"sortOrder"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateCertificationMutation, CreateCertificationMutationVariables>;
 export const CreateEducationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateEducation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateEducationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createEducation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"school"}},{"kind":"Field","name":{"kind":"Name","value":"degree"}},{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"sortOrder"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateEducationMutation, CreateEducationMutationVariables>;

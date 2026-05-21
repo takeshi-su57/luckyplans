@@ -186,6 +186,9 @@ type Worker {
   version: String
   status: WorkerStatus!
   lastSeenAt: DateTime
+  targetVersion: String
+  upgradeStatus: WorkerUpgradeStatus!
+  upgradeMessage: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -193,6 +196,45 @@ type Worker {
 enum WorkerStatus {
   ACTIVE
   DISABLED
+  QUARANTINED
+}
+
+enum WorkerUpgradeStatus {
+  IDLE
+  UPGRADE_PENDING
+  DOWNLOADING
+  VERIFYING
+  RESTARTING
+  SUCCEEDED
+  FAILED
+  ROLLED_BACK
+}
+
+type StrategyTemplate {
+  id: ID!
+  name: String!
+  category: String
+  factoryConfig: String!
+  isActive: Boolean!
+}
+
+type BacktestTask {
+  id: ID!
+  name: String!
+  symbol: String!
+  interval: String!
+  status: String!
+  assignedWorkerId: String
+  processedConfigs: Int
+  totalConfigs: Int
+  createdAt: DateTime!
+}
+
+type BacktestResult {
+  id: ID!
+  configId: String!
+  metrics: String!
+  createdAt: DateTime!
 }
 
 type Query {
@@ -202,6 +244,8 @@ type Query {
   getSkillCategories: [SkillCategory!]!
   workers: [Worker!]!
   edgeReleases: [EdgeRelease!]!
+  backtestTasks: [BacktestTask!]!
+  backtestResults(taskId: String!): [BacktestResult!]!
 }
 
 type Mutation {
@@ -252,6 +296,11 @@ type Mutation {
   rotateWorkerCredential(id: String!): IssuedWorkerCredential!
   createEdgeRelease(version: String!, windowsUrl: String!, linuxUrl: String!, checksum: String!, signature: String!, notes: String): EdgeRelease!
   setWorkerTargetVersion(workerIds: [String!]!, targetVersion: String!): Int!
+  reportWorkerUpgradeStatus(workerId: String!, status: String!, message: String): Boolean!
+  createStrategyTemplate(input: CreateStrategyTemplateInput!): StrategyTemplate!
+  createBacktestTask(input: CreateBacktestTaskInput!): BacktestTask!
+  cancelBacktestTask(taskId: String!): BacktestTask!
+  retryBacktestTask(taskId: String!): BacktestTask!
 }
 
 input UpdateProfileInput {
@@ -399,4 +448,19 @@ input CreateHobbyInput {
 input UpdateHobbyInput {
   name: String
   description: String
+}
+
+input CreateStrategyTemplateInput {
+  name: String!
+  category: String
+  factoryConfig: String!
+}
+
+input CreateBacktestTaskInput {
+  name: String!
+  symbol: String!
+  interval: String!
+  assignedWorkerId: String!
+  searchStrategy: String!
+  strategyTemplateId: ID
 }

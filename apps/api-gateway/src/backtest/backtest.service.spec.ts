@@ -6,11 +6,18 @@ describe('BacktestService', () => {
     backtestTask: {
       findFirst: vi.fn(),
       findUnique: vi.fn(),
+      findMany: vi.fn(),
       update: vi.fn(),
       updateMany: vi.fn(),
+      create: vi.fn(),
     },
     backtestResult: {
       createMany: vi.fn(),
+      findMany: vi.fn(),
+    },
+    strategyTemplate: {
+      findFirst: vi.fn(),
+      create: vi.fn(),
     },
     worker: {
       update: vi.fn(),
@@ -139,5 +146,27 @@ describe('BacktestService', () => {
 
     expect(result.status).toBe('FAILED');
     expect(prisma.worker.update).toHaveBeenCalledOnce();
+  });
+
+  it('creates backtest task with active template fallback', async () => {
+    prisma.strategyTemplate.findFirst.mockResolvedValue({ id: 'tpl_1' });
+    prisma.backtestTask.create.mockResolvedValue({
+      id: 'task_2',
+      status: 'AWAIT',
+      name: 'Task 2',
+      symbol: 'ETHUSDT',
+      interval: '5m',
+    });
+
+    const created = await service.createBacktestTask({
+      name: 'Task 2',
+      symbol: 'ETHUSDT',
+      interval: '5m',
+      assignedWorkerId: 'worker_2',
+      searchStrategy: 'grid',
+    });
+
+    expect(created.id).toBe('task_2');
+    expect(prisma.backtestTask.create).toHaveBeenCalledOnce();
   });
 });
