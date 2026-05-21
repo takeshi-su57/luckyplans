@@ -8,13 +8,16 @@
     "build": "tsc --build",
     "clean": "node -e \"const fs=require('fs');['dist','tsconfig.tsbuildinfo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
     "type-check": "tsc --noEmit",
-    "lint": "eslint \"src/**/*.ts\""
+    "lint": "eslint \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@luckyplans/config": "workspace:*",
     "@types/node": "^25.5.0",
     "eslint": "^10.0.3",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.17",
