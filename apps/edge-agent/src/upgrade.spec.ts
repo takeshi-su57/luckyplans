@@ -39,4 +39,89 @@ describe('maybeUpgrade', () => {
       'SUCCEEDED',
     ]);
   });
+
+  it('fails upgrade and keeps current version when verification returns false', async () => {
+    const reportStatus = vi.fn();
+    const result = await maybeUpgrade({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      targetVersion: '1.0.1',
+      reportStatus,
+      download: vi.fn().mockResolvedValue('artifact'),
+      verify: vi.fn().mockResolvedValue(false),
+      install: vi.fn().mockResolvedValue(undefined),
+    });
+
+    expect(result.performed).toBe(true);
+    expect(result.nextVersion).toBe('1.0.0');
+    expect(result.status).toBe('FAILED');
+    expect(reportStatus.mock.calls.map((call) => call[0])).toEqual([
+      'DOWNLOADING',
+      'VERIFYING',
+      'FAILED',
+    ]);
+  });
+
+  it('fails upgrade and keeps current version when install throws', async () => {
+    const reportStatus = vi.fn();
+    const result = await maybeUpgrade({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      targetVersion: '1.0.1',
+      reportStatus,
+      download: vi.fn().mockResolvedValue('artifact'),
+      verify: vi.fn().mockResolvedValue(true),
+      install: vi.fn().mockRejectedValue(new Error('install failed')),
+    });
+
+    expect(result.performed).toBe(true);
+    expect(result.nextVersion).toBe('1.0.0');
+    expect(result.status).toBe('FAILED');
+    expect(result.reason).toBe('install failed');
+    expect(reportStatus.mock.calls.map((call) => call[0])).toEqual([
+      'DOWNLOADING',
+      'VERIFYING',
+      'RESTARTING',
+      'FAILED',
+    ]);
+  });
+
+  it('does not execute upgrade when handlers are missing and reports failed status', async () => {
+    const reportStatus = vi.fn();
+    const result = await maybeUpgrade({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      targetVersion: '1.0.1',
+      reportStatus,
+      download: undefined,
+      verify: undefined,
+      install: undefined,
+    });
+
+    expect(result.performed).toBe(false);
+    expect(result.nextVersion).toBe('1.0.0');
+    expect(result.status).toBe('FAILED');
+    expect(result.reason).toContain('handlers');
+    expect(reportStatus).toHaveBeenCalledWith(
+      'FAILED',
+      expect.objectContaining({ reason: expect.stringContaining('handlers') }),
+    );
+  });
+
+  it('treats prefixed versions as semver-like values', async () => {
+    const reportStatus = vi.fn();
+    const result = await maybeUpgrade({
+      activeTask: false,
+      currentVersion: 'v1.0.0',
+      targetVersion: 'v1.0.1-beta.2',
+      reportStatus,
+      download: vi.fn().mockResolvedValue('artifact'),
+      verify: vi.fn().mockResolvedValue(true),
+      install: vi.fn().mockResolvedValue(undefined),
+    });
+
+    expect(result.performed).toBe(true);
+    expect(result.nextVersion).toBe('v1.0.1-beta.2');
+    expect(result.status).toBe('SUCCEEDED');
+  });
 });

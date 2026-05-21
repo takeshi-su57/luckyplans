@@ -13,34 +13,49 @@ type RunnerOptions = {
 export async function runSinglePollExecution(client: EdgeApiClient, options: RunnerOptions = {}) {
   const lease = await client.pollNextTask();
   const hasActiveTask = Boolean(lease.success && lease.task);
+  const currentVersion = options.currentVersion ?? '0.0.0';
+
+  const safeSendConnectivityHeartbeat = async (payload: {
+    activeTask: boolean;
+    currentVersion: string;
+    upgradeStatus?: UpgradeStatus;
+    reason?: string;
+  }) => {
+    if (typeof client.sendConnectivityHeartbeat !== 'function') {
+      return null;
+    }
+    try {
+      return await client.sendConnectivityHeartbeat(payload);
+    } catch (error) {
+      console.warn('[edge-agent] connectivity heartbeat failed', error);
+      return null;
+    }
+  };
 
   const reportUpgradeStatus = async (status: UpgradeStatus, details?: { reason?: string }) => {
-    if (typeof client.sendConnectivityHeartbeat !== 'function') {
-      return;
-    }
-    await client.sendConnectivityHeartbeat({
+    await safeSendConnectivityHeartbeat({
       activeTask: hasActiveTask,
-      currentVersion: options.currentVersion ?? '0.0.0',
+      currentVersion,
       upgradeStatus: status,
       reason: details?.reason,
     });
   };
 
   if (typeof client.sendConnectivityHeartbeat === 'function') {
-    const connectivity = await client.sendConnectivityHeartbeat({
+    const connectivity = await safeSendConnectivityHeartbeat({
       activeTask: hasActiveTask,
-      currentVersion: options.currentVersion ?? '0.0.0',
+      currentVersion,
     });
 
-    if (connectivity.targetVersion) {
+    if (connectivity?.targetVersion) {
       await maybeUpgrade({
         activeTask: hasActiveTask,
-        currentVersion: options.currentVersion ?? '0.0.0',
+        currentVersion,
         targetVersion: connectivity.targetVersion,
         reportStatus: reportUpgradeStatus,
-        download: options.downloadUpgradeArtifact ?? (async () => ({})),
-        verify: options.verifyUpgradeArtifact ?? (async () => true),
-        install: options.installUpgradeArtifact ?? (async () => undefined),
+        download: options.downloadUpgradeArtifact,
+        verify: options.verifyUpgradeArtifact,
+        install: options.installUpgradeArtifact,
       });
     }
   }

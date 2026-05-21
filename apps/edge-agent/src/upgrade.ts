@@ -10,9 +10,9 @@ export type MaybeUpgradeInput = {
   currentVersion: string;
   targetVersion?: string | null;
   reportStatus: (status: UpgradeStatus, details?: { reason?: string }) => Promise<void> | void;
-  download: () => Promise<unknown>;
-  verify: (artifact: unknown) => Promise<boolean>;
-  install: (artifact: unknown) => Promise<void>;
+  download?: (() => Promise<unknown>) | undefined;
+  verify?: ((artifact: unknown) => Promise<boolean>) | undefined;
+  install?: ((artifact: unknown) => Promise<void>) | undefined;
 };
 
 export type MaybeUpgradeResult = {
@@ -26,6 +26,16 @@ export async function maybeUpgrade(input: MaybeUpgradeInput): Promise<MaybeUpgra
   const target = input.targetVersion;
   if (input.activeTask || !target || compareVersions(target, input.currentVersion) <= 0) {
     return { performed: false, nextVersion: input.currentVersion };
+  }
+  if (!input.download || !input.verify || !input.install) {
+    const reason = 'upgrade handlers not configured';
+    await input.reportStatus('FAILED', { reason });
+    return {
+      performed: false,
+      nextVersion: input.currentVersion,
+      status: 'FAILED',
+      reason,
+    };
   }
 
   let artifact: unknown;
@@ -73,8 +83,12 @@ function compareVersions(a: string, b: string): number {
 }
 
 function normalize(version: string): number[] {
-  return version
+  const cleaned = version.trim().replace(/^[vV]/, '');
+  return cleaned
     .split('.')
-    .map((segment) => Number.parseInt(segment, 10))
+    .map((segment) => {
+      const match = segment.match(/^\d+/);
+      return match ? Number.parseInt(match[0], 10) : 0;
+    })
     .map((value) => (Number.isFinite(value) ? value : 0));
 }
