@@ -33,6 +33,8 @@ export type OnboardingOptions = {
   arch: string;
 };
 
+const MAX_DEVICE_NUMBER_RETRIES = 5;
+
 export async function runOnboarding(options: OnboardingOptions): Promise<EdgeLocalConfig> {
   const prompt = options.prompt ?? defaultPrompt;
 
@@ -47,7 +49,7 @@ export async function runOnboarding(options: OnboardingOptions): Promise<EdgeLoc
   const shortIdFactory = options.shortIdFactory ?? defaultShortIdFactory;
 
   // Retry on 409 collision by regenerating the device number suffix.
-  for (;;) {
+  for (let attempt = 1; attempt <= MAX_DEVICE_NUMBER_RETRIES; attempt += 1) {
     const deviceNumber = buildDeviceNumber(displayName, shortIdFactory);
 
     try {
@@ -75,8 +77,16 @@ export async function runOnboarding(options: OnboardingOptions): Promise<EdgeLoc
       if (!isConflictError(error)) {
         throw error;
       }
+
+      if (attempt === MAX_DEVICE_NUMBER_RETRIES) {
+        throw new Error(
+          `Unable to register edge after ${MAX_DEVICE_NUMBER_RETRIES} device number attempts due to conflicts`,
+        );
+      }
     }
   }
+
+  throw new Error('Onboarding retry loop terminated unexpectedly');
 }
 
 export async function loadOrOnboard(options: OnboardingOptions): Promise<EdgeLocalConfig> {

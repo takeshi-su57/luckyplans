@@ -68,4 +68,63 @@ describe('runOnboarding', () => {
       currentVersion: '0.1.0',
     });
   });
+
+  it('fails with clear error when device number conflict exceeds max retries', async () => {
+    const tempDir = await mkdtemp(join(tmpdir(), 'edge-agent-onboarding-'));
+    tempDirs.push(tempDir);
+
+    const configPath = join(tempDir, 'config.json');
+    const prompt = vi
+      .fn<() => Promise<string>>()
+      .mockResolvedValueOnce('Seoul Lab')
+      .mockResolvedValueOnce('https://api.example.com')
+      .mockResolvedValueOnce('reg_live_123');
+
+    const registerEdge = vi
+      .fn()
+      .mockRejectedValue(Object.assign(new Error('conflict'), { status: 409 }));
+
+    await expect(
+      runOnboarding({
+        prompt,
+        configPath,
+        shortIdFactory: vi.fn().mockReturnValue('zzzzzz'),
+        client: { registerEdge },
+        edgeVersion: '0.1.0',
+        platform: 'linux',
+        arch: 'x64',
+      }),
+    ).rejects.toThrow('Unable to register edge after 5 device number attempts due to conflicts');
+
+    expect(registerEdge).toHaveBeenCalledTimes(5);
+  });
+
+  it('does not retry on non-409 registration errors', async () => {
+    const tempDir = await mkdtemp(join(tmpdir(), 'edge-agent-onboarding-'));
+    tempDirs.push(tempDir);
+
+    const configPath = join(tempDir, 'config.json');
+    const prompt = vi
+      .fn<() => Promise<string>>()
+      .mockResolvedValueOnce('Seoul Lab')
+      .mockResolvedValueOnce('https://api.example.com')
+      .mockResolvedValueOnce('reg_live_123');
+
+    const failure = new Error('unauthorized');
+    const registerEdge = vi.fn().mockRejectedValue(failure);
+
+    await expect(
+      runOnboarding({
+        prompt,
+        configPath,
+        shortIdFactory: vi.fn().mockReturnValue('a1b2c3'),
+        client: { registerEdge },
+        edgeVersion: '0.1.0',
+        platform: 'linux',
+        arch: 'x64',
+      }),
+    ).rejects.toThrow('unauthorized');
+
+    expect(registerEdge).toHaveBeenCalledTimes(1);
+  });
 });
