@@ -1,4 +1,11 @@
-import { Body, Controller, UnauthorizedException, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  InternalServerErrorException,
+  UnauthorizedException,
+  Post,
+} from '@nestjs/common';
+import { getEnvVar } from '@luckyplans/shared';
 import { WorkersService } from '../workers/workers.service';
 import { CredentialsService } from '../workers/credentials.service';
 
@@ -40,7 +47,15 @@ export class EdgesRegistrationController {
   }
 
   private assertRegistrationToken(token: string) {
-    const expected = process.env.EDGE_REGISTRATION_TOKEN ?? 'reg_token';
+    let expected: string;
+    try {
+      expected = getEnvVar('EDGE_REGISTRATION_TOKEN');
+    } catch {
+      throw new InternalServerErrorException(
+        'Server misconfiguration: EDGE_REGISTRATION_TOKEN is not configured',
+      );
+    }
+
     if (!token || token !== expected) {
       throw new UnauthorizedException('Invalid registration token');
     }

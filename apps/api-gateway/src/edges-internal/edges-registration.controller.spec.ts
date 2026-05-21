@@ -1,6 +1,11 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { getEnvVar } from '@luckyplans/shared';
 import { EdgesRegistrationController } from './edges-registration.controller';
+
+vi.mock('@luckyplans/shared', () => ({
+  getEnvVar: vi.fn(),
+}));
 
 describe('EdgesRegistrationController', () => {
   const workersService = {
@@ -17,6 +22,7 @@ describe('EdgesRegistrationController', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(getEnvVar).mockReturnValue('secure_registration_token');
   });
 
   it('registers edge and returns workerId credential and deviceNumber', async () => {
@@ -29,7 +35,7 @@ describe('EdgesRegistrationController', () => {
     });
 
     const result = await controller.register({
-      token: 'reg_token',
+      token: 'secure_registration_token',
       displayName: 'Seoul Lab',
       deviceNumber: 'edge-seoul-a1b2c3',
       platform: 'linux',
@@ -55,5 +61,22 @@ describe('EdgesRegistrationController', () => {
         edgeVersion: '0.1.0',
       }),
     ).rejects.toBeInstanceOf(UnauthorizedException);
+  });
+
+  it('fails safely when edge registration token config is missing', async () => {
+    vi.mocked(getEnvVar).mockImplementation(() => {
+      throw new Error('Missing required environment variable: EDGE_REGISTRATION_TOKEN');
+    });
+
+    await expect(
+      controller.register({
+        token: 'secure_registration_token',
+        displayName: 'Seoul Lab',
+        deviceNumber: 'edge-seoul-a1b2c3',
+        platform: 'linux',
+        arch: 'x64',
+        edgeVersion: '0.1.0',
+      }),
+    ).rejects.toBeInstanceOf(InternalServerErrorException);
   });
 });
