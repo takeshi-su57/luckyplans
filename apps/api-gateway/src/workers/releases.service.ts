@@ -70,11 +70,7 @@ export class ReleasesService {
     return result.count;
   }
 
-  async reportWorkerUpgradeStatus(
-    workerId: string,
-    status: WorkerUpgradeStatus,
-    message?: string,
-  ) {
+  async reportWorkerUpgradeStatus(workerId: string, status: WorkerUpgradeStatus, message?: string) {
     return this.prisma.worker.update({
       where: { id: workerId },
       data: {

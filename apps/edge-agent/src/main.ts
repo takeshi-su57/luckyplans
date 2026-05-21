@@ -7,7 +7,9 @@ async function main() {
   const credential = process.env.EDGE_WORKER_CREDENTIAL;
 
   if (!baseUrl || !workerId || !credential) {
-    throw new Error('Missing required env: API_GATEWAY_URL, EDGE_WORKER_ID, EDGE_WORKER_CREDENTIAL');
+    throw new Error(
+      'Missing required env: API_GATEWAY_URL, EDGE_WORKER_ID, EDGE_WORKER_CREDENTIAL',
+    );
   }
 
   const client = new EdgeApiClient(baseUrl, workerId, credential);

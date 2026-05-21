@@ -79,7 +79,9 @@ export function useBacktestResults(taskId: string) {
 }
 
 export function useCreateTemplate() {
-  return useMutation<{ createStrategyTemplate: { id: string; name: string } }>(CreateTemplateMutation);
+  return useMutation<{ createStrategyTemplate: { id: string; name: string } }>(
+    CreateTemplateMutation,
+  );
 }
 
 export function useCreateTask() {

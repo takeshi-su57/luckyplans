@@ -31,7 +31,10 @@ export default function BacktestTemplatesPage() {
         <p className="text-sm text-[#6b7280]">Create reusable strategy templates for backtests.</p>
       </div>
 
-      <form className="space-y-3 rounded-lg border border-[#e5e7eb] bg-white p-4" onSubmit={onSubmit}>
+      <form
+        className="space-y-3 rounded-lg border border-[#e5e7eb] bg-white p-4"
+        onSubmit={onSubmit}
+      >
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}

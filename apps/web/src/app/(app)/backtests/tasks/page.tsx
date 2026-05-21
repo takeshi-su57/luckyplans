@@ -67,7 +67,10 @@ export default function BacktestTasksPage() {
         <p className="text-sm text-[#6b7280]">Create and manage assigned edge backtest tasks.</p>
       </div>
 
-      <form className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-4 sm:grid-cols-5" onSubmit={onCreate}>
+      <form
+        className="grid gap-3 rounded-lg border border-[#e5e7eb] bg-white p-4 sm:grid-cols-5"
+        onSubmit={onCreate}
+      >
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -105,11 +108,15 @@ export default function BacktestTasksPage() {
         {loading ? <p className="text-sm text-[#6b7280]">Loading tasks...</p> : null}
         {error ? <p className="text-sm text-red-600">Failed to load tasks.</p> : null}
         {tasks.map((task) => (
-          <div key={task.id} className="flex flex-col justify-between gap-3 rounded-md border border-[#e5e7eb] p-3 sm:flex-row sm:items-center">
+          <div
+            key={task.id}
+            className="flex flex-col justify-between gap-3 rounded-md border border-[#e5e7eb] p-3 sm:flex-row sm:items-center"
+          >
             <div className="space-y-1">
               <p className="font-medium text-[#111827]">{task.name}</p>
               <p className="text-xs text-[#6b7280]">
-                {task.symbol} | {task.interval} | {task.status} | worker {task.assignedWorkerId ?? 'none'}
+                {task.symbol} | {task.interval} | {task.status} | worker{' '}
+                {task.assignedWorkerId ?? 'none'}
               </p>
               <p className="text-xs text-[#9ca3af]">
                 Progress: {task.processedConfigs ?? 0} / {task.totalConfigs ?? 0}

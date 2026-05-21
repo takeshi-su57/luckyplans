@@ -22,7 +22,9 @@ export default function BacktestResultsPage() {
   const sorted = useMemo(
     () =>
       [...rows].sort(
-        (a, b) => (b.metrics?.totalPnlPercent ?? Number.NEGATIVE_INFINITY) - (a.metrics?.totalPnlPercent ?? Number.NEGATIVE_INFINITY),
+        (a, b) =>
+          (b.metrics?.totalPnlPercent ?? Number.NEGATIVE_INFINITY) -
+          (a.metrics?.totalPnlPercent ?? Number.NEGATIVE_INFINITY),
       ),
     [rows],
   );
@@ -51,7 +53,8 @@ export default function BacktestResultsPage() {
           <div key={row.id} className="rounded-md border border-[#e5e7eb] p-3">
             <p className="font-medium text-[#111827]">{row.configId}</p>
             <p className="text-xs text-[#6b7280]">
-              pnl% {row.metrics?.totalPnlPercent ?? '-'} | winRate {row.metrics?.winRate ?? '-'} | sharpe {row.metrics?.sharpeRatio ?? '-'}
+              pnl% {row.metrics?.totalPnlPercent ?? '-'} | winRate {row.metrics?.winRate ?? '-'} |
+              sharpe {row.metrics?.sharpeRatio ?? '-'}
             </p>
             <p className="text-xs text-[#9ca3af]">{new Date(row.createdAt).toLocaleString()}</p>
           </div>

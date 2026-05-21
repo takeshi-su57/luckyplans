@@ -2,8 +2,8 @@
 @import '@heroui/styles/css';
 
 @theme inline {
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-mono);
+  --font-sans: "Averia Serif Libre", ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", "SFMono-Regular", Menlo, monospace;
 }
 
 html {
