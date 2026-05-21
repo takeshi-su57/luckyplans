@@ -91,7 +91,8 @@ export class BacktestService {
   }
 
   private get templates(): StrategyTemplateDelegate {
-    return (this.prisma as unknown as { strategyTemplate: StrategyTemplateDelegate }).strategyTemplate;
+    return (this.prisma as unknown as { strategyTemplate: StrategyTemplateDelegate })
+      .strategyTemplate;
   }
 
   async createStrategyTemplate(input: {
@@ -99,9 +100,10 @@ export class BacktestService {
     category?: string;
     factoryConfig: unknown;
   }): Promise<StrategyTemplateView> {
-    const payload = typeof input.factoryConfig === 'string'
-      ? input.factoryConfig
-      : JSON.stringify(input.factoryConfig);
+    const payload =
+      typeof input.factoryConfig === 'string'
+        ? input.factoryConfig
+        : JSON.stringify(input.factoryConfig);
 
     const created = await this.templates.create({
       data: {

@@ -4,13 +4,13 @@ import { describe, expect, it, vi } from 'vitest';
 import BacktestResultsPage from './page';
 
 const useBacktestResultsMock = vi.fn(() => ({
-  data: { backtestResults: [] },
+  data: { backtestResults: [] as Array<Record<string, unknown>> },
   loading: false,
   error: null,
 }));
 
 vi.mock('@/hooks/backtests/use-backtests', () => ({
-  useBacktestResults: (...args: unknown[]) => useBacktestResultsMock(...args),
+  useBacktestResults: useBacktestResultsMock,
 }));
 
 describe('BacktestResultsPage', () => {

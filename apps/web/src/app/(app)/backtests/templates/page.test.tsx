@@ -14,7 +14,9 @@ describe('BacktestTemplatesPage', () => {
     render(<BacktestTemplatesPage />);
 
     fireEvent.change(screen.getByPlaceholderText('Template name'), { target: { value: 'T1' } });
-    fireEvent.change(screen.getByDisplayValue('{"entry":"ema-cross"}'), { target: { value: '{bad' } });
+    fireEvent.change(screen.getByDisplayValue('{"entry":"ema-cross"}'), {
+      target: { value: '{bad' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Create Template' }));
 
     expect(screen.getByText('Factory config must be valid JSON.')).toBeInTheDocument();

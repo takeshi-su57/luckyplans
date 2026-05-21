@@ -8,10 +8,7 @@ export class EdgesTasksController {
   constructor(private readonly backtestService: BacktestService) {}
 
   @Post('next')
-  async next(
-    @Body() body: { workerId: string },
-    @Req() req: { worker?: { workerId: string } },
-  ) {
+  async next(@Body() body: { workerId: string }, @Req() req: { worker?: { workerId: string } }) {
     this.assertWorkerIdentity(body.workerId, req);
     const task = await this.backtestService.leaseNextTask(body.workerId);
     return { success: true, task };

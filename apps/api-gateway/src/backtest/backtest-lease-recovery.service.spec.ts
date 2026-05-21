@@ -25,4 +25,3 @@ describe('BacktestLeaseRecoveryService', () => {
     service.onModuleDestroy();
   });
 });
-

@@ -41,7 +41,9 @@ export async function runSinglePollExecution(client: EdgeApiClient) {
 
     await client.sendResults(lease.task.taskId, results);
 
-    const sorted = [...results].sort((a, b) => b.metrics.totalPnlPercent - a.metrics.totalPnlPercent);
+    const sorted = [...results].sort(
+      (a, b) => b.metrics.totalPnlPercent - a.metrics.totalPnlPercent,
+    );
     const bestConfigIds = sorted.slice(0, 3).map((result) => result.configId);
     await client.sendHeartbeat(
       lease.task.taskId,
