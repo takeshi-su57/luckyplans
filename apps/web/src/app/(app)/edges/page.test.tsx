@@ -44,6 +44,7 @@ describe('EdgesPage', () => {
             platform: 'windows-x64',
             version: '1.0.0',
             status: 'ACTIVE',
+            hasActiveCredential: false,
             deviceNumber: 'edge-seoul-lab-a7k29f',
             lastSeenAt: '2026-05-21T12:00:00.000Z',
             targetVersion: '1.0.1',
@@ -66,5 +67,38 @@ describe('EdgesPage', () => {
     expect(screen.getByText(/Connectivity \(Last Seen\):/i)).toBeInTheDocument();
     expect(screen.getByText(/edge-seoul-lab-a7k29f/i)).toBeInTheDocument();
     expect(screen.getByText(/last seen/i)).toBeInTheDocument();
+  });
+
+  it('disables Issue when worker already has active credential', () => {
+    useQueryMock.mockReturnValue({
+      data: {
+        workers: [
+          {
+            id: 'worker-1',
+            name: 'Seoul Lab',
+            platform: 'windows-x64',
+            version: '1.0.0',
+            status: 'ACTIVE',
+            hasActiveCredential: true,
+            deviceNumber: 'edge-seoul-lab-a7k29f',
+            lastSeenAt: '2026-05-21T12:00:00.000Z',
+            targetVersion: '1.0.1',
+            upgradeStatus: 'UPGRADE_PENDING',
+            upgradeMessage: null,
+            createdAt: '2026-05-20T12:00:00.000Z',
+            updatedAt: '2026-05-21T12:00:00.000Z',
+          },
+        ],
+      },
+      loading: false,
+      error: undefined,
+      refetch: vi.fn(),
+    });
+    useMutationMock.mockReturnValue([vi.fn(), { loading: false }]);
+
+    render(<EdgesPage />);
+
+    const issueButtons = screen.getAllByRole('button', { name: 'Issue' });
+    expect(issueButtons.some((button) => button.hasAttribute('disabled'))).toBe(true);
   });
 });

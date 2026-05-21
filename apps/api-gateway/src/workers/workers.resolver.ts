@@ -55,6 +55,9 @@ class Worker {
   @Field({ nullable: true })
   version?: string;
 
+  @Field()
+  hasActiveCredential!: boolean;
+
   @Field(() => WorkerStatus)
   status!: WorkerStatus;
 

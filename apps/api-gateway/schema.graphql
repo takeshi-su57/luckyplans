@@ -198,6 +198,7 @@ type Worker {
   platform: String
   arch: String
   version: String
+  hasActiveCredential: Boolean!
   status: WorkerStatus!
   lastSeenAt: DateTime
   targetVersion: String

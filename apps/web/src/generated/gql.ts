@@ -14,10 +14,13 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.WorkersDocument,
+    "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      hasActiveCredential\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.WorkersDocument,
     "\n  mutation CreateWorker($name: String!, $platform: String, $version: String) {\n    createWorker(name: $name, platform: $platform, version: $version) {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.CreateWorkerDocument,
     "\n  mutation DisableWorker($id: String!) {\n    disableWorker(id: $id) {\n      id\n      status\n    }\n  }\n": typeof types.DisableWorkerDocument,
     "\n  mutation SetWorkerTargetVersion($workerIds: [String!]!, $targetVersion: String!) {\n    setWorkerTargetVersion(workerIds: $workerIds, targetVersion: $targetVersion)\n  }\n": typeof types.SetWorkerTargetVersionDocument,
+    "\n  mutation IssueWorkerCredential($id: String!) {\n    issueWorkerCredential(id: $id) {\n      id\n      workerId\n      keyPrefix\n      credential\n    }\n  }\n": typeof types.IssueWorkerCredentialDocument,
+    "\n  mutation RotateWorkerCredential($id: String!) {\n    rotateWorkerCredential(id: $id) {\n      id\n      workerId\n      keyPrefix\n      credential\n    }\n  }\n": typeof types.RotateWorkerCredentialDocument,
+    "\n  mutation RevokeWorkerCredential($id: String!) {\n    revokeWorkerCredential(id: $id)\n  }\n": typeof types.RevokeWorkerCredentialDocument,
     "\n  query BacktestTasks {\n    backtestTasks {\n      id\n      name\n      symbol\n      interval\n      status\n      assignedWorkerId\n      processedConfigs\n      totalConfigs\n      createdAt\n    }\n  }\n": typeof types.BacktestTasksDocument,
     "\n  query BacktestResults($taskId: String!) {\n    backtestResults(taskId: $taskId) {\n      id\n      configId\n      metrics\n      createdAt\n    }\n  }\n": typeof types.BacktestResultsDocument,
     "\n  mutation CreateStrategyTemplate($input: CreateStrategyTemplateInput!) {\n    createStrategyTemplate(input: $input) {\n      id\n      name\n      category\n      isActive\n    }\n  }\n": typeof types.CreateStrategyTemplateDocument,
@@ -69,10 +72,13 @@ type Documents = {
     "\n  mutation UpdateSocialLink($id: String!, $input: UpdateSocialLinkInput!) {\n    updateSocialLink(id: $id, input: $input) {\n      id\n      platform\n      url\n      label\n      sortOrder\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.UpdateSocialLinkDocument,
 };
 const documents: Documents = {
-    "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n": types.WorkersDocument,
+    "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      hasActiveCredential\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n": types.WorkersDocument,
     "\n  mutation CreateWorker($name: String!, $platform: String, $version: String) {\n    createWorker(name: $name, platform: $platform, version: $version) {\n      id\n      name\n      platform\n      version\n      status\n      lastSeenAt\n      createdAt\n      updatedAt\n    }\n  }\n": types.CreateWorkerDocument,
     "\n  mutation DisableWorker($id: String!) {\n    disableWorker(id: $id) {\n      id\n      status\n    }\n  }\n": types.DisableWorkerDocument,
     "\n  mutation SetWorkerTargetVersion($workerIds: [String!]!, $targetVersion: String!) {\n    setWorkerTargetVersion(workerIds: $workerIds, targetVersion: $targetVersion)\n  }\n": types.SetWorkerTargetVersionDocument,
+    "\n  mutation IssueWorkerCredential($id: String!) {\n    issueWorkerCredential(id: $id) {\n      id\n      workerId\n      keyPrefix\n      credential\n    }\n  }\n": types.IssueWorkerCredentialDocument,
+    "\n  mutation RotateWorkerCredential($id: String!) {\n    rotateWorkerCredential(id: $id) {\n      id\n      workerId\n      keyPrefix\n      credential\n    }\n  }\n": types.RotateWorkerCredentialDocument,
+    "\n  mutation RevokeWorkerCredential($id: String!) {\n    revokeWorkerCredential(id: $id)\n  }\n": types.RevokeWorkerCredentialDocument,
     "\n  query BacktestTasks {\n    backtestTasks {\n      id\n      name\n      symbol\n      interval\n      status\n      assignedWorkerId\n      processedConfigs\n      totalConfigs\n      createdAt\n    }\n  }\n": types.BacktestTasksDocument,
     "\n  query BacktestResults($taskId: String!) {\n    backtestResults(taskId: $taskId) {\n      id\n      configId\n      metrics\n      createdAt\n    }\n  }\n": types.BacktestResultsDocument,
     "\n  mutation CreateStrategyTemplate($input: CreateStrategyTemplateInput!) {\n    createStrategyTemplate(input: $input) {\n      id\n      name\n      category\n      isActive\n    }\n  }\n": types.CreateStrategyTemplateDocument,
@@ -141,7 +147,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n"];
+export function graphql(source: "\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      hasActiveCredential\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query Workers {\n    workers {\n      id\n      name\n      deviceNumber\n      platform\n      version\n      status\n      lastSeenAt\n      hasActiveCredential\n      targetVersion\n      upgradeStatus\n      upgradeMessage\n      createdAt\n      updatedAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -154,6 +160,18 @@ export function graphql(source: "\n  mutation DisableWorker($id: String!) {\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation SetWorkerTargetVersion($workerIds: [String!]!, $targetVersion: String!) {\n    setWorkerTargetVersion(workerIds: $workerIds, targetVersion: $targetVersion)\n  }\n"): (typeof documents)["\n  mutation SetWorkerTargetVersion($workerIds: [String!]!, $targetVersion: String!) {\n    setWorkerTargetVersion(workerIds: $workerIds, targetVersion: $targetVersion)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation IssueWorkerCredential($id: String!) {\n    issueWorkerCredential(id: $id) {\n      id\n      workerId\n      keyPrefix\n      credential\n    }\n  }\n"): (typeof documents)["\n  mutation IssueWorkerCredential($id: String!) {\n    issueWorkerCredential(id: $id) {\n      id\n      workerId\n      keyPrefix\n      credential\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation RotateWorkerCredential($id: String!) {\n    rotateWorkerCredential(id: $id) {\n      id\n      workerId\n      keyPrefix\n      credential\n    }\n  }\n"): (typeof documents)["\n  mutation RotateWorkerCredential($id: String!) {\n    rotateWorkerCredential(id: $id) {\n      id\n      workerId\n      keyPrefix\n      credential\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation RevokeWorkerCredential($id: String!) {\n    revokeWorkerCredential(id: $id)\n  }\n"): (typeof documents)["\n  mutation RevokeWorkerCredential($id: String!) {\n    revokeWorkerCredential(id: $id)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

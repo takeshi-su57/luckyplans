@@ -14,6 +14,7 @@ const WorkersQuery = gql`
       version
       status
       lastSeenAt
+      hasActiveCredential
       targetVersion
       upgradeStatus
       upgradeMessage
@@ -53,6 +54,34 @@ const SetWorkerTargetVersionMutation = gql`
   }
 `;
 
+const IssueWorkerCredentialMutation = gql`
+  mutation IssueWorkerCredential($id: String!) {
+    issueWorkerCredential(id: $id) {
+      id
+      workerId
+      keyPrefix
+      credential
+    }
+  }
+`;
+
+const RotateWorkerCredentialMutation = gql`
+  mutation RotateWorkerCredential($id: String!) {
+    rotateWorkerCredential(id: $id) {
+      id
+      workerId
+      keyPrefix
+      credential
+    }
+  }
+`;
+
+const RevokeWorkerCredentialMutation = gql`
+  mutation RevokeWorkerCredential($id: String!) {
+    revokeWorkerCredential(id: $id)
+  }
+`;
+
 type Worker = {
   id: string;
   name: string;
@@ -60,6 +89,7 @@ type Worker = {
   platform?: string | null;
   version?: string | null;
   status: 'ACTIVE' | 'DISABLED';
+  hasActiveCredential?: boolean | null;
   targetVersion?: string | null;
   upgradeStatus:
     | 'IDLE'
@@ -84,12 +114,25 @@ export default function EdgesPage() {
   const [platform, setPlatform] = useState('');
   const [version, setVersion] = useState('');
   const [targetVersionByWorker, setTargetVersionByWorker] = useState<Record<string, string>>({});
+  const [credentialModalOpen, setCredentialModalOpen] = useState(false);
+  const [revealedCredential, setRevealedCredential] = useState<string | null>(null);
+  const [revealedWorkerId, setRevealedWorkerId] = useState<string | null>(null);
+  const [showCredentialValue, setShowCredentialValue] = useState(false);
 
   const { data, loading, error, refetch } = useQuery<WorkersQueryData>(WorkersQuery);
   const [createWorker, { loading: creating }] = useMutation(CreateWorkerMutation);
   const [disableWorker, { loading: disabling }] = useMutation(DisableWorkerMutation);
   const [setWorkerTargetVersion, { loading: settingTargetVersion }] = useMutation(
     SetWorkerTargetVersionMutation,
+  );
+  const [issueWorkerCredential, { loading: issuingCredential }] = useMutation(
+    IssueWorkerCredentialMutation,
+  );
+  const [rotateWorkerCredential, { loading: rotatingCredential }] = useMutation(
+    RotateWorkerCredentialMutation,
+  );
+  const [revokeWorkerCredential, { loading: revokingCredential }] = useMutation(
+    RevokeWorkerCredentialMutation,
   );
 
   const workers = useMemo(() => data?.workers ?? [], [data?.workers]);
@@ -127,6 +170,41 @@ export default function EdgesPage() {
         targetVersion,
       },
     });
+    await refetch();
+  };
+
+  const openCredentialModal = (workerId: string, credential: string) => {
+    setRevealedWorkerId(workerId);
+    setRevealedCredential(credential);
+    setShowCredentialValue(false);
+    setCredentialModalOpen(true);
+  };
+
+  const closeCredentialModal = () => {
+    setCredentialModalOpen(false);
+    setRevealedWorkerId(null);
+    setRevealedCredential(null);
+    setShowCredentialValue(false);
+  };
+
+  const onIssueCredential = async (workerId: string) => {
+    const result = await issueWorkerCredential({ variables: { id: workerId } });
+    const credential = result.data?.issueWorkerCredential?.credential;
+    if (credential) openCredentialModal(workerId, credential);
+    await refetch();
+  };
+
+  const onRotateCredential = async (workerId: string) => {
+    const result = await rotateWorkerCredential({ variables: { id: workerId } });
+    const credential = result.data?.rotateWorkerCredential?.credential;
+    if (credential) openCredentialModal(workerId, credential);
+    await refetch();
+  };
+
+  const onRevokeCredential = async (workerId: string) => {
+    const confirmed = window.confirm('Revoke active credential for this edge?');
+    if (!confirmed) return;
+    await revokeWorkerCredential({ variables: { id: workerId } });
     await refetch();
   };
 
@@ -210,6 +288,9 @@ export default function EdgesPage() {
                   </p>
                   <p className="text-xs text-[#9ca3af]">Upgrade Status: {worker.upgradeStatus}</p>
                   <p className="text-xs text-[#9ca3af]">
+                    Credential: {worker.hasActiveCredential ? 'Active' : 'None'}
+                  </p>
+                  <p className="text-xs text-[#9ca3af]">
                     Created: {new Date(worker.createdAt).toLocaleString()}
                   </p>
                   {worker.upgradeMessage ? (
@@ -250,12 +331,75 @@ export default function EdgesPage() {
                   >
                     Set Target
                   </button>
+                  <button
+                    type="button"
+                    disabled={Boolean(worker.hasActiveCredential) || issuingCredential}
+                    onClick={() => onIssueCredential(worker.id)}
+                    className="rounded-md border border-emerald-200 px-3 py-1 text-sm text-emerald-700 disabled:opacity-50"
+                  >
+                    Issue
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!worker.hasActiveCredential || rotatingCredential}
+                    onClick={() => onRotateCredential(worker.id)}
+                    className="rounded-md border border-amber-200 px-3 py-1 text-sm text-amber-700 disabled:opacity-50"
+                  >
+                    Rotate
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!worker.hasActiveCredential || revokingCredential}
+                    onClick={() => onRevokeCredential(worker.id)}
+                    className="rounded-md border border-rose-200 px-3 py-1 text-sm text-rose-700 disabled:opacity-50"
+                  >
+                    Revoke
+                  </button>
                 </div>
               </div>
             );
           })}
         </div>
       </section>
+      {credentialModalOpen && revealedCredential ? (
+        <section className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-xl rounded-lg bg-white p-4 shadow-xl">
+            <h3 className="text-lg font-semibold text-[#111827]">Worker Credential (Show Once)</h3>
+            <p className="mt-1 text-sm text-[#6b7280]">
+              Save this token now. It will not be shown again after you close this dialog.
+            </p>
+            <p className="mt-2 text-xs text-[#9ca3af]">Worker ID: {revealedWorkerId}</p>
+            <div className="mt-3 rounded-md border border-[#e5e7eb] bg-[#f9fafb] p-3 font-mono text-xs">
+              {showCredentialValue ? revealedCredential : '••••••••••••••••••••••••••••••••'}
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowCredentialValue((prev) => !prev)}
+                className="rounded-md border border-[#d1d5db] px-3 py-1 text-sm text-[#374151]"
+              >
+                {showCredentialValue ? 'Hide Token' : 'Show Token'}
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(revealedCredential);
+                }}
+                className="rounded-md border border-[#d1d5db] px-3 py-1 text-sm text-[#374151]"
+              >
+                Copy Token
+              </button>
+              <button
+                type="button"
+                onClick={closeCredentialModal}
+                className="ml-auto rounded-md bg-[#111827] px-3 py-1 text-sm text-white"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

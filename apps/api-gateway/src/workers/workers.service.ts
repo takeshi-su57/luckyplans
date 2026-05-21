@@ -6,7 +6,24 @@ export class WorkersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getWorkers() {
-    return this.prisma.worker.findMany({ orderBy: { createdAt: 'desc' } });
+    const workers = await this.prisma.worker.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        credentials: {
+          where: {
+            status: 'ACTIVE',
+            OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+          },
+          select: { id: true },
+          take: 1,
+        },
+      },
+    });
+
+    return workers.map((worker) => ({
+      ...worker,
+      hasActiveCredential: worker.credentials.length > 0,
+    }));
   }
 
   async createWorker(data: {
