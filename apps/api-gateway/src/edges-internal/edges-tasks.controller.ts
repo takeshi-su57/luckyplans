@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { BacktestService } from '../backtest/backtest.service';
 import { WorkerAuthGuard } from './worker-auth.guard';
 
@@ -8,7 +8,11 @@ export class EdgesTasksController {
   constructor(private readonly backtestService: BacktestService) {}
 
   @Post('next')
-  async next(@Body() body: { workerId: string }) {
+  async next(
+    @Body() body: { workerId: string },
+    @Req() req: { worker?: { workerId: string } },
+  ) {
+    this.assertWorkerIdentity(body.workerId, req);
     const task = await this.backtestService.leaseNextTask(body.workerId);
     return { success: true, task };
   }
@@ -24,7 +28,9 @@ export class EdgesTasksController {
       currentConfig?: string;
       trialProgress?: string;
     },
+    @Req() req: { worker?: { workerId: string } },
   ) {
+    this.assertWorkerIdentity(body.workerId, req);
     const task = await this.backtestService.heartbeat(id, body.workerId, body);
     return {
       success: true,
@@ -44,7 +50,9 @@ export class EdgesTasksController {
       processedConfigs: number;
       totalConfigs: number;
     },
+    @Req() req: { worker?: { workerId: string } },
   ) {
+    this.assertWorkerIdentity(body.workerId, req);
     const result = await this.backtestService.complete(id, body.workerId, body);
     return { success: true, status: result.status };
   }
@@ -62,7 +70,9 @@ export class EdgesTasksController {
         resultFolder?: string;
       }>;
     },
+    @Req() req: { worker?: { workerId: string } },
   ) {
+    this.assertWorkerIdentity(body.workerId, req);
     const summary = await this.backtestService.ingestResults(id, body.workerId, body.results);
     return {
       success: true,
@@ -72,8 +82,19 @@ export class EdgesTasksController {
   }
 
   @Post(':id/fail')
-  async fail(@Param('id') id: string, @Body() body: { workerId: string; error: string }) {
+  async fail(
+    @Param('id') id: string,
+    @Body() body: { workerId: string; error: string },
+    @Req() req: { worker?: { workerId: string } },
+  ) {
+    this.assertWorkerIdentity(body.workerId, req);
     const result = await this.backtestService.fail(id, body.workerId, body.error);
     return { success: true, status: result.status };
+  }
+
+  private assertWorkerIdentity(workerId: string, req: { worker?: { workerId: string } }) {
+    if (!req.worker || req.worker.workerId !== workerId) {
+      throw new ForbiddenException('workerId does not match authenticated worker');
+    }
   }
 }
