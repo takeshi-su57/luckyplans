@@ -21,12 +21,43 @@ export async function saveEdgeConfig(
   configPath = resolveEdgeConfigPath(),
 ): Promise<void> {
   await mkdir(dirname(configPath), { recursive: true });
-  await writeFile(configPath, JSON.stringify(config, null, 2), 'utf8');
+  await writeFile(configPath, JSON.stringify(config, null, 2), {
+    encoding: 'utf8',
+    mode: 0o600,
+  });
 }
 
 export async function loadEdgeConfig(
   configPath = resolveEdgeConfigPath(),
 ): Promise<EdgeLocalConfig> {
   const content = await readFile(configPath, 'utf8');
-  return JSON.parse(content) as EdgeLocalConfig;
+  let parsed: unknown;
+
+  try {
+    parsed = JSON.parse(content);
+  } catch {
+    throw new Error(`Invalid edge config JSON at ${configPath}`);
+  }
+
+  if (!isEdgeLocalConfig(parsed)) {
+    throw new Error(`Invalid edge config schema at ${configPath}`);
+  }
+
+  return parsed;
+}
+
+function isEdgeLocalConfig(value: unknown): value is EdgeLocalConfig {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const candidate = value as Record<string, unknown>;
+
+  return (
+    typeof candidate.serverUrl === 'string' &&
+    typeof candidate.workerId === 'string' &&
+    typeof candidate.deviceNumber === 'string' &&
+    typeof candidate.credential === 'string' &&
+    typeof candidate.currentVersion === 'string'
+  );
 }
