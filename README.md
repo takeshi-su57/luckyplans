@@ -66,7 +66,7 @@ luckyplans/
 ## Prerequisites
 
 - **Node.js** >= 20.0.0
-- **pnpm** >= 11.1.2 (`corepack enable && corepack prepare pnpm@11.1.2 --activate`)
+- **pnpm** >= 11.2.2 (`corepack enable && corepack prepare pnpm@11.2.2 --activate`)
 - **Docker** (for containerized builds and local Keycloak/Redis)
 - **k3d** (for local Kubernetes — [install](https://k3d.io))
 
