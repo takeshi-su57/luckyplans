@@ -42,14 +42,18 @@ pnpm install
 cp .env.example .env
 ```
 
-Default values work for local development — including MinIO credentials (`MINIO_ACCESS_KEY=minioadmin`, `MINIO_SECRET_KEY=minioadmin`). The only value you must fill in is `SESSION_SECRET`:
+Default values work for local development — including MinIO credentials (`MINIO_ACCESS_KEY=minioadmin`, `MINIO_SECRET_KEY=minioadmin`). You must fill in `SESSION_SECRET` and `WORKER_CREDENTIAL_PEPPER`:
 
 ```bash
 # Generate a session secret:
 openssl rand -base64 32
+
+# Generate worker credential pepper:
+openssl rand -base64 48
+
 ```
 
-Paste the output into `SESSION_SECRET=` in your `.env` file.
+Paste the outputs into `SESSION_SECRET=` and `WORKER_CREDENTIAL_PEPPER=` in your `.env` file.
 
 ### 3. Start infrastructure
 

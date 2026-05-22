@@ -320,6 +320,21 @@ exports.Prisma.WorkerCredentialScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.EdgeEnrollmentTokenScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  tokenPrefix: 'tokenPrefix',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  maxUses: 'maxUses',
+  usedCount: 'usedCount',
+  lastUsedAt: 'lastUsedAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.StrategyTemplateScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -439,6 +454,11 @@ exports.WorkerCredentialStatus = exports.$Enums.WorkerCredentialStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.EdgeEnrollmentTokenStatus = exports.$Enums.EdgeEnrollmentTokenStatus = {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED'
+};
+
 exports.SearchStrategy = exports.$Enums.SearchStrategy = {
   GRID: 'GRID',
   OPTUNA: 'OPTUNA'
@@ -470,6 +490,7 @@ exports.Prisma.ModelName = {
   UpgradeCampaign: 'UpgradeCampaign',
   UpgradeCampaignWorker: 'UpgradeCampaignWorker',
   WorkerCredential: 'WorkerCredential',
+  EdgeEnrollmentToken: 'EdgeEnrollmentToken',
   StrategyTemplate: 'StrategyTemplate',
   BacktestTask: 'BacktestTask',
   BacktestResult: 'BacktestResult'

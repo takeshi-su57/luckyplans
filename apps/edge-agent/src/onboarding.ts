@@ -40,24 +40,24 @@ export async function runOnboarding(options: OnboardingOptions): Promise<EdgeLoc
 
   const displayName = (await prompt('Display name: ')).trim();
   const serverUrl = normalizeServerUrl((await prompt('Server URL: ')).trim());
-  const token = (await prompt('Registration token: ')).trim();
+  const shortIdFactory = options.shortIdFactory ?? defaultShortIdFactory;
+  let candidateDeviceNumber = buildDeviceNumber(displayName, shortIdFactory);
+
+  output.write(`Edge device name: ${candidateDeviceNumber}\n`);
+  const token = (await prompt('Enrollment token (from Edge UI): ')).trim();
 
   if (!displayName || !serverUrl || !token) {
     throw new Error('Display name, server URL, and registration token are required');
   }
 
-  const shortIdFactory = options.shortIdFactory ?? defaultShortIdFactory;
-
   // Retry on 409 collision by regenerating the device number suffix.
   for (let attempt = 1; attempt <= MAX_DEVICE_NUMBER_RETRIES; attempt += 1) {
-    const deviceNumber = buildDeviceNumber(displayName, shortIdFactory);
-
     try {
       const registration = await options.client.registerEdge({
         displayName,
         serverUrl,
         token,
-        deviceNumber,
+        deviceNumber: candidateDeviceNumber,
         platform: options.platform,
         arch: options.arch,
         edgeVersion: options.edgeVersion,
@@ -83,6 +83,8 @@ export async function runOnboarding(options: OnboardingOptions): Promise<EdgeLoc
           `Unable to register edge after ${MAX_DEVICE_NUMBER_RETRIES} device number attempts due to conflicts`,
         );
       }
+
+      candidateDeviceNumber = buildDeviceNumber(displayName, shortIdFactory);
     }
   }
 

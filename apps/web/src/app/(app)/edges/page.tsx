@@ -21,6 +21,19 @@ const WorkersQuery = gql`
       createdAt
       updatedAt
     }
+    edgeEnrollmentTokens {
+      id
+      label
+      tokenPrefix
+      status
+      expiresAt
+      maxUses
+      usedCount
+      lastUsedAt
+      revokedAt
+      createdAt
+      updatedAt
+    }
   }
 `;
 
@@ -82,6 +95,29 @@ const RevokeWorkerCredentialMutation = gql`
   }
 `;
 
+const CreateEdgeEnrollmentTokenMutation = gql`
+  mutation CreateEdgeEnrollmentToken($label: String, $maxUses: Int, $expiresAt: DateTime) {
+    createEdgeEnrollmentToken(label: $label, maxUses: $maxUses, expiresAt: $expiresAt) {
+      id
+      label
+      tokenPrefix
+      status
+      maxUses
+      usedCount
+      expiresAt
+      token
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const RevokeEdgeEnrollmentTokenMutation = gql`
+  mutation RevokeEdgeEnrollmentToken($id: String!) {
+    revokeEdgeEnrollmentToken(id: $id)
+  }
+`;
+
 type Worker = {
   id: string;
   name: string;
@@ -107,6 +143,73 @@ type Worker = {
 
 type WorkersQueryData = {
   workers: Worker[];
+  edgeEnrollmentTokens: EnrollmentToken[];
+};
+
+type EnrollmentToken = {
+  id: string;
+  label?: string | null;
+  tokenPrefix: string;
+  status: 'ACTIVE' | 'REVOKED';
+  expiresAt?: string | null;
+  maxUses?: number | null;
+  usedCount: number;
+  lastUsedAt?: string | null;
+  revokedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type WorkerCredentialPayload = {
+  id: string;
+  workerId: string;
+  keyPrefix: string;
+  credential: string;
+};
+
+type IssueWorkerCredentialMutationData = {
+  issueWorkerCredential: WorkerCredentialPayload;
+};
+
+type IssueWorkerCredentialMutationVariables = {
+  id: string;
+};
+
+type RotateWorkerCredentialMutationData = {
+  rotateWorkerCredential: WorkerCredentialPayload;
+};
+
+type RotateWorkerCredentialMutationVariables = {
+  id: string;
+};
+
+type CreateEdgeEnrollmentTokenMutationData = {
+  createEdgeEnrollmentToken: {
+    id: string;
+    label?: string | null;
+    tokenPrefix: string;
+    status: 'ACTIVE' | 'REVOKED';
+    maxUses?: number | null;
+    usedCount: number;
+    expiresAt?: string | null;
+    token: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+};
+
+type CreateEdgeEnrollmentTokenMutationVariables = {
+  label?: string | null;
+  maxUses?: number | null;
+  expiresAt?: string | null;
+};
+
+type RevokeEdgeEnrollmentTokenMutationData = {
+  revokeEdgeEnrollmentToken: boolean;
+};
+
+type RevokeEdgeEnrollmentTokenMutationVariables = {
+  id: string;
 };
 
 export default function EdgesPage() {
@@ -118,6 +221,12 @@ export default function EdgesPage() {
   const [revealedCredential, setRevealedCredential] = useState<string | null>(null);
   const [revealedWorkerId, setRevealedWorkerId] = useState<string | null>(null);
   const [showCredentialValue, setShowCredentialValue] = useState(false);
+  const [enrollmentLabel, setEnrollmentLabel] = useState('');
+  const [enrollmentMaxUses, setEnrollmentMaxUses] = useState('');
+  const [enrollmentExpiresAt, setEnrollmentExpiresAt] = useState('');
+  const [enrollmentModalOpen, setEnrollmentModalOpen] = useState(false);
+  const [revealedEnrollmentToken, setRevealedEnrollmentToken] = useState<string | null>(null);
+  const [showEnrollmentValue, setShowEnrollmentValue] = useState(false);
 
   const { data, loading, error, refetch } = useQuery<WorkersQueryData>(WorkersQuery);
   const [createWorker, { loading: creating }] = useMutation(CreateWorkerMutation);
@@ -125,17 +234,31 @@ export default function EdgesPage() {
   const [setWorkerTargetVersion, { loading: settingTargetVersion }] = useMutation(
     SetWorkerTargetVersionMutation,
   );
-  const [issueWorkerCredential, { loading: issuingCredential }] = useMutation(
-    IssueWorkerCredentialMutation,
-  );
-  const [rotateWorkerCredential, { loading: rotatingCredential }] = useMutation(
-    RotateWorkerCredentialMutation,
-  );
+  const [issueWorkerCredential, { loading: issuingCredential }] = useMutation<
+    IssueWorkerCredentialMutationData,
+    IssueWorkerCredentialMutationVariables
+  >(IssueWorkerCredentialMutation);
+  const [rotateWorkerCredential, { loading: rotatingCredential }] = useMutation<
+    RotateWorkerCredentialMutationData,
+    RotateWorkerCredentialMutationVariables
+  >(RotateWorkerCredentialMutation);
   const [revokeWorkerCredential, { loading: revokingCredential }] = useMutation(
     RevokeWorkerCredentialMutation,
   );
+  const [createEdgeEnrollmentToken, { loading: creatingEnrollmentToken }] = useMutation<
+    CreateEdgeEnrollmentTokenMutationData,
+    CreateEdgeEnrollmentTokenMutationVariables
+  >(CreateEdgeEnrollmentTokenMutation);
+  const [revokeEdgeEnrollmentToken, { loading: revokingEnrollmentToken }] = useMutation<
+    RevokeEdgeEnrollmentTokenMutationData,
+    RevokeEdgeEnrollmentTokenMutationVariables
+  >(RevokeEdgeEnrollmentTokenMutation);
 
   const workers = useMemo(() => data?.workers ?? [], [data?.workers]);
+  const enrollmentTokens = useMemo(
+    () => data?.edgeEnrollmentTokens ?? [],
+    [data?.edgeEnrollmentTokens],
+  );
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -208,6 +331,40 @@ export default function EdgesPage() {
     await refetch();
   };
 
+  const onCreateEnrollmentToken = async (e: FormEvent) => {
+    e.preventDefault();
+    const maxUses = enrollmentMaxUses.trim() ? Number(enrollmentMaxUses.trim()) : null;
+    const expiresAtIso = enrollmentExpiresAt.trim()
+      ? new Date(enrollmentExpiresAt.trim()).toISOString()
+      : null;
+    const result = await createEdgeEnrollmentToken({
+      variables: {
+        label: enrollmentLabel.trim() || null,
+        maxUses: Number.isFinite(maxUses as number) ? maxUses : null,
+        expiresAt: expiresAtIso,
+      },
+    });
+    const token = result.data?.createEdgeEnrollmentToken?.token;
+    if (token) {
+      setRevealedEnrollmentToken(token);
+      setEnrollmentModalOpen(true);
+      setShowEnrollmentValue(false);
+    }
+    setEnrollmentLabel('');
+    setEnrollmentMaxUses('');
+    setEnrollmentExpiresAt('');
+    await refetch();
+  };
+
+  const onRevokeEnrollmentToken = async (id: string) => {
+    const confirmed = window.confirm(
+      'Revoke this enrollment token? New edge registration will fail.',
+    );
+    if (!confirmed) return;
+    await revokeEdgeEnrollmentToken({ variables: { id } });
+    await refetch();
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -249,6 +406,86 @@ export default function EdgesPage() {
             </button>
           </div>
         </form>
+      </section>
+
+      <section className="rounded-lg border border-[#e5e7eb] bg-white p-4">
+        <h2 className="mb-3 font-medium text-[#111827]">Edge Enrollment Tokens</h2>
+        <p className="mb-3 text-xs text-[#6b7280]">
+          Use enrollment tokens only for first-time edge registration. Existing registered edges use
+          their own worker credentials.
+        </p>
+        <form className="grid gap-3 sm:grid-cols-4" onSubmit={onCreateEnrollmentToken}>
+          <input
+            placeholder="Label (optional)"
+            value={enrollmentLabel}
+            onChange={(e) => setEnrollmentLabel(e.target.value)}
+            className="rounded-md border border-[#d1d5db] px-3 py-2 text-sm"
+          />
+          <input
+            placeholder="Max uses (optional)"
+            value={enrollmentMaxUses}
+            onChange={(e) => setEnrollmentMaxUses(e.target.value)}
+            className="rounded-md border border-[#d1d5db] px-3 py-2 text-sm"
+          />
+          <input
+            type="datetime-local"
+            value={enrollmentExpiresAt}
+            onChange={(e) => setEnrollmentExpiresAt(e.target.value)}
+            className="rounded-md border border-[#d1d5db] px-3 py-2 text-sm"
+          />
+          <div className="flex items-end">
+            <button
+              type="submit"
+              disabled={creatingEnrollmentToken}
+              className="rounded-md bg-[#111827] px-3 py-2 text-sm text-white disabled:opacity-50"
+            >
+              {creatingEnrollmentToken ? 'Creating...' : 'Create Enrollment Token'}
+            </button>
+          </div>
+        </form>
+        <div className="mt-4 space-y-2">
+          {enrollmentTokens.length === 0 ? (
+            <p className="text-sm text-[#6b7280]">No enrollment tokens yet.</p>
+          ) : null}
+          {enrollmentTokens.map((token) => (
+            <div
+              key={token.id}
+              className="flex flex-col justify-between gap-2 rounded-lg border border-[#e5e7eb] p-3 sm:flex-row sm:items-center"
+            >
+              <div className="space-y-1">
+                <p className="font-medium text-[#111827]">
+                  {token.label?.trim() ? token.label : token.tokenPrefix}
+                </p>
+                <p className="text-xs text-[#6b7280]">
+                  Prefix: {token.tokenPrefix} | Uses: {token.usedCount}
+                  {token.maxUses ? `/${token.maxUses}` : ' (unlimited)'}
+                </p>
+                <p className="text-xs text-[#9ca3af]">
+                  Expires: {token.expiresAt ? new Date(token.expiresAt).toLocaleString() : 'Never'}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`rounded-full px-2 py-1 text-xs ${
+                    token.status === 'ACTIVE'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  {token.status}
+                </span>
+                <button
+                  type="button"
+                  disabled={token.status !== 'ACTIVE' || revokingEnrollmentToken}
+                  onClick={() => onRevokeEnrollmentToken(token.id)}
+                  className="rounded-md border border-rose-200 px-3 py-1 text-sm text-rose-700 disabled:opacity-50"
+                >
+                  Revoke
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="rounded-lg border border-[#e5e7eb] bg-white p-4">
@@ -392,6 +629,50 @@ export default function EdgesPage() {
               <button
                 type="button"
                 onClick={closeCredentialModal}
+                className="ml-auto rounded-md bg-[#111827] px-3 py-1 text-sm text-white"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : null}
+      {enrollmentModalOpen && revealedEnrollmentToken ? (
+        <section className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-xl rounded-lg bg-white p-4 shadow-xl">
+            <h3 className="text-lg font-semibold text-[#111827]">Enrollment Token (Show Once)</h3>
+            <p className="mt-1 text-sm text-[#6b7280]">
+              Save this token now. It will not be shown again after you close this dialog.
+            </p>
+            <div className="mt-3 rounded-md border border-[#e5e7eb] bg-[#f9fafb] p-3 font-mono text-xs">
+              {showEnrollmentValue
+                ? revealedEnrollmentToken
+                : '••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••'}
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowEnrollmentValue((prev) => !prev)}
+                className="rounded-md border border-[#d1d5db] px-3 py-1 text-sm text-[#374151]"
+              >
+                {showEnrollmentValue ? 'Hide Token' : 'Show Token'}
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(revealedEnrollmentToken);
+                }}
+                className="rounded-md border border-[#d1d5db] px-3 py-1 text-sm text-[#374151]"
+              >
+                Copy Token
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setEnrollmentModalOpen(false);
+                  setShowEnrollmentValue(false);
+                  setRevealedEnrollmentToken(null);
+                }}
                 className="ml-auto rounded-md bg-[#111827] px-3 py-1 text-sm text-white"
               >
                 Close

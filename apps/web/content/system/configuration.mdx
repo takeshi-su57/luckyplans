@@ -9,56 +9,57 @@ description: All environment variables, Helm values, and production overrides.
 
 ### Core
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `REDIS_HOST` | `localhost` | Redis hostname |
-| `REDIS_PORT` | `6379` | Redis port |
-| `API_GATEWAY_PORT` | `3001` | API Gateway listen port |
-| `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
-| `NODE_ENV` | `development` | Node environment |
-| `WEB_PORT` | `3000` | Next.js dev server port |
-| `API_GATEWAY_URL` | `http://localhost:3001` | Gateway URL used by Next.js rewrites to proxy `/auth/*` and `/graphql` |
+| Variable           | Default                 | Description                                                            |
+| ------------------ | ----------------------- | ---------------------------------------------------------------------- |
+| `REDIS_HOST`       | `localhost`             | Redis hostname                                                         |
+| `REDIS_PORT`       | `6379`                  | Redis port                                                             |
+| `API_GATEWAY_PORT` | `3001`                  | API Gateway listen port                                                |
+| `CORS_ORIGIN`      | `http://localhost:3000` | Allowed CORS origin                                                    |
+| `NODE_ENV`         | `development`           | Node environment                                                       |
+| `WEB_PORT`         | `3000`                  | Next.js dev server port                                                |
+| `API_GATEWAY_URL`  | `http://localhost:3001` | Gateway URL used by Next.js rewrites to proxy `/auth/*` and `/graphql` |
 
 ### Keycloak (api-gateway)
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `KEYCLOAK_ISSUER` | — | Keycloak realm issuer URL. Must match the `iss` claim in tokens. e.g. `http://localhost:8080/realms/luckyplans` |
-| `KEYCLOAK_JWKS_URI` | — | Keycloak JWKS endpoint for verifying id_tokens. e.g. `http://localhost:8080/realms/luckyplans/protocol/openid-connect/certs` |
-| `KEYCLOAK_CLIENT_ID` | `luckyplans-frontend` | Keycloak client ID (confidential, ROPC + service account enabled) |
-| `KEYCLOAK_CLIENT_SECRET` | — | Client secret from Keycloak Admin → Clients → `luckyplans-frontend` → Credentials. Local dev uses `dev-client-secret` (pre-configured in realm export). See [Deployment Guide](/docs/guides/deployment#obtaining-keycloak_client_secret). |
-| `KEYCLOAK_ADMIN_URL` | `http://localhost:8080` | Keycloak base URL for Admin REST API (user registration) |
+| Variable                 | Default                 | Description                                                                                                                                                                                                                               |
+| ------------------------ | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `KEYCLOAK_ISSUER`        | —                       | Keycloak realm issuer URL. Must match the `iss` claim in tokens. e.g. `http://localhost:8080/realms/luckyplans`                                                                                                                           |
+| `KEYCLOAK_JWKS_URI`      | —                       | Keycloak JWKS endpoint for verifying id_tokens. e.g. `http://localhost:8080/realms/luckyplans/protocol/openid-connect/certs`                                                                                                              |
+| `KEYCLOAK_CLIENT_ID`     | `luckyplans-frontend`   | Keycloak client ID (confidential, ROPC + service account enabled)                                                                                                                                                                         |
+| `KEYCLOAK_CLIENT_SECRET` | —                       | Client secret from Keycloak Admin → Clients → `luckyplans-frontend` → Credentials. Local dev uses `dev-client-secret` (pre-configured in realm export). See [Deployment Guide](/docs/guides/deployment#obtaining-keycloak_client_secret). |
+| `KEYCLOAK_ADMIN_URL`     | `http://localhost:8080` | Keycloak base URL for Admin REST API (user registration)                                                                                                                                                                                  |
 
 ### Session Management (api-gateway)
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SESSION_SECRET` | — | Secret for signing session cookies. Generate with `openssl rand -base64 32` |
-| `SESSION_TTL_SECONDS` | `36000` | Session time-to-live in seconds (default: 10 hours) |
+| Variable                   | Default | Description                                                                                                                                                                                                        |
+| -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SESSION_SECRET`           | —       | Secret for signing session cookies. Generate with `openssl rand -base64 32`                                                                                                                                        |
+| `WORKER_CREDENTIAL_PEPPER` | —       | Secret pepper used by the gateway when hashing/verifying worker (edge) credential material. Generate with `openssl rand -base64 48`. Treat as high-sensitivity secret and manage via Sealed Secrets in production. |
+| `SESSION_TTL_SECONDS`      | `36000` | Session time-to-live in seconds (default: 10 hours)                                                                                                                                                                |
 
 ### Database (service-core)
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | — | PostgreSQL connection string for Prisma ORM. Format: `postgresql://user:password@host:port/database`. Local dev: `postgresql://luckyplans:luckyplans@localhost:5433/luckyplans` |
+| Variable       | Default | Description                                                                                                                                                                     |
+| -------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL` | —       | PostgreSQL connection string for Prisma ORM. Format: `postgresql://user:password@host:port/database`. Local dev: `postgresql://luckyplans:luckyplans@localhost:5433/luckyplans` |
 
 ### MinIO (File Uploads)
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MINIO_ENDPOINT` | `localhost` | MinIO server hostname |
-| `MINIO_PORT` | `9000` | MinIO API port |
-| `MINIO_ACCESS_KEY` | `minioadmin` | MinIO root user (S3 access key). **Secret** — managed via Sealed Secrets in production |
-| `MINIO_SECRET_KEY` | `minioadmin` | MinIO root password (S3 secret key). **Secret** — managed via Sealed Secrets in production |
-| `MINIO_BUCKET` | `luckyplans-uploads` | MinIO bucket name |
-| `MINIO_USE_SSL` | `false` | Use SSL for MinIO connection |
+| Variable           | Default              | Description                                                                                |
+| ------------------ | -------------------- | ------------------------------------------------------------------------------------------ |
+| `MINIO_ENDPOINT`   | `localhost`          | MinIO server hostname                                                                      |
+| `MINIO_PORT`       | `9000`               | MinIO API port                                                                             |
+| `MINIO_ACCESS_KEY` | `minioadmin`         | MinIO root user (S3 access key). **Secret** — managed via Sealed Secrets in production     |
+| `MINIO_SECRET_KEY` | `minioadmin`         | MinIO root password (S3 secret key). **Secret** — managed via Sealed Secrets in production |
+| `MINIO_BUCKET`     | `luckyplans-uploads` | MinIO bucket name                                                                          |
+| `MINIO_USE_SSL`    | `false`              | Use SSL for MinIO connection                                                               |
 
 ### Observability
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:4317` | OpenTelemetry Collector gRPC endpoint for traces, metrics, and logs |
-| `LOG_LEVEL` | `info` (prod) / `debug` (dev) | Pino log level (`debug`, `info`, `warn`, `error`) |
+| Variable                      | Default                       | Description                                                         |
+| ----------------------------- | ----------------------------- | ------------------------------------------------------------------- |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:4317`       | OpenTelemetry Collector gRPC endpoint for traces, metrics, and logs |
+| `LOG_LEVEL`                   | `info` (prod) / `debug` (dev) | Pino log level (`debug`, `info`, `warn`, `error`)                   |
 
 Environment variables are accessed via `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. This throws on missing required variables. See `.env.example` for the full template.
 
@@ -70,20 +71,20 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 
 ### Key Sections
 
-| Section | Purpose |
-|---------|---------|
-| `config.*` | Application config rendered into ConfigMap (incl. Keycloak vars, session TTL) |
-| `secrets` | Plain-text dev secrets rendered into K8s Secret (local dev only) |
-| `sealedSecrets.*` | Encrypted production secrets rendered as SealedSecret CRD (prod only) |
-| `image.*` | Container registry and pull policy |
-| `ingress.*` | Traefik ingress configuration (routes `/auth/*`, `/graphql`, `/realms/*`) |
-| `certManager.*` | Let's Encrypt TLS automation |
-| `redis.*` | Redis deployment config |
-| `postgresql.*` | PostgreSQL deployment config (Keycloak database) |
-| `keycloak.*` | Keycloak deployment config (enabled by default) |
-| `apiGateway.*` | API gateway deployment config |
-| `serviceCore.*` | Core service deployment config |
-| `web.*` | Frontend deployment config |
+| Section           | Purpose                                                                       |
+| ----------------- | ----------------------------------------------------------------------------- |
+| `config.*`        | Application config rendered into ConfigMap (incl. Keycloak vars, session TTL) |
+| `secrets`         | Plain-text dev secrets rendered into K8s Secret (local dev only)              |
+| `sealedSecrets.*` | Encrypted production secrets rendered as SealedSecret CRD (prod only)         |
+| `image.*`         | Container registry and pull policy                                            |
+| `ingress.*`       | Traefik ingress configuration (routes `/auth/*`, `/graphql`, `/realms/*`)     |
+| `certManager.*`   | Let's Encrypt TLS automation                                                  |
+| `redis.*`         | Redis deployment config                                                       |
+| `postgresql.*`    | PostgreSQL deployment config (Keycloak database)                              |
+| `keycloak.*`      | Keycloak deployment config (enabled by default)                               |
+| `apiGateway.*`    | API gateway deployment config                                                 |
+| `serviceCore.*`   | Core service deployment config                                                |
+| `web.*`           | Frontend deployment config                                                    |
 
 ### Production Overrides
 

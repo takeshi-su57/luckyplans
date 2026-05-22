@@ -167,6 +167,35 @@ type IssuedWorkerCredential {
   credential: String!
 }
 
+type EdgeEnrollmentToken {
+  id: ID!
+  label: String
+  tokenPrefix: String!
+  status: String!
+  expiresAt: DateTime
+  maxUses: Int
+  usedCount: Int!
+  lastUsedAt: DateTime
+  revokedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CreatedEdgeEnrollmentToken {
+  id: ID!
+  label: String
+  tokenPrefix: String!
+  status: String!
+  expiresAt: DateTime
+  maxUses: Int
+  usedCount: Int!
+  lastUsedAt: DateTime
+  revokedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  token: String!
+}
+
 type EdgeRelease {
   id: ID!
   version: String!
@@ -258,6 +287,7 @@ type Query {
   getPublicProfile(userId: String!): PublicProfile
   getSkillCategories: [SkillCategory!]!
   workers: [Worker!]!
+  edgeEnrollmentTokens: [EdgeEnrollmentToken!]!
   edgeReleases: [EdgeRelease!]!
   backtestTasks: [BacktestTask!]!
   backtestTask(id: String!): BacktestTask
@@ -317,6 +347,8 @@ type Mutation {
   issueWorkerCredential(id: String!): IssuedWorkerCredential!
   revokeWorkerCredential(id: String!): Boolean!
   rotateWorkerCredential(id: String!): IssuedWorkerCredential!
+  createEdgeEnrollmentToken(label: String, expiresAt: DateTime, maxUses: Int): CreatedEdgeEnrollmentToken!
+  revokeEdgeEnrollmentToken(id: String!): Boolean!
   createEdgeRelease(version: String!, windowsUrl: String!, linuxUrl: String!, checksum: String!, signature: String!, notes: String): EdgeRelease!
   setWorkerTargetVersion(workerIds: [String!]!, targetVersion: String!): Int!
   reportWorkerUpgradeStatus(workerId: String!, status: String!, message: String): Boolean!

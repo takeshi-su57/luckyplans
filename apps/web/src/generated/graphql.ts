@@ -153,9 +153,40 @@ export type CreateStrategyTemplateInput = {
   name: Scalars['String']['input'];
 };
 
+export type CreatedEdgeEnrollmentToken = {
+  __typename?: 'CreatedEdgeEnrollmentToken';
+  createdAt: Scalars['DateTime']['output'];
+  expiresAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  label?: Maybe<Scalars['String']['output']>;
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  maxUses?: Maybe<Scalars['Int']['output']>;
+  revokedAt?: Maybe<Scalars['DateTime']['output']>;
+  status: Scalars['String']['output'];
+  token: Scalars['String']['output'];
+  tokenPrefix: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  usedCount: Scalars['Int']['output'];
+};
+
 export type DeleteResult = {
   __typename?: 'DeleteResult';
   success: Scalars['Boolean']['output'];
+};
+
+export type EdgeEnrollmentToken = {
+  __typename?: 'EdgeEnrollmentToken';
+  createdAt: Scalars['DateTime']['output'];
+  expiresAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  label?: Maybe<Scalars['String']['output']>;
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  maxUses?: Maybe<Scalars['Int']['output']>;
+  revokedAt?: Maybe<Scalars['DateTime']['output']>;
+  status: Scalars['String']['output'];
+  tokenPrefix: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  usedCount: Scalars['Int']['output'];
 };
 
 export type EdgeRelease = {
@@ -233,6 +264,7 @@ export type Mutation = {
   createAward: Award;
   createBacktestTask: BacktestTask;
   createCertification: Certification;
+  createEdgeEnrollmentToken: CreatedEdgeEnrollmentToken;
   createEdgeRelease: EdgeRelease;
   createEducation: Education;
   createExperience: Experience;
@@ -267,6 +299,7 @@ export type Mutation = {
   reorderSocialLinks: DeleteResult;
   reportWorkerUpgradeStatus: Scalars['Boolean']['output'];
   retryBacktestTask: BacktestTask;
+  revokeEdgeEnrollmentToken: Scalars['Boolean']['output'];
   revokeWorkerCredential: Scalars['Boolean']['output'];
   rollbackUpgradeCampaign: UpgradeCampaign;
   rotateWorkerCredential: IssuedWorkerCredential;
@@ -309,6 +342,13 @@ export type MutationCreateBacktestTaskArgs = {
 
 export type MutationCreateCertificationArgs = {
   input: CreateCertificationInput;
+};
+
+
+export type MutationCreateEdgeEnrollmentTokenArgs = {
+  expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+  maxUses?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -493,6 +533,11 @@ export type MutationRetryBacktestTaskArgs = {
 };
 
 
+export type MutationRevokeEdgeEnrollmentTokenArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationRevokeWorkerCredentialArgs = {
   id: Scalars['String']['input'];
 };
@@ -640,6 +685,7 @@ export type Query = {
   backtestResults: Array<BacktestResult>;
   backtestTask?: Maybe<BacktestTask>;
   backtestTasks: Array<BacktestTask>;
+  edgeEnrollmentTokens: Array<EdgeEnrollmentToken>;
   edgeReleases: Array<EdgeRelease>;
   getPublicProfile?: Maybe<PublicProfile>;
   getSkillCategories: Array<SkillCategory>;
@@ -864,7 +910,7 @@ export type WorkerUpgradeStatus =
 export type WorkersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, deviceNumber?: string | null, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, hasActiveCredential: boolean, targetVersion?: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage?: string | null, createdAt: string, updatedAt: string }> };
+export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, deviceNumber?: string | null, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, hasActiveCredential: boolean, targetVersion?: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage?: string | null, createdAt: string, updatedAt: string }>, edgeEnrollmentTokens: Array<{ __typename?: 'EdgeEnrollmentToken', id: string, label?: string | null, tokenPrefix: string, status: string, expiresAt?: string | null, maxUses?: number | null, usedCount: number, lastUsedAt?: string | null, revokedAt?: string | null, createdAt: string, updatedAt: string }> };
 
 export type CreateWorkerMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -910,6 +956,22 @@ export type RevokeWorkerCredentialMutationVariables = Exact<{
 
 
 export type RevokeWorkerCredentialMutation = { __typename?: 'Mutation', revokeWorkerCredential: boolean };
+
+export type CreateEdgeEnrollmentTokenMutationVariables = Exact<{
+  label?: InputMaybe<Scalars['String']['input']>;
+  maxUses?: InputMaybe<Scalars['Int']['input']>;
+  expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
+}>;
+
+
+export type CreateEdgeEnrollmentTokenMutation = { __typename?: 'Mutation', createEdgeEnrollmentToken: { __typename?: 'CreatedEdgeEnrollmentToken', id: string, label?: string | null, tokenPrefix: string, status: string, maxUses?: number | null, usedCount: number, expiresAt?: string | null, token: string, createdAt: string, updatedAt: string } };
+
+export type RevokeEdgeEnrollmentTokenMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type RevokeEdgeEnrollmentTokenMutation = { __typename?: 'Mutation', revokeEdgeEnrollmentToken: boolean };
 
 export type BacktestTasksQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1256,13 +1318,15 @@ export type UpdateSocialLinkMutationVariables = Exact<{
 export type UpdateSocialLinkMutation = { __typename?: 'Mutation', updateSocialLink?: { __typename?: 'SocialLink', id: string, platform: string, url: string, label?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 
-export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"hasActiveCredential"}},{"kind":"Field","name":{"kind":"Name","value":"targetVersion"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeStatus"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;
+export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"hasActiveCredential"}},{"kind":"Field","name":{"kind":"Name","value":"targetVersion"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeStatus"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edgeEnrollmentTokens"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"maxUses"}},{"kind":"Field","name":{"kind":"Name","value":"usedCount"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"revokedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;
 export const CreateWorkerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateWorker"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"platform"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"version"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createWorker"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"platform"},"value":{"kind":"Variable","name":{"kind":"Name","value":"platform"}}},{"kind":"Argument","name":{"kind":"Name","value":"version"},"value":{"kind":"Variable","name":{"kind":"Name","value":"version"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateWorkerMutation, CreateWorkerMutationVariables>;
 export const DisableWorkerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DisableWorker"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"disableWorker"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<DisableWorkerMutation, DisableWorkerMutationVariables>;
 export const SetWorkerTargetVersionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetWorkerTargetVersion"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workerIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetVersion"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setWorkerTargetVersion"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workerIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workerIds"}}},{"kind":"Argument","name":{"kind":"Name","value":"targetVersion"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetVersion"}}}]}]}}]} as unknown as DocumentNode<SetWorkerTargetVersionMutation, SetWorkerTargetVersionMutationVariables>;
 export const IssueWorkerCredentialDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"IssueWorkerCredential"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"issueWorkerCredential"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"workerId"}},{"kind":"Field","name":{"kind":"Name","value":"keyPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"credential"}}]}}]}}]} as unknown as DocumentNode<IssueWorkerCredentialMutation, IssueWorkerCredentialMutationVariables>;
 export const RotateWorkerCredentialDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RotateWorkerCredential"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rotateWorkerCredential"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"workerId"}},{"kind":"Field","name":{"kind":"Name","value":"keyPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"credential"}}]}}]}}]} as unknown as DocumentNode<RotateWorkerCredentialMutation, RotateWorkerCredentialMutationVariables>;
 export const RevokeWorkerCredentialDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RevokeWorkerCredential"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"revokeWorkerCredential"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<RevokeWorkerCredentialMutation, RevokeWorkerCredentialMutationVariables>;
+export const CreateEdgeEnrollmentTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateEdgeEnrollmentToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"label"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"maxUses"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"expiresAt"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createEdgeEnrollmentToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"label"},"value":{"kind":"Variable","name":{"kind":"Name","value":"label"}}},{"kind":"Argument","name":{"kind":"Name","value":"maxUses"},"value":{"kind":"Variable","name":{"kind":"Name","value":"maxUses"}}},{"kind":"Argument","name":{"kind":"Name","value":"expiresAt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"expiresAt"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"maxUses"}},{"kind":"Field","name":{"kind":"Name","value":"usedCount"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateEdgeEnrollmentTokenMutation, CreateEdgeEnrollmentTokenMutationVariables>;
+export const RevokeEdgeEnrollmentTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RevokeEdgeEnrollmentToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"revokeEdgeEnrollmentToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<RevokeEdgeEnrollmentTokenMutation, RevokeEdgeEnrollmentTokenMutationVariables>;
 export const BacktestTasksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BacktestTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backtestTasks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"interval"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"assignedWorkerId"}},{"kind":"Field","name":{"kind":"Name","value":"processedConfigs"}},{"kind":"Field","name":{"kind":"Name","value":"totalConfigs"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<BacktestTasksQuery, BacktestTasksQueryVariables>;
 export const BacktestResultsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BacktestResults"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"taskId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backtestResults"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"taskId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"taskId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"configId"}},{"kind":"Field","name":{"kind":"Name","value":"metrics"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<BacktestResultsQuery, BacktestResultsQueryVariables>;
 export const CreateStrategyTemplateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateStrategyTemplate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateStrategyTemplateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createStrategyTemplate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}}]}}]}}]} as unknown as DocumentNode<CreateStrategyTemplateMutation, CreateStrategyTemplateMutationVariables>;

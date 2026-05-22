@@ -44,16 +44,16 @@ class Worker {
   name!: string;
 
   @Field({ nullable: true })
-  deviceNumber?: string;
+  deviceNumber?: string | null;
 
   @Field({ nullable: true })
-  platform?: string;
+  platform?: string | null;
 
   @Field({ nullable: true })
-  arch?: string;
+  arch?: string | null;
 
   @Field({ nullable: true })
-  version?: string;
+  version?: string | null;
 
   @Field()
   hasActiveCredential!: boolean;
@@ -62,16 +62,16 @@ class Worker {
   status!: WorkerStatus;
 
   @Field({ nullable: true })
-  lastSeenAt?: Date;
+  lastSeenAt?: Date | null;
 
   @Field({ nullable: true })
-  targetVersion?: string;
+  targetVersion?: string | null;
 
   @Field(() => WorkerUpgradeStatus)
   upgradeStatus!: WorkerUpgradeStatus;
 
   @Field({ nullable: true })
-  upgradeMessage?: string;
+  upgradeMessage?: string | null;
 
   @Field()
   createdAt!: Date;
@@ -107,17 +107,26 @@ export class WorkersResolver {
       arch,
       version,
     });
-    await this.realtimeEvents.publishWorkerStatusUpdated(created);
-    return created;
+    const result: Worker = {
+      ...created,
+      hasActiveCredential: false,
+    };
+    await this.realtimeEvents.publishWorkerStatusUpdated(result);
+    return result;
   }
 
   @Mutation(() => Worker, { nullable: true })
   async disableWorker(@Args('id') id: string): Promise<Worker | null> {
     const updated = await this.workersService.disableWorker(id);
     if (updated) {
-      await this.realtimeEvents.publishWorkerStatusUpdated(updated);
+      const result: Worker = {
+        ...updated,
+        hasActiveCredential: false,
+      };
+      await this.realtimeEvents.publishWorkerStatusUpdated(result);
+      return result;
     }
-    return updated;
+    return null;
   }
 
   @Subscription(() => Worker)

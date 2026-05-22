@@ -67,7 +67,8 @@ export class EdgeApiClient {
   }
 
   async registerEdge(input: RegisterEdgeInput): Promise<RegisterEdgeResponse> {
-    const response = await fetch(`${input.serverUrl}/internal/edges/register`, {
+    const endpoint = `${input.serverUrl}/internal/edges/register`;
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -90,6 +91,18 @@ export class EdgeApiClient {
       };
       error.status = response.status;
       throw error;
+    }
+
+    const contentType = response.headers.get('content-type') ?? '';
+    if (!contentType.includes('application/json')) {
+      const bodyPreview = (await response.text()).slice(0, 120).replace(/\s+/g, ' ');
+      throw new Error(
+        [
+          `Edge registration expected JSON but received '${contentType || 'unknown'}' from ${endpoint}.`,
+          `Response preview: ${bodyPreview}`,
+          'Tip: in local dev, use API gateway URL like http://localhost:3001 (not web URL http://localhost:3000).',
+        ].join(' '),
+      );
     }
 
     return response.json() as Promise<RegisterEdgeResponse>;

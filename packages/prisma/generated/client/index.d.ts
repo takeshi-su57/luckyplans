@@ -94,6 +94,11 @@ export type UpgradeCampaignWorker = $Result.DefaultSelection<Prisma.$UpgradeCamp
  */
 export type WorkerCredential = $Result.DefaultSelection<Prisma.$WorkerCredentialPayload>
 /**
+ * Model EdgeEnrollmentToken
+ * 
+ */
+export type EdgeEnrollmentToken = $Result.DefaultSelection<Prisma.$EdgeEnrollmentTokenPayload>
+/**
  * Model StrategyTemplate
  * 
  */
@@ -129,6 +134,14 @@ export const WorkerCredentialStatus: {
 };
 
 export type WorkerCredentialStatus = (typeof WorkerCredentialStatus)[keyof typeof WorkerCredentialStatus]
+
+
+export const EdgeEnrollmentTokenStatus: {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED'
+};
+
+export type EdgeEnrollmentTokenStatus = (typeof EdgeEnrollmentTokenStatus)[keyof typeof EdgeEnrollmentTokenStatus]
 
 
 export const SearchStrategy: {
@@ -205,6 +218,10 @@ export const WorkerStatus: typeof $Enums.WorkerStatus
 export type WorkerCredentialStatus = $Enums.WorkerCredentialStatus
 
 export const WorkerCredentialStatus: typeof $Enums.WorkerCredentialStatus
+
+export type EdgeEnrollmentTokenStatus = $Enums.EdgeEnrollmentTokenStatus
+
+export const EdgeEnrollmentTokenStatus: typeof $Enums.EdgeEnrollmentTokenStatus
 
 export type SearchStrategy = $Enums.SearchStrategy
 
@@ -510,6 +527,16 @@ export class PrismaClient<
     * ```
     */
   get workerCredential(): Prisma.WorkerCredentialDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.edgeEnrollmentToken`: Exposes CRUD operations for the **EdgeEnrollmentToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EdgeEnrollmentTokens
+    * const edgeEnrollmentTokens = await prisma.edgeEnrollmentToken.findMany()
+    * ```
+    */
+  get edgeEnrollmentToken(): Prisma.EdgeEnrollmentTokenDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.strategyTemplate`: Exposes CRUD operations for the **StrategyTemplate** model.
@@ -990,6 +1017,7 @@ export namespace Prisma {
     UpgradeCampaign: 'UpgradeCampaign',
     UpgradeCampaignWorker: 'UpgradeCampaignWorker',
     WorkerCredential: 'WorkerCredential',
+    EdgeEnrollmentToken: 'EdgeEnrollmentToken',
     StrategyTemplate: 'StrategyTemplate',
     BacktestTask: 'BacktestTask',
     BacktestResult: 'BacktestResult'
@@ -1008,7 +1036,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker" | "edgeRelease" | "upgradeCampaign" | "upgradeCampaignWorker" | "workerCredential" | "strategyTemplate" | "backtestTask" | "backtestResult"
+      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker" | "edgeRelease" | "upgradeCampaign" | "upgradeCampaignWorker" | "workerCredential" | "edgeEnrollmentToken" | "strategyTemplate" | "backtestTask" | "backtestResult"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2196,6 +2224,80 @@ export namespace Prisma {
           }
         }
       }
+      EdgeEnrollmentToken: {
+        payload: Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>
+        fields: Prisma.EdgeEnrollmentTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EdgeEnrollmentTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EdgeEnrollmentTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.EdgeEnrollmentTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EdgeEnrollmentTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          findMany: {
+            args: Prisma.EdgeEnrollmentTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>[]
+          }
+          create: {
+            args: Prisma.EdgeEnrollmentTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          createMany: {
+            args: Prisma.EdgeEnrollmentTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EdgeEnrollmentTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.EdgeEnrollmentTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          update: {
+            args: Prisma.EdgeEnrollmentTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.EdgeEnrollmentTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EdgeEnrollmentTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EdgeEnrollmentTokenUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>[]
+          }
+          upsert: {
+            args: Prisma.EdgeEnrollmentTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.EdgeEnrollmentTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEdgeEnrollmentToken>
+          }
+          groupBy: {
+            args: Prisma.EdgeEnrollmentTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EdgeEnrollmentTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EdgeEnrollmentTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<EdgeEnrollmentTokenCountAggregateOutputType> | number
+          }
+        }
+      }
       StrategyTemplate: {
         payload: Prisma.$StrategyTemplatePayload<ExtArgs>
         fields: Prisma.StrategyTemplateFieldRefs
@@ -2542,6 +2644,7 @@ export namespace Prisma {
     upgradeCampaign?: UpgradeCampaignOmit
     upgradeCampaignWorker?: UpgradeCampaignWorkerOmit
     workerCredential?: WorkerCredentialOmit
+    edgeEnrollmentToken?: EdgeEnrollmentTokenOmit
     strategyTemplate?: StrategyTemplateOmit
     backtestTask?: BacktestTaskOmit
     backtestResult?: BacktestResultOmit
@@ -21601,6 +21704,1135 @@ export namespace Prisma {
 
 
   /**
+   * Model EdgeEnrollmentToken
+   */
+
+  export type AggregateEdgeEnrollmentToken = {
+    _count: EdgeEnrollmentTokenCountAggregateOutputType | null
+    _avg: EdgeEnrollmentTokenAvgAggregateOutputType | null
+    _sum: EdgeEnrollmentTokenSumAggregateOutputType | null
+    _min: EdgeEnrollmentTokenMinAggregateOutputType | null
+    _max: EdgeEnrollmentTokenMaxAggregateOutputType | null
+  }
+
+  export type EdgeEnrollmentTokenAvgAggregateOutputType = {
+    maxUses: number | null
+    usedCount: number | null
+  }
+
+  export type EdgeEnrollmentTokenSumAggregateOutputType = {
+    maxUses: number | null
+    usedCount: number | null
+  }
+
+  export type EdgeEnrollmentTokenMinAggregateOutputType = {
+    id: string | null
+    label: string | null
+    tokenPrefix: string | null
+    tokenHash: string | null
+    status: $Enums.EdgeEnrollmentTokenStatus | null
+    expiresAt: Date | null
+    maxUses: number | null
+    usedCount: number | null
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeEnrollmentTokenMaxAggregateOutputType = {
+    id: string | null
+    label: string | null
+    tokenPrefix: string | null
+    tokenHash: string | null
+    status: $Enums.EdgeEnrollmentTokenStatus | null
+    expiresAt: Date | null
+    maxUses: number | null
+    usedCount: number | null
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeEnrollmentTokenCountAggregateOutputType = {
+    id: number
+    label: number
+    tokenPrefix: number
+    tokenHash: number
+    status: number
+    expiresAt: number
+    maxUses: number
+    usedCount: number
+    lastUsedAt: number
+    revokedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EdgeEnrollmentTokenAvgAggregateInputType = {
+    maxUses?: true
+    usedCount?: true
+  }
+
+  export type EdgeEnrollmentTokenSumAggregateInputType = {
+    maxUses?: true
+    usedCount?: true
+  }
+
+  export type EdgeEnrollmentTokenMinAggregateInputType = {
+    id?: true
+    label?: true
+    tokenPrefix?: true
+    tokenHash?: true
+    status?: true
+    expiresAt?: true
+    maxUses?: true
+    usedCount?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeEnrollmentTokenMaxAggregateInputType = {
+    id?: true
+    label?: true
+    tokenPrefix?: true
+    tokenHash?: true
+    status?: true
+    expiresAt?: true
+    maxUses?: true
+    usedCount?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeEnrollmentTokenCountAggregateInputType = {
+    id?: true
+    label?: true
+    tokenPrefix?: true
+    tokenHash?: true
+    status?: true
+    expiresAt?: true
+    maxUses?: true
+    usedCount?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EdgeEnrollmentTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeEnrollmentToken to aggregate.
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeEnrollmentTokens to fetch.
+     */
+    orderBy?: EdgeEnrollmentTokenOrderByWithRelationInput | EdgeEnrollmentTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeEnrollmentTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeEnrollmentTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EdgeEnrollmentTokens
+    **/
+    _count?: true | EdgeEnrollmentTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EdgeEnrollmentTokenAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EdgeEnrollmentTokenSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EdgeEnrollmentTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EdgeEnrollmentTokenMaxAggregateInputType
+  }
+
+  export type GetEdgeEnrollmentTokenAggregateType<T extends EdgeEnrollmentTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregateEdgeEnrollmentToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEdgeEnrollmentToken[P]>
+      : GetScalarType<T[P], AggregateEdgeEnrollmentToken[P]>
+  }
+
+
+
+
+  export type EdgeEnrollmentTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EdgeEnrollmentTokenWhereInput
+    orderBy?: EdgeEnrollmentTokenOrderByWithAggregationInput | EdgeEnrollmentTokenOrderByWithAggregationInput[]
+    by: EdgeEnrollmentTokenScalarFieldEnum[] | EdgeEnrollmentTokenScalarFieldEnum
+    having?: EdgeEnrollmentTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EdgeEnrollmentTokenCountAggregateInputType | true
+    _avg?: EdgeEnrollmentTokenAvgAggregateInputType
+    _sum?: EdgeEnrollmentTokenSumAggregateInputType
+    _min?: EdgeEnrollmentTokenMinAggregateInputType
+    _max?: EdgeEnrollmentTokenMaxAggregateInputType
+  }
+
+  export type EdgeEnrollmentTokenGroupByOutputType = {
+    id: string
+    label: string | null
+    tokenPrefix: string
+    tokenHash: string
+    status: $Enums.EdgeEnrollmentTokenStatus
+    expiresAt: Date | null
+    maxUses: number | null
+    usedCount: number
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EdgeEnrollmentTokenCountAggregateOutputType | null
+    _avg: EdgeEnrollmentTokenAvgAggregateOutputType | null
+    _sum: EdgeEnrollmentTokenSumAggregateOutputType | null
+    _min: EdgeEnrollmentTokenMinAggregateOutputType | null
+    _max: EdgeEnrollmentTokenMaxAggregateOutputType | null
+  }
+
+  type GetEdgeEnrollmentTokenGroupByPayload<T extends EdgeEnrollmentTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EdgeEnrollmentTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EdgeEnrollmentTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EdgeEnrollmentTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], EdgeEnrollmentTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EdgeEnrollmentTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    tokenPrefix?: boolean
+    tokenHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    usedCount?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeEnrollmentToken"]>
+
+  export type EdgeEnrollmentTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    tokenPrefix?: boolean
+    tokenHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    usedCount?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeEnrollmentToken"]>
+
+  export type EdgeEnrollmentTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    tokenPrefix?: boolean
+    tokenHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    usedCount?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeEnrollmentToken"]>
+
+  export type EdgeEnrollmentTokenSelectScalar = {
+    id?: boolean
+    label?: boolean
+    tokenPrefix?: boolean
+    tokenHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    usedCount?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EdgeEnrollmentTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "label" | "tokenPrefix" | "tokenHash" | "status" | "expiresAt" | "maxUses" | "usedCount" | "lastUsedAt" | "revokedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["edgeEnrollmentToken"]>
+
+  export type $EdgeEnrollmentTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EdgeEnrollmentToken"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      label: string | null
+      tokenPrefix: string
+      tokenHash: string
+      status: $Enums.EdgeEnrollmentTokenStatus
+      expiresAt: Date | null
+      maxUses: number | null
+      usedCount: number
+      lastUsedAt: Date | null
+      revokedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["edgeEnrollmentToken"]>
+    composites: {}
+  }
+
+  type EdgeEnrollmentTokenGetPayload<S extends boolean | null | undefined | EdgeEnrollmentTokenDefaultArgs> = $Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload, S>
+
+  type EdgeEnrollmentTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EdgeEnrollmentTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EdgeEnrollmentTokenCountAggregateInputType | true
+    }
+
+  export interface EdgeEnrollmentTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EdgeEnrollmentToken'], meta: { name: 'EdgeEnrollmentToken' } }
+    /**
+     * Find zero or one EdgeEnrollmentToken that matches the filter.
+     * @param {EdgeEnrollmentTokenFindUniqueArgs} args - Arguments to find a EdgeEnrollmentToken
+     * @example
+     * // Get one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EdgeEnrollmentTokenFindUniqueArgs>(args: SelectSubset<T, EdgeEnrollmentTokenFindUniqueArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EdgeEnrollmentToken that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EdgeEnrollmentTokenFindUniqueOrThrowArgs} args - Arguments to find a EdgeEnrollmentToken
+     * @example
+     * // Get one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EdgeEnrollmentTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, EdgeEnrollmentTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeEnrollmentToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenFindFirstArgs} args - Arguments to find a EdgeEnrollmentToken
+     * @example
+     * // Get one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EdgeEnrollmentTokenFindFirstArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenFindFirstArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeEnrollmentToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenFindFirstOrThrowArgs} args - Arguments to find a EdgeEnrollmentToken
+     * @example
+     * // Get one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EdgeEnrollmentTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EdgeEnrollmentTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EdgeEnrollmentTokens
+     * const edgeEnrollmentTokens = await prisma.edgeEnrollmentToken.findMany()
+     * 
+     * // Get first 10 EdgeEnrollmentTokens
+     * const edgeEnrollmentTokens = await prisma.edgeEnrollmentToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const edgeEnrollmentTokenWithIdOnly = await prisma.edgeEnrollmentToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EdgeEnrollmentTokenFindManyArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EdgeEnrollmentToken.
+     * @param {EdgeEnrollmentTokenCreateArgs} args - Arguments to create a EdgeEnrollmentToken.
+     * @example
+     * // Create one EdgeEnrollmentToken
+     * const EdgeEnrollmentToken = await prisma.edgeEnrollmentToken.create({
+     *   data: {
+     *     // ... data to create a EdgeEnrollmentToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends EdgeEnrollmentTokenCreateArgs>(args: SelectSubset<T, EdgeEnrollmentTokenCreateArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EdgeEnrollmentTokens.
+     * @param {EdgeEnrollmentTokenCreateManyArgs} args - Arguments to create many EdgeEnrollmentTokens.
+     * @example
+     * // Create many EdgeEnrollmentTokens
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EdgeEnrollmentTokenCreateManyArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EdgeEnrollmentTokens and returns the data saved in the database.
+     * @param {EdgeEnrollmentTokenCreateManyAndReturnArgs} args - Arguments to create many EdgeEnrollmentTokens.
+     * @example
+     * // Create many EdgeEnrollmentTokens
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EdgeEnrollmentTokens and only return the `id`
+     * const edgeEnrollmentTokenWithIdOnly = await prisma.edgeEnrollmentToken.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EdgeEnrollmentTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EdgeEnrollmentToken.
+     * @param {EdgeEnrollmentTokenDeleteArgs} args - Arguments to delete one EdgeEnrollmentToken.
+     * @example
+     * // Delete one EdgeEnrollmentToken
+     * const EdgeEnrollmentToken = await prisma.edgeEnrollmentToken.delete({
+     *   where: {
+     *     // ... filter to delete one EdgeEnrollmentToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EdgeEnrollmentTokenDeleteArgs>(args: SelectSubset<T, EdgeEnrollmentTokenDeleteArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EdgeEnrollmentToken.
+     * @param {EdgeEnrollmentTokenUpdateArgs} args - Arguments to update one EdgeEnrollmentToken.
+     * @example
+     * // Update one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EdgeEnrollmentTokenUpdateArgs>(args: SelectSubset<T, EdgeEnrollmentTokenUpdateArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EdgeEnrollmentTokens.
+     * @param {EdgeEnrollmentTokenDeleteManyArgs} args - Arguments to filter EdgeEnrollmentTokens to delete.
+     * @example
+     * // Delete a few EdgeEnrollmentTokens
+     * const { count } = await prisma.edgeEnrollmentToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EdgeEnrollmentTokenDeleteManyArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeEnrollmentTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EdgeEnrollmentTokens
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EdgeEnrollmentTokenUpdateManyArgs>(args: SelectSubset<T, EdgeEnrollmentTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeEnrollmentTokens and returns the data updated in the database.
+     * @param {EdgeEnrollmentTokenUpdateManyAndReturnArgs} args - Arguments to update many EdgeEnrollmentTokens.
+     * @example
+     * // Update many EdgeEnrollmentTokens
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EdgeEnrollmentTokens and only return the `id`
+     * const edgeEnrollmentTokenWithIdOnly = await prisma.edgeEnrollmentToken.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EdgeEnrollmentTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, EdgeEnrollmentTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EdgeEnrollmentToken.
+     * @param {EdgeEnrollmentTokenUpsertArgs} args - Arguments to update or create a EdgeEnrollmentToken.
+     * @example
+     * // Update or create a EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.upsert({
+     *   create: {
+     *     // ... data to create a EdgeEnrollmentToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EdgeEnrollmentToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EdgeEnrollmentTokenUpsertArgs>(args: SelectSubset<T, EdgeEnrollmentTokenUpsertArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EdgeEnrollmentTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenCountArgs} args - Arguments to filter EdgeEnrollmentTokens to count.
+     * @example
+     * // Count the number of EdgeEnrollmentTokens
+     * const count = await prisma.edgeEnrollmentToken.count({
+     *   where: {
+     *     // ... the filter for the EdgeEnrollmentTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends EdgeEnrollmentTokenCountArgs>(
+      args?: Subset<T, EdgeEnrollmentTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EdgeEnrollmentTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EdgeEnrollmentToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EdgeEnrollmentTokenAggregateArgs>(args: Subset<T, EdgeEnrollmentTokenAggregateArgs>): Prisma.PrismaPromise<GetEdgeEnrollmentTokenAggregateType<T>>
+
+    /**
+     * Group by EdgeEnrollmentToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EdgeEnrollmentTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EdgeEnrollmentTokenGroupByArgs['orderBy'] }
+        : { orderBy?: EdgeEnrollmentTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EdgeEnrollmentTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEdgeEnrollmentTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EdgeEnrollmentToken model
+   */
+  readonly fields: EdgeEnrollmentTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EdgeEnrollmentToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EdgeEnrollmentTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EdgeEnrollmentToken model
+   */
+  interface EdgeEnrollmentTokenFieldRefs {
+    readonly id: FieldRef<"EdgeEnrollmentToken", 'String'>
+    readonly label: FieldRef<"EdgeEnrollmentToken", 'String'>
+    readonly tokenPrefix: FieldRef<"EdgeEnrollmentToken", 'String'>
+    readonly tokenHash: FieldRef<"EdgeEnrollmentToken", 'String'>
+    readonly status: FieldRef<"EdgeEnrollmentToken", 'EdgeEnrollmentTokenStatus'>
+    readonly expiresAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+    readonly maxUses: FieldRef<"EdgeEnrollmentToken", 'Int'>
+    readonly usedCount: FieldRef<"EdgeEnrollmentToken", 'Int'>
+    readonly lastUsedAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+    readonly revokedAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+    readonly createdAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+    readonly updatedAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EdgeEnrollmentToken findUnique
+   */
+  export type EdgeEnrollmentTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentToken to fetch.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+  }
+
+  /**
+   * EdgeEnrollmentToken findUniqueOrThrow
+   */
+  export type EdgeEnrollmentTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentToken to fetch.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+  }
+
+  /**
+   * EdgeEnrollmentToken findFirst
+   */
+  export type EdgeEnrollmentTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentToken to fetch.
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeEnrollmentTokens to fetch.
+     */
+    orderBy?: EdgeEnrollmentTokenOrderByWithRelationInput | EdgeEnrollmentTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeEnrollmentTokens.
+     */
+    cursor?: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeEnrollmentTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeEnrollmentTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeEnrollmentTokens.
+     */
+    distinct?: EdgeEnrollmentTokenScalarFieldEnum | EdgeEnrollmentTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeEnrollmentToken findFirstOrThrow
+   */
+  export type EdgeEnrollmentTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentToken to fetch.
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeEnrollmentTokens to fetch.
+     */
+    orderBy?: EdgeEnrollmentTokenOrderByWithRelationInput | EdgeEnrollmentTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeEnrollmentTokens.
+     */
+    cursor?: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeEnrollmentTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeEnrollmentTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeEnrollmentTokens.
+     */
+    distinct?: EdgeEnrollmentTokenScalarFieldEnum | EdgeEnrollmentTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeEnrollmentToken findMany
+   */
+  export type EdgeEnrollmentTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentTokens to fetch.
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeEnrollmentTokens to fetch.
+     */
+    orderBy?: EdgeEnrollmentTokenOrderByWithRelationInput | EdgeEnrollmentTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EdgeEnrollmentTokens.
+     */
+    cursor?: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeEnrollmentTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeEnrollmentTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeEnrollmentTokens.
+     */
+    distinct?: EdgeEnrollmentTokenScalarFieldEnum | EdgeEnrollmentTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeEnrollmentToken create
+   */
+  export type EdgeEnrollmentTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EdgeEnrollmentToken.
+     */
+    data: XOR<EdgeEnrollmentTokenCreateInput, EdgeEnrollmentTokenUncheckedCreateInput>
+  }
+
+  /**
+   * EdgeEnrollmentToken createMany
+   */
+  export type EdgeEnrollmentTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EdgeEnrollmentTokens.
+     */
+    data: EdgeEnrollmentTokenCreateManyInput | EdgeEnrollmentTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeEnrollmentToken createManyAndReturn
+   */
+  export type EdgeEnrollmentTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The data used to create many EdgeEnrollmentTokens.
+     */
+    data: EdgeEnrollmentTokenCreateManyInput | EdgeEnrollmentTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeEnrollmentToken update
+   */
+  export type EdgeEnrollmentTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EdgeEnrollmentToken.
+     */
+    data: XOR<EdgeEnrollmentTokenUpdateInput, EdgeEnrollmentTokenUncheckedUpdateInput>
+    /**
+     * Choose, which EdgeEnrollmentToken to update.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+  }
+
+  /**
+   * EdgeEnrollmentToken updateMany
+   */
+  export type EdgeEnrollmentTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EdgeEnrollmentTokens.
+     */
+    data: XOR<EdgeEnrollmentTokenUpdateManyMutationInput, EdgeEnrollmentTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeEnrollmentTokens to update
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * Limit how many EdgeEnrollmentTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeEnrollmentToken updateManyAndReturn
+   */
+  export type EdgeEnrollmentTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The data used to update EdgeEnrollmentTokens.
+     */
+    data: XOR<EdgeEnrollmentTokenUpdateManyMutationInput, EdgeEnrollmentTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeEnrollmentTokens to update
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * Limit how many EdgeEnrollmentTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeEnrollmentToken upsert
+   */
+  export type EdgeEnrollmentTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EdgeEnrollmentToken to update in case it exists.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * In case the EdgeEnrollmentToken found by the `where` argument doesn't exist, create a new EdgeEnrollmentToken with this data.
+     */
+    create: XOR<EdgeEnrollmentTokenCreateInput, EdgeEnrollmentTokenUncheckedCreateInput>
+    /**
+     * In case the EdgeEnrollmentToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EdgeEnrollmentTokenUpdateInput, EdgeEnrollmentTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * EdgeEnrollmentToken delete
+   */
+  export type EdgeEnrollmentTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter which EdgeEnrollmentToken to delete.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+  }
+
+  /**
+   * EdgeEnrollmentToken deleteMany
+   */
+  export type EdgeEnrollmentTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeEnrollmentTokens to delete
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * Limit how many EdgeEnrollmentTokens to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeEnrollmentToken without action
+   */
+  export type EdgeEnrollmentTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model StrategyTemplate
    */
 
@@ -25436,6 +26668,24 @@ export namespace Prisma {
   export type WorkerCredentialScalarFieldEnum = (typeof WorkerCredentialScalarFieldEnum)[keyof typeof WorkerCredentialScalarFieldEnum]
 
 
+  export const EdgeEnrollmentTokenScalarFieldEnum: {
+    id: 'id',
+    label: 'label',
+    tokenPrefix: 'tokenPrefix',
+    tokenHash: 'tokenHash',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    maxUses: 'maxUses',
+    usedCount: 'usedCount',
+    lastUsedAt: 'lastUsedAt',
+    revokedAt: 'revokedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EdgeEnrollmentTokenScalarFieldEnum = (typeof EdgeEnrollmentTokenScalarFieldEnum)[keyof typeof EdgeEnrollmentTokenScalarFieldEnum]
+
+
   export const StrategyTemplateScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -25683,6 +26933,20 @@ export namespace Prisma {
    * Reference to a field of type 'WorkerCredentialStatus[]'
    */
   export type ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerCredentialStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EdgeEnrollmentTokenStatus'
+   */
+  export type EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EdgeEnrollmentTokenStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'EdgeEnrollmentTokenStatus[]'
+   */
+  export type ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EdgeEnrollmentTokenStatus[]'>
     
 
 
@@ -27033,6 +28297,95 @@ export namespace Prisma {
     rotatedAt?: DateTimeNullableWithAggregatesFilter<"WorkerCredential"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"WorkerCredential"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"WorkerCredential"> | Date | string
+  }
+
+  export type EdgeEnrollmentTokenWhereInput = {
+    AND?: EdgeEnrollmentTokenWhereInput | EdgeEnrollmentTokenWhereInput[]
+    OR?: EdgeEnrollmentTokenWhereInput[]
+    NOT?: EdgeEnrollmentTokenWhereInput | EdgeEnrollmentTokenWhereInput[]
+    id?: StringFilter<"EdgeEnrollmentToken"> | string
+    label?: StringNullableFilter<"EdgeEnrollmentToken"> | string | null
+    tokenPrefix?: StringFilter<"EdgeEnrollmentToken"> | string
+    tokenHash?: StringFilter<"EdgeEnrollmentToken"> | string
+    status?: EnumEdgeEnrollmentTokenStatusFilter<"EdgeEnrollmentToken"> | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    maxUses?: IntNullableFilter<"EdgeEnrollmentToken"> | number | null
+    usedCount?: IntFilter<"EdgeEnrollmentToken"> | number
+    lastUsedAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EdgeEnrollmentToken"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeEnrollmentToken"> | Date | string
+  }
+
+  export type EdgeEnrollmentTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    label?: SortOrderInput | SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    maxUses?: SortOrderInput | SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    tokenPrefix?: string
+    AND?: EdgeEnrollmentTokenWhereInput | EdgeEnrollmentTokenWhereInput[]
+    OR?: EdgeEnrollmentTokenWhereInput[]
+    NOT?: EdgeEnrollmentTokenWhereInput | EdgeEnrollmentTokenWhereInput[]
+    label?: StringNullableFilter<"EdgeEnrollmentToken"> | string | null
+    tokenHash?: StringFilter<"EdgeEnrollmentToken"> | string
+    status?: EnumEdgeEnrollmentTokenStatusFilter<"EdgeEnrollmentToken"> | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    maxUses?: IntNullableFilter<"EdgeEnrollmentToken"> | number | null
+    usedCount?: IntFilter<"EdgeEnrollmentToken"> | number
+    lastUsedAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EdgeEnrollmentToken"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeEnrollmentToken"> | Date | string
+  }, "id" | "tokenPrefix">
+
+  export type EdgeEnrollmentTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    label?: SortOrderInput | SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    maxUses?: SortOrderInput | SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EdgeEnrollmentTokenCountOrderByAggregateInput
+    _avg?: EdgeEnrollmentTokenAvgOrderByAggregateInput
+    _max?: EdgeEnrollmentTokenMaxOrderByAggregateInput
+    _min?: EdgeEnrollmentTokenMinOrderByAggregateInput
+    _sum?: EdgeEnrollmentTokenSumOrderByAggregateInput
+  }
+
+  export type EdgeEnrollmentTokenScalarWhereWithAggregatesInput = {
+    AND?: EdgeEnrollmentTokenScalarWhereWithAggregatesInput | EdgeEnrollmentTokenScalarWhereWithAggregatesInput[]
+    OR?: EdgeEnrollmentTokenScalarWhereWithAggregatesInput[]
+    NOT?: EdgeEnrollmentTokenScalarWhereWithAggregatesInput | EdgeEnrollmentTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EdgeEnrollmentToken"> | string
+    label?: StringNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | string | null
+    tokenPrefix?: StringWithAggregatesFilter<"EdgeEnrollmentToken"> | string
+    tokenHash?: StringWithAggregatesFilter<"EdgeEnrollmentToken"> | string
+    status?: EnumEdgeEnrollmentTokenStatusWithAggregatesFilter<"EdgeEnrollmentToken"> | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string | null
+    maxUses?: IntNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | number | null
+    usedCount?: IntWithAggregatesFilter<"EdgeEnrollmentToken"> | number
+    lastUsedAt?: DateTimeNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string | null
+    revokedAt?: DateTimeNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string
   }
 
   export type StrategyTemplateWhereInput = {
@@ -28773,6 +30126,111 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EdgeEnrollmentTokenCreateInput = {
+    id?: string
+    label?: string | null
+    tokenPrefix: string
+    tokenHash: string
+    status?: $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    usedCount?: number
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeEnrollmentTokenUncheckedCreateInput = {
+    id?: string
+    label?: string | null
+    tokenPrefix: string
+    tokenHash: string
+    status?: $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    usedCount?: number
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeEnrollmentTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenPrefix?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    usedCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeEnrollmentTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenPrefix?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    usedCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeEnrollmentTokenCreateManyInput = {
+    id?: string
+    label?: string | null
+    tokenPrefix: string
+    tokenHash: string
+    status?: $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    usedCount?: number
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeEnrollmentTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenPrefix?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    usedCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeEnrollmentTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenPrefix?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    usedCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StrategyTemplateCreateInput = {
     id?: string
     name: string
@@ -30271,6 +31729,105 @@ export namespace Prisma {
     _min?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
   }
+
+  export type EnumEdgeEnrollmentTokenStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EdgeEnrollmentTokenStatus | EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type EdgeEnrollmentTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenAvgOrderByAggregateInput = {
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenSumOrderByAggregateInput = {
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+  }
+
+  export type EnumEdgeEnrollmentTokenStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EdgeEnrollmentTokenStatus | EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEdgeEnrollmentTokenStatusWithAggregatesFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
+    _max?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -30371,17 +31928,6 @@ export namespace Prisma {
     in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumBacktestTaskStatusFilter<$PrismaModel> | $Enums.BacktestTaskStatus
-  }
-
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type StrategyTemplateScalarRelationFilter = {
@@ -30507,22 +32053,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
     _max?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type BacktestTaskScalarRelationFilter = {
@@ -31446,6 +32976,18 @@ export namespace Prisma {
     update?: XOR<XOR<WorkerUpdateToOneWithWhereWithoutCredentialsInput, WorkerUpdateWithoutCredentialsInput>, WorkerUncheckedUpdateWithoutCredentialsInput>
   }
 
+  export type EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput = {
+    set?: $Enums.EdgeEnrollmentTokenStatus
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type BacktestTaskCreateNestedManyWithoutStrategyTemplateInput = {
     create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
     connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
@@ -31527,14 +33069,6 @@ export namespace Prisma {
 
   export type EnumBacktestTaskStatusFieldUpdateOperationsInput = {
     set?: $Enums.BacktestTaskStatus
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type BacktestTaskUpdatebestConfigIdsInput = {
@@ -31883,6 +33417,50 @@ export namespace Prisma {
     _min?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
   }
+
+  export type NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EdgeEnrollmentTokenStatus | EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
+  }
+
+  export type NestedEnumEdgeEnrollmentTokenStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EdgeEnrollmentTokenStatus | EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEdgeEnrollmentTokenStatusWithAggregatesFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
+    _max?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -31939,33 +33517,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
     _max?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type ProjectCreateWithoutProfileInput = {
