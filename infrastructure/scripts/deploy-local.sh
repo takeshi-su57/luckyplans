@@ -8,6 +8,7 @@ HELM_CHART_OBS="$SCRIPT_DIR/../helm/observability"
 RELEASE_NAME="luckyplans"
 RELEASE_NAME_OBS="luckyplans-observability"
 CLUSTER_NAME="luckyplans-local"
+HELM_TIMEOUT="${HELM_TIMEOUT:-15m}"
 
 # ---------------------------------------------------------------------------
 # Usage
@@ -88,6 +89,20 @@ else
   echo "Mode: targeted deploy (${SERVICES[*]})"
 fi
 echo ""
+
+print_app_diagnostics() {
+  local namespace="$1"
+  echo ""
+  echo "--- Diagnostics ($namespace) ---"
+  kubectl -n "$namespace" get pods -o wide || true
+  echo ""
+  echo "--- Recent events ($namespace) ---"
+  kubectl -n "$namespace" get events --sort-by=.metadata.creationTimestamp | tail -n 40 || true
+  echo ""
+  echo "Tip:"
+  echo "  kubectl -n $namespace describe pod <pod-name>"
+  echo "  kubectl -n $namespace logs <pod-name> --all-containers=true --tail=200"
+}
 
 # ---------------------------------------------------------------------------
 # Prerequisites
@@ -239,23 +254,33 @@ fi
 if $HELM_ONLY || $FULL_DEPLOY; then
   echo ""
   echo "--- Deploying app with Helm ---"
-  helm upgrade --install "$RELEASE_NAME" "$HELM_CHART" \
+  if ! helm upgrade --install "$RELEASE_NAME" "$HELM_CHART" \
     --namespace luckyplans \
     --create-namespace \
     -f "$HELM_CHART/values.yaml" \
-    --rollback-on-failure \
-    --timeout 10m
+    --wait \
+    --timeout "$HELM_TIMEOUT"; then
+    echo ""
+    echo "App Helm deploy failed."
+    print_app_diagnostics "luckyplans"
+    exit 1
+  fi
 
   # Deploy observability stack (full deploy or helm-only, unless skipped)
   if ! $SKIP_OBS; then
     echo ""
     echo "--- Deploying observability stack with Helm ---"
-    helm upgrade --install "$RELEASE_NAME_OBS" "$HELM_CHART_OBS" \
+    if ! helm upgrade --install "$RELEASE_NAME_OBS" "$HELM_CHART_OBS" \
       --namespace monitoring \
       --create-namespace \
       -f "$HELM_CHART_OBS/values.yaml" \
-      --rollback-on-failure \
-      --timeout 10m
+      --wait \
+      --timeout "$HELM_TIMEOUT"; then
+      echo ""
+      echo "Observability Helm deploy failed."
+      print_app_diagnostics "monitoring"
+      exit 1
+    fi
   fi
 else
   # Targeted deploy: restart only the affected deployments to pick up new images
