@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { otelSdk } from './instrument';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from 'nestjs-pino';
