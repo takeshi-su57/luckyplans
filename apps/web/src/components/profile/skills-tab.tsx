@@ -113,18 +113,15 @@ export function SkillsTab({ userId }: SkillsTabProps) {
     setShowNewCategory(false);
   }, [newCategoryName, createSkillCategory]);
 
-  const handleCategorySelectChange = useCallback(
-    (key: string | number) => {
-      const value = String(key);
-      if (value === '__new__') {
-        setShowNewCategory(true);
-      } else {
-        setForm((f) => ({ ...f, categoryId: value }));
-        setShowNewCategory(false);
-      }
-    },
-    [],
-  );
+  const handleCategorySelectChange = useCallback((key: string | number) => {
+    const value = String(key);
+    if (value === '__new__') {
+      setShowNewCategory(true);
+    } else {
+      setForm((f) => ({ ...f, categoryId: value }));
+      setShowNewCategory(false);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -186,10 +183,7 @@ export function SkillsTab({ userId }: SkillsTabProps) {
             </Select>
             {showNewCategory && (
               <div className="flex items-end gap-2">
-                <TextField
-                  className="flex-1"
-                  onChange={(v) => setNewCategoryName(v)}
-                >
+                <TextField className="flex-1" onChange={(v) => setNewCategoryName(v)}>
                   <Label>New Category</Label>
                   <Input placeholder="New category name" value={newCategoryName} />
                 </TextField>
@@ -199,11 +193,7 @@ export function SkillsTab({ userId }: SkillsTabProps) {
                 >
                   {creatingCategory ? 'Adding...' : 'Add'}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onPress={() => setShowNewCategory(false)}
-                >
+                <Button variant="outline" size="sm" onPress={() => setShowNewCategory(false)}>
                   Cancel
                 </Button>
               </div>
@@ -220,7 +210,11 @@ export function SkillsTab({ userId }: SkillsTabProps) {
               <Select.Popover>
                 <ListBox>
                   {PROFICIENCY_OPTIONS.map((opt) => (
-                    <ListBox.Item key={opt} id={opt} textValue={opt.charAt(0) + opt.slice(1).toLowerCase()}>
+                    <ListBox.Item
+                      key={opt}
+                      id={opt}
+                      textValue={opt.charAt(0) + opt.slice(1).toLowerCase()}
+                    >
                       {opt.charAt(0) + opt.slice(1).toLowerCase()}
                       <ListBox.ItemIndicator />
                     </ListBox.Item>
@@ -230,11 +224,7 @@ export function SkillsTab({ userId }: SkillsTabProps) {
             </Select>
           </Card.Content>
           <Card.Footer className="gap-2">
-            <Button
-              isPending={creating || updating}
-              isDisabled={!form.name}
-              onPress={handleSave}
-            >
+            <Button isPending={creating || updating} isDisabled={!form.name} onPress={handleSave}>
               {({ isPending }) =>
                 isPending ? (
                   <>
@@ -265,9 +255,7 @@ export function SkillsTab({ userId }: SkillsTabProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="font-medium text-[#37352f]">{skill.name}</span>
-                {skill.category?.name && (
-                  <Chip size="sm">{skill.category.name}</Chip>
-                )}
+                {skill.category?.name && <Chip size="sm">{skill.category.name}</Chip>}
                 <Chip size="sm" color="success">
                   {skill.proficiency.charAt(0) + skill.proficiency.slice(1).toLowerCase()}
                 </Chip>

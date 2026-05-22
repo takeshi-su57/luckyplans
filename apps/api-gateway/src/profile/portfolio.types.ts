@@ -1,13 +1,12 @@
-import { ObjectType, Field, ID, InputType, Int, registerEnumType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 
-// ── Enums ──────────────────────────────────────────────────────
-
-export enum Proficiency {
-  BEGINNER = 'BEGINNER',
-  INTERMEDIATE = 'INTERMEDIATE',
-  ADVANCED = 'ADVANCED',
-  EXPERT = 'EXPERT',
-}
+export const Proficiency = {
+  BEGINNER: 'BEGINNER',
+  INTERMEDIATE: 'INTERMEDIATE',
+  ADVANCED: 'ADVANCED',
+  EXPERT: 'EXPERT',
+} as const;
+export type Proficiency = (typeof Proficiency)[keyof typeof Proficiency];
 
 registerEnumType(Proficiency, { name: 'Proficiency' });
 
@@ -22,16 +21,16 @@ export class Project {
   title!: string;
 
   @Field({ nullable: true })
-  description?: string;
+  description?: string | null;
 
   @Field(() => [String])
   images!: string[];
 
   @Field({ nullable: true })
-  liveUrl?: string;
+  liveUrl?: string | null;
 
   @Field({ nullable: true })
-  repoUrl?: string;
+  repoUrl?: string | null;
 
   @Field(() => [String])
   tags!: string[];
@@ -73,10 +72,10 @@ export class Skill {
   name!: string;
 
   @Field({ nullable: true })
-  categoryId?: string;
+  categoryId?: string | null;
 
   @Field(() => SkillCategory, { nullable: true })
-  category?: SkillCategory;
+  category?: SkillCategory | null;
 
   @Field(() => Proficiency)
   proficiency!: Proficiency;
@@ -109,7 +108,7 @@ export class Experience {
   startDate!: Date;
 
   @Field({ nullable: true })
-  endDate?: Date;
+  endDate?: Date | null;
 
   @Field(() => Int)
   sortOrder!: number;
@@ -130,16 +129,16 @@ export class Education {
   school!: string;
 
   @Field({ nullable: true })
-  degree?: string;
+  degree?: string | null;
 
   @Field({ nullable: true })
-  field?: string;
+  field?: string | null;
 
   @Field()
   startDate!: Date;
 
   @Field({ nullable: true })
-  endDate?: Date;
+  endDate?: Date | null;
 
   @Field(() => [String])
   description!: string[];
@@ -166,13 +165,13 @@ export class Certification {
   issuer!: string;
 
   @Field({ nullable: true })
-  issueDate?: Date;
+  issueDate?: Date | null;
 
   @Field({ nullable: true })
-  expiryDate?: Date;
+  expiryDate?: Date | null;
 
   @Field({ nullable: true })
-  url?: string;
+  url?: string | null;
 
   @Field(() => Int)
   sortOrder!: number;
@@ -214,13 +213,13 @@ export class Award {
   title!: string;
 
   @Field({ nullable: true })
-  issuer?: string;
+  issuer?: string | null;
 
   @Field({ nullable: true })
-  date?: Date;
+  date?: Date | null;
 
   @Field({ nullable: true })
-  description?: string;
+  description?: string | null;
 
   @Field(() => Int)
   sortOrder!: number;
@@ -241,7 +240,7 @@ export class Hobby {
   name!: string;
 
   @Field({ nullable: true })
-  description?: string;
+  description?: string | null;
 
   @Field(() => Int)
   sortOrder!: number;
@@ -265,7 +264,7 @@ export class SocialLink {
   url!: string;
 
   @Field({ nullable: true })
-  label?: string;
+  label?: string | null;
 
   @Field(() => Int)
   sortOrder!: number;
@@ -286,22 +285,22 @@ export class PublicProfile {
   email!: string;
 
   @Field({ nullable: true })
-  firstName?: string;
+  firstName?: string | null;
 
   @Field({ nullable: true })
-  lastName?: string;
+  lastName?: string | null;
 
   @Field({ nullable: true })
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 
   @Field({ nullable: true })
-  bio?: string;
+  bio?: string | null;
 
   @Field({ nullable: true })
-  headline?: string;
+  headline?: string | null;
 
   @Field({ nullable: true })
-  location?: string;
+  location?: string | null;
 
   @Field(() => [Project])
   projects!: Project[];

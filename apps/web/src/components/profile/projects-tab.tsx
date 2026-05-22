@@ -1,15 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import {
-  Button,
-  Card,
-  Chip,
-  Skeleton,
-  TextField,
-  Label,
-  Input,
-} from '@heroui/react';
+import { Button, Card, Chip, Skeleton, TextField, Label, Input } from '@heroui/react';
 import { FolderOpen, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { usePublicProfile } from '@/hooks/use-public-profile';
 import { useCreateProject } from '@/hooks/use-create-project';
@@ -165,11 +157,7 @@ export function ProjectsTab({ userId }: ProjectsTabProps) {
             </TextField>
           </Card.Content>
           <Card.Footer className="gap-2">
-            <Button
-              isPending={creating || updating}
-              isDisabled={!form.title}
-              onPress={handleSave}
-            >
+            <Button isPending={creating || updating} isDisabled={!form.title} onPress={handleSave}>
               {({ isPending }) =>
                 isPending ? (
                   <>

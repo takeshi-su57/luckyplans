@@ -6,9 +6,12 @@ import { LoggerModule } from 'nestjs-pino';
 import { trace } from '@opentelemetry/api';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
-import { CoreModule } from './core/core.module';
 import { ProfileModule } from './profile/profile.module';
+import { WorkersModule } from './workers/workers.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { BacktestModule } from './backtest/backtest.module';
+import { EdgesInternalModule } from './edges-internal/edges-internal.module';
+import { GraphqlSharedModule } from './graphql/graphql-shared.module';
 
 @Module({
   imports: [
@@ -36,10 +39,13 @@ import { UploadsModule } from './uploads/uploads.module';
       context: ({ req, res }: { req: unknown; res: unknown }) => ({ req, res }),
     }),
     HealthModule,
+    GraphqlSharedModule,
     AuthModule,
-    CoreModule,
     ProfileModule,
+    WorkersModule,
     UploadsModule,
+    BacktestModule,
+    EdgesInternalModule,
   ],
 })
 export class AppModule {}

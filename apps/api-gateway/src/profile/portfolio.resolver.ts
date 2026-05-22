@@ -1,89 +1,53 @@
-import { Inject, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-import { CoreMessagePattern, injectTraceContext } from '@luckyplans/shared';
 import type { AuthUser } from '@luckyplans/shared';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { SessionGuard } from '../auth/session.guard';
-
-/**
- * Converts ISO date strings back to Date objects in a Redis response.
- * Prisma returns Date objects, but Redis JSON serialization turns them into strings.
- * The GraphQL DateTime scalar requires Date objects in its serialize() method.
- */
-const DATE_FIELDS = ['createdAt', 'updatedAt', 'startDate', 'endDate', 'issueDate', 'expiryDate', 'date'];
-
-function reviveDates<T>(obj: T): T {
-  if (obj == null || typeof obj !== 'object') return obj;
-  if (Array.isArray(obj)) return obj.map(reviveDates) as T;
-  const result = { ...obj } as Record<string, unknown>;
-  for (const key of Object.keys(result)) {
-    const value = result[key];
-    if (DATE_FIELDS.includes(key) && typeof value === 'string') {
-      result[key] = new Date(value);
-    } else if (typeof value === 'object' && value !== null) {
-      result[key] = reviveDates(value);
-    }
-  }
-  return result as T;
-}
 import {
-  PublicProfile,
+  Award,
+  Certification,
+  CreateAwardInput,
+  CreateCertificationInput,
+  CreateEducationInput,
+  CreateExperienceInput,
+  CreateHobbyInput,
+  CreateLanguageInput,
+  CreateProjectInput,
+  CreateSkillCategoryInput,
+  CreateSkillInput,
+  CreateSocialLinkInput,
+  DeleteResult,
+  Education,
+  Experience,
+  Hobby,
+  Language,
   Project,
+  PublicProfile,
+  ReorderInput,
   Skill,
   SkillCategory,
-  Experience,
   SocialLink,
-  Education,
-  Certification,
-  Language,
-  Award,
-  Hobby,
-  DeleteResult,
-  CreateProjectInput,
-  UpdateProjectInput,
-  CreateSkillInput,
-  UpdateSkillInput,
-  CreateExperienceInput,
-  UpdateExperienceInput,
-  CreateSocialLinkInput,
-  UpdateSocialLinkInput,
-  CreateSkillCategoryInput,
-  UpdateSkillCategoryInput,
-  CreateEducationInput,
-  UpdateEducationInput,
-  CreateCertificationInput,
-  UpdateCertificationInput,
-  CreateLanguageInput,
-  UpdateLanguageInput,
-  CreateAwardInput,
   UpdateAwardInput,
-  CreateHobbyInput,
+  UpdateCertificationInput,
+  UpdateEducationInput,
+  UpdateExperienceInput,
   UpdateHobbyInput,
-  ReorderInput,
+  UpdateLanguageInput,
+  UpdateProjectInput,
+  UpdateSkillCategoryInput,
+  UpdateSkillInput,
+  UpdateSocialLinkInput,
 } from './portfolio.types';
+import { ProfileService } from './profile.service';
 
 @Resolver()
 export class PortfolioResolver {
-  constructor(@Inject('CORE_SERVICE') private readonly coreClient: ClientProxy) {}
-
-  // ── Public Query ─────────────────────────────────────────────
+  constructor(private readonly profileService: ProfileService) {}
 
   @Query(() => PublicProfile, { nullable: true })
-  async getPublicProfile(
-    @Args('userId') userId: string,
-  ): Promise<PublicProfile | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.GET_PUBLIC_PROFILE,
-        injectTraceContext({ userId }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+  async getPublicProfile(@Args('userId') userId: string): Promise<PublicProfile | null> {
+    return this.profileService.getPublicProfile(userId);
   }
-
-  // ── Projects ─────────────────────────────────────────────────
 
   @Mutation(() => Project)
   @UseGuards(SessionGuard)
@@ -91,13 +55,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateProjectInput,
   ): Promise<Project> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_PROJECT,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createProject(user.userId, input);
   }
 
   @Mutation(() => Project, { nullable: true })
@@ -107,13 +65,7 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateProjectInput,
   ): Promise<Project | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_PROJECT,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateProject(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
@@ -122,12 +74,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('id') id: string,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_PROJECT,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+    return this.profileService.deleteProject(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -136,15 +83,8 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_PROJECTS,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderProjects(user.userId, input.orderedIds);
   }
-
-  // ── Skills ───────────────────────────────────────────────────
 
   @Mutation(() => Skill)
   @UseGuards(SessionGuard)
@@ -152,13 +92,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateSkillInput,
   ): Promise<Skill> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_SKILL,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createSkill(user.userId, input);
   }
 
   @Mutation(() => Skill, { nullable: true })
@@ -168,27 +102,13 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateSkillInput,
   ): Promise<Skill | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_SKILL,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateSkill(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
   @UseGuards(SessionGuard)
-  async deleteSkill(
-    @CurrentUser() user: AuthUser,
-    @Args('id') id: string,
-  ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_SKILL,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+  async deleteSkill(@CurrentUser() user: AuthUser, @Args('id') id: string): Promise<DeleteResult> {
+    return this.profileService.deleteSkill(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -197,15 +117,8 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_SKILLS,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderSkills(user.userId, input.orderedIds);
   }
-
-  // ── Experience ───────────────────────────────────────────────
 
   @Mutation(() => Experience)
   @UseGuards(SessionGuard)
@@ -213,13 +126,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateExperienceInput,
   ): Promise<Experience> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_EXPERIENCE,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createExperience(user.userId, input);
   }
 
   @Mutation(() => Experience, { nullable: true })
@@ -229,13 +136,7 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateExperienceInput,
   ): Promise<Experience | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_EXPERIENCE,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateExperience(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
@@ -244,12 +145,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('id') id: string,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_EXPERIENCE,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+    return this.profileService.deleteExperience(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -258,15 +154,8 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_EXPERIENCES,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderExperiences(user.userId, input.orderedIds);
   }
-
-  // ── Social Links ─────────────────────────────────────────────
 
   @Mutation(() => SocialLink)
   @UseGuards(SessionGuard)
@@ -274,13 +163,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateSocialLinkInput,
   ): Promise<SocialLink> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_SOCIAL_LINK,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createSocialLink(user.userId, input);
   }
 
   @Mutation(() => SocialLink, { nullable: true })
@@ -290,13 +173,7 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateSocialLinkInput,
   ): Promise<SocialLink | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_SOCIAL_LINK,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateSocialLink(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
@@ -305,12 +182,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('id') id: string,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_SOCIAL_LINK,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+    return this.profileService.deleteSocialLink(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -319,28 +191,13 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_SOCIAL_LINKS,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderSocialLinks(user.userId, input.orderedIds);
   }
-
-  // ── Skill Categories ─────────────────────────────────────────
 
   @Query(() => [SkillCategory])
   @UseGuards(SessionGuard)
-  async getSkillCategories(
-    @CurrentUser() user: AuthUser,
-  ): Promise<SkillCategory[]> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.GET_SKILL_CATEGORIES,
-        injectTraceContext({ userId: user.userId }),
-      ),
-    );
-    return reviveDates(result);
+  async getSkillCategories(@CurrentUser() user: AuthUser): Promise<SkillCategory[]> {
+    return this.profileService.getSkillCategories(user.userId);
   }
 
   @Mutation(() => SkillCategory)
@@ -349,13 +206,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateSkillCategoryInput,
   ): Promise<SkillCategory> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_SKILL_CATEGORY,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createSkillCategory(user.userId, input);
   }
 
   @Mutation(() => SkillCategory, { nullable: true })
@@ -365,13 +216,7 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateSkillCategoryInput,
   ): Promise<SkillCategory | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_SKILL_CATEGORY,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateSkillCategory(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
@@ -380,15 +225,8 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('id') id: string,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_SKILL_CATEGORY,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+    return this.profileService.deleteSkillCategory(user.userId, id);
   }
-
-  // ── Education ──────────────────────────────────────────────
 
   @Mutation(() => Education)
   @UseGuards(SessionGuard)
@@ -396,13 +234,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateEducationInput,
   ): Promise<Education> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_EDUCATION,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createEducation(user.userId, input);
   }
 
   @Mutation(() => Education, { nullable: true })
@@ -412,13 +244,7 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateEducationInput,
   ): Promise<Education | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_EDUCATION,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateEducation(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
@@ -427,12 +253,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('id') id: string,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_EDUCATION,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+    return this.profileService.deleteEducation(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -441,15 +262,8 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_EDUCATION,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderEducation(user.userId, input.orderedIds);
   }
-
-  // ── Certifications ─────────────────────────────────────────
 
   @Mutation(() => Certification)
   @UseGuards(SessionGuard)
@@ -457,13 +271,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateCertificationInput,
   ): Promise<Certification> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_CERTIFICATION,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createCertification(user.userId, input);
   }
 
   @Mutation(() => Certification, { nullable: true })
@@ -473,13 +281,7 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateCertificationInput,
   ): Promise<Certification | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_CERTIFICATION,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateCertification(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
@@ -488,12 +290,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('id') id: string,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_CERTIFICATION,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+    return this.profileService.deleteCertification(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -502,15 +299,8 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_CERTIFICATIONS,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderCertifications(user.userId, input.orderedIds);
   }
-
-  // ── Languages ──────────────────────────────────────────────
 
   @Mutation(() => Language)
   @UseGuards(SessionGuard)
@@ -518,13 +308,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateLanguageInput,
   ): Promise<Language> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_LANGUAGE,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createLanguage(user.userId, input);
   }
 
   @Mutation(() => Language, { nullable: true })
@@ -534,13 +318,7 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateLanguageInput,
   ): Promise<Language | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_LANGUAGE,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateLanguage(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
@@ -549,12 +327,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('id') id: string,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_LANGUAGE,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+    return this.profileService.deleteLanguage(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -563,15 +336,8 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_LANGUAGES,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderLanguages(user.userId, input.orderedIds);
   }
-
-  // ── Awards ─────────────────────────────────────────────────
 
   @Mutation(() => Award)
   @UseGuards(SessionGuard)
@@ -579,13 +345,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateAwardInput,
   ): Promise<Award> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_AWARD,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createAward(user.userId, input);
   }
 
   @Mutation(() => Award, { nullable: true })
@@ -595,27 +355,13 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateAwardInput,
   ): Promise<Award | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_AWARD,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateAward(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
   @UseGuards(SessionGuard)
-  async deleteAward(
-    @CurrentUser() user: AuthUser,
-    @Args('id') id: string,
-  ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_AWARD,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+  async deleteAward(@CurrentUser() user: AuthUser, @Args('id') id: string): Promise<DeleteResult> {
+    return this.profileService.deleteAward(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -624,15 +370,8 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_AWARDS,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderAwards(user.userId, input.orderedIds);
   }
-
-  // ── Hobbies ────────────────────────────────────────────────
 
   @Mutation(() => Hobby)
   @UseGuards(SessionGuard)
@@ -640,13 +379,7 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: CreateHobbyInput,
   ): Promise<Hobby> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.CREATE_HOBBY,
-        injectTraceContext({ userId: user.userId, ...input }),
-      ),
-    );
-    return reviveDates(result);
+    return this.profileService.createHobby(user.userId, input);
   }
 
   @Mutation(() => Hobby, { nullable: true })
@@ -656,27 +389,13 @@ export class PortfolioResolver {
     @Args('id') id: string,
     @Args('input') input: UpdateHobbyInput,
   ): Promise<Hobby | null> {
-    const result = await firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.UPDATE_HOBBY,
-        injectTraceContext({ userId: user.userId, id, ...input }),
-      ),
-    );
-    return result ? reviveDates(result) : null;
+    return this.profileService.updateHobby(user.userId, id, input);
   }
 
   @Mutation(() => DeleteResult)
   @UseGuards(SessionGuard)
-  async deleteHobby(
-    @CurrentUser() user: AuthUser,
-    @Args('id') id: string,
-  ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.DELETE_HOBBY,
-        injectTraceContext({ userId: user.userId, id }),
-      ),
-    );
+  async deleteHobby(@CurrentUser() user: AuthUser, @Args('id') id: string): Promise<DeleteResult> {
+    return this.profileService.deleteHobby(user.userId, id);
   }
 
   @Mutation(() => DeleteResult)
@@ -685,11 +404,6 @@ export class PortfolioResolver {
     @CurrentUser() user: AuthUser,
     @Args('input') input: ReorderInput,
   ): Promise<DeleteResult> {
-    return firstValueFrom(
-      this.coreClient.send(
-        CoreMessagePattern.REORDER_HOBBIES,
-        injectTraceContext({ userId: user.userId, orderedIds: input.orderedIds }),
-      ),
-    );
+    return this.profileService.reorderHobbies(user.userId, input.orderedIds);
   }
 }

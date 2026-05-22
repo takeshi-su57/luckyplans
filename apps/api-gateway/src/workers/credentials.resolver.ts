@@ -1,0 +1,38 @@
+import { Args, Field, ID, Mutation, ObjectType, Resolver } from '@nestjs/graphql';
+import { CredentialsService } from './credentials.service';
+
+@ObjectType()
+class IssuedWorkerCredential {
+  @Field(() => ID)
+  id!: string;
+
+  @Field()
+  workerId!: string;
+
+  @Field()
+  keyPrefix!: string;
+
+  @Field()
+  credential!: string;
+}
+
+@Resolver()
+export class CredentialsResolver {
+  constructor(private readonly credentialsService: CredentialsService) {}
+
+  @Mutation(() => IssuedWorkerCredential)
+  async issueWorkerCredential(@Args('id') id: string): Promise<IssuedWorkerCredential> {
+    return this.credentialsService.issueCredential(id);
+  }
+
+  @Mutation(() => Boolean)
+  async revokeWorkerCredential(@Args('id') id: string): Promise<boolean> {
+    await this.credentialsService.revokeCredential(id);
+    return true;
+  }
+
+  @Mutation(() => IssuedWorkerCredential)
+  async rotateWorkerCredential(@Args('id') id: string): Promise<IssuedWorkerCredential> {
+    return this.credentialsService.rotateCredential(id);
+  }
+}

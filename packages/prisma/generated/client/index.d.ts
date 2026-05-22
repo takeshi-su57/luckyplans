@@ -68,12 +68,139 @@ export type Award = $Result.DefaultSelection<Prisma.$AwardPayload>
  * 
  */
 export type Hobby = $Result.DefaultSelection<Prisma.$HobbyPayload>
+/**
+ * Model Worker
+ * 
+ */
+export type Worker = $Result.DefaultSelection<Prisma.$WorkerPayload>
+/**
+ * Model EdgeRelease
+ * 
+ */
+export type EdgeRelease = $Result.DefaultSelection<Prisma.$EdgeReleasePayload>
+/**
+ * Model UpgradeCampaign
+ * 
+ */
+export type UpgradeCampaign = $Result.DefaultSelection<Prisma.$UpgradeCampaignPayload>
+/**
+ * Model UpgradeCampaignWorker
+ * 
+ */
+export type UpgradeCampaignWorker = $Result.DefaultSelection<Prisma.$UpgradeCampaignWorkerPayload>
+/**
+ * Model WorkerCredential
+ * 
+ */
+export type WorkerCredential = $Result.DefaultSelection<Prisma.$WorkerCredentialPayload>
+/**
+ * Model EdgeEnrollmentToken
+ * 
+ */
+export type EdgeEnrollmentToken = $Result.DefaultSelection<Prisma.$EdgeEnrollmentTokenPayload>
+/**
+ * Model StrategyTemplate
+ * 
+ */
+export type StrategyTemplate = $Result.DefaultSelection<Prisma.$StrategyTemplatePayload>
+/**
+ * Model BacktestTask
+ * 
+ */
+export type BacktestTask = $Result.DefaultSelection<Prisma.$BacktestTaskPayload>
+/**
+ * Model BacktestResult
+ * 
+ */
+export type BacktestResult = $Result.DefaultSelection<Prisma.$BacktestResultPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const Proficiency: {
+  export const WorkerStatus: {
+  ACTIVE: 'ACTIVE',
+  DISABLED: 'DISABLED',
+  QUARANTINED: 'QUARANTINED'
+};
+
+export type WorkerStatus = (typeof WorkerStatus)[keyof typeof WorkerStatus]
+
+
+export const WorkerCredentialStatus: {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED',
+  EXPIRED: 'EXPIRED'
+};
+
+export type WorkerCredentialStatus = (typeof WorkerCredentialStatus)[keyof typeof WorkerCredentialStatus]
+
+
+export const EdgeEnrollmentTokenStatus: {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED'
+};
+
+export type EdgeEnrollmentTokenStatus = (typeof EdgeEnrollmentTokenStatus)[keyof typeof EdgeEnrollmentTokenStatus]
+
+
+export const SearchStrategy: {
+  GRID: 'GRID',
+  OPTUNA: 'OPTUNA'
+};
+
+export type SearchStrategy = (typeof SearchStrategy)[keyof typeof SearchStrategy]
+
+
+export const BacktestTaskStatus: {
+  AWAIT: 'AWAIT',
+  ASSIGNED: 'ASSIGNED',
+  PROCESSING: 'PROCESSING',
+  DONE: 'DONE',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type BacktestTaskStatus = (typeof BacktestTaskStatus)[keyof typeof BacktestTaskStatus]
+
+
+export const WorkerUpgradeStatus: {
+  IDLE: 'IDLE',
+  UPGRADE_PENDING: 'UPGRADE_PENDING',
+  DOWNLOADING: 'DOWNLOADING',
+  VERIFYING: 'VERIFYING',
+  RESTARTING: 'RESTARTING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
+export type WorkerUpgradeStatus = (typeof WorkerUpgradeStatus)[keyof typeof WorkerUpgradeStatus]
+
+
+export const UpgradeCampaignStatus: {
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
+export type UpgradeCampaignStatus = (typeof UpgradeCampaignStatus)[keyof typeof UpgradeCampaignStatus]
+
+
+export const UpgradeCampaignWorkerStatus: {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
+export type UpgradeCampaignWorkerStatus = (typeof UpgradeCampaignWorkerStatus)[keyof typeof UpgradeCampaignWorkerStatus]
+
+
+export const Proficiency: {
   BEGINNER: 'BEGINNER',
   INTERMEDIATE: 'INTERMEDIATE',
   ADVANCED: 'ADVANCED',
@@ -83,6 +210,38 @@ export namespace $Enums {
 export type Proficiency = (typeof Proficiency)[keyof typeof Proficiency]
 
 }
+
+export type WorkerStatus = $Enums.WorkerStatus
+
+export const WorkerStatus: typeof $Enums.WorkerStatus
+
+export type WorkerCredentialStatus = $Enums.WorkerCredentialStatus
+
+export const WorkerCredentialStatus: typeof $Enums.WorkerCredentialStatus
+
+export type EdgeEnrollmentTokenStatus = $Enums.EdgeEnrollmentTokenStatus
+
+export const EdgeEnrollmentTokenStatus: typeof $Enums.EdgeEnrollmentTokenStatus
+
+export type SearchStrategy = $Enums.SearchStrategy
+
+export const SearchStrategy: typeof $Enums.SearchStrategy
+
+export type BacktestTaskStatus = $Enums.BacktestTaskStatus
+
+export const BacktestTaskStatus: typeof $Enums.BacktestTaskStatus
+
+export type WorkerUpgradeStatus = $Enums.WorkerUpgradeStatus
+
+export const WorkerUpgradeStatus: typeof $Enums.WorkerUpgradeStatus
+
+export type UpgradeCampaignStatus = $Enums.UpgradeCampaignStatus
+
+export const UpgradeCampaignStatus: typeof $Enums.UpgradeCampaignStatus
+
+export type UpgradeCampaignWorkerStatus = $Enums.UpgradeCampaignWorkerStatus
+
+export const UpgradeCampaignWorkerStatus: typeof $Enums.UpgradeCampaignWorkerStatus
 
 export type Proficiency = $Enums.Proficiency
 
@@ -318,6 +477,96 @@ export class PrismaClient<
     * ```
     */
   get hobby(): Prisma.HobbyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.worker`: Exposes CRUD operations for the **Worker** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Workers
+    * const workers = await prisma.worker.findMany()
+    * ```
+    */
+  get worker(): Prisma.WorkerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.edgeRelease`: Exposes CRUD operations for the **EdgeRelease** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EdgeReleases
+    * const edgeReleases = await prisma.edgeRelease.findMany()
+    * ```
+    */
+  get edgeRelease(): Prisma.EdgeReleaseDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.upgradeCampaign`: Exposes CRUD operations for the **UpgradeCampaign** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UpgradeCampaigns
+    * const upgradeCampaigns = await prisma.upgradeCampaign.findMany()
+    * ```
+    */
+  get upgradeCampaign(): Prisma.UpgradeCampaignDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.upgradeCampaignWorker`: Exposes CRUD operations for the **UpgradeCampaignWorker** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UpgradeCampaignWorkers
+    * const upgradeCampaignWorkers = await prisma.upgradeCampaignWorker.findMany()
+    * ```
+    */
+  get upgradeCampaignWorker(): Prisma.UpgradeCampaignWorkerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workerCredential`: Exposes CRUD operations for the **WorkerCredential** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkerCredentials
+    * const workerCredentials = await prisma.workerCredential.findMany()
+    * ```
+    */
+  get workerCredential(): Prisma.WorkerCredentialDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.edgeEnrollmentToken`: Exposes CRUD operations for the **EdgeEnrollmentToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EdgeEnrollmentTokens
+    * const edgeEnrollmentTokens = await prisma.edgeEnrollmentToken.findMany()
+    * ```
+    */
+  get edgeEnrollmentToken(): Prisma.EdgeEnrollmentTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.strategyTemplate`: Exposes CRUD operations for the **StrategyTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StrategyTemplates
+    * const strategyTemplates = await prisma.strategyTemplate.findMany()
+    * ```
+    */
+  get strategyTemplate(): Prisma.StrategyTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.backtestTask`: Exposes CRUD operations for the **BacktestTask** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BacktestTasks
+    * const backtestTasks = await prisma.backtestTask.findMany()
+    * ```
+    */
+  get backtestTask(): Prisma.BacktestTaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.backtestResult`: Exposes CRUD operations for the **BacktestResult** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BacktestResults
+    * const backtestResults = await prisma.backtestResult.findMany()
+    * ```
+    */
+  get backtestResult(): Prisma.BacktestResultDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -762,7 +1011,16 @@ export namespace Prisma {
     Certification: 'Certification',
     Language: 'Language',
     Award: 'Award',
-    Hobby: 'Hobby'
+    Hobby: 'Hobby',
+    Worker: 'Worker',
+    EdgeRelease: 'EdgeRelease',
+    UpgradeCampaign: 'UpgradeCampaign',
+    UpgradeCampaignWorker: 'UpgradeCampaignWorker',
+    WorkerCredential: 'WorkerCredential',
+    EdgeEnrollmentToken: 'EdgeEnrollmentToken',
+    StrategyTemplate: 'StrategyTemplate',
+    BacktestTask: 'BacktestTask',
+    BacktestResult: 'BacktestResult'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -778,7 +1036,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby"
+      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker" | "edgeRelease" | "upgradeCampaign" | "upgradeCampaignWorker" | "workerCredential" | "edgeEnrollmentToken" | "strategyTemplate" | "backtestTask" | "backtestResult"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1596,6 +1854,672 @@ export namespace Prisma {
           }
         }
       }
+      Worker: {
+        payload: Prisma.$WorkerPayload<ExtArgs>
+        fields: Prisma.WorkerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          findMany: {
+            args: Prisma.WorkerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
+          }
+          create: {
+            args: Prisma.WorkerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          createMany: {
+            args: Prisma.WorkerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          update: {
+            args: Prisma.WorkerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorker>
+          }
+          groupBy: {
+            args: Prisma.WorkerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkerCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkerCountAggregateOutputType> | number
+          }
+        }
+      }
+      EdgeRelease: {
+        payload: Prisma.$EdgeReleasePayload<ExtArgs>
+        fields: Prisma.EdgeReleaseFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EdgeReleaseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EdgeReleaseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          findFirst: {
+            args: Prisma.EdgeReleaseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EdgeReleaseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          findMany: {
+            args: Prisma.EdgeReleaseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>[]
+          }
+          create: {
+            args: Prisma.EdgeReleaseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          createMany: {
+            args: Prisma.EdgeReleaseCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EdgeReleaseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>[]
+          }
+          delete: {
+            args: Prisma.EdgeReleaseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          update: {
+            args: Prisma.EdgeReleaseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          deleteMany: {
+            args: Prisma.EdgeReleaseDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EdgeReleaseUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EdgeReleaseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>[]
+          }
+          upsert: {
+            args: Prisma.EdgeReleaseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleasePayload>
+          }
+          aggregate: {
+            args: Prisma.EdgeReleaseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEdgeRelease>
+          }
+          groupBy: {
+            args: Prisma.EdgeReleaseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EdgeReleaseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EdgeReleaseCountArgs<ExtArgs>
+            result: $Utils.Optional<EdgeReleaseCountAggregateOutputType> | number
+          }
+        }
+      }
+      UpgradeCampaign: {
+        payload: Prisma.$UpgradeCampaignPayload<ExtArgs>
+        fields: Prisma.UpgradeCampaignFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UpgradeCampaignFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UpgradeCampaignFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>
+          }
+          findFirst: {
+            args: Prisma.UpgradeCampaignFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UpgradeCampaignFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>
+          }
+          findMany: {
+            args: Prisma.UpgradeCampaignFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>[]
+          }
+          create: {
+            args: Prisma.UpgradeCampaignCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>
+          }
+          createMany: {
+            args: Prisma.UpgradeCampaignCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UpgradeCampaignCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>[]
+          }
+          delete: {
+            args: Prisma.UpgradeCampaignDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>
+          }
+          update: {
+            args: Prisma.UpgradeCampaignUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>
+          }
+          deleteMany: {
+            args: Prisma.UpgradeCampaignDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UpgradeCampaignUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UpgradeCampaignUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>[]
+          }
+          upsert: {
+            args: Prisma.UpgradeCampaignUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignPayload>
+          }
+          aggregate: {
+            args: Prisma.UpgradeCampaignAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUpgradeCampaign>
+          }
+          groupBy: {
+            args: Prisma.UpgradeCampaignGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UpgradeCampaignGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UpgradeCampaignCountArgs<ExtArgs>
+            result: $Utils.Optional<UpgradeCampaignCountAggregateOutputType> | number
+          }
+        }
+      }
+      UpgradeCampaignWorker: {
+        payload: Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>
+        fields: Prisma.UpgradeCampaignWorkerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UpgradeCampaignWorkerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UpgradeCampaignWorkerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>
+          }
+          findFirst: {
+            args: Prisma.UpgradeCampaignWorkerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UpgradeCampaignWorkerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>
+          }
+          findMany: {
+            args: Prisma.UpgradeCampaignWorkerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>[]
+          }
+          create: {
+            args: Prisma.UpgradeCampaignWorkerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>
+          }
+          createMany: {
+            args: Prisma.UpgradeCampaignWorkerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UpgradeCampaignWorkerCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>[]
+          }
+          delete: {
+            args: Prisma.UpgradeCampaignWorkerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>
+          }
+          update: {
+            args: Prisma.UpgradeCampaignWorkerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>
+          }
+          deleteMany: {
+            args: Prisma.UpgradeCampaignWorkerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UpgradeCampaignWorkerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UpgradeCampaignWorkerUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>[]
+          }
+          upsert: {
+            args: Prisma.UpgradeCampaignWorkerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UpgradeCampaignWorkerPayload>
+          }
+          aggregate: {
+            args: Prisma.UpgradeCampaignWorkerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUpgradeCampaignWorker>
+          }
+          groupBy: {
+            args: Prisma.UpgradeCampaignWorkerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UpgradeCampaignWorkerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UpgradeCampaignWorkerCountArgs<ExtArgs>
+            result: $Utils.Optional<UpgradeCampaignWorkerCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkerCredential: {
+        payload: Prisma.$WorkerCredentialPayload<ExtArgs>
+        fields: Prisma.WorkerCredentialFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkerCredentialFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkerCredentialFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkerCredentialFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkerCredentialFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          findMany: {
+            args: Prisma.WorkerCredentialFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>[]
+          }
+          create: {
+            args: Prisma.WorkerCredentialCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          createMany: {
+            args: Prisma.WorkerCredentialCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkerCredentialCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkerCredentialDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          update: {
+            args: Prisma.WorkerCredentialUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkerCredentialDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkerCredentialUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkerCredentialUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkerCredentialUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkerCredentialPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkerCredentialAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkerCredential>
+          }
+          groupBy: {
+            args: Prisma.WorkerCredentialGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkerCredentialGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkerCredentialCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkerCredentialCountAggregateOutputType> | number
+          }
+        }
+      }
+      EdgeEnrollmentToken: {
+        payload: Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>
+        fields: Prisma.EdgeEnrollmentTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EdgeEnrollmentTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EdgeEnrollmentTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.EdgeEnrollmentTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EdgeEnrollmentTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          findMany: {
+            args: Prisma.EdgeEnrollmentTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>[]
+          }
+          create: {
+            args: Prisma.EdgeEnrollmentTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          createMany: {
+            args: Prisma.EdgeEnrollmentTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EdgeEnrollmentTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.EdgeEnrollmentTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          update: {
+            args: Prisma.EdgeEnrollmentTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.EdgeEnrollmentTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EdgeEnrollmentTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EdgeEnrollmentTokenUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>[]
+          }
+          upsert: {
+            args: Prisma.EdgeEnrollmentTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeEnrollmentTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.EdgeEnrollmentTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEdgeEnrollmentToken>
+          }
+          groupBy: {
+            args: Prisma.EdgeEnrollmentTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EdgeEnrollmentTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EdgeEnrollmentTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<EdgeEnrollmentTokenCountAggregateOutputType> | number
+          }
+        }
+      }
+      StrategyTemplate: {
+        payload: Prisma.$StrategyTemplatePayload<ExtArgs>
+        fields: Prisma.StrategyTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StrategyTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StrategyTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.StrategyTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StrategyTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.StrategyTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.StrategyTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.StrategyTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StrategyTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.StrategyTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          update: {
+            args: Prisma.StrategyTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.StrategyTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StrategyTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StrategyTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.StrategyTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StrategyTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.StrategyTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStrategyTemplate>
+          }
+          groupBy: {
+            args: Prisma.StrategyTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StrategyTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StrategyTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<StrategyTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      BacktestTask: {
+        payload: Prisma.$BacktestTaskPayload<ExtArgs>
+        fields: Prisma.BacktestTaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BacktestTaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BacktestTaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          findFirst: {
+            args: Prisma.BacktestTaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BacktestTaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          findMany: {
+            args: Prisma.BacktestTaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>[]
+          }
+          create: {
+            args: Prisma.BacktestTaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          createMany: {
+            args: Prisma.BacktestTaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BacktestTaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>[]
+          }
+          delete: {
+            args: Prisma.BacktestTaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          update: {
+            args: Prisma.BacktestTaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.BacktestTaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BacktestTaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BacktestTaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.BacktestTaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestTaskPayload>
+          }
+          aggregate: {
+            args: Prisma.BacktestTaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBacktestTask>
+          }
+          groupBy: {
+            args: Prisma.BacktestTaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BacktestTaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BacktestTaskCountArgs<ExtArgs>
+            result: $Utils.Optional<BacktestTaskCountAggregateOutputType> | number
+          }
+        }
+      }
+      BacktestResult: {
+        payload: Prisma.$BacktestResultPayload<ExtArgs>
+        fields: Prisma.BacktestResultFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BacktestResultFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BacktestResultFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          findFirst: {
+            args: Prisma.BacktestResultFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BacktestResultFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          findMany: {
+            args: Prisma.BacktestResultFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>[]
+          }
+          create: {
+            args: Prisma.BacktestResultCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          createMany: {
+            args: Prisma.BacktestResultCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BacktestResultCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>[]
+          }
+          delete: {
+            args: Prisma.BacktestResultDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          update: {
+            args: Prisma.BacktestResultUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          deleteMany: {
+            args: Prisma.BacktestResultDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BacktestResultUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BacktestResultUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>[]
+          }
+          upsert: {
+            args: Prisma.BacktestResultUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BacktestResultPayload>
+          }
+          aggregate: {
+            args: Prisma.BacktestResultAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBacktestResult>
+          }
+          groupBy: {
+            args: Prisma.BacktestResultGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BacktestResultGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BacktestResultCountArgs<ExtArgs>
+            result: $Utils.Optional<BacktestResultCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1715,6 +2639,15 @@ export namespace Prisma {
     language?: LanguageOmit
     award?: AwardOmit
     hobby?: HobbyOmit
+    worker?: WorkerOmit
+    edgeRelease?: EdgeReleaseOmit
+    upgradeCampaign?: UpgradeCampaignOmit
+    upgradeCampaignWorker?: UpgradeCampaignWorkerOmit
+    workerCredential?: WorkerCredentialOmit
+    edgeEnrollmentToken?: EdgeEnrollmentTokenOmit
+    strategyTemplate?: StrategyTemplateOmit
+    backtestTask?: BacktestTaskOmit
+    backtestResult?: BacktestResultOmit
   }
 
   /* Types for Logging */
@@ -1930,6 +2863,139 @@ export namespace Prisma {
    */
   export type SkillCategoryCountOutputTypeCountSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SkillWhereInput
+  }
+
+
+  /**
+   * Count Type WorkerCountOutputType
+   */
+
+  export type WorkerCountOutputType = {
+    credentials: number
+    upgradeCampaignWorkers: number
+  }
+
+  export type WorkerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    credentials?: boolean | WorkerCountOutputTypeCountCredentialsArgs
+    upgradeCampaignWorkers?: boolean | WorkerCountOutputTypeCountUpgradeCampaignWorkersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * WorkerCountOutputType without action
+   */
+  export type WorkerCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCountOutputType
+     */
+    select?: WorkerCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * WorkerCountOutputType without action
+   */
+  export type WorkerCountOutputTypeCountCredentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkerCredentialWhereInput
+  }
+
+  /**
+   * WorkerCountOutputType without action
+   */
+  export type WorkerCountOutputTypeCountUpgradeCampaignWorkersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UpgradeCampaignWorkerWhereInput
+  }
+
+
+  /**
+   * Count Type UpgradeCampaignCountOutputType
+   */
+
+  export type UpgradeCampaignCountOutputType = {
+    workers: number
+  }
+
+  export type UpgradeCampaignCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workers?: boolean | UpgradeCampaignCountOutputTypeCountWorkersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UpgradeCampaignCountOutputType without action
+   */
+  export type UpgradeCampaignCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignCountOutputType
+     */
+    select?: UpgradeCampaignCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UpgradeCampaignCountOutputType without action
+   */
+  export type UpgradeCampaignCountOutputTypeCountWorkersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UpgradeCampaignWorkerWhereInput
+  }
+
+
+  /**
+   * Count Type StrategyTemplateCountOutputType
+   */
+
+  export type StrategyTemplateCountOutputType = {
+    tasks: number
+  }
+
+  export type StrategyTemplateCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tasks?: boolean | StrategyTemplateCountOutputTypeCountTasksArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StrategyTemplateCountOutputType without action
+   */
+  export type StrategyTemplateCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplateCountOutputType
+     */
+    select?: StrategyTemplateCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StrategyTemplateCountOutputType without action
+   */
+  export type StrategyTemplateCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BacktestTaskWhereInput
+  }
+
+
+  /**
+   * Count Type BacktestTaskCountOutputType
+   */
+
+  export type BacktestTaskCountOutputType = {
+    results: number
+  }
+
+  export type BacktestTaskCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    results?: boolean | BacktestTaskCountOutputTypeCountResultsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BacktestTaskCountOutputType without action
+   */
+  export type BacktestTaskCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTaskCountOutputType
+     */
+    select?: BacktestTaskCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BacktestTaskCountOutputType without action
+   */
+  export type BacktestTaskCountOutputTypeCountResultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BacktestResultWhereInput
   }
 
 
@@ -14835,6 +15901,10512 @@ export namespace Prisma {
 
 
   /**
+   * Model Worker
+   */
+
+  export type AggregateWorker = {
+    _count: WorkerCountAggregateOutputType | null
+    _avg: WorkerAvgAggregateOutputType | null
+    _sum: WorkerSumAggregateOutputType | null
+    _min: WorkerMinAggregateOutputType | null
+    _max: WorkerMaxAggregateOutputType | null
+  }
+
+  export type WorkerAvgAggregateOutputType = {
+    consecutiveFailures: number | null
+  }
+
+  export type WorkerSumAggregateOutputType = {
+    consecutiveFailures: number | null
+  }
+
+  export type WorkerMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    deviceNumber: string | null
+    platform: string | null
+    arch: string | null
+    version: string | null
+    status: $Enums.WorkerStatus | null
+    lastSeenAt: Date | null
+    consecutiveFailures: number | null
+    quarantinedAt: Date | null
+    targetVersion: string | null
+    upgradeStatus: $Enums.WorkerUpgradeStatus | null
+    upgradeMessage: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkerMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    deviceNumber: string | null
+    platform: string | null
+    arch: string | null
+    version: string | null
+    status: $Enums.WorkerStatus | null
+    lastSeenAt: Date | null
+    consecutiveFailures: number | null
+    quarantinedAt: Date | null
+    targetVersion: string | null
+    upgradeStatus: $Enums.WorkerUpgradeStatus | null
+    upgradeMessage: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkerCountAggregateOutputType = {
+    id: number
+    name: number
+    deviceNumber: number
+    platform: number
+    arch: number
+    version: number
+    status: number
+    lastSeenAt: number
+    consecutiveFailures: number
+    quarantinedAt: number
+    targetVersion: number
+    upgradeStatus: number
+    upgradeMessage: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkerAvgAggregateInputType = {
+    consecutiveFailures?: true
+  }
+
+  export type WorkerSumAggregateInputType = {
+    consecutiveFailures?: true
+  }
+
+  export type WorkerMinAggregateInputType = {
+    id?: true
+    name?: true
+    deviceNumber?: true
+    platform?: true
+    arch?: true
+    version?: true
+    status?: true
+    lastSeenAt?: true
+    consecutiveFailures?: true
+    quarantinedAt?: true
+    targetVersion?: true
+    upgradeStatus?: true
+    upgradeMessage?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkerMaxAggregateInputType = {
+    id?: true
+    name?: true
+    deviceNumber?: true
+    platform?: true
+    arch?: true
+    version?: true
+    status?: true
+    lastSeenAt?: true
+    consecutiveFailures?: true
+    quarantinedAt?: true
+    targetVersion?: true
+    upgradeStatus?: true
+    upgradeMessage?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkerCountAggregateInputType = {
+    id?: true
+    name?: true
+    deviceNumber?: true
+    platform?: true
+    arch?: true
+    version?: true
+    status?: true
+    lastSeenAt?: true
+    consecutiveFailures?: true
+    quarantinedAt?: true
+    targetVersion?: true
+    upgradeStatus?: true
+    upgradeMessage?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Worker to aggregate.
+     */
+    where?: WorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Workers to fetch.
+     */
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Workers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Workers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Workers
+    **/
+    _count?: true | WorkerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkerMaxAggregateInputType
+  }
+
+  export type GetWorkerAggregateType<T extends WorkerAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorker]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorker[P]>
+      : GetScalarType<T[P], AggregateWorker[P]>
+  }
+
+
+
+
+  export type WorkerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkerWhereInput
+    orderBy?: WorkerOrderByWithAggregationInput | WorkerOrderByWithAggregationInput[]
+    by: WorkerScalarFieldEnum[] | WorkerScalarFieldEnum
+    having?: WorkerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkerCountAggregateInputType | true
+    _avg?: WorkerAvgAggregateInputType
+    _sum?: WorkerSumAggregateInputType
+    _min?: WorkerMinAggregateInputType
+    _max?: WorkerMaxAggregateInputType
+  }
+
+  export type WorkerGroupByOutputType = {
+    id: string
+    name: string
+    deviceNumber: string | null
+    platform: string | null
+    arch: string | null
+    version: string | null
+    status: $Enums.WorkerStatus
+    lastSeenAt: Date | null
+    consecutiveFailures: number
+    quarantinedAt: Date | null
+    targetVersion: string | null
+    upgradeStatus: $Enums.WorkerUpgradeStatus
+    upgradeMessage: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkerCountAggregateOutputType | null
+    _avg: WorkerAvgAggregateOutputType | null
+    _sum: WorkerSumAggregateOutputType | null
+    _min: WorkerMinAggregateOutputType | null
+    _max: WorkerMaxAggregateOutputType | null
+  }
+
+  type GetWorkerGroupByPayload<T extends WorkerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkerGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    deviceNumber?: boolean
+    platform?: boolean
+    arch?: boolean
+    version?: boolean
+    status?: boolean
+    lastSeenAt?: boolean
+    consecutiveFailures?: boolean
+    quarantinedAt?: boolean
+    targetVersion?: boolean
+    upgradeStatus?: boolean
+    upgradeMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    credentials?: boolean | Worker$credentialsArgs<ExtArgs>
+    upgradeCampaignWorkers?: boolean | Worker$upgradeCampaignWorkersArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["worker"]>
+
+  export type WorkerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    deviceNumber?: boolean
+    platform?: boolean
+    arch?: boolean
+    version?: boolean
+    status?: boolean
+    lastSeenAt?: boolean
+    consecutiveFailures?: boolean
+    quarantinedAt?: boolean
+    targetVersion?: boolean
+    upgradeStatus?: boolean
+    upgradeMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["worker"]>
+
+  export type WorkerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    deviceNumber?: boolean
+    platform?: boolean
+    arch?: boolean
+    version?: boolean
+    status?: boolean
+    lastSeenAt?: boolean
+    consecutiveFailures?: boolean
+    quarantinedAt?: boolean
+    targetVersion?: boolean
+    upgradeStatus?: boolean
+    upgradeMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["worker"]>
+
+  export type WorkerSelectScalar = {
+    id?: boolean
+    name?: boolean
+    deviceNumber?: boolean
+    platform?: boolean
+    arch?: boolean
+    version?: boolean
+    status?: boolean
+    lastSeenAt?: boolean
+    consecutiveFailures?: boolean
+    quarantinedAt?: boolean
+    targetVersion?: boolean
+    upgradeStatus?: boolean
+    upgradeMessage?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "deviceNumber" | "platform" | "arch" | "version" | "status" | "lastSeenAt" | "consecutiveFailures" | "quarantinedAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
+  export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    credentials?: boolean | Worker$credentialsArgs<ExtArgs>
+    upgradeCampaignWorkers?: boolean | Worker$upgradeCampaignWorkersArgs<ExtArgs>
+    _count?: boolean | WorkerCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type WorkerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type WorkerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $WorkerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Worker"
+    objects: {
+      credentials: Prisma.$WorkerCredentialPayload<ExtArgs>[]
+      upgradeCampaignWorkers: Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      deviceNumber: string | null
+      platform: string | null
+      arch: string | null
+      version: string | null
+      status: $Enums.WorkerStatus
+      lastSeenAt: Date | null
+      consecutiveFailures: number
+      quarantinedAt: Date | null
+      targetVersion: string | null
+      upgradeStatus: $Enums.WorkerUpgradeStatus
+      upgradeMessage: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["worker"]>
+    composites: {}
+  }
+
+  type WorkerGetPayload<S extends boolean | null | undefined | WorkerDefaultArgs> = $Result.GetResult<Prisma.$WorkerPayload, S>
+
+  type WorkerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkerCountAggregateInputType | true
+    }
+
+  export interface WorkerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Worker'], meta: { name: 'Worker' } }
+    /**
+     * Find zero or one Worker that matches the filter.
+     * @param {WorkerFindUniqueArgs} args - Arguments to find a Worker
+     * @example
+     * // Get one Worker
+     * const worker = await prisma.worker.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkerFindUniqueArgs>(args: SelectSubset<T, WorkerFindUniqueArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Worker that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkerFindUniqueOrThrowArgs} args - Arguments to find a Worker
+     * @example
+     * // Get one Worker
+     * const worker = await prisma.worker.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkerFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Worker that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerFindFirstArgs} args - Arguments to find a Worker
+     * @example
+     * // Get one Worker
+     * const worker = await prisma.worker.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkerFindFirstArgs>(args?: SelectSubset<T, WorkerFindFirstArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Worker that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerFindFirstOrThrowArgs} args - Arguments to find a Worker
+     * @example
+     * // Get one Worker
+     * const worker = await prisma.worker.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkerFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkerFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Workers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Workers
+     * const workers = await prisma.worker.findMany()
+     * 
+     * // Get first 10 Workers
+     * const workers = await prisma.worker.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workerWithIdOnly = await prisma.worker.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkerFindManyArgs>(args?: SelectSubset<T, WorkerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Worker.
+     * @param {WorkerCreateArgs} args - Arguments to create a Worker.
+     * @example
+     * // Create one Worker
+     * const Worker = await prisma.worker.create({
+     *   data: {
+     *     // ... data to create a Worker
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkerCreateArgs>(args: SelectSubset<T, WorkerCreateArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Workers.
+     * @param {WorkerCreateManyArgs} args - Arguments to create many Workers.
+     * @example
+     * // Create many Workers
+     * const worker = await prisma.worker.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkerCreateManyArgs>(args?: SelectSubset<T, WorkerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Workers and returns the data saved in the database.
+     * @param {WorkerCreateManyAndReturnArgs} args - Arguments to create many Workers.
+     * @example
+     * // Create many Workers
+     * const worker = await prisma.worker.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Workers and only return the `id`
+     * const workerWithIdOnly = await prisma.worker.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkerCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Worker.
+     * @param {WorkerDeleteArgs} args - Arguments to delete one Worker.
+     * @example
+     * // Delete one Worker
+     * const Worker = await prisma.worker.delete({
+     *   where: {
+     *     // ... filter to delete one Worker
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkerDeleteArgs>(args: SelectSubset<T, WorkerDeleteArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Worker.
+     * @param {WorkerUpdateArgs} args - Arguments to update one Worker.
+     * @example
+     * // Update one Worker
+     * const worker = await prisma.worker.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkerUpdateArgs>(args: SelectSubset<T, WorkerUpdateArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Workers.
+     * @param {WorkerDeleteManyArgs} args - Arguments to filter Workers to delete.
+     * @example
+     * // Delete a few Workers
+     * const { count } = await prisma.worker.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkerDeleteManyArgs>(args?: SelectSubset<T, WorkerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Workers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Workers
+     * const worker = await prisma.worker.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkerUpdateManyArgs>(args: SelectSubset<T, WorkerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Workers and returns the data updated in the database.
+     * @param {WorkerUpdateManyAndReturnArgs} args - Arguments to update many Workers.
+     * @example
+     * // Update many Workers
+     * const worker = await prisma.worker.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Workers and only return the `id`
+     * const workerWithIdOnly = await prisma.worker.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkerUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Worker.
+     * @param {WorkerUpsertArgs} args - Arguments to update or create a Worker.
+     * @example
+     * // Update or create a Worker
+     * const worker = await prisma.worker.upsert({
+     *   create: {
+     *     // ... data to create a Worker
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Worker we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkerUpsertArgs>(args: SelectSubset<T, WorkerUpsertArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Workers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCountArgs} args - Arguments to filter Workers to count.
+     * @example
+     * // Count the number of Workers
+     * const count = await prisma.worker.count({
+     *   where: {
+     *     // ... the filter for the Workers we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkerCountArgs>(
+      args?: Subset<T, WorkerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Worker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkerAggregateArgs>(args: Subset<T, WorkerAggregateArgs>): Prisma.PrismaPromise<GetWorkerAggregateType<T>>
+
+    /**
+     * Group by Worker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkerGroupByArgs['orderBy'] }
+        : { orderBy?: WorkerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Worker model
+   */
+  readonly fields: WorkerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Worker.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    credentials<T extends Worker$credentialsArgs<ExtArgs> = {}>(args?: Subset<T, Worker$credentialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    upgradeCampaignWorkers<T extends Worker$upgradeCampaignWorkersArgs<ExtArgs> = {}>(args?: Subset<T, Worker$upgradeCampaignWorkersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Worker model
+   */
+  interface WorkerFieldRefs {
+    readonly id: FieldRef<"Worker", 'String'>
+    readonly name: FieldRef<"Worker", 'String'>
+    readonly deviceNumber: FieldRef<"Worker", 'String'>
+    readonly platform: FieldRef<"Worker", 'String'>
+    readonly arch: FieldRef<"Worker", 'String'>
+    readonly version: FieldRef<"Worker", 'String'>
+    readonly status: FieldRef<"Worker", 'WorkerStatus'>
+    readonly lastSeenAt: FieldRef<"Worker", 'DateTime'>
+    readonly consecutiveFailures: FieldRef<"Worker", 'Int'>
+    readonly quarantinedAt: FieldRef<"Worker", 'DateTime'>
+    readonly targetVersion: FieldRef<"Worker", 'String'>
+    readonly upgradeStatus: FieldRef<"Worker", 'WorkerUpgradeStatus'>
+    readonly upgradeMessage: FieldRef<"Worker", 'String'>
+    readonly createdAt: FieldRef<"Worker", 'DateTime'>
+    readonly updatedAt: FieldRef<"Worker", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Worker findUnique
+   */
+  export type WorkerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Worker to fetch.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker findUniqueOrThrow
+   */
+  export type WorkerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Worker to fetch.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker findFirst
+   */
+  export type WorkerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Worker to fetch.
+     */
+    where?: WorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Workers to fetch.
+     */
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Workers.
+     */
+    cursor?: WorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Workers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Workers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Workers.
+     */
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
+  }
+
+  /**
+   * Worker findFirstOrThrow
+   */
+  export type WorkerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Worker to fetch.
+     */
+    where?: WorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Workers to fetch.
+     */
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Workers.
+     */
+    cursor?: WorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Workers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Workers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Workers.
+     */
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
+  }
+
+  /**
+   * Worker findMany
+   */
+  export type WorkerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which Workers to fetch.
+     */
+    where?: WorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Workers to fetch.
+     */
+    orderBy?: WorkerOrderByWithRelationInput | WorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Workers.
+     */
+    cursor?: WorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Workers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Workers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Workers.
+     */
+    distinct?: WorkerScalarFieldEnum | WorkerScalarFieldEnum[]
+  }
+
+  /**
+   * Worker create
+   */
+  export type WorkerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Worker.
+     */
+    data: XOR<WorkerCreateInput, WorkerUncheckedCreateInput>
+  }
+
+  /**
+   * Worker createMany
+   */
+  export type WorkerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Workers.
+     */
+    data: WorkerCreateManyInput | WorkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Worker createManyAndReturn
+   */
+  export type WorkerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * The data used to create many Workers.
+     */
+    data: WorkerCreateManyInput | WorkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Worker update
+   */
+  export type WorkerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Worker.
+     */
+    data: XOR<WorkerUpdateInput, WorkerUncheckedUpdateInput>
+    /**
+     * Choose, which Worker to update.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker updateMany
+   */
+  export type WorkerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Workers.
+     */
+    data: XOR<WorkerUpdateManyMutationInput, WorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which Workers to update
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker updateManyAndReturn
+   */
+  export type WorkerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * The data used to update Workers.
+     */
+    data: XOR<WorkerUpdateManyMutationInput, WorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which Workers to update
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker upsert
+   */
+  export type WorkerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Worker to update in case it exists.
+     */
+    where: WorkerWhereUniqueInput
+    /**
+     * In case the Worker found by the `where` argument doesn't exist, create a new Worker with this data.
+     */
+    create: XOR<WorkerCreateInput, WorkerUncheckedCreateInput>
+    /**
+     * In case the Worker was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkerUpdateInput, WorkerUncheckedUpdateInput>
+  }
+
+  /**
+   * Worker delete
+   */
+  export type WorkerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+    /**
+     * Filter which Worker to delete.
+     */
+    where: WorkerWhereUniqueInput
+  }
+
+  /**
+   * Worker deleteMany
+   */
+  export type WorkerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Workers to delete
+     */
+    where?: WorkerWhereInput
+    /**
+     * Limit how many Workers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Worker.credentials
+   */
+  export type Worker$credentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    where?: WorkerCredentialWhereInput
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    cursor?: WorkerCredentialWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WorkerCredentialScalarFieldEnum | WorkerCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * Worker.upgradeCampaignWorkers
+   */
+  export type Worker$upgradeCampaignWorkersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    where?: UpgradeCampaignWorkerWhereInput
+    orderBy?: UpgradeCampaignWorkerOrderByWithRelationInput | UpgradeCampaignWorkerOrderByWithRelationInput[]
+    cursor?: UpgradeCampaignWorkerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UpgradeCampaignWorkerScalarFieldEnum | UpgradeCampaignWorkerScalarFieldEnum[]
+  }
+
+  /**
+   * Worker without action
+   */
+  export type WorkerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Worker
+     */
+    select?: WorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Worker
+     */
+    omit?: WorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EdgeRelease
+   */
+
+  export type AggregateEdgeRelease = {
+    _count: EdgeReleaseCountAggregateOutputType | null
+    _min: EdgeReleaseMinAggregateOutputType | null
+    _max: EdgeReleaseMaxAggregateOutputType | null
+  }
+
+  export type EdgeReleaseMinAggregateOutputType = {
+    id: string | null
+    version: string | null
+    windowsUrl: string | null
+    linuxUrl: string | null
+    checksum: string | null
+    signature: string | null
+    signatureAlgorithm: string | null
+    signingKeyId: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeReleaseMaxAggregateOutputType = {
+    id: string | null
+    version: string | null
+    windowsUrl: string | null
+    linuxUrl: string | null
+    checksum: string | null
+    signature: string | null
+    signatureAlgorithm: string | null
+    signingKeyId: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeReleaseCountAggregateOutputType = {
+    id: number
+    version: number
+    windowsUrl: number
+    linuxUrl: number
+    checksum: number
+    signature: number
+    signatureAlgorithm: number
+    signingKeyId: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EdgeReleaseMinAggregateInputType = {
+    id?: true
+    version?: true
+    windowsUrl?: true
+    linuxUrl?: true
+    checksum?: true
+    signature?: true
+    signatureAlgorithm?: true
+    signingKeyId?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeReleaseMaxAggregateInputType = {
+    id?: true
+    version?: true
+    windowsUrl?: true
+    linuxUrl?: true
+    checksum?: true
+    signature?: true
+    signatureAlgorithm?: true
+    signingKeyId?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeReleaseCountAggregateInputType = {
+    id?: true
+    version?: true
+    windowsUrl?: true
+    linuxUrl?: true
+    checksum?: true
+    signature?: true
+    signatureAlgorithm?: true
+    signingKeyId?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EdgeReleaseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeRelease to aggregate.
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleases to fetch.
+     */
+    orderBy?: EdgeReleaseOrderByWithRelationInput | EdgeReleaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EdgeReleaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EdgeReleases
+    **/
+    _count?: true | EdgeReleaseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EdgeReleaseMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EdgeReleaseMaxAggregateInputType
+  }
+
+  export type GetEdgeReleaseAggregateType<T extends EdgeReleaseAggregateArgs> = {
+        [P in keyof T & keyof AggregateEdgeRelease]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEdgeRelease[P]>
+      : GetScalarType<T[P], AggregateEdgeRelease[P]>
+  }
+
+
+
+
+  export type EdgeReleaseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EdgeReleaseWhereInput
+    orderBy?: EdgeReleaseOrderByWithAggregationInput | EdgeReleaseOrderByWithAggregationInput[]
+    by: EdgeReleaseScalarFieldEnum[] | EdgeReleaseScalarFieldEnum
+    having?: EdgeReleaseScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EdgeReleaseCountAggregateInputType | true
+    _min?: EdgeReleaseMinAggregateInputType
+    _max?: EdgeReleaseMaxAggregateInputType
+  }
+
+  export type EdgeReleaseGroupByOutputType = {
+    id: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    signatureAlgorithm: string
+    signingKeyId: string | null
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EdgeReleaseCountAggregateOutputType | null
+    _min: EdgeReleaseMinAggregateOutputType | null
+    _max: EdgeReleaseMaxAggregateOutputType | null
+  }
+
+  type GetEdgeReleaseGroupByPayload<T extends EdgeReleaseGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EdgeReleaseGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EdgeReleaseGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EdgeReleaseGroupByOutputType[P]>
+            : GetScalarType<T[P], EdgeReleaseGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EdgeReleaseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    version?: boolean
+    windowsUrl?: boolean
+    linuxUrl?: boolean
+    checksum?: boolean
+    signature?: boolean
+    signatureAlgorithm?: boolean
+    signingKeyId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeRelease"]>
+
+  export type EdgeReleaseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    version?: boolean
+    windowsUrl?: boolean
+    linuxUrl?: boolean
+    checksum?: boolean
+    signature?: boolean
+    signatureAlgorithm?: boolean
+    signingKeyId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeRelease"]>
+
+  export type EdgeReleaseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    version?: boolean
+    windowsUrl?: boolean
+    linuxUrl?: boolean
+    checksum?: boolean
+    signature?: boolean
+    signatureAlgorithm?: boolean
+    signingKeyId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeRelease"]>
+
+  export type EdgeReleaseSelectScalar = {
+    id?: boolean
+    version?: boolean
+    windowsUrl?: boolean
+    linuxUrl?: boolean
+    checksum?: boolean
+    signature?: boolean
+    signatureAlgorithm?: boolean
+    signingKeyId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EdgeReleaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "version" | "windowsUrl" | "linuxUrl" | "checksum" | "signature" | "signatureAlgorithm" | "signingKeyId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["edgeRelease"]>
+
+  export type $EdgeReleasePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EdgeRelease"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      version: string
+      windowsUrl: string
+      linuxUrl: string
+      checksum: string
+      signature: string
+      signatureAlgorithm: string
+      signingKeyId: string | null
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["edgeRelease"]>
+    composites: {}
+  }
+
+  type EdgeReleaseGetPayload<S extends boolean | null | undefined | EdgeReleaseDefaultArgs> = $Result.GetResult<Prisma.$EdgeReleasePayload, S>
+
+  type EdgeReleaseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EdgeReleaseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EdgeReleaseCountAggregateInputType | true
+    }
+
+  export interface EdgeReleaseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EdgeRelease'], meta: { name: 'EdgeRelease' } }
+    /**
+     * Find zero or one EdgeRelease that matches the filter.
+     * @param {EdgeReleaseFindUniqueArgs} args - Arguments to find a EdgeRelease
+     * @example
+     * // Get one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EdgeReleaseFindUniqueArgs>(args: SelectSubset<T, EdgeReleaseFindUniqueArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EdgeRelease that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EdgeReleaseFindUniqueOrThrowArgs} args - Arguments to find a EdgeRelease
+     * @example
+     * // Get one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EdgeReleaseFindUniqueOrThrowArgs>(args: SelectSubset<T, EdgeReleaseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeRelease that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseFindFirstArgs} args - Arguments to find a EdgeRelease
+     * @example
+     * // Get one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EdgeReleaseFindFirstArgs>(args?: SelectSubset<T, EdgeReleaseFindFirstArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeRelease that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseFindFirstOrThrowArgs} args - Arguments to find a EdgeRelease
+     * @example
+     * // Get one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EdgeReleaseFindFirstOrThrowArgs>(args?: SelectSubset<T, EdgeReleaseFindFirstOrThrowArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EdgeReleases that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EdgeReleases
+     * const edgeReleases = await prisma.edgeRelease.findMany()
+     * 
+     * // Get first 10 EdgeReleases
+     * const edgeReleases = await prisma.edgeRelease.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const edgeReleaseWithIdOnly = await prisma.edgeRelease.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EdgeReleaseFindManyArgs>(args?: SelectSubset<T, EdgeReleaseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EdgeRelease.
+     * @param {EdgeReleaseCreateArgs} args - Arguments to create a EdgeRelease.
+     * @example
+     * // Create one EdgeRelease
+     * const EdgeRelease = await prisma.edgeRelease.create({
+     *   data: {
+     *     // ... data to create a EdgeRelease
+     *   }
+     * })
+     * 
+     */
+    create<T extends EdgeReleaseCreateArgs>(args: SelectSubset<T, EdgeReleaseCreateArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EdgeReleases.
+     * @param {EdgeReleaseCreateManyArgs} args - Arguments to create many EdgeReleases.
+     * @example
+     * // Create many EdgeReleases
+     * const edgeRelease = await prisma.edgeRelease.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EdgeReleaseCreateManyArgs>(args?: SelectSubset<T, EdgeReleaseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EdgeReleases and returns the data saved in the database.
+     * @param {EdgeReleaseCreateManyAndReturnArgs} args - Arguments to create many EdgeReleases.
+     * @example
+     * // Create many EdgeReleases
+     * const edgeRelease = await prisma.edgeRelease.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EdgeReleases and only return the `id`
+     * const edgeReleaseWithIdOnly = await prisma.edgeRelease.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EdgeReleaseCreateManyAndReturnArgs>(args?: SelectSubset<T, EdgeReleaseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EdgeRelease.
+     * @param {EdgeReleaseDeleteArgs} args - Arguments to delete one EdgeRelease.
+     * @example
+     * // Delete one EdgeRelease
+     * const EdgeRelease = await prisma.edgeRelease.delete({
+     *   where: {
+     *     // ... filter to delete one EdgeRelease
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EdgeReleaseDeleteArgs>(args: SelectSubset<T, EdgeReleaseDeleteArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EdgeRelease.
+     * @param {EdgeReleaseUpdateArgs} args - Arguments to update one EdgeRelease.
+     * @example
+     * // Update one EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EdgeReleaseUpdateArgs>(args: SelectSubset<T, EdgeReleaseUpdateArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EdgeReleases.
+     * @param {EdgeReleaseDeleteManyArgs} args - Arguments to filter EdgeReleases to delete.
+     * @example
+     * // Delete a few EdgeReleases
+     * const { count } = await prisma.edgeRelease.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EdgeReleaseDeleteManyArgs>(args?: SelectSubset<T, EdgeReleaseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeReleases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EdgeReleases
+     * const edgeRelease = await prisma.edgeRelease.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EdgeReleaseUpdateManyArgs>(args: SelectSubset<T, EdgeReleaseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeReleases and returns the data updated in the database.
+     * @param {EdgeReleaseUpdateManyAndReturnArgs} args - Arguments to update many EdgeReleases.
+     * @example
+     * // Update many EdgeReleases
+     * const edgeRelease = await prisma.edgeRelease.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EdgeReleases and only return the `id`
+     * const edgeReleaseWithIdOnly = await prisma.edgeRelease.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EdgeReleaseUpdateManyAndReturnArgs>(args: SelectSubset<T, EdgeReleaseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EdgeRelease.
+     * @param {EdgeReleaseUpsertArgs} args - Arguments to update or create a EdgeRelease.
+     * @example
+     * // Update or create a EdgeRelease
+     * const edgeRelease = await prisma.edgeRelease.upsert({
+     *   create: {
+     *     // ... data to create a EdgeRelease
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EdgeRelease we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EdgeReleaseUpsertArgs>(args: SelectSubset<T, EdgeReleaseUpsertArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EdgeReleases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseCountArgs} args - Arguments to filter EdgeReleases to count.
+     * @example
+     * // Count the number of EdgeReleases
+     * const count = await prisma.edgeRelease.count({
+     *   where: {
+     *     // ... the filter for the EdgeReleases we want to count
+     *   }
+     * })
+    **/
+    count<T extends EdgeReleaseCountArgs>(
+      args?: Subset<T, EdgeReleaseCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EdgeReleaseCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EdgeRelease.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EdgeReleaseAggregateArgs>(args: Subset<T, EdgeReleaseAggregateArgs>): Prisma.PrismaPromise<GetEdgeReleaseAggregateType<T>>
+
+    /**
+     * Group by EdgeRelease.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EdgeReleaseGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EdgeReleaseGroupByArgs['orderBy'] }
+        : { orderBy?: EdgeReleaseGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EdgeReleaseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEdgeReleaseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EdgeRelease model
+   */
+  readonly fields: EdgeReleaseFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EdgeRelease.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EdgeReleaseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EdgeRelease model
+   */
+  interface EdgeReleaseFieldRefs {
+    readonly id: FieldRef<"EdgeRelease", 'String'>
+    readonly version: FieldRef<"EdgeRelease", 'String'>
+    readonly windowsUrl: FieldRef<"EdgeRelease", 'String'>
+    readonly linuxUrl: FieldRef<"EdgeRelease", 'String'>
+    readonly checksum: FieldRef<"EdgeRelease", 'String'>
+    readonly signature: FieldRef<"EdgeRelease", 'String'>
+    readonly signatureAlgorithm: FieldRef<"EdgeRelease", 'String'>
+    readonly signingKeyId: FieldRef<"EdgeRelease", 'String'>
+    readonly notes: FieldRef<"EdgeRelease", 'String'>
+    readonly createdAt: FieldRef<"EdgeRelease", 'DateTime'>
+    readonly updatedAt: FieldRef<"EdgeRelease", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EdgeRelease findUnique
+   */
+  export type EdgeReleaseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeRelease to fetch.
+     */
+    where: EdgeReleaseWhereUniqueInput
+  }
+
+  /**
+   * EdgeRelease findUniqueOrThrow
+   */
+  export type EdgeReleaseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeRelease to fetch.
+     */
+    where: EdgeReleaseWhereUniqueInput
+  }
+
+  /**
+   * EdgeRelease findFirst
+   */
+  export type EdgeReleaseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeRelease to fetch.
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleases to fetch.
+     */
+    orderBy?: EdgeReleaseOrderByWithRelationInput | EdgeReleaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeReleases.
+     */
+    cursor?: EdgeReleaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleases.
+     */
+    distinct?: EdgeReleaseScalarFieldEnum | EdgeReleaseScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeRelease findFirstOrThrow
+   */
+  export type EdgeReleaseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeRelease to fetch.
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleases to fetch.
+     */
+    orderBy?: EdgeReleaseOrderByWithRelationInput | EdgeReleaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeReleases.
+     */
+    cursor?: EdgeReleaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleases.
+     */
+    distinct?: EdgeReleaseScalarFieldEnum | EdgeReleaseScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeRelease findMany
+   */
+  export type EdgeReleaseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeReleases to fetch.
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleases to fetch.
+     */
+    orderBy?: EdgeReleaseOrderByWithRelationInput | EdgeReleaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EdgeReleases.
+     */
+    cursor?: EdgeReleaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleases.
+     */
+    distinct?: EdgeReleaseScalarFieldEnum | EdgeReleaseScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeRelease create
+   */
+  export type EdgeReleaseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EdgeRelease.
+     */
+    data: XOR<EdgeReleaseCreateInput, EdgeReleaseUncheckedCreateInput>
+  }
+
+  /**
+   * EdgeRelease createMany
+   */
+  export type EdgeReleaseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EdgeReleases.
+     */
+    data: EdgeReleaseCreateManyInput | EdgeReleaseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeRelease createManyAndReturn
+   */
+  export type EdgeReleaseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The data used to create many EdgeReleases.
+     */
+    data: EdgeReleaseCreateManyInput | EdgeReleaseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeRelease update
+   */
+  export type EdgeReleaseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EdgeRelease.
+     */
+    data: XOR<EdgeReleaseUpdateInput, EdgeReleaseUncheckedUpdateInput>
+    /**
+     * Choose, which EdgeRelease to update.
+     */
+    where: EdgeReleaseWhereUniqueInput
+  }
+
+  /**
+   * EdgeRelease updateMany
+   */
+  export type EdgeReleaseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EdgeReleases.
+     */
+    data: XOR<EdgeReleaseUpdateManyMutationInput, EdgeReleaseUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeReleases to update
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * Limit how many EdgeReleases to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeRelease updateManyAndReturn
+   */
+  export type EdgeReleaseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The data used to update EdgeReleases.
+     */
+    data: XOR<EdgeReleaseUpdateManyMutationInput, EdgeReleaseUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeReleases to update
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * Limit how many EdgeReleases to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeRelease upsert
+   */
+  export type EdgeReleaseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EdgeRelease to update in case it exists.
+     */
+    where: EdgeReleaseWhereUniqueInput
+    /**
+     * In case the EdgeRelease found by the `where` argument doesn't exist, create a new EdgeRelease with this data.
+     */
+    create: XOR<EdgeReleaseCreateInput, EdgeReleaseUncheckedCreateInput>
+    /**
+     * In case the EdgeRelease was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EdgeReleaseUpdateInput, EdgeReleaseUncheckedUpdateInput>
+  }
+
+  /**
+   * EdgeRelease delete
+   */
+  export type EdgeReleaseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Filter which EdgeRelease to delete.
+     */
+    where: EdgeReleaseWhereUniqueInput
+  }
+
+  /**
+   * EdgeRelease deleteMany
+   */
+  export type EdgeReleaseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeReleases to delete
+     */
+    where?: EdgeReleaseWhereInput
+    /**
+     * Limit how many EdgeReleases to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeRelease without action
+   */
+  export type EdgeReleaseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeRelease
+     */
+    select?: EdgeReleaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeRelease
+     */
+    omit?: EdgeReleaseOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UpgradeCampaign
+   */
+
+  export type AggregateUpgradeCampaign = {
+    _count: UpgradeCampaignCountAggregateOutputType | null
+    _avg: UpgradeCampaignAvgAggregateOutputType | null
+    _sum: UpgradeCampaignSumAggregateOutputType | null
+    _min: UpgradeCampaignMinAggregateOutputType | null
+    _max: UpgradeCampaignMaxAggregateOutputType | null
+  }
+
+  export type UpgradeCampaignAvgAggregateOutputType = {
+    phaseSize: number | null
+    currentPhase: number | null
+    successThreshold: number | null
+    failureThreshold: number | null
+  }
+
+  export type UpgradeCampaignSumAggregateOutputType = {
+    phaseSize: number | null
+    currentPhase: number | null
+    successThreshold: number | null
+    failureThreshold: number | null
+  }
+
+  export type UpgradeCampaignMinAggregateOutputType = {
+    id: string | null
+    targetVersion: string | null
+    previousVersion: string | null
+    forceMode: boolean | null
+    phaseSize: number | null
+    currentPhase: number | null
+    successThreshold: number | null
+    failureThreshold: number | null
+    status: $Enums.UpgradeCampaignStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UpgradeCampaignMaxAggregateOutputType = {
+    id: string | null
+    targetVersion: string | null
+    previousVersion: string | null
+    forceMode: boolean | null
+    phaseSize: number | null
+    currentPhase: number | null
+    successThreshold: number | null
+    failureThreshold: number | null
+    status: $Enums.UpgradeCampaignStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UpgradeCampaignCountAggregateOutputType = {
+    id: number
+    targetVersion: number
+    previousVersion: number
+    forceMode: number
+    phaseSize: number
+    currentPhase: number
+    successThreshold: number
+    failureThreshold: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UpgradeCampaignAvgAggregateInputType = {
+    phaseSize?: true
+    currentPhase?: true
+    successThreshold?: true
+    failureThreshold?: true
+  }
+
+  export type UpgradeCampaignSumAggregateInputType = {
+    phaseSize?: true
+    currentPhase?: true
+    successThreshold?: true
+    failureThreshold?: true
+  }
+
+  export type UpgradeCampaignMinAggregateInputType = {
+    id?: true
+    targetVersion?: true
+    previousVersion?: true
+    forceMode?: true
+    phaseSize?: true
+    currentPhase?: true
+    successThreshold?: true
+    failureThreshold?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UpgradeCampaignMaxAggregateInputType = {
+    id?: true
+    targetVersion?: true
+    previousVersion?: true
+    forceMode?: true
+    phaseSize?: true
+    currentPhase?: true
+    successThreshold?: true
+    failureThreshold?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UpgradeCampaignCountAggregateInputType = {
+    id?: true
+    targetVersion?: true
+    previousVersion?: true
+    forceMode?: true
+    phaseSize?: true
+    currentPhase?: true
+    successThreshold?: true
+    failureThreshold?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UpgradeCampaignAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UpgradeCampaign to aggregate.
+     */
+    where?: UpgradeCampaignWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UpgradeCampaigns to fetch.
+     */
+    orderBy?: UpgradeCampaignOrderByWithRelationInput | UpgradeCampaignOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UpgradeCampaignWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UpgradeCampaigns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UpgradeCampaigns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UpgradeCampaigns
+    **/
+    _count?: true | UpgradeCampaignCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UpgradeCampaignAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UpgradeCampaignSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UpgradeCampaignMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UpgradeCampaignMaxAggregateInputType
+  }
+
+  export type GetUpgradeCampaignAggregateType<T extends UpgradeCampaignAggregateArgs> = {
+        [P in keyof T & keyof AggregateUpgradeCampaign]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUpgradeCampaign[P]>
+      : GetScalarType<T[P], AggregateUpgradeCampaign[P]>
+  }
+
+
+
+
+  export type UpgradeCampaignGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UpgradeCampaignWhereInput
+    orderBy?: UpgradeCampaignOrderByWithAggregationInput | UpgradeCampaignOrderByWithAggregationInput[]
+    by: UpgradeCampaignScalarFieldEnum[] | UpgradeCampaignScalarFieldEnum
+    having?: UpgradeCampaignScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UpgradeCampaignCountAggregateInputType | true
+    _avg?: UpgradeCampaignAvgAggregateInputType
+    _sum?: UpgradeCampaignSumAggregateInputType
+    _min?: UpgradeCampaignMinAggregateInputType
+    _max?: UpgradeCampaignMaxAggregateInputType
+  }
+
+  export type UpgradeCampaignGroupByOutputType = {
+    id: string
+    targetVersion: string
+    previousVersion: string | null
+    forceMode: boolean
+    phaseSize: number
+    currentPhase: number
+    successThreshold: number
+    failureThreshold: number
+    status: $Enums.UpgradeCampaignStatus
+    createdAt: Date
+    updatedAt: Date
+    _count: UpgradeCampaignCountAggregateOutputType | null
+    _avg: UpgradeCampaignAvgAggregateOutputType | null
+    _sum: UpgradeCampaignSumAggregateOutputType | null
+    _min: UpgradeCampaignMinAggregateOutputType | null
+    _max: UpgradeCampaignMaxAggregateOutputType | null
+  }
+
+  type GetUpgradeCampaignGroupByPayload<T extends UpgradeCampaignGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UpgradeCampaignGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UpgradeCampaignGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UpgradeCampaignGroupByOutputType[P]>
+            : GetScalarType<T[P], UpgradeCampaignGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UpgradeCampaignSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    targetVersion?: boolean
+    previousVersion?: boolean
+    forceMode?: boolean
+    phaseSize?: boolean
+    currentPhase?: boolean
+    successThreshold?: boolean
+    failureThreshold?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    workers?: boolean | UpgradeCampaign$workersArgs<ExtArgs>
+    _count?: boolean | UpgradeCampaignCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["upgradeCampaign"]>
+
+  export type UpgradeCampaignSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    targetVersion?: boolean
+    previousVersion?: boolean
+    forceMode?: boolean
+    phaseSize?: boolean
+    currentPhase?: boolean
+    successThreshold?: boolean
+    failureThreshold?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["upgradeCampaign"]>
+
+  export type UpgradeCampaignSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    targetVersion?: boolean
+    previousVersion?: boolean
+    forceMode?: boolean
+    phaseSize?: boolean
+    currentPhase?: boolean
+    successThreshold?: boolean
+    failureThreshold?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["upgradeCampaign"]>
+
+  export type UpgradeCampaignSelectScalar = {
+    id?: boolean
+    targetVersion?: boolean
+    previousVersion?: boolean
+    forceMode?: boolean
+    phaseSize?: boolean
+    currentPhase?: boolean
+    successThreshold?: boolean
+    failureThreshold?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UpgradeCampaignOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "targetVersion" | "previousVersion" | "forceMode" | "phaseSize" | "currentPhase" | "successThreshold" | "failureThreshold" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["upgradeCampaign"]>
+  export type UpgradeCampaignInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    workers?: boolean | UpgradeCampaign$workersArgs<ExtArgs>
+    _count?: boolean | UpgradeCampaignCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UpgradeCampaignIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UpgradeCampaignIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $UpgradeCampaignPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UpgradeCampaign"
+    objects: {
+      workers: Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      targetVersion: string
+      previousVersion: string | null
+      forceMode: boolean
+      phaseSize: number
+      currentPhase: number
+      successThreshold: number
+      failureThreshold: number
+      status: $Enums.UpgradeCampaignStatus
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["upgradeCampaign"]>
+    composites: {}
+  }
+
+  type UpgradeCampaignGetPayload<S extends boolean | null | undefined | UpgradeCampaignDefaultArgs> = $Result.GetResult<Prisma.$UpgradeCampaignPayload, S>
+
+  type UpgradeCampaignCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UpgradeCampaignFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UpgradeCampaignCountAggregateInputType | true
+    }
+
+  export interface UpgradeCampaignDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UpgradeCampaign'], meta: { name: 'UpgradeCampaign' } }
+    /**
+     * Find zero or one UpgradeCampaign that matches the filter.
+     * @param {UpgradeCampaignFindUniqueArgs} args - Arguments to find a UpgradeCampaign
+     * @example
+     * // Get one UpgradeCampaign
+     * const upgradeCampaign = await prisma.upgradeCampaign.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UpgradeCampaignFindUniqueArgs>(args: SelectSubset<T, UpgradeCampaignFindUniqueArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UpgradeCampaign that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UpgradeCampaignFindUniqueOrThrowArgs} args - Arguments to find a UpgradeCampaign
+     * @example
+     * // Get one UpgradeCampaign
+     * const upgradeCampaign = await prisma.upgradeCampaign.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UpgradeCampaignFindUniqueOrThrowArgs>(args: SelectSubset<T, UpgradeCampaignFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UpgradeCampaign that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignFindFirstArgs} args - Arguments to find a UpgradeCampaign
+     * @example
+     * // Get one UpgradeCampaign
+     * const upgradeCampaign = await prisma.upgradeCampaign.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UpgradeCampaignFindFirstArgs>(args?: SelectSubset<T, UpgradeCampaignFindFirstArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UpgradeCampaign that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignFindFirstOrThrowArgs} args - Arguments to find a UpgradeCampaign
+     * @example
+     * // Get one UpgradeCampaign
+     * const upgradeCampaign = await prisma.upgradeCampaign.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UpgradeCampaignFindFirstOrThrowArgs>(args?: SelectSubset<T, UpgradeCampaignFindFirstOrThrowArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UpgradeCampaigns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UpgradeCampaigns
+     * const upgradeCampaigns = await prisma.upgradeCampaign.findMany()
+     * 
+     * // Get first 10 UpgradeCampaigns
+     * const upgradeCampaigns = await prisma.upgradeCampaign.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const upgradeCampaignWithIdOnly = await prisma.upgradeCampaign.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UpgradeCampaignFindManyArgs>(args?: SelectSubset<T, UpgradeCampaignFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UpgradeCampaign.
+     * @param {UpgradeCampaignCreateArgs} args - Arguments to create a UpgradeCampaign.
+     * @example
+     * // Create one UpgradeCampaign
+     * const UpgradeCampaign = await prisma.upgradeCampaign.create({
+     *   data: {
+     *     // ... data to create a UpgradeCampaign
+     *   }
+     * })
+     * 
+     */
+    create<T extends UpgradeCampaignCreateArgs>(args: SelectSubset<T, UpgradeCampaignCreateArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UpgradeCampaigns.
+     * @param {UpgradeCampaignCreateManyArgs} args - Arguments to create many UpgradeCampaigns.
+     * @example
+     * // Create many UpgradeCampaigns
+     * const upgradeCampaign = await prisma.upgradeCampaign.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UpgradeCampaignCreateManyArgs>(args?: SelectSubset<T, UpgradeCampaignCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UpgradeCampaigns and returns the data saved in the database.
+     * @param {UpgradeCampaignCreateManyAndReturnArgs} args - Arguments to create many UpgradeCampaigns.
+     * @example
+     * // Create many UpgradeCampaigns
+     * const upgradeCampaign = await prisma.upgradeCampaign.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UpgradeCampaigns and only return the `id`
+     * const upgradeCampaignWithIdOnly = await prisma.upgradeCampaign.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UpgradeCampaignCreateManyAndReturnArgs>(args?: SelectSubset<T, UpgradeCampaignCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UpgradeCampaign.
+     * @param {UpgradeCampaignDeleteArgs} args - Arguments to delete one UpgradeCampaign.
+     * @example
+     * // Delete one UpgradeCampaign
+     * const UpgradeCampaign = await prisma.upgradeCampaign.delete({
+     *   where: {
+     *     // ... filter to delete one UpgradeCampaign
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UpgradeCampaignDeleteArgs>(args: SelectSubset<T, UpgradeCampaignDeleteArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UpgradeCampaign.
+     * @param {UpgradeCampaignUpdateArgs} args - Arguments to update one UpgradeCampaign.
+     * @example
+     * // Update one UpgradeCampaign
+     * const upgradeCampaign = await prisma.upgradeCampaign.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UpgradeCampaignUpdateArgs>(args: SelectSubset<T, UpgradeCampaignUpdateArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UpgradeCampaigns.
+     * @param {UpgradeCampaignDeleteManyArgs} args - Arguments to filter UpgradeCampaigns to delete.
+     * @example
+     * // Delete a few UpgradeCampaigns
+     * const { count } = await prisma.upgradeCampaign.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UpgradeCampaignDeleteManyArgs>(args?: SelectSubset<T, UpgradeCampaignDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UpgradeCampaigns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UpgradeCampaigns
+     * const upgradeCampaign = await prisma.upgradeCampaign.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UpgradeCampaignUpdateManyArgs>(args: SelectSubset<T, UpgradeCampaignUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UpgradeCampaigns and returns the data updated in the database.
+     * @param {UpgradeCampaignUpdateManyAndReturnArgs} args - Arguments to update many UpgradeCampaigns.
+     * @example
+     * // Update many UpgradeCampaigns
+     * const upgradeCampaign = await prisma.upgradeCampaign.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UpgradeCampaigns and only return the `id`
+     * const upgradeCampaignWithIdOnly = await prisma.upgradeCampaign.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UpgradeCampaignUpdateManyAndReturnArgs>(args: SelectSubset<T, UpgradeCampaignUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UpgradeCampaign.
+     * @param {UpgradeCampaignUpsertArgs} args - Arguments to update or create a UpgradeCampaign.
+     * @example
+     * // Update or create a UpgradeCampaign
+     * const upgradeCampaign = await prisma.upgradeCampaign.upsert({
+     *   create: {
+     *     // ... data to create a UpgradeCampaign
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UpgradeCampaign we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UpgradeCampaignUpsertArgs>(args: SelectSubset<T, UpgradeCampaignUpsertArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UpgradeCampaigns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignCountArgs} args - Arguments to filter UpgradeCampaigns to count.
+     * @example
+     * // Count the number of UpgradeCampaigns
+     * const count = await prisma.upgradeCampaign.count({
+     *   where: {
+     *     // ... the filter for the UpgradeCampaigns we want to count
+     *   }
+     * })
+    **/
+    count<T extends UpgradeCampaignCountArgs>(
+      args?: Subset<T, UpgradeCampaignCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UpgradeCampaignCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UpgradeCampaign.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UpgradeCampaignAggregateArgs>(args: Subset<T, UpgradeCampaignAggregateArgs>): Prisma.PrismaPromise<GetUpgradeCampaignAggregateType<T>>
+
+    /**
+     * Group by UpgradeCampaign.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UpgradeCampaignGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UpgradeCampaignGroupByArgs['orderBy'] }
+        : { orderBy?: UpgradeCampaignGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UpgradeCampaignGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUpgradeCampaignGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UpgradeCampaign model
+   */
+  readonly fields: UpgradeCampaignFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UpgradeCampaign.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UpgradeCampaignClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    workers<T extends UpgradeCampaign$workersArgs<ExtArgs> = {}>(args?: Subset<T, UpgradeCampaign$workersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UpgradeCampaign model
+   */
+  interface UpgradeCampaignFieldRefs {
+    readonly id: FieldRef<"UpgradeCampaign", 'String'>
+    readonly targetVersion: FieldRef<"UpgradeCampaign", 'String'>
+    readonly previousVersion: FieldRef<"UpgradeCampaign", 'String'>
+    readonly forceMode: FieldRef<"UpgradeCampaign", 'Boolean'>
+    readonly phaseSize: FieldRef<"UpgradeCampaign", 'Int'>
+    readonly currentPhase: FieldRef<"UpgradeCampaign", 'Int'>
+    readonly successThreshold: FieldRef<"UpgradeCampaign", 'Float'>
+    readonly failureThreshold: FieldRef<"UpgradeCampaign", 'Float'>
+    readonly status: FieldRef<"UpgradeCampaign", 'UpgradeCampaignStatus'>
+    readonly createdAt: FieldRef<"UpgradeCampaign", 'DateTime'>
+    readonly updatedAt: FieldRef<"UpgradeCampaign", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UpgradeCampaign findUnique
+   */
+  export type UpgradeCampaignFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaign to fetch.
+     */
+    where: UpgradeCampaignWhereUniqueInput
+  }
+
+  /**
+   * UpgradeCampaign findUniqueOrThrow
+   */
+  export type UpgradeCampaignFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaign to fetch.
+     */
+    where: UpgradeCampaignWhereUniqueInput
+  }
+
+  /**
+   * UpgradeCampaign findFirst
+   */
+  export type UpgradeCampaignFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaign to fetch.
+     */
+    where?: UpgradeCampaignWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UpgradeCampaigns to fetch.
+     */
+    orderBy?: UpgradeCampaignOrderByWithRelationInput | UpgradeCampaignOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UpgradeCampaigns.
+     */
+    cursor?: UpgradeCampaignWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UpgradeCampaigns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UpgradeCampaigns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UpgradeCampaigns.
+     */
+    distinct?: UpgradeCampaignScalarFieldEnum | UpgradeCampaignScalarFieldEnum[]
+  }
+
+  /**
+   * UpgradeCampaign findFirstOrThrow
+   */
+  export type UpgradeCampaignFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaign to fetch.
+     */
+    where?: UpgradeCampaignWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UpgradeCampaigns to fetch.
+     */
+    orderBy?: UpgradeCampaignOrderByWithRelationInput | UpgradeCampaignOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UpgradeCampaigns.
+     */
+    cursor?: UpgradeCampaignWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UpgradeCampaigns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UpgradeCampaigns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UpgradeCampaigns.
+     */
+    distinct?: UpgradeCampaignScalarFieldEnum | UpgradeCampaignScalarFieldEnum[]
+  }
+
+  /**
+   * UpgradeCampaign findMany
+   */
+  export type UpgradeCampaignFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaigns to fetch.
+     */
+    where?: UpgradeCampaignWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UpgradeCampaigns to fetch.
+     */
+    orderBy?: UpgradeCampaignOrderByWithRelationInput | UpgradeCampaignOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UpgradeCampaigns.
+     */
+    cursor?: UpgradeCampaignWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UpgradeCampaigns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UpgradeCampaigns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UpgradeCampaigns.
+     */
+    distinct?: UpgradeCampaignScalarFieldEnum | UpgradeCampaignScalarFieldEnum[]
+  }
+
+  /**
+   * UpgradeCampaign create
+   */
+  export type UpgradeCampaignCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UpgradeCampaign.
+     */
+    data: XOR<UpgradeCampaignCreateInput, UpgradeCampaignUncheckedCreateInput>
+  }
+
+  /**
+   * UpgradeCampaign createMany
+   */
+  export type UpgradeCampaignCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UpgradeCampaigns.
+     */
+    data: UpgradeCampaignCreateManyInput | UpgradeCampaignCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UpgradeCampaign createManyAndReturn
+   */
+  export type UpgradeCampaignCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * The data used to create many UpgradeCampaigns.
+     */
+    data: UpgradeCampaignCreateManyInput | UpgradeCampaignCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UpgradeCampaign update
+   */
+  export type UpgradeCampaignUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UpgradeCampaign.
+     */
+    data: XOR<UpgradeCampaignUpdateInput, UpgradeCampaignUncheckedUpdateInput>
+    /**
+     * Choose, which UpgradeCampaign to update.
+     */
+    where: UpgradeCampaignWhereUniqueInput
+  }
+
+  /**
+   * UpgradeCampaign updateMany
+   */
+  export type UpgradeCampaignUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UpgradeCampaigns.
+     */
+    data: XOR<UpgradeCampaignUpdateManyMutationInput, UpgradeCampaignUncheckedUpdateManyInput>
+    /**
+     * Filter which UpgradeCampaigns to update
+     */
+    where?: UpgradeCampaignWhereInput
+    /**
+     * Limit how many UpgradeCampaigns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UpgradeCampaign updateManyAndReturn
+   */
+  export type UpgradeCampaignUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * The data used to update UpgradeCampaigns.
+     */
+    data: XOR<UpgradeCampaignUpdateManyMutationInput, UpgradeCampaignUncheckedUpdateManyInput>
+    /**
+     * Filter which UpgradeCampaigns to update
+     */
+    where?: UpgradeCampaignWhereInput
+    /**
+     * Limit how many UpgradeCampaigns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UpgradeCampaign upsert
+   */
+  export type UpgradeCampaignUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UpgradeCampaign to update in case it exists.
+     */
+    where: UpgradeCampaignWhereUniqueInput
+    /**
+     * In case the UpgradeCampaign found by the `where` argument doesn't exist, create a new UpgradeCampaign with this data.
+     */
+    create: XOR<UpgradeCampaignCreateInput, UpgradeCampaignUncheckedCreateInput>
+    /**
+     * In case the UpgradeCampaign was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UpgradeCampaignUpdateInput, UpgradeCampaignUncheckedUpdateInput>
+  }
+
+  /**
+   * UpgradeCampaign delete
+   */
+  export type UpgradeCampaignDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+    /**
+     * Filter which UpgradeCampaign to delete.
+     */
+    where: UpgradeCampaignWhereUniqueInput
+  }
+
+  /**
+   * UpgradeCampaign deleteMany
+   */
+  export type UpgradeCampaignDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UpgradeCampaigns to delete
+     */
+    where?: UpgradeCampaignWhereInput
+    /**
+     * Limit how many UpgradeCampaigns to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UpgradeCampaign.workers
+   */
+  export type UpgradeCampaign$workersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    where?: UpgradeCampaignWorkerWhereInput
+    orderBy?: UpgradeCampaignWorkerOrderByWithRelationInput | UpgradeCampaignWorkerOrderByWithRelationInput[]
+    cursor?: UpgradeCampaignWorkerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UpgradeCampaignWorkerScalarFieldEnum | UpgradeCampaignWorkerScalarFieldEnum[]
+  }
+
+  /**
+   * UpgradeCampaign without action
+   */
+  export type UpgradeCampaignDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaign
+     */
+    select?: UpgradeCampaignSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaign
+     */
+    omit?: UpgradeCampaignOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UpgradeCampaignWorker
+   */
+
+  export type AggregateUpgradeCampaignWorker = {
+    _count: UpgradeCampaignWorkerCountAggregateOutputType | null
+    _avg: UpgradeCampaignWorkerAvgAggregateOutputType | null
+    _sum: UpgradeCampaignWorkerSumAggregateOutputType | null
+    _min: UpgradeCampaignWorkerMinAggregateOutputType | null
+    _max: UpgradeCampaignWorkerMaxAggregateOutputType | null
+  }
+
+  export type UpgradeCampaignWorkerAvgAggregateOutputType = {
+    phase: number | null
+  }
+
+  export type UpgradeCampaignWorkerSumAggregateOutputType = {
+    phase: number | null
+  }
+
+  export type UpgradeCampaignWorkerMinAggregateOutputType = {
+    id: string | null
+    campaignId: string | null
+    workerId: string | null
+    phase: number | null
+    status: $Enums.UpgradeCampaignWorkerStatus | null
+    message: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UpgradeCampaignWorkerMaxAggregateOutputType = {
+    id: string | null
+    campaignId: string | null
+    workerId: string | null
+    phase: number | null
+    status: $Enums.UpgradeCampaignWorkerStatus | null
+    message: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UpgradeCampaignWorkerCountAggregateOutputType = {
+    id: number
+    campaignId: number
+    workerId: number
+    phase: number
+    status: number
+    message: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UpgradeCampaignWorkerAvgAggregateInputType = {
+    phase?: true
+  }
+
+  export type UpgradeCampaignWorkerSumAggregateInputType = {
+    phase?: true
+  }
+
+  export type UpgradeCampaignWorkerMinAggregateInputType = {
+    id?: true
+    campaignId?: true
+    workerId?: true
+    phase?: true
+    status?: true
+    message?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UpgradeCampaignWorkerMaxAggregateInputType = {
+    id?: true
+    campaignId?: true
+    workerId?: true
+    phase?: true
+    status?: true
+    message?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UpgradeCampaignWorkerCountAggregateInputType = {
+    id?: true
+    campaignId?: true
+    workerId?: true
+    phase?: true
+    status?: true
+    message?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UpgradeCampaignWorkerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UpgradeCampaignWorker to aggregate.
+     */
+    where?: UpgradeCampaignWorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UpgradeCampaignWorkers to fetch.
+     */
+    orderBy?: UpgradeCampaignWorkerOrderByWithRelationInput | UpgradeCampaignWorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UpgradeCampaignWorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UpgradeCampaignWorkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UpgradeCampaignWorkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UpgradeCampaignWorkers
+    **/
+    _count?: true | UpgradeCampaignWorkerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UpgradeCampaignWorkerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UpgradeCampaignWorkerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UpgradeCampaignWorkerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UpgradeCampaignWorkerMaxAggregateInputType
+  }
+
+  export type GetUpgradeCampaignWorkerAggregateType<T extends UpgradeCampaignWorkerAggregateArgs> = {
+        [P in keyof T & keyof AggregateUpgradeCampaignWorker]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUpgradeCampaignWorker[P]>
+      : GetScalarType<T[P], AggregateUpgradeCampaignWorker[P]>
+  }
+
+
+
+
+  export type UpgradeCampaignWorkerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UpgradeCampaignWorkerWhereInput
+    orderBy?: UpgradeCampaignWorkerOrderByWithAggregationInput | UpgradeCampaignWorkerOrderByWithAggregationInput[]
+    by: UpgradeCampaignWorkerScalarFieldEnum[] | UpgradeCampaignWorkerScalarFieldEnum
+    having?: UpgradeCampaignWorkerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UpgradeCampaignWorkerCountAggregateInputType | true
+    _avg?: UpgradeCampaignWorkerAvgAggregateInputType
+    _sum?: UpgradeCampaignWorkerSumAggregateInputType
+    _min?: UpgradeCampaignWorkerMinAggregateInputType
+    _max?: UpgradeCampaignWorkerMaxAggregateInputType
+  }
+
+  export type UpgradeCampaignWorkerGroupByOutputType = {
+    id: string
+    campaignId: string
+    workerId: string
+    phase: number
+    status: $Enums.UpgradeCampaignWorkerStatus
+    message: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: UpgradeCampaignWorkerCountAggregateOutputType | null
+    _avg: UpgradeCampaignWorkerAvgAggregateOutputType | null
+    _sum: UpgradeCampaignWorkerSumAggregateOutputType | null
+    _min: UpgradeCampaignWorkerMinAggregateOutputType | null
+    _max: UpgradeCampaignWorkerMaxAggregateOutputType | null
+  }
+
+  type GetUpgradeCampaignWorkerGroupByPayload<T extends UpgradeCampaignWorkerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UpgradeCampaignWorkerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UpgradeCampaignWorkerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UpgradeCampaignWorkerGroupByOutputType[P]>
+            : GetScalarType<T[P], UpgradeCampaignWorkerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UpgradeCampaignWorkerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    campaignId?: boolean
+    workerId?: boolean
+    phase?: boolean
+    status?: boolean
+    message?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    campaign?: boolean | UpgradeCampaignDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["upgradeCampaignWorker"]>
+
+  export type UpgradeCampaignWorkerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    campaignId?: boolean
+    workerId?: boolean
+    phase?: boolean
+    status?: boolean
+    message?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    campaign?: boolean | UpgradeCampaignDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["upgradeCampaignWorker"]>
+
+  export type UpgradeCampaignWorkerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    campaignId?: boolean
+    workerId?: boolean
+    phase?: boolean
+    status?: boolean
+    message?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    campaign?: boolean | UpgradeCampaignDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["upgradeCampaignWorker"]>
+
+  export type UpgradeCampaignWorkerSelectScalar = {
+    id?: boolean
+    campaignId?: boolean
+    workerId?: boolean
+    phase?: boolean
+    status?: boolean
+    message?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UpgradeCampaignWorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "campaignId" | "workerId" | "phase" | "status" | "message" | "createdAt" | "updatedAt", ExtArgs["result"]["upgradeCampaignWorker"]>
+  export type UpgradeCampaignWorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    campaign?: boolean | UpgradeCampaignDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+  export type UpgradeCampaignWorkerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    campaign?: boolean | UpgradeCampaignDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+  export type UpgradeCampaignWorkerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    campaign?: boolean | UpgradeCampaignDefaultArgs<ExtArgs>
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+
+  export type $UpgradeCampaignWorkerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UpgradeCampaignWorker"
+    objects: {
+      campaign: Prisma.$UpgradeCampaignPayload<ExtArgs>
+      worker: Prisma.$WorkerPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      campaignId: string
+      workerId: string
+      phase: number
+      status: $Enums.UpgradeCampaignWorkerStatus
+      message: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["upgradeCampaignWorker"]>
+    composites: {}
+  }
+
+  type UpgradeCampaignWorkerGetPayload<S extends boolean | null | undefined | UpgradeCampaignWorkerDefaultArgs> = $Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload, S>
+
+  type UpgradeCampaignWorkerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UpgradeCampaignWorkerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UpgradeCampaignWorkerCountAggregateInputType | true
+    }
+
+  export interface UpgradeCampaignWorkerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UpgradeCampaignWorker'], meta: { name: 'UpgradeCampaignWorker' } }
+    /**
+     * Find zero or one UpgradeCampaignWorker that matches the filter.
+     * @param {UpgradeCampaignWorkerFindUniqueArgs} args - Arguments to find a UpgradeCampaignWorker
+     * @example
+     * // Get one UpgradeCampaignWorker
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UpgradeCampaignWorkerFindUniqueArgs>(args: SelectSubset<T, UpgradeCampaignWorkerFindUniqueArgs<ExtArgs>>): Prisma__UpgradeCampaignWorkerClient<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UpgradeCampaignWorker that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UpgradeCampaignWorkerFindUniqueOrThrowArgs} args - Arguments to find a UpgradeCampaignWorker
+     * @example
+     * // Get one UpgradeCampaignWorker
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UpgradeCampaignWorkerFindUniqueOrThrowArgs>(args: SelectSubset<T, UpgradeCampaignWorkerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UpgradeCampaignWorkerClient<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UpgradeCampaignWorker that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignWorkerFindFirstArgs} args - Arguments to find a UpgradeCampaignWorker
+     * @example
+     * // Get one UpgradeCampaignWorker
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UpgradeCampaignWorkerFindFirstArgs>(args?: SelectSubset<T, UpgradeCampaignWorkerFindFirstArgs<ExtArgs>>): Prisma__UpgradeCampaignWorkerClient<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UpgradeCampaignWorker that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignWorkerFindFirstOrThrowArgs} args - Arguments to find a UpgradeCampaignWorker
+     * @example
+     * // Get one UpgradeCampaignWorker
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UpgradeCampaignWorkerFindFirstOrThrowArgs>(args?: SelectSubset<T, UpgradeCampaignWorkerFindFirstOrThrowArgs<ExtArgs>>): Prisma__UpgradeCampaignWorkerClient<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UpgradeCampaignWorkers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignWorkerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UpgradeCampaignWorkers
+     * const upgradeCampaignWorkers = await prisma.upgradeCampaignWorker.findMany()
+     * 
+     * // Get first 10 UpgradeCampaignWorkers
+     * const upgradeCampaignWorkers = await prisma.upgradeCampaignWorker.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const upgradeCampaignWorkerWithIdOnly = await prisma.upgradeCampaignWorker.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UpgradeCampaignWorkerFindManyArgs>(args?: SelectSubset<T, UpgradeCampaignWorkerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UpgradeCampaignWorker.
+     * @param {UpgradeCampaignWorkerCreateArgs} args - Arguments to create a UpgradeCampaignWorker.
+     * @example
+     * // Create one UpgradeCampaignWorker
+     * const UpgradeCampaignWorker = await prisma.upgradeCampaignWorker.create({
+     *   data: {
+     *     // ... data to create a UpgradeCampaignWorker
+     *   }
+     * })
+     * 
+     */
+    create<T extends UpgradeCampaignWorkerCreateArgs>(args: SelectSubset<T, UpgradeCampaignWorkerCreateArgs<ExtArgs>>): Prisma__UpgradeCampaignWorkerClient<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UpgradeCampaignWorkers.
+     * @param {UpgradeCampaignWorkerCreateManyArgs} args - Arguments to create many UpgradeCampaignWorkers.
+     * @example
+     * // Create many UpgradeCampaignWorkers
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UpgradeCampaignWorkerCreateManyArgs>(args?: SelectSubset<T, UpgradeCampaignWorkerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UpgradeCampaignWorkers and returns the data saved in the database.
+     * @param {UpgradeCampaignWorkerCreateManyAndReturnArgs} args - Arguments to create many UpgradeCampaignWorkers.
+     * @example
+     * // Create many UpgradeCampaignWorkers
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UpgradeCampaignWorkers and only return the `id`
+     * const upgradeCampaignWorkerWithIdOnly = await prisma.upgradeCampaignWorker.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UpgradeCampaignWorkerCreateManyAndReturnArgs>(args?: SelectSubset<T, UpgradeCampaignWorkerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UpgradeCampaignWorker.
+     * @param {UpgradeCampaignWorkerDeleteArgs} args - Arguments to delete one UpgradeCampaignWorker.
+     * @example
+     * // Delete one UpgradeCampaignWorker
+     * const UpgradeCampaignWorker = await prisma.upgradeCampaignWorker.delete({
+     *   where: {
+     *     // ... filter to delete one UpgradeCampaignWorker
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UpgradeCampaignWorkerDeleteArgs>(args: SelectSubset<T, UpgradeCampaignWorkerDeleteArgs<ExtArgs>>): Prisma__UpgradeCampaignWorkerClient<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UpgradeCampaignWorker.
+     * @param {UpgradeCampaignWorkerUpdateArgs} args - Arguments to update one UpgradeCampaignWorker.
+     * @example
+     * // Update one UpgradeCampaignWorker
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UpgradeCampaignWorkerUpdateArgs>(args: SelectSubset<T, UpgradeCampaignWorkerUpdateArgs<ExtArgs>>): Prisma__UpgradeCampaignWorkerClient<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UpgradeCampaignWorkers.
+     * @param {UpgradeCampaignWorkerDeleteManyArgs} args - Arguments to filter UpgradeCampaignWorkers to delete.
+     * @example
+     * // Delete a few UpgradeCampaignWorkers
+     * const { count } = await prisma.upgradeCampaignWorker.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UpgradeCampaignWorkerDeleteManyArgs>(args?: SelectSubset<T, UpgradeCampaignWorkerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UpgradeCampaignWorkers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignWorkerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UpgradeCampaignWorkers
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UpgradeCampaignWorkerUpdateManyArgs>(args: SelectSubset<T, UpgradeCampaignWorkerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UpgradeCampaignWorkers and returns the data updated in the database.
+     * @param {UpgradeCampaignWorkerUpdateManyAndReturnArgs} args - Arguments to update many UpgradeCampaignWorkers.
+     * @example
+     * // Update many UpgradeCampaignWorkers
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UpgradeCampaignWorkers and only return the `id`
+     * const upgradeCampaignWorkerWithIdOnly = await prisma.upgradeCampaignWorker.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UpgradeCampaignWorkerUpdateManyAndReturnArgs>(args: SelectSubset<T, UpgradeCampaignWorkerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UpgradeCampaignWorker.
+     * @param {UpgradeCampaignWorkerUpsertArgs} args - Arguments to update or create a UpgradeCampaignWorker.
+     * @example
+     * // Update or create a UpgradeCampaignWorker
+     * const upgradeCampaignWorker = await prisma.upgradeCampaignWorker.upsert({
+     *   create: {
+     *     // ... data to create a UpgradeCampaignWorker
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UpgradeCampaignWorker we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UpgradeCampaignWorkerUpsertArgs>(args: SelectSubset<T, UpgradeCampaignWorkerUpsertArgs<ExtArgs>>): Prisma__UpgradeCampaignWorkerClient<$Result.GetResult<Prisma.$UpgradeCampaignWorkerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UpgradeCampaignWorkers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignWorkerCountArgs} args - Arguments to filter UpgradeCampaignWorkers to count.
+     * @example
+     * // Count the number of UpgradeCampaignWorkers
+     * const count = await prisma.upgradeCampaignWorker.count({
+     *   where: {
+     *     // ... the filter for the UpgradeCampaignWorkers we want to count
+     *   }
+     * })
+    **/
+    count<T extends UpgradeCampaignWorkerCountArgs>(
+      args?: Subset<T, UpgradeCampaignWorkerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UpgradeCampaignWorkerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UpgradeCampaignWorker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignWorkerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UpgradeCampaignWorkerAggregateArgs>(args: Subset<T, UpgradeCampaignWorkerAggregateArgs>): Prisma.PrismaPromise<GetUpgradeCampaignWorkerAggregateType<T>>
+
+    /**
+     * Group by UpgradeCampaignWorker.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UpgradeCampaignWorkerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UpgradeCampaignWorkerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UpgradeCampaignWorkerGroupByArgs['orderBy'] }
+        : { orderBy?: UpgradeCampaignWorkerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UpgradeCampaignWorkerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUpgradeCampaignWorkerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UpgradeCampaignWorker model
+   */
+  readonly fields: UpgradeCampaignWorkerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UpgradeCampaignWorker.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UpgradeCampaignWorkerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    campaign<T extends UpgradeCampaignDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UpgradeCampaignDefaultArgs<ExtArgs>>): Prisma__UpgradeCampaignClient<$Result.GetResult<Prisma.$UpgradeCampaignPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    worker<T extends WorkerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkerDefaultArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UpgradeCampaignWorker model
+   */
+  interface UpgradeCampaignWorkerFieldRefs {
+    readonly id: FieldRef<"UpgradeCampaignWorker", 'String'>
+    readonly campaignId: FieldRef<"UpgradeCampaignWorker", 'String'>
+    readonly workerId: FieldRef<"UpgradeCampaignWorker", 'String'>
+    readonly phase: FieldRef<"UpgradeCampaignWorker", 'Int'>
+    readonly status: FieldRef<"UpgradeCampaignWorker", 'UpgradeCampaignWorkerStatus'>
+    readonly message: FieldRef<"UpgradeCampaignWorker", 'String'>
+    readonly createdAt: FieldRef<"UpgradeCampaignWorker", 'DateTime'>
+    readonly updatedAt: FieldRef<"UpgradeCampaignWorker", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UpgradeCampaignWorker findUnique
+   */
+  export type UpgradeCampaignWorkerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaignWorker to fetch.
+     */
+    where: UpgradeCampaignWorkerWhereUniqueInput
+  }
+
+  /**
+   * UpgradeCampaignWorker findUniqueOrThrow
+   */
+  export type UpgradeCampaignWorkerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaignWorker to fetch.
+     */
+    where: UpgradeCampaignWorkerWhereUniqueInput
+  }
+
+  /**
+   * UpgradeCampaignWorker findFirst
+   */
+  export type UpgradeCampaignWorkerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaignWorker to fetch.
+     */
+    where?: UpgradeCampaignWorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UpgradeCampaignWorkers to fetch.
+     */
+    orderBy?: UpgradeCampaignWorkerOrderByWithRelationInput | UpgradeCampaignWorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UpgradeCampaignWorkers.
+     */
+    cursor?: UpgradeCampaignWorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UpgradeCampaignWorkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UpgradeCampaignWorkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UpgradeCampaignWorkers.
+     */
+    distinct?: UpgradeCampaignWorkerScalarFieldEnum | UpgradeCampaignWorkerScalarFieldEnum[]
+  }
+
+  /**
+   * UpgradeCampaignWorker findFirstOrThrow
+   */
+  export type UpgradeCampaignWorkerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaignWorker to fetch.
+     */
+    where?: UpgradeCampaignWorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UpgradeCampaignWorkers to fetch.
+     */
+    orderBy?: UpgradeCampaignWorkerOrderByWithRelationInput | UpgradeCampaignWorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UpgradeCampaignWorkers.
+     */
+    cursor?: UpgradeCampaignWorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UpgradeCampaignWorkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UpgradeCampaignWorkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UpgradeCampaignWorkers.
+     */
+    distinct?: UpgradeCampaignWorkerScalarFieldEnum | UpgradeCampaignWorkerScalarFieldEnum[]
+  }
+
+  /**
+   * UpgradeCampaignWorker findMany
+   */
+  export type UpgradeCampaignWorkerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * Filter, which UpgradeCampaignWorkers to fetch.
+     */
+    where?: UpgradeCampaignWorkerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UpgradeCampaignWorkers to fetch.
+     */
+    orderBy?: UpgradeCampaignWorkerOrderByWithRelationInput | UpgradeCampaignWorkerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UpgradeCampaignWorkers.
+     */
+    cursor?: UpgradeCampaignWorkerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UpgradeCampaignWorkers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UpgradeCampaignWorkers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UpgradeCampaignWorkers.
+     */
+    distinct?: UpgradeCampaignWorkerScalarFieldEnum | UpgradeCampaignWorkerScalarFieldEnum[]
+  }
+
+  /**
+   * UpgradeCampaignWorker create
+   */
+  export type UpgradeCampaignWorkerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UpgradeCampaignWorker.
+     */
+    data: XOR<UpgradeCampaignWorkerCreateInput, UpgradeCampaignWorkerUncheckedCreateInput>
+  }
+
+  /**
+   * UpgradeCampaignWorker createMany
+   */
+  export type UpgradeCampaignWorkerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UpgradeCampaignWorkers.
+     */
+    data: UpgradeCampaignWorkerCreateManyInput | UpgradeCampaignWorkerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UpgradeCampaignWorker createManyAndReturn
+   */
+  export type UpgradeCampaignWorkerCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * The data used to create many UpgradeCampaignWorkers.
+     */
+    data: UpgradeCampaignWorkerCreateManyInput | UpgradeCampaignWorkerCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UpgradeCampaignWorker update
+   */
+  export type UpgradeCampaignWorkerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UpgradeCampaignWorker.
+     */
+    data: XOR<UpgradeCampaignWorkerUpdateInput, UpgradeCampaignWorkerUncheckedUpdateInput>
+    /**
+     * Choose, which UpgradeCampaignWorker to update.
+     */
+    where: UpgradeCampaignWorkerWhereUniqueInput
+  }
+
+  /**
+   * UpgradeCampaignWorker updateMany
+   */
+  export type UpgradeCampaignWorkerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UpgradeCampaignWorkers.
+     */
+    data: XOR<UpgradeCampaignWorkerUpdateManyMutationInput, UpgradeCampaignWorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which UpgradeCampaignWorkers to update
+     */
+    where?: UpgradeCampaignWorkerWhereInput
+    /**
+     * Limit how many UpgradeCampaignWorkers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UpgradeCampaignWorker updateManyAndReturn
+   */
+  export type UpgradeCampaignWorkerUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * The data used to update UpgradeCampaignWorkers.
+     */
+    data: XOR<UpgradeCampaignWorkerUpdateManyMutationInput, UpgradeCampaignWorkerUncheckedUpdateManyInput>
+    /**
+     * Filter which UpgradeCampaignWorkers to update
+     */
+    where?: UpgradeCampaignWorkerWhereInput
+    /**
+     * Limit how many UpgradeCampaignWorkers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UpgradeCampaignWorker upsert
+   */
+  export type UpgradeCampaignWorkerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UpgradeCampaignWorker to update in case it exists.
+     */
+    where: UpgradeCampaignWorkerWhereUniqueInput
+    /**
+     * In case the UpgradeCampaignWorker found by the `where` argument doesn't exist, create a new UpgradeCampaignWorker with this data.
+     */
+    create: XOR<UpgradeCampaignWorkerCreateInput, UpgradeCampaignWorkerUncheckedCreateInput>
+    /**
+     * In case the UpgradeCampaignWorker was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UpgradeCampaignWorkerUpdateInput, UpgradeCampaignWorkerUncheckedUpdateInput>
+  }
+
+  /**
+   * UpgradeCampaignWorker delete
+   */
+  export type UpgradeCampaignWorkerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+    /**
+     * Filter which UpgradeCampaignWorker to delete.
+     */
+    where: UpgradeCampaignWorkerWhereUniqueInput
+  }
+
+  /**
+   * UpgradeCampaignWorker deleteMany
+   */
+  export type UpgradeCampaignWorkerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UpgradeCampaignWorkers to delete
+     */
+    where?: UpgradeCampaignWorkerWhereInput
+    /**
+     * Limit how many UpgradeCampaignWorkers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UpgradeCampaignWorker without action
+   */
+  export type UpgradeCampaignWorkerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UpgradeCampaignWorker
+     */
+    select?: UpgradeCampaignWorkerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UpgradeCampaignWorker
+     */
+    omit?: UpgradeCampaignWorkerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UpgradeCampaignWorkerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkerCredential
+   */
+
+  export type AggregateWorkerCredential = {
+    _count: WorkerCredentialCountAggregateOutputType | null
+    _min: WorkerCredentialMinAggregateOutputType | null
+    _max: WorkerCredentialMaxAggregateOutputType | null
+  }
+
+  export type WorkerCredentialMinAggregateOutputType = {
+    id: string | null
+    workerId: string | null
+    keyPrefix: string | null
+    keyHash: string | null
+    status: $Enums.WorkerCredentialStatus | null
+    expiresAt: Date | null
+    rotatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkerCredentialMaxAggregateOutputType = {
+    id: string | null
+    workerId: string | null
+    keyPrefix: string | null
+    keyHash: string | null
+    status: $Enums.WorkerCredentialStatus | null
+    expiresAt: Date | null
+    rotatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkerCredentialCountAggregateOutputType = {
+    id: number
+    workerId: number
+    keyPrefix: number
+    keyHash: number
+    status: number
+    expiresAt: number
+    rotatedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkerCredentialMinAggregateInputType = {
+    id?: true
+    workerId?: true
+    keyPrefix?: true
+    keyHash?: true
+    status?: true
+    expiresAt?: true
+    rotatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkerCredentialMaxAggregateInputType = {
+    id?: true
+    workerId?: true
+    keyPrefix?: true
+    keyHash?: true
+    status?: true
+    expiresAt?: true
+    rotatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkerCredentialCountAggregateInputType = {
+    id?: true
+    workerId?: true
+    keyPrefix?: true
+    keyHash?: true
+    status?: true
+    expiresAt?: true
+    rotatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkerCredentialAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkerCredential to aggregate.
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkerCredentials to fetch.
+     */
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkerCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkerCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkerCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkerCredentials
+    **/
+    _count?: true | WorkerCredentialCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkerCredentialMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkerCredentialMaxAggregateInputType
+  }
+
+  export type GetWorkerCredentialAggregateType<T extends WorkerCredentialAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkerCredential]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkerCredential[P]>
+      : GetScalarType<T[P], AggregateWorkerCredential[P]>
+  }
+
+
+
+
+  export type WorkerCredentialGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkerCredentialWhereInput
+    orderBy?: WorkerCredentialOrderByWithAggregationInput | WorkerCredentialOrderByWithAggregationInput[]
+    by: WorkerCredentialScalarFieldEnum[] | WorkerCredentialScalarFieldEnum
+    having?: WorkerCredentialScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkerCredentialCountAggregateInputType | true
+    _min?: WorkerCredentialMinAggregateInputType
+    _max?: WorkerCredentialMaxAggregateInputType
+  }
+
+  export type WorkerCredentialGroupByOutputType = {
+    id: string
+    workerId: string
+    keyPrefix: string
+    keyHash: string
+    status: $Enums.WorkerCredentialStatus
+    expiresAt: Date | null
+    rotatedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkerCredentialCountAggregateOutputType | null
+    _min: WorkerCredentialMinAggregateOutputType | null
+    _max: WorkerCredentialMaxAggregateOutputType | null
+  }
+
+  type GetWorkerCredentialGroupByPayload<T extends WorkerCredentialGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkerCredentialGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkerCredentialGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkerCredentialGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkerCredentialGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkerCredentialSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workerId?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    rotatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workerCredential"]>
+
+  export type WorkerCredentialSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workerId?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    rotatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workerCredential"]>
+
+  export type WorkerCredentialSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    workerId?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    rotatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["workerCredential"]>
+
+  export type WorkerCredentialSelectScalar = {
+    id?: boolean
+    workerId?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    rotatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkerCredentialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workerId" | "keyPrefix" | "keyHash" | "status" | "expiresAt" | "rotatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["workerCredential"]>
+  export type WorkerCredentialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+  export type WorkerCredentialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+  export type WorkerCredentialIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    worker?: boolean | WorkerDefaultArgs<ExtArgs>
+  }
+
+  export type $WorkerCredentialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkerCredential"
+    objects: {
+      worker: Prisma.$WorkerPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      workerId: string
+      keyPrefix: string
+      keyHash: string
+      status: $Enums.WorkerCredentialStatus
+      expiresAt: Date | null
+      rotatedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workerCredential"]>
+    composites: {}
+  }
+
+  type WorkerCredentialGetPayload<S extends boolean | null | undefined | WorkerCredentialDefaultArgs> = $Result.GetResult<Prisma.$WorkerCredentialPayload, S>
+
+  type WorkerCredentialCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkerCredentialFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkerCredentialCountAggregateInputType | true
+    }
+
+  export interface WorkerCredentialDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkerCredential'], meta: { name: 'WorkerCredential' } }
+    /**
+     * Find zero or one WorkerCredential that matches the filter.
+     * @param {WorkerCredentialFindUniqueArgs} args - Arguments to find a WorkerCredential
+     * @example
+     * // Get one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkerCredentialFindUniqueArgs>(args: SelectSubset<T, WorkerCredentialFindUniqueArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkerCredential that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkerCredentialFindUniqueOrThrowArgs} args - Arguments to find a WorkerCredential
+     * @example
+     * // Get one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkerCredentialFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkerCredentialFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkerCredential that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialFindFirstArgs} args - Arguments to find a WorkerCredential
+     * @example
+     * // Get one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkerCredentialFindFirstArgs>(args?: SelectSubset<T, WorkerCredentialFindFirstArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkerCredential that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialFindFirstOrThrowArgs} args - Arguments to find a WorkerCredential
+     * @example
+     * // Get one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkerCredentialFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkerCredentialFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkerCredentials that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkerCredentials
+     * const workerCredentials = await prisma.workerCredential.findMany()
+     * 
+     * // Get first 10 WorkerCredentials
+     * const workerCredentials = await prisma.workerCredential.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workerCredentialWithIdOnly = await prisma.workerCredential.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkerCredentialFindManyArgs>(args?: SelectSubset<T, WorkerCredentialFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkerCredential.
+     * @param {WorkerCredentialCreateArgs} args - Arguments to create a WorkerCredential.
+     * @example
+     * // Create one WorkerCredential
+     * const WorkerCredential = await prisma.workerCredential.create({
+     *   data: {
+     *     // ... data to create a WorkerCredential
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkerCredentialCreateArgs>(args: SelectSubset<T, WorkerCredentialCreateArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkerCredentials.
+     * @param {WorkerCredentialCreateManyArgs} args - Arguments to create many WorkerCredentials.
+     * @example
+     * // Create many WorkerCredentials
+     * const workerCredential = await prisma.workerCredential.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkerCredentialCreateManyArgs>(args?: SelectSubset<T, WorkerCredentialCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkerCredentials and returns the data saved in the database.
+     * @param {WorkerCredentialCreateManyAndReturnArgs} args - Arguments to create many WorkerCredentials.
+     * @example
+     * // Create many WorkerCredentials
+     * const workerCredential = await prisma.workerCredential.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkerCredentials and only return the `id`
+     * const workerCredentialWithIdOnly = await prisma.workerCredential.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkerCredentialCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkerCredentialCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkerCredential.
+     * @param {WorkerCredentialDeleteArgs} args - Arguments to delete one WorkerCredential.
+     * @example
+     * // Delete one WorkerCredential
+     * const WorkerCredential = await prisma.workerCredential.delete({
+     *   where: {
+     *     // ... filter to delete one WorkerCredential
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkerCredentialDeleteArgs>(args: SelectSubset<T, WorkerCredentialDeleteArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkerCredential.
+     * @param {WorkerCredentialUpdateArgs} args - Arguments to update one WorkerCredential.
+     * @example
+     * // Update one WorkerCredential
+     * const workerCredential = await prisma.workerCredential.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkerCredentialUpdateArgs>(args: SelectSubset<T, WorkerCredentialUpdateArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkerCredentials.
+     * @param {WorkerCredentialDeleteManyArgs} args - Arguments to filter WorkerCredentials to delete.
+     * @example
+     * // Delete a few WorkerCredentials
+     * const { count } = await prisma.workerCredential.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkerCredentialDeleteManyArgs>(args?: SelectSubset<T, WorkerCredentialDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkerCredentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkerCredentials
+     * const workerCredential = await prisma.workerCredential.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkerCredentialUpdateManyArgs>(args: SelectSubset<T, WorkerCredentialUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkerCredentials and returns the data updated in the database.
+     * @param {WorkerCredentialUpdateManyAndReturnArgs} args - Arguments to update many WorkerCredentials.
+     * @example
+     * // Update many WorkerCredentials
+     * const workerCredential = await prisma.workerCredential.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkerCredentials and only return the `id`
+     * const workerCredentialWithIdOnly = await prisma.workerCredential.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkerCredentialUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkerCredentialUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkerCredential.
+     * @param {WorkerCredentialUpsertArgs} args - Arguments to update or create a WorkerCredential.
+     * @example
+     * // Update or create a WorkerCredential
+     * const workerCredential = await prisma.workerCredential.upsert({
+     *   create: {
+     *     // ... data to create a WorkerCredential
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkerCredential we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkerCredentialUpsertArgs>(args: SelectSubset<T, WorkerCredentialUpsertArgs<ExtArgs>>): Prisma__WorkerCredentialClient<$Result.GetResult<Prisma.$WorkerCredentialPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkerCredentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialCountArgs} args - Arguments to filter WorkerCredentials to count.
+     * @example
+     * // Count the number of WorkerCredentials
+     * const count = await prisma.workerCredential.count({
+     *   where: {
+     *     // ... the filter for the WorkerCredentials we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkerCredentialCountArgs>(
+      args?: Subset<T, WorkerCredentialCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkerCredentialCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkerCredential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkerCredentialAggregateArgs>(args: Subset<T, WorkerCredentialAggregateArgs>): Prisma.PrismaPromise<GetWorkerCredentialAggregateType<T>>
+
+    /**
+     * Group by WorkerCredential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkerCredentialGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkerCredentialGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkerCredentialGroupByArgs['orderBy'] }
+        : { orderBy?: WorkerCredentialGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkerCredentialGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkerCredentialGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkerCredential model
+   */
+  readonly fields: WorkerCredentialFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkerCredential.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkerCredentialClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    worker<T extends WorkerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkerDefaultArgs<ExtArgs>>): Prisma__WorkerClient<$Result.GetResult<Prisma.$WorkerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkerCredential model
+   */
+  interface WorkerCredentialFieldRefs {
+    readonly id: FieldRef<"WorkerCredential", 'String'>
+    readonly workerId: FieldRef<"WorkerCredential", 'String'>
+    readonly keyPrefix: FieldRef<"WorkerCredential", 'String'>
+    readonly keyHash: FieldRef<"WorkerCredential", 'String'>
+    readonly status: FieldRef<"WorkerCredential", 'WorkerCredentialStatus'>
+    readonly expiresAt: FieldRef<"WorkerCredential", 'DateTime'>
+    readonly rotatedAt: FieldRef<"WorkerCredential", 'DateTime'>
+    readonly createdAt: FieldRef<"WorkerCredential", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkerCredential", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkerCredential findUnique
+   */
+  export type WorkerCredentialFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredential to fetch.
+     */
+    where: WorkerCredentialWhereUniqueInput
+  }
+
+  /**
+   * WorkerCredential findUniqueOrThrow
+   */
+  export type WorkerCredentialFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredential to fetch.
+     */
+    where: WorkerCredentialWhereUniqueInput
+  }
+
+  /**
+   * WorkerCredential findFirst
+   */
+  export type WorkerCredentialFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredential to fetch.
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkerCredentials to fetch.
+     */
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkerCredentials.
+     */
+    cursor?: WorkerCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkerCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkerCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkerCredentials.
+     */
+    distinct?: WorkerCredentialScalarFieldEnum | WorkerCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WorkerCredential findFirstOrThrow
+   */
+  export type WorkerCredentialFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredential to fetch.
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkerCredentials to fetch.
+     */
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkerCredentials.
+     */
+    cursor?: WorkerCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkerCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkerCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkerCredentials.
+     */
+    distinct?: WorkerCredentialScalarFieldEnum | WorkerCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WorkerCredential findMany
+   */
+  export type WorkerCredentialFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which WorkerCredentials to fetch.
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkerCredentials to fetch.
+     */
+    orderBy?: WorkerCredentialOrderByWithRelationInput | WorkerCredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkerCredentials.
+     */
+    cursor?: WorkerCredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkerCredentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkerCredentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkerCredentials.
+     */
+    distinct?: WorkerCredentialScalarFieldEnum | WorkerCredentialScalarFieldEnum[]
+  }
+
+  /**
+   * WorkerCredential create
+   */
+  export type WorkerCredentialCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WorkerCredential.
+     */
+    data: XOR<WorkerCredentialCreateInput, WorkerCredentialUncheckedCreateInput>
+  }
+
+  /**
+   * WorkerCredential createMany
+   */
+  export type WorkerCredentialCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkerCredentials.
+     */
+    data: WorkerCredentialCreateManyInput | WorkerCredentialCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkerCredential createManyAndReturn
+   */
+  export type WorkerCredentialCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkerCredentials.
+     */
+    data: WorkerCredentialCreateManyInput | WorkerCredentialCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkerCredential update
+   */
+  export type WorkerCredentialUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WorkerCredential.
+     */
+    data: XOR<WorkerCredentialUpdateInput, WorkerCredentialUncheckedUpdateInput>
+    /**
+     * Choose, which WorkerCredential to update.
+     */
+    where: WorkerCredentialWhereUniqueInput
+  }
+
+  /**
+   * WorkerCredential updateMany
+   */
+  export type WorkerCredentialUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkerCredentials.
+     */
+    data: XOR<WorkerCredentialUpdateManyMutationInput, WorkerCredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkerCredentials to update
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * Limit how many WorkerCredentials to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkerCredential updateManyAndReturn
+   */
+  export type WorkerCredentialUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkerCredentials.
+     */
+    data: XOR<WorkerCredentialUpdateManyMutationInput, WorkerCredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkerCredentials to update
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * Limit how many WorkerCredentials to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * WorkerCredential upsert
+   */
+  export type WorkerCredentialUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WorkerCredential to update in case it exists.
+     */
+    where: WorkerCredentialWhereUniqueInput
+    /**
+     * In case the WorkerCredential found by the `where` argument doesn't exist, create a new WorkerCredential with this data.
+     */
+    create: XOR<WorkerCredentialCreateInput, WorkerCredentialUncheckedCreateInput>
+    /**
+     * In case the WorkerCredential was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkerCredentialUpdateInput, WorkerCredentialUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkerCredential delete
+   */
+  export type WorkerCredentialDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+    /**
+     * Filter which WorkerCredential to delete.
+     */
+    where: WorkerCredentialWhereUniqueInput
+  }
+
+  /**
+   * WorkerCredential deleteMany
+   */
+  export type WorkerCredentialDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkerCredentials to delete
+     */
+    where?: WorkerCredentialWhereInput
+    /**
+     * Limit how many WorkerCredentials to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkerCredential without action
+   */
+  export type WorkerCredentialDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkerCredential
+     */
+    select?: WorkerCredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkerCredential
+     */
+    omit?: WorkerCredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WorkerCredentialInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EdgeEnrollmentToken
+   */
+
+  export type AggregateEdgeEnrollmentToken = {
+    _count: EdgeEnrollmentTokenCountAggregateOutputType | null
+    _avg: EdgeEnrollmentTokenAvgAggregateOutputType | null
+    _sum: EdgeEnrollmentTokenSumAggregateOutputType | null
+    _min: EdgeEnrollmentTokenMinAggregateOutputType | null
+    _max: EdgeEnrollmentTokenMaxAggregateOutputType | null
+  }
+
+  export type EdgeEnrollmentTokenAvgAggregateOutputType = {
+    maxUses: number | null
+    usedCount: number | null
+  }
+
+  export type EdgeEnrollmentTokenSumAggregateOutputType = {
+    maxUses: number | null
+    usedCount: number | null
+  }
+
+  export type EdgeEnrollmentTokenMinAggregateOutputType = {
+    id: string | null
+    label: string | null
+    tokenPrefix: string | null
+    tokenHash: string | null
+    status: $Enums.EdgeEnrollmentTokenStatus | null
+    expiresAt: Date | null
+    maxUses: number | null
+    usedCount: number | null
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeEnrollmentTokenMaxAggregateOutputType = {
+    id: string | null
+    label: string | null
+    tokenPrefix: string | null
+    tokenHash: string | null
+    status: $Enums.EdgeEnrollmentTokenStatus | null
+    expiresAt: Date | null
+    maxUses: number | null
+    usedCount: number | null
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeEnrollmentTokenCountAggregateOutputType = {
+    id: number
+    label: number
+    tokenPrefix: number
+    tokenHash: number
+    status: number
+    expiresAt: number
+    maxUses: number
+    usedCount: number
+    lastUsedAt: number
+    revokedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EdgeEnrollmentTokenAvgAggregateInputType = {
+    maxUses?: true
+    usedCount?: true
+  }
+
+  export type EdgeEnrollmentTokenSumAggregateInputType = {
+    maxUses?: true
+    usedCount?: true
+  }
+
+  export type EdgeEnrollmentTokenMinAggregateInputType = {
+    id?: true
+    label?: true
+    tokenPrefix?: true
+    tokenHash?: true
+    status?: true
+    expiresAt?: true
+    maxUses?: true
+    usedCount?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeEnrollmentTokenMaxAggregateInputType = {
+    id?: true
+    label?: true
+    tokenPrefix?: true
+    tokenHash?: true
+    status?: true
+    expiresAt?: true
+    maxUses?: true
+    usedCount?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeEnrollmentTokenCountAggregateInputType = {
+    id?: true
+    label?: true
+    tokenPrefix?: true
+    tokenHash?: true
+    status?: true
+    expiresAt?: true
+    maxUses?: true
+    usedCount?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EdgeEnrollmentTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeEnrollmentToken to aggregate.
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeEnrollmentTokens to fetch.
+     */
+    orderBy?: EdgeEnrollmentTokenOrderByWithRelationInput | EdgeEnrollmentTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeEnrollmentTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeEnrollmentTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EdgeEnrollmentTokens
+    **/
+    _count?: true | EdgeEnrollmentTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EdgeEnrollmentTokenAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EdgeEnrollmentTokenSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EdgeEnrollmentTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EdgeEnrollmentTokenMaxAggregateInputType
+  }
+
+  export type GetEdgeEnrollmentTokenAggregateType<T extends EdgeEnrollmentTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregateEdgeEnrollmentToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEdgeEnrollmentToken[P]>
+      : GetScalarType<T[P], AggregateEdgeEnrollmentToken[P]>
+  }
+
+
+
+
+  export type EdgeEnrollmentTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EdgeEnrollmentTokenWhereInput
+    orderBy?: EdgeEnrollmentTokenOrderByWithAggregationInput | EdgeEnrollmentTokenOrderByWithAggregationInput[]
+    by: EdgeEnrollmentTokenScalarFieldEnum[] | EdgeEnrollmentTokenScalarFieldEnum
+    having?: EdgeEnrollmentTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EdgeEnrollmentTokenCountAggregateInputType | true
+    _avg?: EdgeEnrollmentTokenAvgAggregateInputType
+    _sum?: EdgeEnrollmentTokenSumAggregateInputType
+    _min?: EdgeEnrollmentTokenMinAggregateInputType
+    _max?: EdgeEnrollmentTokenMaxAggregateInputType
+  }
+
+  export type EdgeEnrollmentTokenGroupByOutputType = {
+    id: string
+    label: string | null
+    tokenPrefix: string
+    tokenHash: string
+    status: $Enums.EdgeEnrollmentTokenStatus
+    expiresAt: Date | null
+    maxUses: number | null
+    usedCount: number
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EdgeEnrollmentTokenCountAggregateOutputType | null
+    _avg: EdgeEnrollmentTokenAvgAggregateOutputType | null
+    _sum: EdgeEnrollmentTokenSumAggregateOutputType | null
+    _min: EdgeEnrollmentTokenMinAggregateOutputType | null
+    _max: EdgeEnrollmentTokenMaxAggregateOutputType | null
+  }
+
+  type GetEdgeEnrollmentTokenGroupByPayload<T extends EdgeEnrollmentTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EdgeEnrollmentTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EdgeEnrollmentTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EdgeEnrollmentTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], EdgeEnrollmentTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EdgeEnrollmentTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    tokenPrefix?: boolean
+    tokenHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    usedCount?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeEnrollmentToken"]>
+
+  export type EdgeEnrollmentTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    tokenPrefix?: boolean
+    tokenHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    usedCount?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeEnrollmentToken"]>
+
+  export type EdgeEnrollmentTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    tokenPrefix?: boolean
+    tokenHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    usedCount?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["edgeEnrollmentToken"]>
+
+  export type EdgeEnrollmentTokenSelectScalar = {
+    id?: boolean
+    label?: boolean
+    tokenPrefix?: boolean
+    tokenHash?: boolean
+    status?: boolean
+    expiresAt?: boolean
+    maxUses?: boolean
+    usedCount?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EdgeEnrollmentTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "label" | "tokenPrefix" | "tokenHash" | "status" | "expiresAt" | "maxUses" | "usedCount" | "lastUsedAt" | "revokedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["edgeEnrollmentToken"]>
+
+  export type $EdgeEnrollmentTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EdgeEnrollmentToken"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      label: string | null
+      tokenPrefix: string
+      tokenHash: string
+      status: $Enums.EdgeEnrollmentTokenStatus
+      expiresAt: Date | null
+      maxUses: number | null
+      usedCount: number
+      lastUsedAt: Date | null
+      revokedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["edgeEnrollmentToken"]>
+    composites: {}
+  }
+
+  type EdgeEnrollmentTokenGetPayload<S extends boolean | null | undefined | EdgeEnrollmentTokenDefaultArgs> = $Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload, S>
+
+  type EdgeEnrollmentTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EdgeEnrollmentTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EdgeEnrollmentTokenCountAggregateInputType | true
+    }
+
+  export interface EdgeEnrollmentTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EdgeEnrollmentToken'], meta: { name: 'EdgeEnrollmentToken' } }
+    /**
+     * Find zero or one EdgeEnrollmentToken that matches the filter.
+     * @param {EdgeEnrollmentTokenFindUniqueArgs} args - Arguments to find a EdgeEnrollmentToken
+     * @example
+     * // Get one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EdgeEnrollmentTokenFindUniqueArgs>(args: SelectSubset<T, EdgeEnrollmentTokenFindUniqueArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EdgeEnrollmentToken that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EdgeEnrollmentTokenFindUniqueOrThrowArgs} args - Arguments to find a EdgeEnrollmentToken
+     * @example
+     * // Get one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EdgeEnrollmentTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, EdgeEnrollmentTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeEnrollmentToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenFindFirstArgs} args - Arguments to find a EdgeEnrollmentToken
+     * @example
+     * // Get one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EdgeEnrollmentTokenFindFirstArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenFindFirstArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeEnrollmentToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenFindFirstOrThrowArgs} args - Arguments to find a EdgeEnrollmentToken
+     * @example
+     * // Get one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EdgeEnrollmentTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EdgeEnrollmentTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EdgeEnrollmentTokens
+     * const edgeEnrollmentTokens = await prisma.edgeEnrollmentToken.findMany()
+     * 
+     * // Get first 10 EdgeEnrollmentTokens
+     * const edgeEnrollmentTokens = await prisma.edgeEnrollmentToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const edgeEnrollmentTokenWithIdOnly = await prisma.edgeEnrollmentToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EdgeEnrollmentTokenFindManyArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EdgeEnrollmentToken.
+     * @param {EdgeEnrollmentTokenCreateArgs} args - Arguments to create a EdgeEnrollmentToken.
+     * @example
+     * // Create one EdgeEnrollmentToken
+     * const EdgeEnrollmentToken = await prisma.edgeEnrollmentToken.create({
+     *   data: {
+     *     // ... data to create a EdgeEnrollmentToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends EdgeEnrollmentTokenCreateArgs>(args: SelectSubset<T, EdgeEnrollmentTokenCreateArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EdgeEnrollmentTokens.
+     * @param {EdgeEnrollmentTokenCreateManyArgs} args - Arguments to create many EdgeEnrollmentTokens.
+     * @example
+     * // Create many EdgeEnrollmentTokens
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EdgeEnrollmentTokenCreateManyArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EdgeEnrollmentTokens and returns the data saved in the database.
+     * @param {EdgeEnrollmentTokenCreateManyAndReturnArgs} args - Arguments to create many EdgeEnrollmentTokens.
+     * @example
+     * // Create many EdgeEnrollmentTokens
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EdgeEnrollmentTokens and only return the `id`
+     * const edgeEnrollmentTokenWithIdOnly = await prisma.edgeEnrollmentToken.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EdgeEnrollmentTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EdgeEnrollmentToken.
+     * @param {EdgeEnrollmentTokenDeleteArgs} args - Arguments to delete one EdgeEnrollmentToken.
+     * @example
+     * // Delete one EdgeEnrollmentToken
+     * const EdgeEnrollmentToken = await prisma.edgeEnrollmentToken.delete({
+     *   where: {
+     *     // ... filter to delete one EdgeEnrollmentToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EdgeEnrollmentTokenDeleteArgs>(args: SelectSubset<T, EdgeEnrollmentTokenDeleteArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EdgeEnrollmentToken.
+     * @param {EdgeEnrollmentTokenUpdateArgs} args - Arguments to update one EdgeEnrollmentToken.
+     * @example
+     * // Update one EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EdgeEnrollmentTokenUpdateArgs>(args: SelectSubset<T, EdgeEnrollmentTokenUpdateArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EdgeEnrollmentTokens.
+     * @param {EdgeEnrollmentTokenDeleteManyArgs} args - Arguments to filter EdgeEnrollmentTokens to delete.
+     * @example
+     * // Delete a few EdgeEnrollmentTokens
+     * const { count } = await prisma.edgeEnrollmentToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EdgeEnrollmentTokenDeleteManyArgs>(args?: SelectSubset<T, EdgeEnrollmentTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeEnrollmentTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EdgeEnrollmentTokens
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EdgeEnrollmentTokenUpdateManyArgs>(args: SelectSubset<T, EdgeEnrollmentTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeEnrollmentTokens and returns the data updated in the database.
+     * @param {EdgeEnrollmentTokenUpdateManyAndReturnArgs} args - Arguments to update many EdgeEnrollmentTokens.
+     * @example
+     * // Update many EdgeEnrollmentTokens
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EdgeEnrollmentTokens and only return the `id`
+     * const edgeEnrollmentTokenWithIdOnly = await prisma.edgeEnrollmentToken.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EdgeEnrollmentTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, EdgeEnrollmentTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EdgeEnrollmentToken.
+     * @param {EdgeEnrollmentTokenUpsertArgs} args - Arguments to update or create a EdgeEnrollmentToken.
+     * @example
+     * // Update or create a EdgeEnrollmentToken
+     * const edgeEnrollmentToken = await prisma.edgeEnrollmentToken.upsert({
+     *   create: {
+     *     // ... data to create a EdgeEnrollmentToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EdgeEnrollmentToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EdgeEnrollmentTokenUpsertArgs>(args: SelectSubset<T, EdgeEnrollmentTokenUpsertArgs<ExtArgs>>): Prisma__EdgeEnrollmentTokenClient<$Result.GetResult<Prisma.$EdgeEnrollmentTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EdgeEnrollmentTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenCountArgs} args - Arguments to filter EdgeEnrollmentTokens to count.
+     * @example
+     * // Count the number of EdgeEnrollmentTokens
+     * const count = await prisma.edgeEnrollmentToken.count({
+     *   where: {
+     *     // ... the filter for the EdgeEnrollmentTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends EdgeEnrollmentTokenCountArgs>(
+      args?: Subset<T, EdgeEnrollmentTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EdgeEnrollmentTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EdgeEnrollmentToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EdgeEnrollmentTokenAggregateArgs>(args: Subset<T, EdgeEnrollmentTokenAggregateArgs>): Prisma.PrismaPromise<GetEdgeEnrollmentTokenAggregateType<T>>
+
+    /**
+     * Group by EdgeEnrollmentToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeEnrollmentTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EdgeEnrollmentTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EdgeEnrollmentTokenGroupByArgs['orderBy'] }
+        : { orderBy?: EdgeEnrollmentTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EdgeEnrollmentTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEdgeEnrollmentTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EdgeEnrollmentToken model
+   */
+  readonly fields: EdgeEnrollmentTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EdgeEnrollmentToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EdgeEnrollmentTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EdgeEnrollmentToken model
+   */
+  interface EdgeEnrollmentTokenFieldRefs {
+    readonly id: FieldRef<"EdgeEnrollmentToken", 'String'>
+    readonly label: FieldRef<"EdgeEnrollmentToken", 'String'>
+    readonly tokenPrefix: FieldRef<"EdgeEnrollmentToken", 'String'>
+    readonly tokenHash: FieldRef<"EdgeEnrollmentToken", 'String'>
+    readonly status: FieldRef<"EdgeEnrollmentToken", 'EdgeEnrollmentTokenStatus'>
+    readonly expiresAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+    readonly maxUses: FieldRef<"EdgeEnrollmentToken", 'Int'>
+    readonly usedCount: FieldRef<"EdgeEnrollmentToken", 'Int'>
+    readonly lastUsedAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+    readonly revokedAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+    readonly createdAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+    readonly updatedAt: FieldRef<"EdgeEnrollmentToken", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EdgeEnrollmentToken findUnique
+   */
+  export type EdgeEnrollmentTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentToken to fetch.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+  }
+
+  /**
+   * EdgeEnrollmentToken findUniqueOrThrow
+   */
+  export type EdgeEnrollmentTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentToken to fetch.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+  }
+
+  /**
+   * EdgeEnrollmentToken findFirst
+   */
+  export type EdgeEnrollmentTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentToken to fetch.
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeEnrollmentTokens to fetch.
+     */
+    orderBy?: EdgeEnrollmentTokenOrderByWithRelationInput | EdgeEnrollmentTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeEnrollmentTokens.
+     */
+    cursor?: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeEnrollmentTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeEnrollmentTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeEnrollmentTokens.
+     */
+    distinct?: EdgeEnrollmentTokenScalarFieldEnum | EdgeEnrollmentTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeEnrollmentToken findFirstOrThrow
+   */
+  export type EdgeEnrollmentTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentToken to fetch.
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeEnrollmentTokens to fetch.
+     */
+    orderBy?: EdgeEnrollmentTokenOrderByWithRelationInput | EdgeEnrollmentTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeEnrollmentTokens.
+     */
+    cursor?: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeEnrollmentTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeEnrollmentTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeEnrollmentTokens.
+     */
+    distinct?: EdgeEnrollmentTokenScalarFieldEnum | EdgeEnrollmentTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeEnrollmentToken findMany
+   */
+  export type EdgeEnrollmentTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which EdgeEnrollmentTokens to fetch.
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeEnrollmentTokens to fetch.
+     */
+    orderBy?: EdgeEnrollmentTokenOrderByWithRelationInput | EdgeEnrollmentTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EdgeEnrollmentTokens.
+     */
+    cursor?: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeEnrollmentTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeEnrollmentTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeEnrollmentTokens.
+     */
+    distinct?: EdgeEnrollmentTokenScalarFieldEnum | EdgeEnrollmentTokenScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeEnrollmentToken create
+   */
+  export type EdgeEnrollmentTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EdgeEnrollmentToken.
+     */
+    data: XOR<EdgeEnrollmentTokenCreateInput, EdgeEnrollmentTokenUncheckedCreateInput>
+  }
+
+  /**
+   * EdgeEnrollmentToken createMany
+   */
+  export type EdgeEnrollmentTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EdgeEnrollmentTokens.
+     */
+    data: EdgeEnrollmentTokenCreateManyInput | EdgeEnrollmentTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeEnrollmentToken createManyAndReturn
+   */
+  export type EdgeEnrollmentTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The data used to create many EdgeEnrollmentTokens.
+     */
+    data: EdgeEnrollmentTokenCreateManyInput | EdgeEnrollmentTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeEnrollmentToken update
+   */
+  export type EdgeEnrollmentTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EdgeEnrollmentToken.
+     */
+    data: XOR<EdgeEnrollmentTokenUpdateInput, EdgeEnrollmentTokenUncheckedUpdateInput>
+    /**
+     * Choose, which EdgeEnrollmentToken to update.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+  }
+
+  /**
+   * EdgeEnrollmentToken updateMany
+   */
+  export type EdgeEnrollmentTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EdgeEnrollmentTokens.
+     */
+    data: XOR<EdgeEnrollmentTokenUpdateManyMutationInput, EdgeEnrollmentTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeEnrollmentTokens to update
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * Limit how many EdgeEnrollmentTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeEnrollmentToken updateManyAndReturn
+   */
+  export type EdgeEnrollmentTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The data used to update EdgeEnrollmentTokens.
+     */
+    data: XOR<EdgeEnrollmentTokenUpdateManyMutationInput, EdgeEnrollmentTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeEnrollmentTokens to update
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * Limit how many EdgeEnrollmentTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeEnrollmentToken upsert
+   */
+  export type EdgeEnrollmentTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EdgeEnrollmentToken to update in case it exists.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+    /**
+     * In case the EdgeEnrollmentToken found by the `where` argument doesn't exist, create a new EdgeEnrollmentToken with this data.
+     */
+    create: XOR<EdgeEnrollmentTokenCreateInput, EdgeEnrollmentTokenUncheckedCreateInput>
+    /**
+     * In case the EdgeEnrollmentToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EdgeEnrollmentTokenUpdateInput, EdgeEnrollmentTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * EdgeEnrollmentToken delete
+   */
+  export type EdgeEnrollmentTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+    /**
+     * Filter which EdgeEnrollmentToken to delete.
+     */
+    where: EdgeEnrollmentTokenWhereUniqueInput
+  }
+
+  /**
+   * EdgeEnrollmentToken deleteMany
+   */
+  export type EdgeEnrollmentTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeEnrollmentTokens to delete
+     */
+    where?: EdgeEnrollmentTokenWhereInput
+    /**
+     * Limit how many EdgeEnrollmentTokens to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeEnrollmentToken without action
+   */
+  export type EdgeEnrollmentTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeEnrollmentToken
+     */
+    select?: EdgeEnrollmentTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeEnrollmentToken
+     */
+    omit?: EdgeEnrollmentTokenOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StrategyTemplate
+   */
+
+  export type AggregateStrategyTemplate = {
+    _count: StrategyTemplateCountAggregateOutputType | null
+    _min: StrategyTemplateMinAggregateOutputType | null
+    _max: StrategyTemplateMaxAggregateOutputType | null
+  }
+
+  export type StrategyTemplateMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    category: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StrategyTemplateMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    category: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StrategyTemplateCountAggregateOutputType = {
+    id: number
+    name: number
+    category: number
+    factoryConfig: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StrategyTemplateMinAggregateInputType = {
+    id?: true
+    name?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StrategyTemplateMaxAggregateInputType = {
+    id?: true
+    name?: true
+    category?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StrategyTemplateCountAggregateInputType = {
+    id?: true
+    name?: true
+    category?: true
+    factoryConfig?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StrategyTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StrategyTemplate to aggregate.
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StrategyTemplates to fetch.
+     */
+    orderBy?: StrategyTemplateOrderByWithRelationInput | StrategyTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StrategyTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StrategyTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StrategyTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StrategyTemplates
+    **/
+    _count?: true | StrategyTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StrategyTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StrategyTemplateMaxAggregateInputType
+  }
+
+  export type GetStrategyTemplateAggregateType<T extends StrategyTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateStrategyTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStrategyTemplate[P]>
+      : GetScalarType<T[P], AggregateStrategyTemplate[P]>
+  }
+
+
+
+
+  export type StrategyTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StrategyTemplateWhereInput
+    orderBy?: StrategyTemplateOrderByWithAggregationInput | StrategyTemplateOrderByWithAggregationInput[]
+    by: StrategyTemplateScalarFieldEnum[] | StrategyTemplateScalarFieldEnum
+    having?: StrategyTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StrategyTemplateCountAggregateInputType | true
+    _min?: StrategyTemplateMinAggregateInputType
+    _max?: StrategyTemplateMaxAggregateInputType
+  }
+
+  export type StrategyTemplateGroupByOutputType = {
+    id: string
+    name: string
+    category: string | null
+    factoryConfig: JsonValue
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: StrategyTemplateCountAggregateOutputType | null
+    _min: StrategyTemplateMinAggregateOutputType | null
+    _max: StrategyTemplateMaxAggregateOutputType | null
+  }
+
+  type GetStrategyTemplateGroupByPayload<T extends StrategyTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StrategyTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StrategyTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StrategyTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], StrategyTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StrategyTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    category?: boolean
+    factoryConfig?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    tasks?: boolean | StrategyTemplate$tasksArgs<ExtArgs>
+    _count?: boolean | StrategyTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["strategyTemplate"]>
+
+  export type StrategyTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    category?: boolean
+    factoryConfig?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["strategyTemplate"]>
+
+  export type StrategyTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    category?: boolean
+    factoryConfig?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["strategyTemplate"]>
+
+  export type StrategyTemplateSelectScalar = {
+    id?: boolean
+    name?: boolean
+    category?: boolean
+    factoryConfig?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StrategyTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "category" | "factoryConfig" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["strategyTemplate"]>
+  export type StrategyTemplateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tasks?: boolean | StrategyTemplate$tasksArgs<ExtArgs>
+    _count?: boolean | StrategyTemplateCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type StrategyTemplateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type StrategyTemplateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $StrategyTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StrategyTemplate"
+    objects: {
+      tasks: Prisma.$BacktestTaskPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      category: string | null
+      factoryConfig: Prisma.JsonValue
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["strategyTemplate"]>
+    composites: {}
+  }
+
+  type StrategyTemplateGetPayload<S extends boolean | null | undefined | StrategyTemplateDefaultArgs> = $Result.GetResult<Prisma.$StrategyTemplatePayload, S>
+
+  type StrategyTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StrategyTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StrategyTemplateCountAggregateInputType | true
+    }
+
+  export interface StrategyTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StrategyTemplate'], meta: { name: 'StrategyTemplate' } }
+    /**
+     * Find zero or one StrategyTemplate that matches the filter.
+     * @param {StrategyTemplateFindUniqueArgs} args - Arguments to find a StrategyTemplate
+     * @example
+     * // Get one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StrategyTemplateFindUniqueArgs>(args: SelectSubset<T, StrategyTemplateFindUniqueArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StrategyTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StrategyTemplateFindUniqueOrThrowArgs} args - Arguments to find a StrategyTemplate
+     * @example
+     * // Get one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StrategyTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, StrategyTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StrategyTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateFindFirstArgs} args - Arguments to find a StrategyTemplate
+     * @example
+     * // Get one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StrategyTemplateFindFirstArgs>(args?: SelectSubset<T, StrategyTemplateFindFirstArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StrategyTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateFindFirstOrThrowArgs} args - Arguments to find a StrategyTemplate
+     * @example
+     * // Get one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StrategyTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, StrategyTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StrategyTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StrategyTemplates
+     * const strategyTemplates = await prisma.strategyTemplate.findMany()
+     * 
+     * // Get first 10 StrategyTemplates
+     * const strategyTemplates = await prisma.strategyTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const strategyTemplateWithIdOnly = await prisma.strategyTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StrategyTemplateFindManyArgs>(args?: SelectSubset<T, StrategyTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StrategyTemplate.
+     * @param {StrategyTemplateCreateArgs} args - Arguments to create a StrategyTemplate.
+     * @example
+     * // Create one StrategyTemplate
+     * const StrategyTemplate = await prisma.strategyTemplate.create({
+     *   data: {
+     *     // ... data to create a StrategyTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends StrategyTemplateCreateArgs>(args: SelectSubset<T, StrategyTemplateCreateArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StrategyTemplates.
+     * @param {StrategyTemplateCreateManyArgs} args - Arguments to create many StrategyTemplates.
+     * @example
+     * // Create many StrategyTemplates
+     * const strategyTemplate = await prisma.strategyTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StrategyTemplateCreateManyArgs>(args?: SelectSubset<T, StrategyTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StrategyTemplates and returns the data saved in the database.
+     * @param {StrategyTemplateCreateManyAndReturnArgs} args - Arguments to create many StrategyTemplates.
+     * @example
+     * // Create many StrategyTemplates
+     * const strategyTemplate = await prisma.strategyTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StrategyTemplates and only return the `id`
+     * const strategyTemplateWithIdOnly = await prisma.strategyTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StrategyTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, StrategyTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StrategyTemplate.
+     * @param {StrategyTemplateDeleteArgs} args - Arguments to delete one StrategyTemplate.
+     * @example
+     * // Delete one StrategyTemplate
+     * const StrategyTemplate = await prisma.strategyTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one StrategyTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StrategyTemplateDeleteArgs>(args: SelectSubset<T, StrategyTemplateDeleteArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StrategyTemplate.
+     * @param {StrategyTemplateUpdateArgs} args - Arguments to update one StrategyTemplate.
+     * @example
+     * // Update one StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StrategyTemplateUpdateArgs>(args: SelectSubset<T, StrategyTemplateUpdateArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StrategyTemplates.
+     * @param {StrategyTemplateDeleteManyArgs} args - Arguments to filter StrategyTemplates to delete.
+     * @example
+     * // Delete a few StrategyTemplates
+     * const { count } = await prisma.strategyTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StrategyTemplateDeleteManyArgs>(args?: SelectSubset<T, StrategyTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StrategyTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StrategyTemplates
+     * const strategyTemplate = await prisma.strategyTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StrategyTemplateUpdateManyArgs>(args: SelectSubset<T, StrategyTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StrategyTemplates and returns the data updated in the database.
+     * @param {StrategyTemplateUpdateManyAndReturnArgs} args - Arguments to update many StrategyTemplates.
+     * @example
+     * // Update many StrategyTemplates
+     * const strategyTemplate = await prisma.strategyTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StrategyTemplates and only return the `id`
+     * const strategyTemplateWithIdOnly = await prisma.strategyTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StrategyTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, StrategyTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StrategyTemplate.
+     * @param {StrategyTemplateUpsertArgs} args - Arguments to update or create a StrategyTemplate.
+     * @example
+     * // Update or create a StrategyTemplate
+     * const strategyTemplate = await prisma.strategyTemplate.upsert({
+     *   create: {
+     *     // ... data to create a StrategyTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StrategyTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StrategyTemplateUpsertArgs>(args: SelectSubset<T, StrategyTemplateUpsertArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StrategyTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateCountArgs} args - Arguments to filter StrategyTemplates to count.
+     * @example
+     * // Count the number of StrategyTemplates
+     * const count = await prisma.strategyTemplate.count({
+     *   where: {
+     *     // ... the filter for the StrategyTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends StrategyTemplateCountArgs>(
+      args?: Subset<T, StrategyTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StrategyTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StrategyTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StrategyTemplateAggregateArgs>(args: Subset<T, StrategyTemplateAggregateArgs>): Prisma.PrismaPromise<GetStrategyTemplateAggregateType<T>>
+
+    /**
+     * Group by StrategyTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StrategyTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StrategyTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StrategyTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: StrategyTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StrategyTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStrategyTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StrategyTemplate model
+   */
+  readonly fields: StrategyTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StrategyTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StrategyTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    tasks<T extends StrategyTemplate$tasksArgs<ExtArgs> = {}>(args?: Subset<T, StrategyTemplate$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StrategyTemplate model
+   */
+  interface StrategyTemplateFieldRefs {
+    readonly id: FieldRef<"StrategyTemplate", 'String'>
+    readonly name: FieldRef<"StrategyTemplate", 'String'>
+    readonly category: FieldRef<"StrategyTemplate", 'String'>
+    readonly factoryConfig: FieldRef<"StrategyTemplate", 'Json'>
+    readonly isActive: FieldRef<"StrategyTemplate", 'Boolean'>
+    readonly createdAt: FieldRef<"StrategyTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"StrategyTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StrategyTemplate findUnique
+   */
+  export type StrategyTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplate to fetch.
+     */
+    where: StrategyTemplateWhereUniqueInput
+  }
+
+  /**
+   * StrategyTemplate findUniqueOrThrow
+   */
+  export type StrategyTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplate to fetch.
+     */
+    where: StrategyTemplateWhereUniqueInput
+  }
+
+  /**
+   * StrategyTemplate findFirst
+   */
+  export type StrategyTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplate to fetch.
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StrategyTemplates to fetch.
+     */
+    orderBy?: StrategyTemplateOrderByWithRelationInput | StrategyTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StrategyTemplates.
+     */
+    cursor?: StrategyTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StrategyTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StrategyTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StrategyTemplates.
+     */
+    distinct?: StrategyTemplateScalarFieldEnum | StrategyTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * StrategyTemplate findFirstOrThrow
+   */
+  export type StrategyTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplate to fetch.
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StrategyTemplates to fetch.
+     */
+    orderBy?: StrategyTemplateOrderByWithRelationInput | StrategyTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StrategyTemplates.
+     */
+    cursor?: StrategyTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StrategyTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StrategyTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StrategyTemplates.
+     */
+    distinct?: StrategyTemplateScalarFieldEnum | StrategyTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * StrategyTemplate findMany
+   */
+  export type StrategyTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter, which StrategyTemplates to fetch.
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StrategyTemplates to fetch.
+     */
+    orderBy?: StrategyTemplateOrderByWithRelationInput | StrategyTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StrategyTemplates.
+     */
+    cursor?: StrategyTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StrategyTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StrategyTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StrategyTemplates.
+     */
+    distinct?: StrategyTemplateScalarFieldEnum | StrategyTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * StrategyTemplate create
+   */
+  export type StrategyTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StrategyTemplate.
+     */
+    data: XOR<StrategyTemplateCreateInput, StrategyTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * StrategyTemplate createMany
+   */
+  export type StrategyTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StrategyTemplates.
+     */
+    data: StrategyTemplateCreateManyInput | StrategyTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StrategyTemplate createManyAndReturn
+   */
+  export type StrategyTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many StrategyTemplates.
+     */
+    data: StrategyTemplateCreateManyInput | StrategyTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StrategyTemplate update
+   */
+  export type StrategyTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StrategyTemplate.
+     */
+    data: XOR<StrategyTemplateUpdateInput, StrategyTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which StrategyTemplate to update.
+     */
+    where: StrategyTemplateWhereUniqueInput
+  }
+
+  /**
+   * StrategyTemplate updateMany
+   */
+  export type StrategyTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StrategyTemplates.
+     */
+    data: XOR<StrategyTemplateUpdateManyMutationInput, StrategyTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which StrategyTemplates to update
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * Limit how many StrategyTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StrategyTemplate updateManyAndReturn
+   */
+  export type StrategyTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update StrategyTemplates.
+     */
+    data: XOR<StrategyTemplateUpdateManyMutationInput, StrategyTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which StrategyTemplates to update
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * Limit how many StrategyTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StrategyTemplate upsert
+   */
+  export type StrategyTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StrategyTemplate to update in case it exists.
+     */
+    where: StrategyTemplateWhereUniqueInput
+    /**
+     * In case the StrategyTemplate found by the `where` argument doesn't exist, create a new StrategyTemplate with this data.
+     */
+    create: XOR<StrategyTemplateCreateInput, StrategyTemplateUncheckedCreateInput>
+    /**
+     * In case the StrategyTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StrategyTemplateUpdateInput, StrategyTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * StrategyTemplate delete
+   */
+  export type StrategyTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+    /**
+     * Filter which StrategyTemplate to delete.
+     */
+    where: StrategyTemplateWhereUniqueInput
+  }
+
+  /**
+   * StrategyTemplate deleteMany
+   */
+  export type StrategyTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StrategyTemplates to delete
+     */
+    where?: StrategyTemplateWhereInput
+    /**
+     * Limit how many StrategyTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StrategyTemplate.tasks
+   */
+  export type StrategyTemplate$tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    where?: BacktestTaskWhereInput
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    cursor?: BacktestTaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BacktestTaskScalarFieldEnum | BacktestTaskScalarFieldEnum[]
+  }
+
+  /**
+   * StrategyTemplate without action
+   */
+  export type StrategyTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StrategyTemplate
+     */
+    select?: StrategyTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StrategyTemplate
+     */
+    omit?: StrategyTemplateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StrategyTemplateInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BacktestTask
+   */
+
+  export type AggregateBacktestTask = {
+    _count: BacktestTaskCountAggregateOutputType | null
+    _avg: BacktestTaskAvgAggregateOutputType | null
+    _sum: BacktestTaskSumAggregateOutputType | null
+    _min: BacktestTaskMinAggregateOutputType | null
+    _max: BacktestTaskMaxAggregateOutputType | null
+  }
+
+  export type BacktestTaskAvgAggregateOutputType = {
+    trials: number | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+  }
+
+  export type BacktestTaskSumAggregateOutputType = {
+    trials: number | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+  }
+
+  export type BacktestTaskMinAggregateOutputType = {
+    id: string | null
+    strategyTemplateId: string | null
+    name: string | null
+    symbol: string | null
+    interval: string | null
+    startDate: Date | null
+    endDate: Date | null
+    searchStrategy: $Enums.SearchStrategy | null
+    trials: number | null
+    status: $Enums.BacktestTaskStatus | null
+    assignedWorkerId: string | null
+    leaseExpiresAt: Date | null
+    lastHeartbeat: Date | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+    currentConfig: string | null
+    trialProgress: string | null
+    errorMessage: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BacktestTaskMaxAggregateOutputType = {
+    id: string | null
+    strategyTemplateId: string | null
+    name: string | null
+    symbol: string | null
+    interval: string | null
+    startDate: Date | null
+    endDate: Date | null
+    searchStrategy: $Enums.SearchStrategy | null
+    trials: number | null
+    status: $Enums.BacktestTaskStatus | null
+    assignedWorkerId: string | null
+    leaseExpiresAt: Date | null
+    lastHeartbeat: Date | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+    currentConfig: string | null
+    trialProgress: string | null
+    errorMessage: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BacktestTaskCountAggregateOutputType = {
+    id: number
+    strategyTemplateId: number
+    name: number
+    symbol: number
+    interval: number
+    startDate: number
+    endDate: number
+    searchStrategy: number
+    optimizationParams: number
+    optimizationMetrics: number
+    trials: number
+    status: number
+    assignedWorkerId: number
+    leaseExpiresAt: number
+    lastHeartbeat: number
+    totalConfigs: number
+    processedConfigs: number
+    currentConfig: number
+    trialProgress: number
+    bestConfigIds: number
+    errorMessage: number
+    startedAt: number
+    completedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BacktestTaskAvgAggregateInputType = {
+    trials?: true
+    totalConfigs?: true
+    processedConfigs?: true
+  }
+
+  export type BacktestTaskSumAggregateInputType = {
+    trials?: true
+    totalConfigs?: true
+    processedConfigs?: true
+  }
+
+  export type BacktestTaskMinAggregateInputType = {
+    id?: true
+    strategyTemplateId?: true
+    name?: true
+    symbol?: true
+    interval?: true
+    startDate?: true
+    endDate?: true
+    searchStrategy?: true
+    trials?: true
+    status?: true
+    assignedWorkerId?: true
+    leaseExpiresAt?: true
+    lastHeartbeat?: true
+    totalConfigs?: true
+    processedConfigs?: true
+    currentConfig?: true
+    trialProgress?: true
+    errorMessage?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BacktestTaskMaxAggregateInputType = {
+    id?: true
+    strategyTemplateId?: true
+    name?: true
+    symbol?: true
+    interval?: true
+    startDate?: true
+    endDate?: true
+    searchStrategy?: true
+    trials?: true
+    status?: true
+    assignedWorkerId?: true
+    leaseExpiresAt?: true
+    lastHeartbeat?: true
+    totalConfigs?: true
+    processedConfigs?: true
+    currentConfig?: true
+    trialProgress?: true
+    errorMessage?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BacktestTaskCountAggregateInputType = {
+    id?: true
+    strategyTemplateId?: true
+    name?: true
+    symbol?: true
+    interval?: true
+    startDate?: true
+    endDate?: true
+    searchStrategy?: true
+    optimizationParams?: true
+    optimizationMetrics?: true
+    trials?: true
+    status?: true
+    assignedWorkerId?: true
+    leaseExpiresAt?: true
+    lastHeartbeat?: true
+    totalConfigs?: true
+    processedConfigs?: true
+    currentConfig?: true
+    trialProgress?: true
+    bestConfigIds?: true
+    errorMessage?: true
+    startedAt?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BacktestTaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BacktestTask to aggregate.
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestTasks to fetch.
+     */
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BacktestTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BacktestTasks
+    **/
+    _count?: true | BacktestTaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BacktestTaskAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BacktestTaskSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BacktestTaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BacktestTaskMaxAggregateInputType
+  }
+
+  export type GetBacktestTaskAggregateType<T extends BacktestTaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateBacktestTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBacktestTask[P]>
+      : GetScalarType<T[P], AggregateBacktestTask[P]>
+  }
+
+
+
+
+  export type BacktestTaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BacktestTaskWhereInput
+    orderBy?: BacktestTaskOrderByWithAggregationInput | BacktestTaskOrderByWithAggregationInput[]
+    by: BacktestTaskScalarFieldEnum[] | BacktestTaskScalarFieldEnum
+    having?: BacktestTaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BacktestTaskCountAggregateInputType | true
+    _avg?: BacktestTaskAvgAggregateInputType
+    _sum?: BacktestTaskSumAggregateInputType
+    _min?: BacktestTaskMinAggregateInputType
+    _max?: BacktestTaskMaxAggregateInputType
+  }
+
+  export type BacktestTaskGroupByOutputType = {
+    id: string
+    strategyTemplateId: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date
+    endDate: Date
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonValue
+    optimizationMetrics: string[]
+    trials: number
+    status: $Enums.BacktestTaskStatus
+    assignedWorkerId: string | null
+    leaseExpiresAt: Date | null
+    lastHeartbeat: Date | null
+    totalConfigs: number | null
+    processedConfigs: number | null
+    currentConfig: string | null
+    trialProgress: string | null
+    bestConfigIds: string[]
+    errorMessage: string | null
+    startedAt: Date | null
+    completedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BacktestTaskCountAggregateOutputType | null
+    _avg: BacktestTaskAvgAggregateOutputType | null
+    _sum: BacktestTaskSumAggregateOutputType | null
+    _min: BacktestTaskMinAggregateOutputType | null
+    _max: BacktestTaskMaxAggregateOutputType | null
+  }
+
+  type GetBacktestTaskGroupByPayload<T extends BacktestTaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BacktestTaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BacktestTaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BacktestTaskGroupByOutputType[P]>
+            : GetScalarType<T[P], BacktestTaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BacktestTaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    strategyTemplateId?: boolean
+    name?: boolean
+    symbol?: boolean
+    interval?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    searchStrategy?: boolean
+    optimizationParams?: boolean
+    optimizationMetrics?: boolean
+    trials?: boolean
+    status?: boolean
+    assignedWorkerId?: boolean
+    leaseExpiresAt?: boolean
+    lastHeartbeat?: boolean
+    totalConfigs?: boolean
+    processedConfigs?: boolean
+    currentConfig?: boolean
+    trialProgress?: boolean
+    bestConfigIds?: boolean
+    errorMessage?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+    results?: boolean | BacktestTask$resultsArgs<ExtArgs>
+    _count?: boolean | BacktestTaskCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestTask"]>
+
+  export type BacktestTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    strategyTemplateId?: boolean
+    name?: boolean
+    symbol?: boolean
+    interval?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    searchStrategy?: boolean
+    optimizationParams?: boolean
+    optimizationMetrics?: boolean
+    trials?: boolean
+    status?: boolean
+    assignedWorkerId?: boolean
+    leaseExpiresAt?: boolean
+    lastHeartbeat?: boolean
+    totalConfigs?: boolean
+    processedConfigs?: boolean
+    currentConfig?: boolean
+    trialProgress?: boolean
+    bestConfigIds?: boolean
+    errorMessage?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestTask"]>
+
+  export type BacktestTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    strategyTemplateId?: boolean
+    name?: boolean
+    symbol?: boolean
+    interval?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    searchStrategy?: boolean
+    optimizationParams?: boolean
+    optimizationMetrics?: boolean
+    trials?: boolean
+    status?: boolean
+    assignedWorkerId?: boolean
+    leaseExpiresAt?: boolean
+    lastHeartbeat?: boolean
+    totalConfigs?: boolean
+    processedConfigs?: boolean
+    currentConfig?: boolean
+    trialProgress?: boolean
+    bestConfigIds?: boolean
+    errorMessage?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestTask"]>
+
+  export type BacktestTaskSelectScalar = {
+    id?: boolean
+    strategyTemplateId?: boolean
+    name?: boolean
+    symbol?: boolean
+    interval?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    searchStrategy?: boolean
+    optimizationParams?: boolean
+    optimizationMetrics?: boolean
+    trials?: boolean
+    status?: boolean
+    assignedWorkerId?: boolean
+    leaseExpiresAt?: boolean
+    lastHeartbeat?: boolean
+    totalConfigs?: boolean
+    processedConfigs?: boolean
+    currentConfig?: boolean
+    trialProgress?: boolean
+    bestConfigIds?: boolean
+    errorMessage?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BacktestTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "strategyTemplateId" | "name" | "symbol" | "interval" | "startDate" | "endDate" | "searchStrategy" | "optimizationParams" | "optimizationMetrics" | "trials" | "status" | "assignedWorkerId" | "leaseExpiresAt" | "lastHeartbeat" | "totalConfigs" | "processedConfigs" | "currentConfig" | "trialProgress" | "bestConfigIds" | "errorMessage" | "startedAt" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["backtestTask"]>
+  export type BacktestTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+    results?: boolean | BacktestTask$resultsArgs<ExtArgs>
+    _count?: boolean | BacktestTaskCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BacktestTaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+  }
+  export type BacktestTaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    strategyTemplate?: boolean | StrategyTemplateDefaultArgs<ExtArgs>
+  }
+
+  export type $BacktestTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BacktestTask"
+    objects: {
+      strategyTemplate: Prisma.$StrategyTemplatePayload<ExtArgs>
+      results: Prisma.$BacktestResultPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      strategyTemplateId: string
+      name: string
+      symbol: string
+      interval: string
+      startDate: Date
+      endDate: Date
+      searchStrategy: $Enums.SearchStrategy
+      optimizationParams: Prisma.JsonValue
+      optimizationMetrics: string[]
+      trials: number
+      status: $Enums.BacktestTaskStatus
+      assignedWorkerId: string | null
+      leaseExpiresAt: Date | null
+      lastHeartbeat: Date | null
+      totalConfigs: number | null
+      processedConfigs: number | null
+      currentConfig: string | null
+      trialProgress: string | null
+      bestConfigIds: string[]
+      errorMessage: string | null
+      startedAt: Date | null
+      completedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["backtestTask"]>
+    composites: {}
+  }
+
+  type BacktestTaskGetPayload<S extends boolean | null | undefined | BacktestTaskDefaultArgs> = $Result.GetResult<Prisma.$BacktestTaskPayload, S>
+
+  type BacktestTaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BacktestTaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BacktestTaskCountAggregateInputType | true
+    }
+
+  export interface BacktestTaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BacktestTask'], meta: { name: 'BacktestTask' } }
+    /**
+     * Find zero or one BacktestTask that matches the filter.
+     * @param {BacktestTaskFindUniqueArgs} args - Arguments to find a BacktestTask
+     * @example
+     * // Get one BacktestTask
+     * const backtestTask = await prisma.backtestTask.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BacktestTaskFindUniqueArgs>(args: SelectSubset<T, BacktestTaskFindUniqueArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BacktestTask that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BacktestTaskFindUniqueOrThrowArgs} args - Arguments to find a BacktestTask
+     * @example
+     * // Get one BacktestTask
+     * const backtestTask = await prisma.backtestTask.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BacktestTaskFindUniqueOrThrowArgs>(args: SelectSubset<T, BacktestTaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BacktestTask that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskFindFirstArgs} args - Arguments to find a BacktestTask
+     * @example
+     * // Get one BacktestTask
+     * const backtestTask = await prisma.backtestTask.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BacktestTaskFindFirstArgs>(args?: SelectSubset<T, BacktestTaskFindFirstArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BacktestTask that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskFindFirstOrThrowArgs} args - Arguments to find a BacktestTask
+     * @example
+     * // Get one BacktestTask
+     * const backtestTask = await prisma.backtestTask.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BacktestTaskFindFirstOrThrowArgs>(args?: SelectSubset<T, BacktestTaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BacktestTasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BacktestTasks
+     * const backtestTasks = await prisma.backtestTask.findMany()
+     * 
+     * // Get first 10 BacktestTasks
+     * const backtestTasks = await prisma.backtestTask.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const backtestTaskWithIdOnly = await prisma.backtestTask.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BacktestTaskFindManyArgs>(args?: SelectSubset<T, BacktestTaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BacktestTask.
+     * @param {BacktestTaskCreateArgs} args - Arguments to create a BacktestTask.
+     * @example
+     * // Create one BacktestTask
+     * const BacktestTask = await prisma.backtestTask.create({
+     *   data: {
+     *     // ... data to create a BacktestTask
+     *   }
+     * })
+     * 
+     */
+    create<T extends BacktestTaskCreateArgs>(args: SelectSubset<T, BacktestTaskCreateArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BacktestTasks.
+     * @param {BacktestTaskCreateManyArgs} args - Arguments to create many BacktestTasks.
+     * @example
+     * // Create many BacktestTasks
+     * const backtestTask = await prisma.backtestTask.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BacktestTaskCreateManyArgs>(args?: SelectSubset<T, BacktestTaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BacktestTasks and returns the data saved in the database.
+     * @param {BacktestTaskCreateManyAndReturnArgs} args - Arguments to create many BacktestTasks.
+     * @example
+     * // Create many BacktestTasks
+     * const backtestTask = await prisma.backtestTask.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BacktestTasks and only return the `id`
+     * const backtestTaskWithIdOnly = await prisma.backtestTask.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BacktestTaskCreateManyAndReturnArgs>(args?: SelectSubset<T, BacktestTaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BacktestTask.
+     * @param {BacktestTaskDeleteArgs} args - Arguments to delete one BacktestTask.
+     * @example
+     * // Delete one BacktestTask
+     * const BacktestTask = await prisma.backtestTask.delete({
+     *   where: {
+     *     // ... filter to delete one BacktestTask
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BacktestTaskDeleteArgs>(args: SelectSubset<T, BacktestTaskDeleteArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BacktestTask.
+     * @param {BacktestTaskUpdateArgs} args - Arguments to update one BacktestTask.
+     * @example
+     * // Update one BacktestTask
+     * const backtestTask = await prisma.backtestTask.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BacktestTaskUpdateArgs>(args: SelectSubset<T, BacktestTaskUpdateArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BacktestTasks.
+     * @param {BacktestTaskDeleteManyArgs} args - Arguments to filter BacktestTasks to delete.
+     * @example
+     * // Delete a few BacktestTasks
+     * const { count } = await prisma.backtestTask.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BacktestTaskDeleteManyArgs>(args?: SelectSubset<T, BacktestTaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BacktestTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BacktestTasks
+     * const backtestTask = await prisma.backtestTask.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BacktestTaskUpdateManyArgs>(args: SelectSubset<T, BacktestTaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BacktestTasks and returns the data updated in the database.
+     * @param {BacktestTaskUpdateManyAndReturnArgs} args - Arguments to update many BacktestTasks.
+     * @example
+     * // Update many BacktestTasks
+     * const backtestTask = await prisma.backtestTask.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BacktestTasks and only return the `id`
+     * const backtestTaskWithIdOnly = await prisma.backtestTask.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BacktestTaskUpdateManyAndReturnArgs>(args: SelectSubset<T, BacktestTaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BacktestTask.
+     * @param {BacktestTaskUpsertArgs} args - Arguments to update or create a BacktestTask.
+     * @example
+     * // Update or create a BacktestTask
+     * const backtestTask = await prisma.backtestTask.upsert({
+     *   create: {
+     *     // ... data to create a BacktestTask
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BacktestTask we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BacktestTaskUpsertArgs>(args: SelectSubset<T, BacktestTaskUpsertArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BacktestTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskCountArgs} args - Arguments to filter BacktestTasks to count.
+     * @example
+     * // Count the number of BacktestTasks
+     * const count = await prisma.backtestTask.count({
+     *   where: {
+     *     // ... the filter for the BacktestTasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends BacktestTaskCountArgs>(
+      args?: Subset<T, BacktestTaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BacktestTaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BacktestTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BacktestTaskAggregateArgs>(args: Subset<T, BacktestTaskAggregateArgs>): Prisma.PrismaPromise<GetBacktestTaskAggregateType<T>>
+
+    /**
+     * Group by BacktestTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestTaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BacktestTaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BacktestTaskGroupByArgs['orderBy'] }
+        : { orderBy?: BacktestTaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BacktestTaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBacktestTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BacktestTask model
+   */
+  readonly fields: BacktestTaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BacktestTask.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BacktestTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    strategyTemplate<T extends StrategyTemplateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StrategyTemplateDefaultArgs<ExtArgs>>): Prisma__StrategyTemplateClient<$Result.GetResult<Prisma.$StrategyTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    results<T extends BacktestTask$resultsArgs<ExtArgs> = {}>(args?: Subset<T, BacktestTask$resultsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BacktestTask model
+   */
+  interface BacktestTaskFieldRefs {
+    readonly id: FieldRef<"BacktestTask", 'String'>
+    readonly strategyTemplateId: FieldRef<"BacktestTask", 'String'>
+    readonly name: FieldRef<"BacktestTask", 'String'>
+    readonly symbol: FieldRef<"BacktestTask", 'String'>
+    readonly interval: FieldRef<"BacktestTask", 'String'>
+    readonly startDate: FieldRef<"BacktestTask", 'DateTime'>
+    readonly endDate: FieldRef<"BacktestTask", 'DateTime'>
+    readonly searchStrategy: FieldRef<"BacktestTask", 'SearchStrategy'>
+    readonly optimizationParams: FieldRef<"BacktestTask", 'Json'>
+    readonly optimizationMetrics: FieldRef<"BacktestTask", 'String[]'>
+    readonly trials: FieldRef<"BacktestTask", 'Int'>
+    readonly status: FieldRef<"BacktestTask", 'BacktestTaskStatus'>
+    readonly assignedWorkerId: FieldRef<"BacktestTask", 'String'>
+    readonly leaseExpiresAt: FieldRef<"BacktestTask", 'DateTime'>
+    readonly lastHeartbeat: FieldRef<"BacktestTask", 'DateTime'>
+    readonly totalConfigs: FieldRef<"BacktestTask", 'Int'>
+    readonly processedConfigs: FieldRef<"BacktestTask", 'Int'>
+    readonly currentConfig: FieldRef<"BacktestTask", 'String'>
+    readonly trialProgress: FieldRef<"BacktestTask", 'String'>
+    readonly bestConfigIds: FieldRef<"BacktestTask", 'String[]'>
+    readonly errorMessage: FieldRef<"BacktestTask", 'String'>
+    readonly startedAt: FieldRef<"BacktestTask", 'DateTime'>
+    readonly completedAt: FieldRef<"BacktestTask", 'DateTime'>
+    readonly createdAt: FieldRef<"BacktestTask", 'DateTime'>
+    readonly updatedAt: FieldRef<"BacktestTask", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BacktestTask findUnique
+   */
+  export type BacktestTaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTask to fetch.
+     */
+    where: BacktestTaskWhereUniqueInput
+  }
+
+  /**
+   * BacktestTask findUniqueOrThrow
+   */
+  export type BacktestTaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTask to fetch.
+     */
+    where: BacktestTaskWhereUniqueInput
+  }
+
+  /**
+   * BacktestTask findFirst
+   */
+  export type BacktestTaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTask to fetch.
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestTasks to fetch.
+     */
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BacktestTasks.
+     */
+    cursor?: BacktestTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestTasks.
+     */
+    distinct?: BacktestTaskScalarFieldEnum | BacktestTaskScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestTask findFirstOrThrow
+   */
+  export type BacktestTaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTask to fetch.
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestTasks to fetch.
+     */
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BacktestTasks.
+     */
+    cursor?: BacktestTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestTasks.
+     */
+    distinct?: BacktestTaskScalarFieldEnum | BacktestTaskScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestTask findMany
+   */
+  export type BacktestTaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestTasks to fetch.
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestTasks to fetch.
+     */
+    orderBy?: BacktestTaskOrderByWithRelationInput | BacktestTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BacktestTasks.
+     */
+    cursor?: BacktestTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestTasks.
+     */
+    distinct?: BacktestTaskScalarFieldEnum | BacktestTaskScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestTask create
+   */
+  export type BacktestTaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BacktestTask.
+     */
+    data: XOR<BacktestTaskCreateInput, BacktestTaskUncheckedCreateInput>
+  }
+
+  /**
+   * BacktestTask createMany
+   */
+  export type BacktestTaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BacktestTasks.
+     */
+    data: BacktestTaskCreateManyInput | BacktestTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BacktestTask createManyAndReturn
+   */
+  export type BacktestTaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many BacktestTasks.
+     */
+    data: BacktestTaskCreateManyInput | BacktestTaskCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BacktestTask update
+   */
+  export type BacktestTaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BacktestTask.
+     */
+    data: XOR<BacktestTaskUpdateInput, BacktestTaskUncheckedUpdateInput>
+    /**
+     * Choose, which BacktestTask to update.
+     */
+    where: BacktestTaskWhereUniqueInput
+  }
+
+  /**
+   * BacktestTask updateMany
+   */
+  export type BacktestTaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BacktestTasks.
+     */
+    data: XOR<BacktestTaskUpdateManyMutationInput, BacktestTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which BacktestTasks to update
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * Limit how many BacktestTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BacktestTask updateManyAndReturn
+   */
+  export type BacktestTaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * The data used to update BacktestTasks.
+     */
+    data: XOR<BacktestTaskUpdateManyMutationInput, BacktestTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which BacktestTasks to update
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * Limit how many BacktestTasks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BacktestTask upsert
+   */
+  export type BacktestTaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BacktestTask to update in case it exists.
+     */
+    where: BacktestTaskWhereUniqueInput
+    /**
+     * In case the BacktestTask found by the `where` argument doesn't exist, create a new BacktestTask with this data.
+     */
+    create: XOR<BacktestTaskCreateInput, BacktestTaskUncheckedCreateInput>
+    /**
+     * In case the BacktestTask was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BacktestTaskUpdateInput, BacktestTaskUncheckedUpdateInput>
+  }
+
+  /**
+   * BacktestTask delete
+   */
+  export type BacktestTaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+    /**
+     * Filter which BacktestTask to delete.
+     */
+    where: BacktestTaskWhereUniqueInput
+  }
+
+  /**
+   * BacktestTask deleteMany
+   */
+  export type BacktestTaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BacktestTasks to delete
+     */
+    where?: BacktestTaskWhereInput
+    /**
+     * Limit how many BacktestTasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BacktestTask.results
+   */
+  export type BacktestTask$resultsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    where?: BacktestResultWhereInput
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    cursor?: BacktestResultWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BacktestResultScalarFieldEnum | BacktestResultScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestTask without action
+   */
+  export type BacktestTaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestTask
+     */
+    select?: BacktestTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestTask
+     */
+    omit?: BacktestTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestTaskInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BacktestResult
+   */
+
+  export type AggregateBacktestResult = {
+    _count: BacktestResultCountAggregateOutputType | null
+    _min: BacktestResultMinAggregateOutputType | null
+    _max: BacktestResultMaxAggregateOutputType | null
+  }
+
+  export type BacktestResultMinAggregateOutputType = {
+    id: string | null
+    taskId: string | null
+    configId: string | null
+    resultFolder: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BacktestResultMaxAggregateOutputType = {
+    id: string | null
+    taskId: string | null
+    configId: string | null
+    resultFolder: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BacktestResultCountAggregateOutputType = {
+    id: number
+    taskId: number
+    configId: number
+    strategyConfig: number
+    metrics: number
+    resultFolder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BacktestResultMinAggregateInputType = {
+    id?: true
+    taskId?: true
+    configId?: true
+    resultFolder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BacktestResultMaxAggregateInputType = {
+    id?: true
+    taskId?: true
+    configId?: true
+    resultFolder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BacktestResultCountAggregateInputType = {
+    id?: true
+    taskId?: true
+    configId?: true
+    strategyConfig?: true
+    metrics?: true
+    resultFolder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BacktestResultAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BacktestResult to aggregate.
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestResults to fetch.
+     */
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BacktestResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BacktestResults
+    **/
+    _count?: true | BacktestResultCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BacktestResultMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BacktestResultMaxAggregateInputType
+  }
+
+  export type GetBacktestResultAggregateType<T extends BacktestResultAggregateArgs> = {
+        [P in keyof T & keyof AggregateBacktestResult]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBacktestResult[P]>
+      : GetScalarType<T[P], AggregateBacktestResult[P]>
+  }
+
+
+
+
+  export type BacktestResultGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BacktestResultWhereInput
+    orderBy?: BacktestResultOrderByWithAggregationInput | BacktestResultOrderByWithAggregationInput[]
+    by: BacktestResultScalarFieldEnum[] | BacktestResultScalarFieldEnum
+    having?: BacktestResultScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BacktestResultCountAggregateInputType | true
+    _min?: BacktestResultMinAggregateInputType
+    _max?: BacktestResultMaxAggregateInputType
+  }
+
+  export type BacktestResultGroupByOutputType = {
+    id: string
+    taskId: string
+    configId: string
+    strategyConfig: JsonValue
+    metrics: JsonValue
+    resultFolder: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BacktestResultCountAggregateOutputType | null
+    _min: BacktestResultMinAggregateOutputType | null
+    _max: BacktestResultMaxAggregateOutputType | null
+  }
+
+  type GetBacktestResultGroupByPayload<T extends BacktestResultGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BacktestResultGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BacktestResultGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BacktestResultGroupByOutputType[P]>
+            : GetScalarType<T[P], BacktestResultGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BacktestResultSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    configId?: boolean
+    strategyConfig?: boolean
+    metrics?: boolean
+    resultFolder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestResult"]>
+
+  export type BacktestResultSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    configId?: boolean
+    strategyConfig?: boolean
+    metrics?: boolean
+    resultFolder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestResult"]>
+
+  export type BacktestResultSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    taskId?: boolean
+    configId?: boolean
+    strategyConfig?: boolean
+    metrics?: boolean
+    resultFolder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["backtestResult"]>
+
+  export type BacktestResultSelectScalar = {
+    id?: boolean
+    taskId?: boolean
+    configId?: boolean
+    strategyConfig?: boolean
+    metrics?: boolean
+    resultFolder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BacktestResultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "taskId" | "configId" | "strategyConfig" | "metrics" | "resultFolder" | "createdAt" | "updatedAt", ExtArgs["result"]["backtestResult"]>
+  export type BacktestResultInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }
+  export type BacktestResultIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }
+  export type BacktestResultIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    task?: boolean | BacktestTaskDefaultArgs<ExtArgs>
+  }
+
+  export type $BacktestResultPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BacktestResult"
+    objects: {
+      task: Prisma.$BacktestTaskPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      taskId: string
+      configId: string
+      strategyConfig: Prisma.JsonValue
+      metrics: Prisma.JsonValue
+      resultFolder: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["backtestResult"]>
+    composites: {}
+  }
+
+  type BacktestResultGetPayload<S extends boolean | null | undefined | BacktestResultDefaultArgs> = $Result.GetResult<Prisma.$BacktestResultPayload, S>
+
+  type BacktestResultCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BacktestResultFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BacktestResultCountAggregateInputType | true
+    }
+
+  export interface BacktestResultDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BacktestResult'], meta: { name: 'BacktestResult' } }
+    /**
+     * Find zero or one BacktestResult that matches the filter.
+     * @param {BacktestResultFindUniqueArgs} args - Arguments to find a BacktestResult
+     * @example
+     * // Get one BacktestResult
+     * const backtestResult = await prisma.backtestResult.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BacktestResultFindUniqueArgs>(args: SelectSubset<T, BacktestResultFindUniqueArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BacktestResult that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BacktestResultFindUniqueOrThrowArgs} args - Arguments to find a BacktestResult
+     * @example
+     * // Get one BacktestResult
+     * const backtestResult = await prisma.backtestResult.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BacktestResultFindUniqueOrThrowArgs>(args: SelectSubset<T, BacktestResultFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BacktestResult that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultFindFirstArgs} args - Arguments to find a BacktestResult
+     * @example
+     * // Get one BacktestResult
+     * const backtestResult = await prisma.backtestResult.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BacktestResultFindFirstArgs>(args?: SelectSubset<T, BacktestResultFindFirstArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BacktestResult that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultFindFirstOrThrowArgs} args - Arguments to find a BacktestResult
+     * @example
+     * // Get one BacktestResult
+     * const backtestResult = await prisma.backtestResult.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BacktestResultFindFirstOrThrowArgs>(args?: SelectSubset<T, BacktestResultFindFirstOrThrowArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BacktestResults that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BacktestResults
+     * const backtestResults = await prisma.backtestResult.findMany()
+     * 
+     * // Get first 10 BacktestResults
+     * const backtestResults = await prisma.backtestResult.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const backtestResultWithIdOnly = await prisma.backtestResult.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends BacktestResultFindManyArgs>(args?: SelectSubset<T, BacktestResultFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BacktestResult.
+     * @param {BacktestResultCreateArgs} args - Arguments to create a BacktestResult.
+     * @example
+     * // Create one BacktestResult
+     * const BacktestResult = await prisma.backtestResult.create({
+     *   data: {
+     *     // ... data to create a BacktestResult
+     *   }
+     * })
+     * 
+     */
+    create<T extends BacktestResultCreateArgs>(args: SelectSubset<T, BacktestResultCreateArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BacktestResults.
+     * @param {BacktestResultCreateManyArgs} args - Arguments to create many BacktestResults.
+     * @example
+     * // Create many BacktestResults
+     * const backtestResult = await prisma.backtestResult.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BacktestResultCreateManyArgs>(args?: SelectSubset<T, BacktestResultCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BacktestResults and returns the data saved in the database.
+     * @param {BacktestResultCreateManyAndReturnArgs} args - Arguments to create many BacktestResults.
+     * @example
+     * // Create many BacktestResults
+     * const backtestResult = await prisma.backtestResult.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BacktestResults and only return the `id`
+     * const backtestResultWithIdOnly = await prisma.backtestResult.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BacktestResultCreateManyAndReturnArgs>(args?: SelectSubset<T, BacktestResultCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BacktestResult.
+     * @param {BacktestResultDeleteArgs} args - Arguments to delete one BacktestResult.
+     * @example
+     * // Delete one BacktestResult
+     * const BacktestResult = await prisma.backtestResult.delete({
+     *   where: {
+     *     // ... filter to delete one BacktestResult
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BacktestResultDeleteArgs>(args: SelectSubset<T, BacktestResultDeleteArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BacktestResult.
+     * @param {BacktestResultUpdateArgs} args - Arguments to update one BacktestResult.
+     * @example
+     * // Update one BacktestResult
+     * const backtestResult = await prisma.backtestResult.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BacktestResultUpdateArgs>(args: SelectSubset<T, BacktestResultUpdateArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BacktestResults.
+     * @param {BacktestResultDeleteManyArgs} args - Arguments to filter BacktestResults to delete.
+     * @example
+     * // Delete a few BacktestResults
+     * const { count } = await prisma.backtestResult.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BacktestResultDeleteManyArgs>(args?: SelectSubset<T, BacktestResultDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BacktestResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BacktestResults
+     * const backtestResult = await prisma.backtestResult.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BacktestResultUpdateManyArgs>(args: SelectSubset<T, BacktestResultUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BacktestResults and returns the data updated in the database.
+     * @param {BacktestResultUpdateManyAndReturnArgs} args - Arguments to update many BacktestResults.
+     * @example
+     * // Update many BacktestResults
+     * const backtestResult = await prisma.backtestResult.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BacktestResults and only return the `id`
+     * const backtestResultWithIdOnly = await prisma.backtestResult.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BacktestResultUpdateManyAndReturnArgs>(args: SelectSubset<T, BacktestResultUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BacktestResult.
+     * @param {BacktestResultUpsertArgs} args - Arguments to update or create a BacktestResult.
+     * @example
+     * // Update or create a BacktestResult
+     * const backtestResult = await prisma.backtestResult.upsert({
+     *   create: {
+     *     // ... data to create a BacktestResult
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BacktestResult we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BacktestResultUpsertArgs>(args: SelectSubset<T, BacktestResultUpsertArgs<ExtArgs>>): Prisma__BacktestResultClient<$Result.GetResult<Prisma.$BacktestResultPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BacktestResults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultCountArgs} args - Arguments to filter BacktestResults to count.
+     * @example
+     * // Count the number of BacktestResults
+     * const count = await prisma.backtestResult.count({
+     *   where: {
+     *     // ... the filter for the BacktestResults we want to count
+     *   }
+     * })
+    **/
+    count<T extends BacktestResultCountArgs>(
+      args?: Subset<T, BacktestResultCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BacktestResultCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BacktestResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BacktestResultAggregateArgs>(args: Subset<T, BacktestResultAggregateArgs>): Prisma.PrismaPromise<GetBacktestResultAggregateType<T>>
+
+    /**
+     * Group by BacktestResult.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BacktestResultGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BacktestResultGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BacktestResultGroupByArgs['orderBy'] }
+        : { orderBy?: BacktestResultGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BacktestResultGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBacktestResultGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BacktestResult model
+   */
+  readonly fields: BacktestResultFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BacktestResult.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BacktestResultClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    task<T extends BacktestTaskDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BacktestTaskDefaultArgs<ExtArgs>>): Prisma__BacktestTaskClient<$Result.GetResult<Prisma.$BacktestTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BacktestResult model
+   */
+  interface BacktestResultFieldRefs {
+    readonly id: FieldRef<"BacktestResult", 'String'>
+    readonly taskId: FieldRef<"BacktestResult", 'String'>
+    readonly configId: FieldRef<"BacktestResult", 'String'>
+    readonly strategyConfig: FieldRef<"BacktestResult", 'Json'>
+    readonly metrics: FieldRef<"BacktestResult", 'Json'>
+    readonly resultFolder: FieldRef<"BacktestResult", 'String'>
+    readonly createdAt: FieldRef<"BacktestResult", 'DateTime'>
+    readonly updatedAt: FieldRef<"BacktestResult", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BacktestResult findUnique
+   */
+  export type BacktestResultFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResult to fetch.
+     */
+    where: BacktestResultWhereUniqueInput
+  }
+
+  /**
+   * BacktestResult findUniqueOrThrow
+   */
+  export type BacktestResultFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResult to fetch.
+     */
+    where: BacktestResultWhereUniqueInput
+  }
+
+  /**
+   * BacktestResult findFirst
+   */
+  export type BacktestResultFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResult to fetch.
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestResults to fetch.
+     */
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BacktestResults.
+     */
+    cursor?: BacktestResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestResults.
+     */
+    distinct?: BacktestResultScalarFieldEnum | BacktestResultScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestResult findFirstOrThrow
+   */
+  export type BacktestResultFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResult to fetch.
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestResults to fetch.
+     */
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BacktestResults.
+     */
+    cursor?: BacktestResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestResults.
+     */
+    distinct?: BacktestResultScalarFieldEnum | BacktestResultScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestResult findMany
+   */
+  export type BacktestResultFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter, which BacktestResults to fetch.
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BacktestResults to fetch.
+     */
+    orderBy?: BacktestResultOrderByWithRelationInput | BacktestResultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BacktestResults.
+     */
+    cursor?: BacktestResultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BacktestResults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BacktestResults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BacktestResults.
+     */
+    distinct?: BacktestResultScalarFieldEnum | BacktestResultScalarFieldEnum[]
+  }
+
+  /**
+   * BacktestResult create
+   */
+  export type BacktestResultCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BacktestResult.
+     */
+    data: XOR<BacktestResultCreateInput, BacktestResultUncheckedCreateInput>
+  }
+
+  /**
+   * BacktestResult createMany
+   */
+  export type BacktestResultCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BacktestResults.
+     */
+    data: BacktestResultCreateManyInput | BacktestResultCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BacktestResult createManyAndReturn
+   */
+  export type BacktestResultCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * The data used to create many BacktestResults.
+     */
+    data: BacktestResultCreateManyInput | BacktestResultCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BacktestResult update
+   */
+  export type BacktestResultUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BacktestResult.
+     */
+    data: XOR<BacktestResultUpdateInput, BacktestResultUncheckedUpdateInput>
+    /**
+     * Choose, which BacktestResult to update.
+     */
+    where: BacktestResultWhereUniqueInput
+  }
+
+  /**
+   * BacktestResult updateMany
+   */
+  export type BacktestResultUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BacktestResults.
+     */
+    data: XOR<BacktestResultUpdateManyMutationInput, BacktestResultUncheckedUpdateManyInput>
+    /**
+     * Filter which BacktestResults to update
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * Limit how many BacktestResults to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BacktestResult updateManyAndReturn
+   */
+  export type BacktestResultUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * The data used to update BacktestResults.
+     */
+    data: XOR<BacktestResultUpdateManyMutationInput, BacktestResultUncheckedUpdateManyInput>
+    /**
+     * Filter which BacktestResults to update
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * Limit how many BacktestResults to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BacktestResult upsert
+   */
+  export type BacktestResultUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BacktestResult to update in case it exists.
+     */
+    where: BacktestResultWhereUniqueInput
+    /**
+     * In case the BacktestResult found by the `where` argument doesn't exist, create a new BacktestResult with this data.
+     */
+    create: XOR<BacktestResultCreateInput, BacktestResultUncheckedCreateInput>
+    /**
+     * In case the BacktestResult was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BacktestResultUpdateInput, BacktestResultUncheckedUpdateInput>
+  }
+
+  /**
+   * BacktestResult delete
+   */
+  export type BacktestResultDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+    /**
+     * Filter which BacktestResult to delete.
+     */
+    where: BacktestResultWhereUniqueInput
+  }
+
+  /**
+   * BacktestResult deleteMany
+   */
+  export type BacktestResultDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BacktestResults to delete
+     */
+    where?: BacktestResultWhereInput
+    /**
+     * Limit how many BacktestResults to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BacktestResult without action
+   */
+  export type BacktestResultDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BacktestResult
+     */
+    select?: BacktestResultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BacktestResult
+     */
+    omit?: BacktestResultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BacktestResultInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -15012,12 +26584,179 @@ export namespace Prisma {
   export type HobbyScalarFieldEnum = (typeof HobbyScalarFieldEnum)[keyof typeof HobbyScalarFieldEnum]
 
 
+  export const WorkerScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    deviceNumber: 'deviceNumber',
+    platform: 'platform',
+    arch: 'arch',
+    version: 'version',
+    status: 'status',
+    lastSeenAt: 'lastSeenAt',
+    consecutiveFailures: 'consecutiveFailures',
+    quarantinedAt: 'quarantinedAt',
+    targetVersion: 'targetVersion',
+    upgradeStatus: 'upgradeStatus',
+    upgradeMessage: 'upgradeMessage',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkerScalarFieldEnum = (typeof WorkerScalarFieldEnum)[keyof typeof WorkerScalarFieldEnum]
+
+
+  export const EdgeReleaseScalarFieldEnum: {
+    id: 'id',
+    version: 'version',
+    windowsUrl: 'windowsUrl',
+    linuxUrl: 'linuxUrl',
+    checksum: 'checksum',
+    signature: 'signature',
+    signatureAlgorithm: 'signatureAlgorithm',
+    signingKeyId: 'signingKeyId',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EdgeReleaseScalarFieldEnum = (typeof EdgeReleaseScalarFieldEnum)[keyof typeof EdgeReleaseScalarFieldEnum]
+
+
+  export const UpgradeCampaignScalarFieldEnum: {
+    id: 'id',
+    targetVersion: 'targetVersion',
+    previousVersion: 'previousVersion',
+    forceMode: 'forceMode',
+    phaseSize: 'phaseSize',
+    currentPhase: 'currentPhase',
+    successThreshold: 'successThreshold',
+    failureThreshold: 'failureThreshold',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UpgradeCampaignScalarFieldEnum = (typeof UpgradeCampaignScalarFieldEnum)[keyof typeof UpgradeCampaignScalarFieldEnum]
+
+
+  export const UpgradeCampaignWorkerScalarFieldEnum: {
+    id: 'id',
+    campaignId: 'campaignId',
+    workerId: 'workerId',
+    phase: 'phase',
+    status: 'status',
+    message: 'message',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UpgradeCampaignWorkerScalarFieldEnum = (typeof UpgradeCampaignWorkerScalarFieldEnum)[keyof typeof UpgradeCampaignWorkerScalarFieldEnum]
+
+
+  export const WorkerCredentialScalarFieldEnum: {
+    id: 'id',
+    workerId: 'workerId',
+    keyPrefix: 'keyPrefix',
+    keyHash: 'keyHash',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    rotatedAt: 'rotatedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkerCredentialScalarFieldEnum = (typeof WorkerCredentialScalarFieldEnum)[keyof typeof WorkerCredentialScalarFieldEnum]
+
+
+  export const EdgeEnrollmentTokenScalarFieldEnum: {
+    id: 'id',
+    label: 'label',
+    tokenPrefix: 'tokenPrefix',
+    tokenHash: 'tokenHash',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    maxUses: 'maxUses',
+    usedCount: 'usedCount',
+    lastUsedAt: 'lastUsedAt',
+    revokedAt: 'revokedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EdgeEnrollmentTokenScalarFieldEnum = (typeof EdgeEnrollmentTokenScalarFieldEnum)[keyof typeof EdgeEnrollmentTokenScalarFieldEnum]
+
+
+  export const StrategyTemplateScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    category: 'category',
+    factoryConfig: 'factoryConfig',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StrategyTemplateScalarFieldEnum = (typeof StrategyTemplateScalarFieldEnum)[keyof typeof StrategyTemplateScalarFieldEnum]
+
+
+  export const BacktestTaskScalarFieldEnum: {
+    id: 'id',
+    strategyTemplateId: 'strategyTemplateId',
+    name: 'name',
+    symbol: 'symbol',
+    interval: 'interval',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    searchStrategy: 'searchStrategy',
+    optimizationParams: 'optimizationParams',
+    optimizationMetrics: 'optimizationMetrics',
+    trials: 'trials',
+    status: 'status',
+    assignedWorkerId: 'assignedWorkerId',
+    leaseExpiresAt: 'leaseExpiresAt',
+    lastHeartbeat: 'lastHeartbeat',
+    totalConfigs: 'totalConfigs',
+    processedConfigs: 'processedConfigs',
+    currentConfig: 'currentConfig',
+    trialProgress: 'trialProgress',
+    bestConfigIds: 'bestConfigIds',
+    errorMessage: 'errorMessage',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BacktestTaskScalarFieldEnum = (typeof BacktestTaskScalarFieldEnum)[keyof typeof BacktestTaskScalarFieldEnum]
+
+
+  export const BacktestResultScalarFieldEnum: {
+    id: 'id',
+    taskId: 'taskId',
+    configId: 'configId',
+    strategyConfig: 'strategyConfig',
+    metrics: 'metrics',
+    resultFolder: 'resultFolder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BacktestResultScalarFieldEnum = (typeof BacktestResultScalarFieldEnum)[keyof typeof BacktestResultScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -15034,6 +26773,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -15098,6 +26846,41 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'WorkerStatus'
+   */
+  export type EnumWorkerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerStatus[]'
+   */
+  export type ListEnumWorkerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerUpgradeStatus'
+   */
+  export type EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerUpgradeStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerUpgradeStatus[]'
+   */
+  export type ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerUpgradeStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -15108,6 +26891,104 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'UpgradeCampaignStatus'
+   */
+  export type EnumUpgradeCampaignStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UpgradeCampaignStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'UpgradeCampaignStatus[]'
+   */
+  export type ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UpgradeCampaignStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'UpgradeCampaignWorkerStatus'
+   */
+  export type EnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UpgradeCampaignWorkerStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'UpgradeCampaignWorkerStatus[]'
+   */
+  export type ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UpgradeCampaignWorkerStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerCredentialStatus'
+   */
+  export type EnumWorkerCredentialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerCredentialStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerCredentialStatus[]'
+   */
+  export type ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerCredentialStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EdgeEnrollmentTokenStatus'
+   */
+  export type EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EdgeEnrollmentTokenStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'EdgeEnrollmentTokenStatus[]'
+   */
+  export type ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EdgeEnrollmentTokenStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'SearchStrategy'
+   */
+  export type EnumSearchStrategyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SearchStrategy'>
+    
+
+
+  /**
+   * Reference to a field of type 'SearchStrategy[]'
+   */
+  export type ListEnumSearchStrategyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SearchStrategy[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BacktestTaskStatus'
+   */
+  export type EnumBacktestTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BacktestTaskStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'BacktestTaskStatus[]'
+   */
+  export type ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BacktestTaskStatus[]'>
     
   /**
    * Deep Input Types
@@ -15986,6 +27867,821 @@ export namespace Prisma {
     sortOrder?: IntWithAggregatesFilter<"Hobby"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Hobby"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Hobby"> | Date | string
+  }
+
+  export type WorkerWhereInput = {
+    AND?: WorkerWhereInput | WorkerWhereInput[]
+    OR?: WorkerWhereInput[]
+    NOT?: WorkerWhereInput | WorkerWhereInput[]
+    id?: StringFilter<"Worker"> | string
+    name?: StringFilter<"Worker"> | string
+    deviceNumber?: StringNullableFilter<"Worker"> | string | null
+    platform?: StringNullableFilter<"Worker"> | string | null
+    arch?: StringNullableFilter<"Worker"> | string | null
+    version?: StringNullableFilter<"Worker"> | string | null
+    status?: EnumWorkerStatusFilter<"Worker"> | $Enums.WorkerStatus
+    lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
+    consecutiveFailures?: IntFilter<"Worker"> | number
+    quarantinedAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
+    targetVersion?: StringNullableFilter<"Worker"> | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: StringNullableFilter<"Worker"> | string | null
+    createdAt?: DateTimeFilter<"Worker"> | Date | string
+    updatedAt?: DateTimeFilter<"Worker"> | Date | string
+    credentials?: WorkerCredentialListRelationFilter
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerListRelationFilter
+  }
+
+  export type WorkerOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    deviceNumber?: SortOrderInput | SortOrder
+    platform?: SortOrderInput | SortOrder
+    arch?: SortOrderInput | SortOrder
+    version?: SortOrderInput | SortOrder
+    status?: SortOrder
+    lastSeenAt?: SortOrderInput | SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrderInput | SortOrder
+    targetVersion?: SortOrderInput | SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    credentials?: WorkerCredentialOrderByRelationAggregateInput
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerOrderByRelationAggregateInput
+  }
+
+  export type WorkerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    deviceNumber?: string
+    AND?: WorkerWhereInput | WorkerWhereInput[]
+    OR?: WorkerWhereInput[]
+    NOT?: WorkerWhereInput | WorkerWhereInput[]
+    name?: StringFilter<"Worker"> | string
+    platform?: StringNullableFilter<"Worker"> | string | null
+    arch?: StringNullableFilter<"Worker"> | string | null
+    version?: StringNullableFilter<"Worker"> | string | null
+    status?: EnumWorkerStatusFilter<"Worker"> | $Enums.WorkerStatus
+    lastSeenAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
+    consecutiveFailures?: IntFilter<"Worker"> | number
+    quarantinedAt?: DateTimeNullableFilter<"Worker"> | Date | string | null
+    targetVersion?: StringNullableFilter<"Worker"> | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: StringNullableFilter<"Worker"> | string | null
+    createdAt?: DateTimeFilter<"Worker"> | Date | string
+    updatedAt?: DateTimeFilter<"Worker"> | Date | string
+    credentials?: WorkerCredentialListRelationFilter
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerListRelationFilter
+  }, "id" | "deviceNumber">
+
+  export type WorkerOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    deviceNumber?: SortOrderInput | SortOrder
+    platform?: SortOrderInput | SortOrder
+    arch?: SortOrderInput | SortOrder
+    version?: SortOrderInput | SortOrder
+    status?: SortOrder
+    lastSeenAt?: SortOrderInput | SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrderInput | SortOrder
+    targetVersion?: SortOrderInput | SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkerCountOrderByAggregateInput
+    _avg?: WorkerAvgOrderByAggregateInput
+    _max?: WorkerMaxOrderByAggregateInput
+    _min?: WorkerMinOrderByAggregateInput
+    _sum?: WorkerSumOrderByAggregateInput
+  }
+
+  export type WorkerScalarWhereWithAggregatesInput = {
+    AND?: WorkerScalarWhereWithAggregatesInput | WorkerScalarWhereWithAggregatesInput[]
+    OR?: WorkerScalarWhereWithAggregatesInput[]
+    NOT?: WorkerScalarWhereWithAggregatesInput | WorkerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Worker"> | string
+    name?: StringWithAggregatesFilter<"Worker"> | string
+    deviceNumber?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    platform?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    arch?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    version?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    status?: EnumWorkerStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerStatus
+    lastSeenAt?: DateTimeNullableWithAggregatesFilter<"Worker"> | Date | string | null
+    consecutiveFailures?: IntWithAggregatesFilter<"Worker"> | number
+    quarantinedAt?: DateTimeNullableWithAggregatesFilter<"Worker"> | Date | string | null
+    targetVersion?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
+  }
+
+  export type EdgeReleaseWhereInput = {
+    AND?: EdgeReleaseWhereInput | EdgeReleaseWhereInput[]
+    OR?: EdgeReleaseWhereInput[]
+    NOT?: EdgeReleaseWhereInput | EdgeReleaseWhereInput[]
+    id?: StringFilter<"EdgeRelease"> | string
+    version?: StringFilter<"EdgeRelease"> | string
+    windowsUrl?: StringFilter<"EdgeRelease"> | string
+    linuxUrl?: StringFilter<"EdgeRelease"> | string
+    checksum?: StringFilter<"EdgeRelease"> | string
+    signature?: StringFilter<"EdgeRelease"> | string
+    signatureAlgorithm?: StringFilter<"EdgeRelease"> | string
+    signingKeyId?: StringNullableFilter<"EdgeRelease"> | string | null
+    notes?: StringNullableFilter<"EdgeRelease"> | string | null
+    createdAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+  }
+
+  export type EdgeReleaseOrderByWithRelationInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    version?: string
+    AND?: EdgeReleaseWhereInput | EdgeReleaseWhereInput[]
+    OR?: EdgeReleaseWhereInput[]
+    NOT?: EdgeReleaseWhereInput | EdgeReleaseWhereInput[]
+    windowsUrl?: StringFilter<"EdgeRelease"> | string
+    linuxUrl?: StringFilter<"EdgeRelease"> | string
+    checksum?: StringFilter<"EdgeRelease"> | string
+    signature?: StringFilter<"EdgeRelease"> | string
+    signatureAlgorithm?: StringFilter<"EdgeRelease"> | string
+    signingKeyId?: StringNullableFilter<"EdgeRelease"> | string | null
+    notes?: StringNullableFilter<"EdgeRelease"> | string | null
+    createdAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+  }, "id" | "version">
+
+  export type EdgeReleaseOrderByWithAggregationInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EdgeReleaseCountOrderByAggregateInput
+    _max?: EdgeReleaseMaxOrderByAggregateInput
+    _min?: EdgeReleaseMinOrderByAggregateInput
+  }
+
+  export type EdgeReleaseScalarWhereWithAggregatesInput = {
+    AND?: EdgeReleaseScalarWhereWithAggregatesInput | EdgeReleaseScalarWhereWithAggregatesInput[]
+    OR?: EdgeReleaseScalarWhereWithAggregatesInput[]
+    NOT?: EdgeReleaseScalarWhereWithAggregatesInput | EdgeReleaseScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    version?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    windowsUrl?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    linuxUrl?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    checksum?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    signature?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    signatureAlgorithm?: StringWithAggregatesFilter<"EdgeRelease"> | string
+    signingKeyId?: StringNullableWithAggregatesFilter<"EdgeRelease"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"EdgeRelease"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EdgeRelease"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EdgeRelease"> | Date | string
+  }
+
+  export type UpgradeCampaignWhereInput = {
+    AND?: UpgradeCampaignWhereInput | UpgradeCampaignWhereInput[]
+    OR?: UpgradeCampaignWhereInput[]
+    NOT?: UpgradeCampaignWhereInput | UpgradeCampaignWhereInput[]
+    id?: StringFilter<"UpgradeCampaign"> | string
+    targetVersion?: StringFilter<"UpgradeCampaign"> | string
+    previousVersion?: StringNullableFilter<"UpgradeCampaign"> | string | null
+    forceMode?: BoolFilter<"UpgradeCampaign"> | boolean
+    phaseSize?: IntFilter<"UpgradeCampaign"> | number
+    currentPhase?: IntFilter<"UpgradeCampaign"> | number
+    successThreshold?: FloatFilter<"UpgradeCampaign"> | number
+    failureThreshold?: FloatFilter<"UpgradeCampaign"> | number
+    status?: EnumUpgradeCampaignStatusFilter<"UpgradeCampaign"> | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeFilter<"UpgradeCampaign"> | Date | string
+    updatedAt?: DateTimeFilter<"UpgradeCampaign"> | Date | string
+    workers?: UpgradeCampaignWorkerListRelationFilter
+  }
+
+  export type UpgradeCampaignOrderByWithRelationInput = {
+    id?: SortOrder
+    targetVersion?: SortOrder
+    previousVersion?: SortOrderInput | SortOrder
+    forceMode?: SortOrder
+    phaseSize?: SortOrder
+    currentPhase?: SortOrder
+    successThreshold?: SortOrder
+    failureThreshold?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    workers?: UpgradeCampaignWorkerOrderByRelationAggregateInput
+  }
+
+  export type UpgradeCampaignWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: UpgradeCampaignWhereInput | UpgradeCampaignWhereInput[]
+    OR?: UpgradeCampaignWhereInput[]
+    NOT?: UpgradeCampaignWhereInput | UpgradeCampaignWhereInput[]
+    targetVersion?: StringFilter<"UpgradeCampaign"> | string
+    previousVersion?: StringNullableFilter<"UpgradeCampaign"> | string | null
+    forceMode?: BoolFilter<"UpgradeCampaign"> | boolean
+    phaseSize?: IntFilter<"UpgradeCampaign"> | number
+    currentPhase?: IntFilter<"UpgradeCampaign"> | number
+    successThreshold?: FloatFilter<"UpgradeCampaign"> | number
+    failureThreshold?: FloatFilter<"UpgradeCampaign"> | number
+    status?: EnumUpgradeCampaignStatusFilter<"UpgradeCampaign"> | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeFilter<"UpgradeCampaign"> | Date | string
+    updatedAt?: DateTimeFilter<"UpgradeCampaign"> | Date | string
+    workers?: UpgradeCampaignWorkerListRelationFilter
+  }, "id">
+
+  export type UpgradeCampaignOrderByWithAggregationInput = {
+    id?: SortOrder
+    targetVersion?: SortOrder
+    previousVersion?: SortOrderInput | SortOrder
+    forceMode?: SortOrder
+    phaseSize?: SortOrder
+    currentPhase?: SortOrder
+    successThreshold?: SortOrder
+    failureThreshold?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UpgradeCampaignCountOrderByAggregateInput
+    _avg?: UpgradeCampaignAvgOrderByAggregateInput
+    _max?: UpgradeCampaignMaxOrderByAggregateInput
+    _min?: UpgradeCampaignMinOrderByAggregateInput
+    _sum?: UpgradeCampaignSumOrderByAggregateInput
+  }
+
+  export type UpgradeCampaignScalarWhereWithAggregatesInput = {
+    AND?: UpgradeCampaignScalarWhereWithAggregatesInput | UpgradeCampaignScalarWhereWithAggregatesInput[]
+    OR?: UpgradeCampaignScalarWhereWithAggregatesInput[]
+    NOT?: UpgradeCampaignScalarWhereWithAggregatesInput | UpgradeCampaignScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UpgradeCampaign"> | string
+    targetVersion?: StringWithAggregatesFilter<"UpgradeCampaign"> | string
+    previousVersion?: StringNullableWithAggregatesFilter<"UpgradeCampaign"> | string | null
+    forceMode?: BoolWithAggregatesFilter<"UpgradeCampaign"> | boolean
+    phaseSize?: IntWithAggregatesFilter<"UpgradeCampaign"> | number
+    currentPhase?: IntWithAggregatesFilter<"UpgradeCampaign"> | number
+    successThreshold?: FloatWithAggregatesFilter<"UpgradeCampaign"> | number
+    failureThreshold?: FloatWithAggregatesFilter<"UpgradeCampaign"> | number
+    status?: EnumUpgradeCampaignStatusWithAggregatesFilter<"UpgradeCampaign"> | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeWithAggregatesFilter<"UpgradeCampaign"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UpgradeCampaign"> | Date | string
+  }
+
+  export type UpgradeCampaignWorkerWhereInput = {
+    AND?: UpgradeCampaignWorkerWhereInput | UpgradeCampaignWorkerWhereInput[]
+    OR?: UpgradeCampaignWorkerWhereInput[]
+    NOT?: UpgradeCampaignWorkerWhereInput | UpgradeCampaignWorkerWhereInput[]
+    id?: StringFilter<"UpgradeCampaignWorker"> | string
+    campaignId?: StringFilter<"UpgradeCampaignWorker"> | string
+    workerId?: StringFilter<"UpgradeCampaignWorker"> | string
+    phase?: IntFilter<"UpgradeCampaignWorker"> | number
+    status?: EnumUpgradeCampaignWorkerStatusFilter<"UpgradeCampaignWorker"> | $Enums.UpgradeCampaignWorkerStatus
+    message?: StringNullableFilter<"UpgradeCampaignWorker"> | string | null
+    createdAt?: DateTimeFilter<"UpgradeCampaignWorker"> | Date | string
+    updatedAt?: DateTimeFilter<"UpgradeCampaignWorker"> | Date | string
+    campaign?: XOR<UpgradeCampaignScalarRelationFilter, UpgradeCampaignWhereInput>
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
+  }
+
+  export type UpgradeCampaignWorkerOrderByWithRelationInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    workerId?: SortOrder
+    phase?: SortOrder
+    status?: SortOrder
+    message?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    campaign?: UpgradeCampaignOrderByWithRelationInput
+    worker?: WorkerOrderByWithRelationInput
+  }
+
+  export type UpgradeCampaignWorkerWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    campaignId_workerId?: UpgradeCampaignWorkerCampaignIdWorkerIdCompoundUniqueInput
+    AND?: UpgradeCampaignWorkerWhereInput | UpgradeCampaignWorkerWhereInput[]
+    OR?: UpgradeCampaignWorkerWhereInput[]
+    NOT?: UpgradeCampaignWorkerWhereInput | UpgradeCampaignWorkerWhereInput[]
+    campaignId?: StringFilter<"UpgradeCampaignWorker"> | string
+    workerId?: StringFilter<"UpgradeCampaignWorker"> | string
+    phase?: IntFilter<"UpgradeCampaignWorker"> | number
+    status?: EnumUpgradeCampaignWorkerStatusFilter<"UpgradeCampaignWorker"> | $Enums.UpgradeCampaignWorkerStatus
+    message?: StringNullableFilter<"UpgradeCampaignWorker"> | string | null
+    createdAt?: DateTimeFilter<"UpgradeCampaignWorker"> | Date | string
+    updatedAt?: DateTimeFilter<"UpgradeCampaignWorker"> | Date | string
+    campaign?: XOR<UpgradeCampaignScalarRelationFilter, UpgradeCampaignWhereInput>
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
+  }, "id" | "campaignId_workerId">
+
+  export type UpgradeCampaignWorkerOrderByWithAggregationInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    workerId?: SortOrder
+    phase?: SortOrder
+    status?: SortOrder
+    message?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UpgradeCampaignWorkerCountOrderByAggregateInput
+    _avg?: UpgradeCampaignWorkerAvgOrderByAggregateInput
+    _max?: UpgradeCampaignWorkerMaxOrderByAggregateInput
+    _min?: UpgradeCampaignWorkerMinOrderByAggregateInput
+    _sum?: UpgradeCampaignWorkerSumOrderByAggregateInput
+  }
+
+  export type UpgradeCampaignWorkerScalarWhereWithAggregatesInput = {
+    AND?: UpgradeCampaignWorkerScalarWhereWithAggregatesInput | UpgradeCampaignWorkerScalarWhereWithAggregatesInput[]
+    OR?: UpgradeCampaignWorkerScalarWhereWithAggregatesInput[]
+    NOT?: UpgradeCampaignWorkerScalarWhereWithAggregatesInput | UpgradeCampaignWorkerScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UpgradeCampaignWorker"> | string
+    campaignId?: StringWithAggregatesFilter<"UpgradeCampaignWorker"> | string
+    workerId?: StringWithAggregatesFilter<"UpgradeCampaignWorker"> | string
+    phase?: IntWithAggregatesFilter<"UpgradeCampaignWorker"> | number
+    status?: EnumUpgradeCampaignWorkerStatusWithAggregatesFilter<"UpgradeCampaignWorker"> | $Enums.UpgradeCampaignWorkerStatus
+    message?: StringNullableWithAggregatesFilter<"UpgradeCampaignWorker"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"UpgradeCampaignWorker"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UpgradeCampaignWorker"> | Date | string
+  }
+
+  export type WorkerCredentialWhereInput = {
+    AND?: WorkerCredentialWhereInput | WorkerCredentialWhereInput[]
+    OR?: WorkerCredentialWhereInput[]
+    NOT?: WorkerCredentialWhereInput | WorkerCredentialWhereInput[]
+    id?: StringFilter<"WorkerCredential"> | string
+    workerId?: StringFilter<"WorkerCredential"> | string
+    keyPrefix?: StringFilter<"WorkerCredential"> | string
+    keyHash?: StringFilter<"WorkerCredential"> | string
+    status?: EnumWorkerCredentialStatusFilter<"WorkerCredential"> | $Enums.WorkerCredentialStatus
+    expiresAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    rotatedAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
+  }
+
+  export type WorkerCredentialOrderByWithRelationInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    rotatedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    worker?: WorkerOrderByWithRelationInput
+  }
+
+  export type WorkerCredentialWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    keyPrefix?: string
+    AND?: WorkerCredentialWhereInput | WorkerCredentialWhereInput[]
+    OR?: WorkerCredentialWhereInput[]
+    NOT?: WorkerCredentialWhereInput | WorkerCredentialWhereInput[]
+    workerId?: StringFilter<"WorkerCredential"> | string
+    keyHash?: StringFilter<"WorkerCredential"> | string
+    status?: EnumWorkerCredentialStatusFilter<"WorkerCredential"> | $Enums.WorkerCredentialStatus
+    expiresAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    rotatedAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    worker?: XOR<WorkerScalarRelationFilter, WorkerWhereInput>
+  }, "id" | "keyPrefix">
+
+  export type WorkerCredentialOrderByWithAggregationInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    rotatedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkerCredentialCountOrderByAggregateInput
+    _max?: WorkerCredentialMaxOrderByAggregateInput
+    _min?: WorkerCredentialMinOrderByAggregateInput
+  }
+
+  export type WorkerCredentialScalarWhereWithAggregatesInput = {
+    AND?: WorkerCredentialScalarWhereWithAggregatesInput | WorkerCredentialScalarWhereWithAggregatesInput[]
+    OR?: WorkerCredentialScalarWhereWithAggregatesInput[]
+    NOT?: WorkerCredentialScalarWhereWithAggregatesInput | WorkerCredentialScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkerCredential"> | string
+    workerId?: StringWithAggregatesFilter<"WorkerCredential"> | string
+    keyPrefix?: StringWithAggregatesFilter<"WorkerCredential"> | string
+    keyHash?: StringWithAggregatesFilter<"WorkerCredential"> | string
+    status?: EnumWorkerCredentialStatusWithAggregatesFilter<"WorkerCredential"> | $Enums.WorkerCredentialStatus
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"WorkerCredential"> | Date | string | null
+    rotatedAt?: DateTimeNullableWithAggregatesFilter<"WorkerCredential"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WorkerCredential"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkerCredential"> | Date | string
+  }
+
+  export type EdgeEnrollmentTokenWhereInput = {
+    AND?: EdgeEnrollmentTokenWhereInput | EdgeEnrollmentTokenWhereInput[]
+    OR?: EdgeEnrollmentTokenWhereInput[]
+    NOT?: EdgeEnrollmentTokenWhereInput | EdgeEnrollmentTokenWhereInput[]
+    id?: StringFilter<"EdgeEnrollmentToken"> | string
+    label?: StringNullableFilter<"EdgeEnrollmentToken"> | string | null
+    tokenPrefix?: StringFilter<"EdgeEnrollmentToken"> | string
+    tokenHash?: StringFilter<"EdgeEnrollmentToken"> | string
+    status?: EnumEdgeEnrollmentTokenStatusFilter<"EdgeEnrollmentToken"> | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    maxUses?: IntNullableFilter<"EdgeEnrollmentToken"> | number | null
+    usedCount?: IntFilter<"EdgeEnrollmentToken"> | number
+    lastUsedAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EdgeEnrollmentToken"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeEnrollmentToken"> | Date | string
+  }
+
+  export type EdgeEnrollmentTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    label?: SortOrderInput | SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    maxUses?: SortOrderInput | SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    tokenPrefix?: string
+    AND?: EdgeEnrollmentTokenWhereInput | EdgeEnrollmentTokenWhereInput[]
+    OR?: EdgeEnrollmentTokenWhereInput[]
+    NOT?: EdgeEnrollmentTokenWhereInput | EdgeEnrollmentTokenWhereInput[]
+    label?: StringNullableFilter<"EdgeEnrollmentToken"> | string | null
+    tokenHash?: StringFilter<"EdgeEnrollmentToken"> | string
+    status?: EnumEdgeEnrollmentTokenStatusFilter<"EdgeEnrollmentToken"> | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    maxUses?: IntNullableFilter<"EdgeEnrollmentToken"> | number | null
+    usedCount?: IntFilter<"EdgeEnrollmentToken"> | number
+    lastUsedAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"EdgeEnrollmentToken"> | Date | string | null
+    createdAt?: DateTimeFilter<"EdgeEnrollmentToken"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeEnrollmentToken"> | Date | string
+  }, "id" | "tokenPrefix">
+
+  export type EdgeEnrollmentTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    label?: SortOrderInput | SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    maxUses?: SortOrderInput | SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EdgeEnrollmentTokenCountOrderByAggregateInput
+    _avg?: EdgeEnrollmentTokenAvgOrderByAggregateInput
+    _max?: EdgeEnrollmentTokenMaxOrderByAggregateInput
+    _min?: EdgeEnrollmentTokenMinOrderByAggregateInput
+    _sum?: EdgeEnrollmentTokenSumOrderByAggregateInput
+  }
+
+  export type EdgeEnrollmentTokenScalarWhereWithAggregatesInput = {
+    AND?: EdgeEnrollmentTokenScalarWhereWithAggregatesInput | EdgeEnrollmentTokenScalarWhereWithAggregatesInput[]
+    OR?: EdgeEnrollmentTokenScalarWhereWithAggregatesInput[]
+    NOT?: EdgeEnrollmentTokenScalarWhereWithAggregatesInput | EdgeEnrollmentTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EdgeEnrollmentToken"> | string
+    label?: StringNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | string | null
+    tokenPrefix?: StringWithAggregatesFilter<"EdgeEnrollmentToken"> | string
+    tokenHash?: StringWithAggregatesFilter<"EdgeEnrollmentToken"> | string
+    status?: EnumEdgeEnrollmentTokenStatusWithAggregatesFilter<"EdgeEnrollmentToken"> | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string | null
+    maxUses?: IntNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | number | null
+    usedCount?: IntWithAggregatesFilter<"EdgeEnrollmentToken"> | number
+    lastUsedAt?: DateTimeNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string | null
+    revokedAt?: DateTimeNullableWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EdgeEnrollmentToken"> | Date | string
+  }
+
+  export type StrategyTemplateWhereInput = {
+    AND?: StrategyTemplateWhereInput | StrategyTemplateWhereInput[]
+    OR?: StrategyTemplateWhereInput[]
+    NOT?: StrategyTemplateWhereInput | StrategyTemplateWhereInput[]
+    id?: StringFilter<"StrategyTemplate"> | string
+    name?: StringFilter<"StrategyTemplate"> | string
+    category?: StringNullableFilter<"StrategyTemplate"> | string | null
+    factoryConfig?: JsonFilter<"StrategyTemplate">
+    isActive?: BoolFilter<"StrategyTemplate"> | boolean
+    createdAt?: DateTimeFilter<"StrategyTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"StrategyTemplate"> | Date | string
+    tasks?: BacktestTaskListRelationFilter
+  }
+
+  export type StrategyTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrderInput | SortOrder
+    factoryConfig?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    tasks?: BacktestTaskOrderByRelationAggregateInput
+  }
+
+  export type StrategyTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StrategyTemplateWhereInput | StrategyTemplateWhereInput[]
+    OR?: StrategyTemplateWhereInput[]
+    NOT?: StrategyTemplateWhereInput | StrategyTemplateWhereInput[]
+    name?: StringFilter<"StrategyTemplate"> | string
+    category?: StringNullableFilter<"StrategyTemplate"> | string | null
+    factoryConfig?: JsonFilter<"StrategyTemplate">
+    isActive?: BoolFilter<"StrategyTemplate"> | boolean
+    createdAt?: DateTimeFilter<"StrategyTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"StrategyTemplate"> | Date | string
+    tasks?: BacktestTaskListRelationFilter
+  }, "id">
+
+  export type StrategyTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrderInput | SortOrder
+    factoryConfig?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StrategyTemplateCountOrderByAggregateInput
+    _max?: StrategyTemplateMaxOrderByAggregateInput
+    _min?: StrategyTemplateMinOrderByAggregateInput
+  }
+
+  export type StrategyTemplateScalarWhereWithAggregatesInput = {
+    AND?: StrategyTemplateScalarWhereWithAggregatesInput | StrategyTemplateScalarWhereWithAggregatesInput[]
+    OR?: StrategyTemplateScalarWhereWithAggregatesInput[]
+    NOT?: StrategyTemplateScalarWhereWithAggregatesInput | StrategyTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StrategyTemplate"> | string
+    name?: StringWithAggregatesFilter<"StrategyTemplate"> | string
+    category?: StringNullableWithAggregatesFilter<"StrategyTemplate"> | string | null
+    factoryConfig?: JsonWithAggregatesFilter<"StrategyTemplate">
+    isActive?: BoolWithAggregatesFilter<"StrategyTemplate"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"StrategyTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StrategyTemplate"> | Date | string
+  }
+
+  export type BacktestTaskWhereInput = {
+    AND?: BacktestTaskWhereInput | BacktestTaskWhereInput[]
+    OR?: BacktestTaskWhereInput[]
+    NOT?: BacktestTaskWhereInput | BacktestTaskWhereInput[]
+    id?: StringFilter<"BacktestTask"> | string
+    strategyTemplateId?: StringFilter<"BacktestTask"> | string
+    name?: StringFilter<"BacktestTask"> | string
+    symbol?: StringFilter<"BacktestTask"> | string
+    interval?: StringFilter<"BacktestTask"> | string
+    startDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    endDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    searchStrategy?: EnumSearchStrategyFilter<"BacktestTask"> | $Enums.SearchStrategy
+    optimizationParams?: JsonFilter<"BacktestTask">
+    optimizationMetrics?: StringNullableListFilter<"BacktestTask">
+    trials?: IntFilter<"BacktestTask"> | number
+    status?: EnumBacktestTaskStatusFilter<"BacktestTask"> | $Enums.BacktestTaskStatus
+    assignedWorkerId?: StringNullableFilter<"BacktestTask"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    lastHeartbeat?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    totalConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    processedConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    currentConfig?: StringNullableFilter<"BacktestTask"> | string | null
+    trialProgress?: StringNullableFilter<"BacktestTask"> | string | null
+    bestConfigIds?: StringNullableListFilter<"BacktestTask">
+    errorMessage?: StringNullableFilter<"BacktestTask"> | string | null
+    startedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    strategyTemplate?: XOR<StrategyTemplateScalarRelationFilter, StrategyTemplateWhereInput>
+    results?: BacktestResultListRelationFilter
+  }
+
+  export type BacktestTaskOrderByWithRelationInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    optimizationParams?: SortOrder
+    optimizationMetrics?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrderInput | SortOrder
+    leaseExpiresAt?: SortOrderInput | SortOrder
+    lastHeartbeat?: SortOrderInput | SortOrder
+    totalConfigs?: SortOrderInput | SortOrder
+    processedConfigs?: SortOrderInput | SortOrder
+    currentConfig?: SortOrderInput | SortOrder
+    trialProgress?: SortOrderInput | SortOrder
+    bestConfigIds?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    strategyTemplate?: StrategyTemplateOrderByWithRelationInput
+    results?: BacktestResultOrderByRelationAggregateInput
+  }
+
+  export type BacktestTaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: BacktestTaskWhereInput | BacktestTaskWhereInput[]
+    OR?: BacktestTaskWhereInput[]
+    NOT?: BacktestTaskWhereInput | BacktestTaskWhereInput[]
+    strategyTemplateId?: StringFilter<"BacktestTask"> | string
+    name?: StringFilter<"BacktestTask"> | string
+    symbol?: StringFilter<"BacktestTask"> | string
+    interval?: StringFilter<"BacktestTask"> | string
+    startDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    endDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    searchStrategy?: EnumSearchStrategyFilter<"BacktestTask"> | $Enums.SearchStrategy
+    optimizationParams?: JsonFilter<"BacktestTask">
+    optimizationMetrics?: StringNullableListFilter<"BacktestTask">
+    trials?: IntFilter<"BacktestTask"> | number
+    status?: EnumBacktestTaskStatusFilter<"BacktestTask"> | $Enums.BacktestTaskStatus
+    assignedWorkerId?: StringNullableFilter<"BacktestTask"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    lastHeartbeat?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    totalConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    processedConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    currentConfig?: StringNullableFilter<"BacktestTask"> | string | null
+    trialProgress?: StringNullableFilter<"BacktestTask"> | string | null
+    bestConfigIds?: StringNullableListFilter<"BacktestTask">
+    errorMessage?: StringNullableFilter<"BacktestTask"> | string | null
+    startedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    strategyTemplate?: XOR<StrategyTemplateScalarRelationFilter, StrategyTemplateWhereInput>
+    results?: BacktestResultListRelationFilter
+  }, "id">
+
+  export type BacktestTaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    optimizationParams?: SortOrder
+    optimizationMetrics?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrderInput | SortOrder
+    leaseExpiresAt?: SortOrderInput | SortOrder
+    lastHeartbeat?: SortOrderInput | SortOrder
+    totalConfigs?: SortOrderInput | SortOrder
+    processedConfigs?: SortOrderInput | SortOrder
+    currentConfig?: SortOrderInput | SortOrder
+    trialProgress?: SortOrderInput | SortOrder
+    bestConfigIds?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BacktestTaskCountOrderByAggregateInput
+    _avg?: BacktestTaskAvgOrderByAggregateInput
+    _max?: BacktestTaskMaxOrderByAggregateInput
+    _min?: BacktestTaskMinOrderByAggregateInput
+    _sum?: BacktestTaskSumOrderByAggregateInput
+  }
+
+  export type BacktestTaskScalarWhereWithAggregatesInput = {
+    AND?: BacktestTaskScalarWhereWithAggregatesInput | BacktestTaskScalarWhereWithAggregatesInput[]
+    OR?: BacktestTaskScalarWhereWithAggregatesInput[]
+    NOT?: BacktestTaskScalarWhereWithAggregatesInput | BacktestTaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BacktestTask"> | string
+    strategyTemplateId?: StringWithAggregatesFilter<"BacktestTask"> | string
+    name?: StringWithAggregatesFilter<"BacktestTask"> | string
+    symbol?: StringWithAggregatesFilter<"BacktestTask"> | string
+    interval?: StringWithAggregatesFilter<"BacktestTask"> | string
+    startDate?: DateTimeWithAggregatesFilter<"BacktestTask"> | Date | string
+    endDate?: DateTimeWithAggregatesFilter<"BacktestTask"> | Date | string
+    searchStrategy?: EnumSearchStrategyWithAggregatesFilter<"BacktestTask"> | $Enums.SearchStrategy
+    optimizationParams?: JsonWithAggregatesFilter<"BacktestTask">
+    optimizationMetrics?: StringNullableListFilter<"BacktestTask">
+    trials?: IntWithAggregatesFilter<"BacktestTask"> | number
+    status?: EnumBacktestTaskStatusWithAggregatesFilter<"BacktestTask"> | $Enums.BacktestTaskStatus
+    assignedWorkerId?: StringNullableWithAggregatesFilter<"BacktestTask"> | string | null
+    leaseExpiresAt?: DateTimeNullableWithAggregatesFilter<"BacktestTask"> | Date | string | null
+    lastHeartbeat?: DateTimeNullableWithAggregatesFilter<"BacktestTask"> | Date | string | null
+    totalConfigs?: IntNullableWithAggregatesFilter<"BacktestTask"> | number | null
+    processedConfigs?: IntNullableWithAggregatesFilter<"BacktestTask"> | number | null
+    currentConfig?: StringNullableWithAggregatesFilter<"BacktestTask"> | string | null
+    trialProgress?: StringNullableWithAggregatesFilter<"BacktestTask"> | string | null
+    bestConfigIds?: StringNullableListFilter<"BacktestTask">
+    errorMessage?: StringNullableWithAggregatesFilter<"BacktestTask"> | string | null
+    startedAt?: DateTimeNullableWithAggregatesFilter<"BacktestTask"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"BacktestTask"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BacktestTask"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BacktestTask"> | Date | string
+  }
+
+  export type BacktestResultWhereInput = {
+    AND?: BacktestResultWhereInput | BacktestResultWhereInput[]
+    OR?: BacktestResultWhereInput[]
+    NOT?: BacktestResultWhereInput | BacktestResultWhereInput[]
+    id?: StringFilter<"BacktestResult"> | string
+    taskId?: StringFilter<"BacktestResult"> | string
+    configId?: StringFilter<"BacktestResult"> | string
+    strategyConfig?: JsonFilter<"BacktestResult">
+    metrics?: JsonFilter<"BacktestResult">
+    resultFolder?: StringNullableFilter<"BacktestResult"> | string | null
+    createdAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    task?: XOR<BacktestTaskScalarRelationFilter, BacktestTaskWhereInput>
+  }
+
+  export type BacktestResultOrderByWithRelationInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    strategyConfig?: SortOrder
+    metrics?: SortOrder
+    resultFolder?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    task?: BacktestTaskOrderByWithRelationInput
+  }
+
+  export type BacktestResultWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    taskId_configId?: BacktestResultTaskIdConfigIdCompoundUniqueInput
+    AND?: BacktestResultWhereInput | BacktestResultWhereInput[]
+    OR?: BacktestResultWhereInput[]
+    NOT?: BacktestResultWhereInput | BacktestResultWhereInput[]
+    taskId?: StringFilter<"BacktestResult"> | string
+    configId?: StringFilter<"BacktestResult"> | string
+    strategyConfig?: JsonFilter<"BacktestResult">
+    metrics?: JsonFilter<"BacktestResult">
+    resultFolder?: StringNullableFilter<"BacktestResult"> | string | null
+    createdAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    task?: XOR<BacktestTaskScalarRelationFilter, BacktestTaskWhereInput>
+  }, "id" | "taskId_configId">
+
+  export type BacktestResultOrderByWithAggregationInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    strategyConfig?: SortOrder
+    metrics?: SortOrder
+    resultFolder?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BacktestResultCountOrderByAggregateInput
+    _max?: BacktestResultMaxOrderByAggregateInput
+    _min?: BacktestResultMinOrderByAggregateInput
+  }
+
+  export type BacktestResultScalarWhereWithAggregatesInput = {
+    AND?: BacktestResultScalarWhereWithAggregatesInput | BacktestResultScalarWhereWithAggregatesInput[]
+    OR?: BacktestResultScalarWhereWithAggregatesInput[]
+    NOT?: BacktestResultScalarWhereWithAggregatesInput | BacktestResultScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"BacktestResult"> | string
+    taskId?: StringWithAggregatesFilter<"BacktestResult"> | string
+    configId?: StringWithAggregatesFilter<"BacktestResult"> | string
+    strategyConfig?: JsonWithAggregatesFilter<"BacktestResult">
+    metrics?: JsonWithAggregatesFilter<"BacktestResult">
+    resultFolder?: StringNullableWithAggregatesFilter<"BacktestResult"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"BacktestResult"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"BacktestResult"> | Date | string
   }
 
   export type ProfileCreateInput = {
@@ -16938,6 +29634,952 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WorkerCreateInput = {
+    id?: string
+    name: string
+    deviceNumber?: string | null
+    platform?: string | null
+    arch?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    credentials?: WorkerCredentialCreateNestedManyWithoutWorkerInput
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerUncheckedCreateInput = {
+    id?: string
+    name: string
+    deviceNumber?: string | null
+    platform?: string | null
+    arch?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    credentials?: WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerUncheckedCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentials?: WorkerCredentialUpdateManyWithoutWorkerNestedInput
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentials?: WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerUncheckedUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerCreateManyInput = {
+    id?: string
+    name: string
+    deviceNumber?: string | null
+    platform?: string | null
+    arch?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseCreateInput = {
+    id?: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseUncheckedCreateInput = {
+    id?: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseCreateManyInput = {
+    id?: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignCreateInput = {
+    id?: string
+    targetVersion: string
+    previousVersion?: string | null
+    forceMode?: boolean
+    phaseSize?: number
+    currentPhase?: number
+    successThreshold?: number
+    failureThreshold?: number
+    status?: $Enums.UpgradeCampaignStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workers?: UpgradeCampaignWorkerCreateNestedManyWithoutCampaignInput
+  }
+
+  export type UpgradeCampaignUncheckedCreateInput = {
+    id?: string
+    targetVersion: string
+    previousVersion?: string | null
+    forceMode?: boolean
+    phaseSize?: number
+    currentPhase?: number
+    successThreshold?: number
+    failureThreshold?: number
+    status?: $Enums.UpgradeCampaignStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workers?: UpgradeCampaignWorkerUncheckedCreateNestedManyWithoutCampaignInput
+  }
+
+  export type UpgradeCampaignUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetVersion?: StringFieldUpdateOperationsInput | string
+    previousVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    forceMode?: BoolFieldUpdateOperationsInput | boolean
+    phaseSize?: IntFieldUpdateOperationsInput | number
+    currentPhase?: IntFieldUpdateOperationsInput | number
+    successThreshold?: FloatFieldUpdateOperationsInput | number
+    failureThreshold?: FloatFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workers?: UpgradeCampaignWorkerUpdateManyWithoutCampaignNestedInput
+  }
+
+  export type UpgradeCampaignUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetVersion?: StringFieldUpdateOperationsInput | string
+    previousVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    forceMode?: BoolFieldUpdateOperationsInput | boolean
+    phaseSize?: IntFieldUpdateOperationsInput | number
+    currentPhase?: IntFieldUpdateOperationsInput | number
+    successThreshold?: FloatFieldUpdateOperationsInput | number
+    failureThreshold?: FloatFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workers?: UpgradeCampaignWorkerUncheckedUpdateManyWithoutCampaignNestedInput
+  }
+
+  export type UpgradeCampaignCreateManyInput = {
+    id?: string
+    targetVersion: string
+    previousVersion?: string | null
+    forceMode?: boolean
+    phaseSize?: number
+    currentPhase?: number
+    successThreshold?: number
+    failureThreshold?: number
+    status?: $Enums.UpgradeCampaignStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetVersion?: StringFieldUpdateOperationsInput | string
+    previousVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    forceMode?: BoolFieldUpdateOperationsInput | boolean
+    phaseSize?: IntFieldUpdateOperationsInput | number
+    currentPhase?: IntFieldUpdateOperationsInput | number
+    successThreshold?: FloatFieldUpdateOperationsInput | number
+    failureThreshold?: FloatFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetVersion?: StringFieldUpdateOperationsInput | string
+    previousVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    forceMode?: BoolFieldUpdateOperationsInput | boolean
+    phaseSize?: IntFieldUpdateOperationsInput | number
+    currentPhase?: IntFieldUpdateOperationsInput | number
+    successThreshold?: FloatFieldUpdateOperationsInput | number
+    failureThreshold?: FloatFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignWorkerCreateInput = {
+    id?: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    campaign: UpgradeCampaignCreateNestedOneWithoutWorkersInput
+    worker: WorkerCreateNestedOneWithoutUpgradeCampaignWorkersInput
+  }
+
+  export type UpgradeCampaignWorkerUncheckedCreateInput = {
+    id?: string
+    campaignId: string
+    workerId: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignWorkerUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    campaign?: UpgradeCampaignUpdateOneRequiredWithoutWorkersNestedInput
+    worker?: WorkerUpdateOneRequiredWithoutUpgradeCampaignWorkersNestedInput
+  }
+
+  export type UpgradeCampaignWorkerUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    campaignId?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignWorkerCreateManyInput = {
+    id?: string
+    campaignId: string
+    workerId: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignWorkerUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignWorkerUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    campaignId?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialCreateInput = {
+    id?: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    worker: WorkerCreateNestedOneWithoutCredentialsInput
+  }
+
+  export type WorkerCredentialUncheckedCreateInput = {
+    id?: string
+    workerId: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    worker?: WorkerUpdateOneRequiredWithoutCredentialsNestedInput
+  }
+
+  export type WorkerCredentialUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialCreateManyInput = {
+    id?: string
+    workerId: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeEnrollmentTokenCreateInput = {
+    id?: string
+    label?: string | null
+    tokenPrefix: string
+    tokenHash: string
+    status?: $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    usedCount?: number
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeEnrollmentTokenUncheckedCreateInput = {
+    id?: string
+    label?: string | null
+    tokenPrefix: string
+    tokenHash: string
+    status?: $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    usedCount?: number
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeEnrollmentTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenPrefix?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    usedCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeEnrollmentTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenPrefix?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    usedCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeEnrollmentTokenCreateManyInput = {
+    id?: string
+    label?: string | null
+    tokenPrefix: string
+    tokenHash: string
+    status?: $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: Date | string | null
+    maxUses?: number | null
+    usedCount?: number
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeEnrollmentTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenPrefix?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    usedCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeEnrollmentTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenPrefix?: StringFieldUpdateOperationsInput | string
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput | $Enums.EdgeEnrollmentTokenStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    maxUses?: NullableIntFieldUpdateOperationsInput | number | null
+    usedCount?: IntFieldUpdateOperationsInput | number
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StrategyTemplateCreateInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tasks?: BacktestTaskCreateNestedManyWithoutStrategyTemplateInput
+  }
+
+  export type StrategyTemplateUncheckedCreateInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tasks?: BacktestTaskUncheckedCreateNestedManyWithoutStrategyTemplateInput
+  }
+
+  export type StrategyTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: BacktestTaskUpdateManyWithoutStrategyTemplateNestedInput
+  }
+
+  export type StrategyTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: BacktestTaskUncheckedUpdateManyWithoutStrategyTemplateNestedInput
+  }
+
+  export type StrategyTemplateCreateManyInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StrategyTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StrategyTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestTaskCreateInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    strategyTemplate: StrategyTemplateCreateNestedOneWithoutTasksInput
+    results?: BacktestResultCreateNestedManyWithoutTaskInput
+  }
+
+  export type BacktestTaskUncheckedCreateInput = {
+    id?: string
+    strategyTemplateId: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    results?: BacktestResultUncheckedCreateNestedManyWithoutTaskInput
+  }
+
+  export type BacktestTaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    strategyTemplate?: StrategyTemplateUpdateOneRequiredWithoutTasksNestedInput
+    results?: BacktestResultUpdateManyWithoutTaskNestedInput
+  }
+
+  export type BacktestTaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategyTemplateId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: BacktestResultUncheckedUpdateManyWithoutTaskNestedInput
+  }
+
+  export type BacktestTaskCreateManyInput = {
+    id?: string
+    strategyTemplateId: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestTaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestTaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategyTemplateId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultCreateInput = {
+    id?: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    task: BacktestTaskCreateNestedOneWithoutResultsInput
+  }
+
+  export type BacktestResultUncheckedCreateInput = {
+    id?: string
+    taskId: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    task?: BacktestTaskUpdateOneRequiredWithoutResultsNestedInput
+  }
+
+  export type BacktestResultUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    taskId?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultCreateManyInput = {
+    id?: string
+    taskId: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    taskId?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -17691,6 +31333,767 @@ export namespace Prisma {
     sortOrder?: SortOrder
   }
 
+  export type EnumWorkerStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerStatus | EnumWorkerStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerStatusFilter<$PrismaModel> | $Enums.WorkerStatus
+  }
+
+  export type EnumWorkerUpgradeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerUpgradeStatus | EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
+  }
+
+  export type WorkerCredentialListRelationFilter = {
+    every?: WorkerCredentialWhereInput
+    some?: WorkerCredentialWhereInput
+    none?: WorkerCredentialWhereInput
+  }
+
+  export type UpgradeCampaignWorkerListRelationFilter = {
+    every?: UpgradeCampaignWorkerWhereInput
+    some?: UpgradeCampaignWorkerWhereInput
+    none?: UpgradeCampaignWorkerWhereInput
+  }
+
+  export type WorkerCredentialOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UpgradeCampaignWorkerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WorkerCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    deviceNumber?: SortOrder
+    platform?: SortOrder
+    arch?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    lastSeenAt?: SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrder
+    targetVersion?: SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerAvgOrderByAggregateInput = {
+    consecutiveFailures?: SortOrder
+  }
+
+  export type WorkerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    deviceNumber?: SortOrder
+    platform?: SortOrder
+    arch?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    lastSeenAt?: SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrder
+    targetVersion?: SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    deviceNumber?: SortOrder
+    platform?: SortOrder
+    arch?: SortOrder
+    version?: SortOrder
+    status?: SortOrder
+    lastSeenAt?: SortOrder
+    consecutiveFailures?: SortOrder
+    quarantinedAt?: SortOrder
+    targetVersion?: SortOrder
+    upgradeStatus?: SortOrder
+    upgradeMessage?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerSumOrderByAggregateInput = {
+    consecutiveFailures?: SortOrder
+  }
+
+  export type EnumWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerStatus | EnumWorkerStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerStatusFilter<$PrismaModel>
+  }
+
+  export type EnumWorkerUpgradeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerUpgradeStatus | EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerUpgradeStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+  }
+
+  export type EdgeReleaseCountOrderByAggregateInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseMaxOrderByAggregateInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseMinOrderByAggregateInput = {
+    id?: SortOrder
+    version?: SortOrder
+    windowsUrl?: SortOrder
+    linuxUrl?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type EnumUpgradeCampaignStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.UpgradeCampaignStatus | EnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UpgradeCampaignStatus[] | ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UpgradeCampaignStatus[] | ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUpgradeCampaignStatusFilter<$PrismaModel> | $Enums.UpgradeCampaignStatus
+  }
+
+  export type UpgradeCampaignCountOrderByAggregateInput = {
+    id?: SortOrder
+    targetVersion?: SortOrder
+    previousVersion?: SortOrder
+    forceMode?: SortOrder
+    phaseSize?: SortOrder
+    currentPhase?: SortOrder
+    successThreshold?: SortOrder
+    failureThreshold?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UpgradeCampaignAvgOrderByAggregateInput = {
+    phaseSize?: SortOrder
+    currentPhase?: SortOrder
+    successThreshold?: SortOrder
+    failureThreshold?: SortOrder
+  }
+
+  export type UpgradeCampaignMaxOrderByAggregateInput = {
+    id?: SortOrder
+    targetVersion?: SortOrder
+    previousVersion?: SortOrder
+    forceMode?: SortOrder
+    phaseSize?: SortOrder
+    currentPhase?: SortOrder
+    successThreshold?: SortOrder
+    failureThreshold?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UpgradeCampaignMinOrderByAggregateInput = {
+    id?: SortOrder
+    targetVersion?: SortOrder
+    previousVersion?: SortOrder
+    forceMode?: SortOrder
+    phaseSize?: SortOrder
+    currentPhase?: SortOrder
+    successThreshold?: SortOrder
+    failureThreshold?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UpgradeCampaignSumOrderByAggregateInput = {
+    phaseSize?: SortOrder
+    currentPhase?: SortOrder
+    successThreshold?: SortOrder
+    failureThreshold?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type EnumUpgradeCampaignStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UpgradeCampaignStatus | EnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UpgradeCampaignStatus[] | ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UpgradeCampaignStatus[] | ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUpgradeCampaignStatusWithAggregatesFilter<$PrismaModel> | $Enums.UpgradeCampaignStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUpgradeCampaignStatusFilter<$PrismaModel>
+    _max?: NestedEnumUpgradeCampaignStatusFilter<$PrismaModel>
+  }
+
+  export type EnumUpgradeCampaignWorkerStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.UpgradeCampaignWorkerStatus | EnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UpgradeCampaignWorkerStatus[] | ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UpgradeCampaignWorkerStatus[] | ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUpgradeCampaignWorkerStatusFilter<$PrismaModel> | $Enums.UpgradeCampaignWorkerStatus
+  }
+
+  export type UpgradeCampaignScalarRelationFilter = {
+    is?: UpgradeCampaignWhereInput
+    isNot?: UpgradeCampaignWhereInput
+  }
+
+  export type WorkerScalarRelationFilter = {
+    is?: WorkerWhereInput
+    isNot?: WorkerWhereInput
+  }
+
+  export type UpgradeCampaignWorkerCampaignIdWorkerIdCompoundUniqueInput = {
+    campaignId: string
+    workerId: string
+  }
+
+  export type UpgradeCampaignWorkerCountOrderByAggregateInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    workerId?: SortOrder
+    phase?: SortOrder
+    status?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UpgradeCampaignWorkerAvgOrderByAggregateInput = {
+    phase?: SortOrder
+  }
+
+  export type UpgradeCampaignWorkerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    workerId?: SortOrder
+    phase?: SortOrder
+    status?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UpgradeCampaignWorkerMinOrderByAggregateInput = {
+    id?: SortOrder
+    campaignId?: SortOrder
+    workerId?: SortOrder
+    phase?: SortOrder
+    status?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UpgradeCampaignWorkerSumOrderByAggregateInput = {
+    phase?: SortOrder
+  }
+
+  export type EnumUpgradeCampaignWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UpgradeCampaignWorkerStatus | EnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UpgradeCampaignWorkerStatus[] | ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UpgradeCampaignWorkerStatus[] | ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUpgradeCampaignWorkerStatusWithAggregatesFilter<$PrismaModel> | $Enums.UpgradeCampaignWorkerStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUpgradeCampaignWorkerStatusFilter<$PrismaModel>
+    _max?: NestedEnumUpgradeCampaignWorkerStatusFilter<$PrismaModel>
+  }
+
+  export type EnumWorkerCredentialStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerCredentialStatus | EnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel> | $Enums.WorkerCredentialStatus
+  }
+
+  export type WorkerCredentialCountOrderByAggregateInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    rotatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerCredentialMaxOrderByAggregateInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    rotatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkerCredentialMinOrderByAggregateInput = {
+    id?: SortOrder
+    workerId?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    rotatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumWorkerCredentialStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerCredentialStatus | EnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerCredentialStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerCredentialStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
+  }
+
+  export type EnumEdgeEnrollmentTokenStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EdgeEnrollmentTokenStatus | EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type EdgeEnrollmentTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenAvgOrderByAggregateInput = {
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    tokenPrefix?: SortOrder
+    tokenHash?: SortOrder
+    status?: SortOrder
+    expiresAt?: SortOrder
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeEnrollmentTokenSumOrderByAggregateInput = {
+    maxUses?: SortOrder
+    usedCount?: SortOrder
+  }
+
+  export type EnumEdgeEnrollmentTokenStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EdgeEnrollmentTokenStatus | EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEdgeEnrollmentTokenStatusWithAggregatesFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
+    _max?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type BacktestTaskListRelationFilter = {
+    every?: BacktestTaskWhereInput
+    some?: BacktestTaskWhereInput
+    none?: BacktestTaskWhereInput
+  }
+
+  export type BacktestTaskOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StrategyTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrder
+    factoryConfig?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StrategyTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StrategyTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    category?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type EnumSearchStrategyFilter<$PrismaModel = never> = {
+    equals?: $Enums.SearchStrategy | EnumSearchStrategyFieldRefInput<$PrismaModel>
+    in?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    not?: NestedEnumSearchStrategyFilter<$PrismaModel> | $Enums.SearchStrategy
+  }
+
+  export type EnumBacktestTaskStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BacktestTaskStatus | EnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBacktestTaskStatusFilter<$PrismaModel> | $Enums.BacktestTaskStatus
+  }
+
+  export type StrategyTemplateScalarRelationFilter = {
+    is?: StrategyTemplateWhereInput
+    isNot?: StrategyTemplateWhereInput
+  }
+
+  export type BacktestResultListRelationFilter = {
+    every?: BacktestResultWhereInput
+    some?: BacktestResultWhereInput
+    none?: BacktestResultWhereInput
+  }
+
+  export type BacktestResultOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BacktestTaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    optimizationParams?: SortOrder
+    optimizationMetrics?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrder
+    leaseExpiresAt?: SortOrder
+    lastHeartbeat?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+    currentConfig?: SortOrder
+    trialProgress?: SortOrder
+    bestConfigIds?: SortOrder
+    errorMessage?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestTaskAvgOrderByAggregateInput = {
+    trials?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+  }
+
+  export type BacktestTaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrder
+    leaseExpiresAt?: SortOrder
+    lastHeartbeat?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+    currentConfig?: SortOrder
+    trialProgress?: SortOrder
+    errorMessage?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestTaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    strategyTemplateId?: SortOrder
+    name?: SortOrder
+    symbol?: SortOrder
+    interval?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    searchStrategy?: SortOrder
+    trials?: SortOrder
+    status?: SortOrder
+    assignedWorkerId?: SortOrder
+    leaseExpiresAt?: SortOrder
+    lastHeartbeat?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+    currentConfig?: SortOrder
+    trialProgress?: SortOrder
+    errorMessage?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestTaskSumOrderByAggregateInput = {
+    trials?: SortOrder
+    totalConfigs?: SortOrder
+    processedConfigs?: SortOrder
+  }
+
+  export type EnumSearchStrategyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SearchStrategy | EnumSearchStrategyFieldRefInput<$PrismaModel>
+    in?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    not?: NestedEnumSearchStrategyWithAggregatesFilter<$PrismaModel> | $Enums.SearchStrategy
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSearchStrategyFilter<$PrismaModel>
+    _max?: NestedEnumSearchStrategyFilter<$PrismaModel>
+  }
+
+  export type EnumBacktestTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BacktestTaskStatus | EnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBacktestTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.BacktestTaskStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
+    _max?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
+  }
+
+  export type BacktestTaskScalarRelationFilter = {
+    is?: BacktestTaskWhereInput
+    isNot?: BacktestTaskWhereInput
+  }
+
+  export type BacktestResultTaskIdConfigIdCompoundUniqueInput = {
+    taskId: string
+    configId: string
+  }
+
+  export type BacktestResultCountOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    strategyConfig?: SortOrder
+    metrics?: SortOrder
+    resultFolder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestResultMaxOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    resultFolder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BacktestResultMinOrderByAggregateInput = {
+    id?: SortOrder
+    taskId?: SortOrder
+    configId?: SortOrder
+    resultFolder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type ProjectCreateNestedManyWithoutProfileInput = {
     create?: XOR<ProjectCreateWithoutProfileInput, ProjectUncheckedCreateWithoutProfileInput> | ProjectCreateWithoutProfileInput[] | ProjectUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: ProjectCreateOrConnectWithoutProfileInput | ProjectCreateOrConnectWithoutProfileInput[]
@@ -18373,6 +32776,356 @@ export namespace Prisma {
     update?: XOR<XOR<ProfileUpdateToOneWithWhereWithoutHobbiesInput, ProfileUpdateWithoutHobbiesInput>, ProfileUncheckedUpdateWithoutHobbiesInput>
   }
 
+  export type WorkerCredentialCreateNestedManyWithoutWorkerInput = {
+    create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
+    createMany?: WorkerCredentialCreateManyWorkerInputEnvelope
+    connect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+  }
+
+  export type UpgradeCampaignWorkerCreateNestedManyWithoutWorkerInput = {
+    create?: XOR<UpgradeCampaignWorkerCreateWithoutWorkerInput, UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput> | UpgradeCampaignWorkerCreateWithoutWorkerInput[] | UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput | UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput[]
+    createMany?: UpgradeCampaignWorkerCreateManyWorkerInputEnvelope
+    connect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+  }
+
+  export type WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput = {
+    create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
+    createMany?: WorkerCredentialCreateManyWorkerInputEnvelope
+    connect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+  }
+
+  export type UpgradeCampaignWorkerUncheckedCreateNestedManyWithoutWorkerInput = {
+    create?: XOR<UpgradeCampaignWorkerCreateWithoutWorkerInput, UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput> | UpgradeCampaignWorkerCreateWithoutWorkerInput[] | UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput | UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput[]
+    createMany?: UpgradeCampaignWorkerCreateManyWorkerInputEnvelope
+    connect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+  }
+
+  export type EnumWorkerStatusFieldUpdateOperationsInput = {
+    set?: $Enums.WorkerStatus
+  }
+
+  export type EnumWorkerUpgradeStatusFieldUpdateOperationsInput = {
+    set?: $Enums.WorkerUpgradeStatus
+  }
+
+  export type WorkerCredentialUpdateManyWithoutWorkerNestedInput = {
+    create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
+    upsert?: WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput | WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput[]
+    createMany?: WorkerCredentialCreateManyWorkerInputEnvelope
+    set?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    disconnect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    delete?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    connect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    update?: WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput | WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput[]
+    updateMany?: WorkerCredentialUpdateManyWithWhereWithoutWorkerInput | WorkerCredentialUpdateManyWithWhereWithoutWorkerInput[]
+    deleteMany?: WorkerCredentialScalarWhereInput | WorkerCredentialScalarWhereInput[]
+  }
+
+  export type UpgradeCampaignWorkerUpdateManyWithoutWorkerNestedInput = {
+    create?: XOR<UpgradeCampaignWorkerCreateWithoutWorkerInput, UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput> | UpgradeCampaignWorkerCreateWithoutWorkerInput[] | UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput | UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput[]
+    upsert?: UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutWorkerInput | UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutWorkerInput[]
+    createMany?: UpgradeCampaignWorkerCreateManyWorkerInputEnvelope
+    set?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    disconnect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    delete?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    connect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    update?: UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutWorkerInput | UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutWorkerInput[]
+    updateMany?: UpgradeCampaignWorkerUpdateManyWithWhereWithoutWorkerInput | UpgradeCampaignWorkerUpdateManyWithWhereWithoutWorkerInput[]
+    deleteMany?: UpgradeCampaignWorkerScalarWhereInput | UpgradeCampaignWorkerScalarWhereInput[]
+  }
+
+  export type WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput = {
+    create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
+    upsert?: WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput | WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput[]
+    createMany?: WorkerCredentialCreateManyWorkerInputEnvelope
+    set?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    disconnect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    delete?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    connect?: WorkerCredentialWhereUniqueInput | WorkerCredentialWhereUniqueInput[]
+    update?: WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput | WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput[]
+    updateMany?: WorkerCredentialUpdateManyWithWhereWithoutWorkerInput | WorkerCredentialUpdateManyWithWhereWithoutWorkerInput[]
+    deleteMany?: WorkerCredentialScalarWhereInput | WorkerCredentialScalarWhereInput[]
+  }
+
+  export type UpgradeCampaignWorkerUncheckedUpdateManyWithoutWorkerNestedInput = {
+    create?: XOR<UpgradeCampaignWorkerCreateWithoutWorkerInput, UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput> | UpgradeCampaignWorkerCreateWithoutWorkerInput[] | UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput[]
+    connectOrCreate?: UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput | UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput[]
+    upsert?: UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutWorkerInput | UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutWorkerInput[]
+    createMany?: UpgradeCampaignWorkerCreateManyWorkerInputEnvelope
+    set?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    disconnect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    delete?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    connect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    update?: UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutWorkerInput | UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutWorkerInput[]
+    updateMany?: UpgradeCampaignWorkerUpdateManyWithWhereWithoutWorkerInput | UpgradeCampaignWorkerUpdateManyWithWhereWithoutWorkerInput[]
+    deleteMany?: UpgradeCampaignWorkerScalarWhereInput | UpgradeCampaignWorkerScalarWhereInput[]
+  }
+
+  export type UpgradeCampaignWorkerCreateNestedManyWithoutCampaignInput = {
+    create?: XOR<UpgradeCampaignWorkerCreateWithoutCampaignInput, UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput> | UpgradeCampaignWorkerCreateWithoutCampaignInput[] | UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput[]
+    connectOrCreate?: UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput | UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput[]
+    createMany?: UpgradeCampaignWorkerCreateManyCampaignInputEnvelope
+    connect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+  }
+
+  export type UpgradeCampaignWorkerUncheckedCreateNestedManyWithoutCampaignInput = {
+    create?: XOR<UpgradeCampaignWorkerCreateWithoutCampaignInput, UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput> | UpgradeCampaignWorkerCreateWithoutCampaignInput[] | UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput[]
+    connectOrCreate?: UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput | UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput[]
+    createMany?: UpgradeCampaignWorkerCreateManyCampaignInputEnvelope
+    connect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type EnumUpgradeCampaignStatusFieldUpdateOperationsInput = {
+    set?: $Enums.UpgradeCampaignStatus
+  }
+
+  export type UpgradeCampaignWorkerUpdateManyWithoutCampaignNestedInput = {
+    create?: XOR<UpgradeCampaignWorkerCreateWithoutCampaignInput, UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput> | UpgradeCampaignWorkerCreateWithoutCampaignInput[] | UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput[]
+    connectOrCreate?: UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput | UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput[]
+    upsert?: UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutCampaignInput | UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutCampaignInput[]
+    createMany?: UpgradeCampaignWorkerCreateManyCampaignInputEnvelope
+    set?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    disconnect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    delete?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    connect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    update?: UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutCampaignInput | UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutCampaignInput[]
+    updateMany?: UpgradeCampaignWorkerUpdateManyWithWhereWithoutCampaignInput | UpgradeCampaignWorkerUpdateManyWithWhereWithoutCampaignInput[]
+    deleteMany?: UpgradeCampaignWorkerScalarWhereInput | UpgradeCampaignWorkerScalarWhereInput[]
+  }
+
+  export type UpgradeCampaignWorkerUncheckedUpdateManyWithoutCampaignNestedInput = {
+    create?: XOR<UpgradeCampaignWorkerCreateWithoutCampaignInput, UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput> | UpgradeCampaignWorkerCreateWithoutCampaignInput[] | UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput[]
+    connectOrCreate?: UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput | UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput[]
+    upsert?: UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutCampaignInput | UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutCampaignInput[]
+    createMany?: UpgradeCampaignWorkerCreateManyCampaignInputEnvelope
+    set?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    disconnect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    delete?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    connect?: UpgradeCampaignWorkerWhereUniqueInput | UpgradeCampaignWorkerWhereUniqueInput[]
+    update?: UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutCampaignInput | UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutCampaignInput[]
+    updateMany?: UpgradeCampaignWorkerUpdateManyWithWhereWithoutCampaignInput | UpgradeCampaignWorkerUpdateManyWithWhereWithoutCampaignInput[]
+    deleteMany?: UpgradeCampaignWorkerScalarWhereInput | UpgradeCampaignWorkerScalarWhereInput[]
+  }
+
+  export type UpgradeCampaignCreateNestedOneWithoutWorkersInput = {
+    create?: XOR<UpgradeCampaignCreateWithoutWorkersInput, UpgradeCampaignUncheckedCreateWithoutWorkersInput>
+    connectOrCreate?: UpgradeCampaignCreateOrConnectWithoutWorkersInput
+    connect?: UpgradeCampaignWhereUniqueInput
+  }
+
+  export type WorkerCreateNestedOneWithoutUpgradeCampaignWorkersInput = {
+    create?: XOR<WorkerCreateWithoutUpgradeCampaignWorkersInput, WorkerUncheckedCreateWithoutUpgradeCampaignWorkersInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutUpgradeCampaignWorkersInput
+    connect?: WorkerWhereUniqueInput
+  }
+
+  export type EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput = {
+    set?: $Enums.UpgradeCampaignWorkerStatus
+  }
+
+  export type UpgradeCampaignUpdateOneRequiredWithoutWorkersNestedInput = {
+    create?: XOR<UpgradeCampaignCreateWithoutWorkersInput, UpgradeCampaignUncheckedCreateWithoutWorkersInput>
+    connectOrCreate?: UpgradeCampaignCreateOrConnectWithoutWorkersInput
+    upsert?: UpgradeCampaignUpsertWithoutWorkersInput
+    connect?: UpgradeCampaignWhereUniqueInput
+    update?: XOR<XOR<UpgradeCampaignUpdateToOneWithWhereWithoutWorkersInput, UpgradeCampaignUpdateWithoutWorkersInput>, UpgradeCampaignUncheckedUpdateWithoutWorkersInput>
+  }
+
+  export type WorkerUpdateOneRequiredWithoutUpgradeCampaignWorkersNestedInput = {
+    create?: XOR<WorkerCreateWithoutUpgradeCampaignWorkersInput, WorkerUncheckedCreateWithoutUpgradeCampaignWorkersInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutUpgradeCampaignWorkersInput
+    upsert?: WorkerUpsertWithoutUpgradeCampaignWorkersInput
+    connect?: WorkerWhereUniqueInput
+    update?: XOR<XOR<WorkerUpdateToOneWithWhereWithoutUpgradeCampaignWorkersInput, WorkerUpdateWithoutUpgradeCampaignWorkersInput>, WorkerUncheckedUpdateWithoutUpgradeCampaignWorkersInput>
+  }
+
+  export type WorkerCreateNestedOneWithoutCredentialsInput = {
+    create?: XOR<WorkerCreateWithoutCredentialsInput, WorkerUncheckedCreateWithoutCredentialsInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutCredentialsInput
+    connect?: WorkerWhereUniqueInput
+  }
+
+  export type EnumWorkerCredentialStatusFieldUpdateOperationsInput = {
+    set?: $Enums.WorkerCredentialStatus
+  }
+
+  export type WorkerUpdateOneRequiredWithoutCredentialsNestedInput = {
+    create?: XOR<WorkerCreateWithoutCredentialsInput, WorkerUncheckedCreateWithoutCredentialsInput>
+    connectOrCreate?: WorkerCreateOrConnectWithoutCredentialsInput
+    upsert?: WorkerUpsertWithoutCredentialsInput
+    connect?: WorkerWhereUniqueInput
+    update?: XOR<XOR<WorkerUpdateToOneWithWhereWithoutCredentialsInput, WorkerUpdateWithoutCredentialsInput>, WorkerUncheckedUpdateWithoutCredentialsInput>
+  }
+
+  export type EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput = {
+    set?: $Enums.EdgeEnrollmentTokenStatus
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type BacktestTaskCreateNestedManyWithoutStrategyTemplateInput = {
+    create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
+    createMany?: BacktestTaskCreateManyStrategyTemplateInputEnvelope
+    connect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+  }
+
+  export type BacktestTaskUncheckedCreateNestedManyWithoutStrategyTemplateInput = {
+    create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
+    createMany?: BacktestTaskCreateManyStrategyTemplateInputEnvelope
+    connect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+  }
+
+  export type BacktestTaskUpdateManyWithoutStrategyTemplateNestedInput = {
+    create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
+    upsert?: BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput | BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput[]
+    createMany?: BacktestTaskCreateManyStrategyTemplateInputEnvelope
+    set?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    disconnect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    delete?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    connect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    update?: BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput | BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput[]
+    updateMany?: BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput | BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput[]
+    deleteMany?: BacktestTaskScalarWhereInput | BacktestTaskScalarWhereInput[]
+  }
+
+  export type BacktestTaskUncheckedUpdateManyWithoutStrategyTemplateNestedInput = {
+    create?: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput> | BacktestTaskCreateWithoutStrategyTemplateInput[] | BacktestTaskUncheckedCreateWithoutStrategyTemplateInput[]
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutStrategyTemplateInput | BacktestTaskCreateOrConnectWithoutStrategyTemplateInput[]
+    upsert?: BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput | BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput[]
+    createMany?: BacktestTaskCreateManyStrategyTemplateInputEnvelope
+    set?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    disconnect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    delete?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    connect?: BacktestTaskWhereUniqueInput | BacktestTaskWhereUniqueInput[]
+    update?: BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput | BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput[]
+    updateMany?: BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput | BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput[]
+    deleteMany?: BacktestTaskScalarWhereInput | BacktestTaskScalarWhereInput[]
+  }
+
+  export type BacktestTaskCreateoptimizationMetricsInput = {
+    set: string[]
+  }
+
+  export type BacktestTaskCreatebestConfigIdsInput = {
+    set: string[]
+  }
+
+  export type StrategyTemplateCreateNestedOneWithoutTasksInput = {
+    create?: XOR<StrategyTemplateCreateWithoutTasksInput, StrategyTemplateUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: StrategyTemplateCreateOrConnectWithoutTasksInput
+    connect?: StrategyTemplateWhereUniqueInput
+  }
+
+  export type BacktestResultCreateNestedManyWithoutTaskInput = {
+    create?: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput> | BacktestResultCreateWithoutTaskInput[] | BacktestResultUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: BacktestResultCreateOrConnectWithoutTaskInput | BacktestResultCreateOrConnectWithoutTaskInput[]
+    createMany?: BacktestResultCreateManyTaskInputEnvelope
+    connect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+  }
+
+  export type BacktestResultUncheckedCreateNestedManyWithoutTaskInput = {
+    create?: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput> | BacktestResultCreateWithoutTaskInput[] | BacktestResultUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: BacktestResultCreateOrConnectWithoutTaskInput | BacktestResultCreateOrConnectWithoutTaskInput[]
+    createMany?: BacktestResultCreateManyTaskInputEnvelope
+    connect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+  }
+
+  export type EnumSearchStrategyFieldUpdateOperationsInput = {
+    set?: $Enums.SearchStrategy
+  }
+
+  export type BacktestTaskUpdateoptimizationMetricsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type EnumBacktestTaskStatusFieldUpdateOperationsInput = {
+    set?: $Enums.BacktestTaskStatus
+  }
+
+  export type BacktestTaskUpdatebestConfigIdsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type StrategyTemplateUpdateOneRequiredWithoutTasksNestedInput = {
+    create?: XOR<StrategyTemplateCreateWithoutTasksInput, StrategyTemplateUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: StrategyTemplateCreateOrConnectWithoutTasksInput
+    upsert?: StrategyTemplateUpsertWithoutTasksInput
+    connect?: StrategyTemplateWhereUniqueInput
+    update?: XOR<XOR<StrategyTemplateUpdateToOneWithWhereWithoutTasksInput, StrategyTemplateUpdateWithoutTasksInput>, StrategyTemplateUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type BacktestResultUpdateManyWithoutTaskNestedInput = {
+    create?: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput> | BacktestResultCreateWithoutTaskInput[] | BacktestResultUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: BacktestResultCreateOrConnectWithoutTaskInput | BacktestResultCreateOrConnectWithoutTaskInput[]
+    upsert?: BacktestResultUpsertWithWhereUniqueWithoutTaskInput | BacktestResultUpsertWithWhereUniqueWithoutTaskInput[]
+    createMany?: BacktestResultCreateManyTaskInputEnvelope
+    set?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    disconnect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    delete?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    connect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    update?: BacktestResultUpdateWithWhereUniqueWithoutTaskInput | BacktestResultUpdateWithWhereUniqueWithoutTaskInput[]
+    updateMany?: BacktestResultUpdateManyWithWhereWithoutTaskInput | BacktestResultUpdateManyWithWhereWithoutTaskInput[]
+    deleteMany?: BacktestResultScalarWhereInput | BacktestResultScalarWhereInput[]
+  }
+
+  export type BacktestResultUncheckedUpdateManyWithoutTaskNestedInput = {
+    create?: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput> | BacktestResultCreateWithoutTaskInput[] | BacktestResultUncheckedCreateWithoutTaskInput[]
+    connectOrCreate?: BacktestResultCreateOrConnectWithoutTaskInput | BacktestResultCreateOrConnectWithoutTaskInput[]
+    upsert?: BacktestResultUpsertWithWhereUniqueWithoutTaskInput | BacktestResultUpsertWithWhereUniqueWithoutTaskInput[]
+    createMany?: BacktestResultCreateManyTaskInputEnvelope
+    set?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    disconnect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    delete?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    connect?: BacktestResultWhereUniqueInput | BacktestResultWhereUniqueInput[]
+    update?: BacktestResultUpdateWithWhereUniqueWithoutTaskInput | BacktestResultUpdateWithWhereUniqueWithoutTaskInput[]
+    updateMany?: BacktestResultUpdateManyWithWhereWithoutTaskInput | BacktestResultUpdateManyWithWhereWithoutTaskInput[]
+    deleteMany?: BacktestResultScalarWhereInput | BacktestResultScalarWhereInput[]
+  }
+
+  export type BacktestTaskCreateNestedOneWithoutResultsInput = {
+    create?: XOR<BacktestTaskCreateWithoutResultsInput, BacktestTaskUncheckedCreateWithoutResultsInput>
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutResultsInput
+    connect?: BacktestTaskWhereUniqueInput
+  }
+
+  export type BacktestTaskUpdateOneRequiredWithoutResultsNestedInput = {
+    create?: XOR<BacktestTaskCreateWithoutResultsInput, BacktestTaskUncheckedCreateWithoutResultsInput>
+    connectOrCreate?: BacktestTaskCreateOrConnectWithoutResultsInput
+    upsert?: BacktestTaskUpsertWithoutResultsInput
+    connect?: BacktestTaskWhereUniqueInput
+    update?: XOR<XOR<BacktestTaskUpdateToOneWithWhereWithoutResultsInput, BacktestTaskUpdateWithoutResultsInput>, BacktestTaskUncheckedUpdateWithoutResultsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -18549,6 +33302,221 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWorkerStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerStatus | EnumWorkerStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerStatusFilter<$PrismaModel> | $Enums.WorkerStatus
+  }
+
+  export type NestedEnumWorkerUpgradeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerUpgradeStatus | EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
+  }
+
+  export type NestedEnumWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerStatus | EnumWorkerStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWorkerUpgradeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerUpgradeStatus | EnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerUpgradeStatus[] | ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerUpgradeStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumUpgradeCampaignStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.UpgradeCampaignStatus | EnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UpgradeCampaignStatus[] | ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UpgradeCampaignStatus[] | ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUpgradeCampaignStatusFilter<$PrismaModel> | $Enums.UpgradeCampaignStatus
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumUpgradeCampaignStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UpgradeCampaignStatus | EnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UpgradeCampaignStatus[] | ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UpgradeCampaignStatus[] | ListEnumUpgradeCampaignStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUpgradeCampaignStatusWithAggregatesFilter<$PrismaModel> | $Enums.UpgradeCampaignStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUpgradeCampaignStatusFilter<$PrismaModel>
+    _max?: NestedEnumUpgradeCampaignStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumUpgradeCampaignWorkerStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.UpgradeCampaignWorkerStatus | EnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UpgradeCampaignWorkerStatus[] | ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UpgradeCampaignWorkerStatus[] | ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUpgradeCampaignWorkerStatusFilter<$PrismaModel> | $Enums.UpgradeCampaignWorkerStatus
+  }
+
+  export type NestedEnumUpgradeCampaignWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UpgradeCampaignWorkerStatus | EnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UpgradeCampaignWorkerStatus[] | ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UpgradeCampaignWorkerStatus[] | ListEnumUpgradeCampaignWorkerStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUpgradeCampaignWorkerStatusWithAggregatesFilter<$PrismaModel> | $Enums.UpgradeCampaignWorkerStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUpgradeCampaignWorkerStatusFilter<$PrismaModel>
+    _max?: NestedEnumUpgradeCampaignWorkerStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWorkerCredentialStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerCredentialStatus | EnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel> | $Enums.WorkerCredentialStatus
+  }
+
+  export type NestedEnumWorkerCredentialStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerCredentialStatus | EnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerCredentialStatus[] | ListEnumWorkerCredentialStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerCredentialStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkerCredentialStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
+    _max?: NestedEnumWorkerCredentialStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EdgeEnrollmentTokenStatus | EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
+  }
+
+  export type NestedEnumEdgeEnrollmentTokenStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EdgeEnrollmentTokenStatus | EnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EdgeEnrollmentTokenStatus[] | ListEnumEdgeEnrollmentTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEdgeEnrollmentTokenStatusWithAggregatesFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
+    _max?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumSearchStrategyFilter<$PrismaModel = never> = {
+    equals?: $Enums.SearchStrategy | EnumSearchStrategyFieldRefInput<$PrismaModel>
+    in?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    not?: NestedEnumSearchStrategyFilter<$PrismaModel> | $Enums.SearchStrategy
+  }
+
+  export type NestedEnumBacktestTaskStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BacktestTaskStatus | EnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBacktestTaskStatusFilter<$PrismaModel> | $Enums.BacktestTaskStatus
+  }
+
+  export type NestedEnumSearchStrategyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SearchStrategy | EnumSearchStrategyFieldRefInput<$PrismaModel>
+    in?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SearchStrategy[] | ListEnumSearchStrategyFieldRefInput<$PrismaModel>
+    not?: NestedEnumSearchStrategyWithAggregatesFilter<$PrismaModel> | $Enums.SearchStrategy
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSearchStrategyFilter<$PrismaModel>
+    _max?: NestedEnumSearchStrategyFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBacktestTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BacktestTaskStatus | EnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BacktestTaskStatus[] | ListEnumBacktestTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBacktestTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.BacktestTaskStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
+    _max?: NestedEnumBacktestTaskStatusFilter<$PrismaModel>
   }
 
   export type ProjectCreateWithoutProfileInput = {
@@ -20352,6 +35320,788 @@ export namespace Prisma {
     awards?: AwardUncheckedUpdateManyWithoutProfileNestedInput
   }
 
+  export type WorkerCredentialCreateWithoutWorkerInput = {
+    id?: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialUncheckedCreateWithoutWorkerInput = {
+    id?: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialCreateOrConnectWithoutWorkerInput = {
+    where: WorkerCredentialWhereUniqueInput
+    create: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput>
+  }
+
+  export type WorkerCredentialCreateManyWorkerInputEnvelope = {
+    data: WorkerCredentialCreateManyWorkerInput | WorkerCredentialCreateManyWorkerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UpgradeCampaignWorkerCreateWithoutWorkerInput = {
+    id?: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    campaign: UpgradeCampaignCreateNestedOneWithoutWorkersInput
+  }
+
+  export type UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput = {
+    id?: string
+    campaignId: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignWorkerCreateOrConnectWithoutWorkerInput = {
+    where: UpgradeCampaignWorkerWhereUniqueInput
+    create: XOR<UpgradeCampaignWorkerCreateWithoutWorkerInput, UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput>
+  }
+
+  export type UpgradeCampaignWorkerCreateManyWorkerInputEnvelope = {
+    data: UpgradeCampaignWorkerCreateManyWorkerInput | UpgradeCampaignWorkerCreateManyWorkerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WorkerCredentialUpsertWithWhereUniqueWithoutWorkerInput = {
+    where: WorkerCredentialWhereUniqueInput
+    update: XOR<WorkerCredentialUpdateWithoutWorkerInput, WorkerCredentialUncheckedUpdateWithoutWorkerInput>
+    create: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput>
+  }
+
+  export type WorkerCredentialUpdateWithWhereUniqueWithoutWorkerInput = {
+    where: WorkerCredentialWhereUniqueInput
+    data: XOR<WorkerCredentialUpdateWithoutWorkerInput, WorkerCredentialUncheckedUpdateWithoutWorkerInput>
+  }
+
+  export type WorkerCredentialUpdateManyWithWhereWithoutWorkerInput = {
+    where: WorkerCredentialScalarWhereInput
+    data: XOR<WorkerCredentialUpdateManyMutationInput, WorkerCredentialUncheckedUpdateManyWithoutWorkerInput>
+  }
+
+  export type WorkerCredentialScalarWhereInput = {
+    AND?: WorkerCredentialScalarWhereInput | WorkerCredentialScalarWhereInput[]
+    OR?: WorkerCredentialScalarWhereInput[]
+    NOT?: WorkerCredentialScalarWhereInput | WorkerCredentialScalarWhereInput[]
+    id?: StringFilter<"WorkerCredential"> | string
+    workerId?: StringFilter<"WorkerCredential"> | string
+    keyPrefix?: StringFilter<"WorkerCredential"> | string
+    keyHash?: StringFilter<"WorkerCredential"> | string
+    status?: EnumWorkerCredentialStatusFilter<"WorkerCredential"> | $Enums.WorkerCredentialStatus
+    expiresAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    rotatedAt?: DateTimeNullableFilter<"WorkerCredential"> | Date | string | null
+    createdAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkerCredential"> | Date | string
+  }
+
+  export type UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutWorkerInput = {
+    where: UpgradeCampaignWorkerWhereUniqueInput
+    update: XOR<UpgradeCampaignWorkerUpdateWithoutWorkerInput, UpgradeCampaignWorkerUncheckedUpdateWithoutWorkerInput>
+    create: XOR<UpgradeCampaignWorkerCreateWithoutWorkerInput, UpgradeCampaignWorkerUncheckedCreateWithoutWorkerInput>
+  }
+
+  export type UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutWorkerInput = {
+    where: UpgradeCampaignWorkerWhereUniqueInput
+    data: XOR<UpgradeCampaignWorkerUpdateWithoutWorkerInput, UpgradeCampaignWorkerUncheckedUpdateWithoutWorkerInput>
+  }
+
+  export type UpgradeCampaignWorkerUpdateManyWithWhereWithoutWorkerInput = {
+    where: UpgradeCampaignWorkerScalarWhereInput
+    data: XOR<UpgradeCampaignWorkerUpdateManyMutationInput, UpgradeCampaignWorkerUncheckedUpdateManyWithoutWorkerInput>
+  }
+
+  export type UpgradeCampaignWorkerScalarWhereInput = {
+    AND?: UpgradeCampaignWorkerScalarWhereInput | UpgradeCampaignWorkerScalarWhereInput[]
+    OR?: UpgradeCampaignWorkerScalarWhereInput[]
+    NOT?: UpgradeCampaignWorkerScalarWhereInput | UpgradeCampaignWorkerScalarWhereInput[]
+    id?: StringFilter<"UpgradeCampaignWorker"> | string
+    campaignId?: StringFilter<"UpgradeCampaignWorker"> | string
+    workerId?: StringFilter<"UpgradeCampaignWorker"> | string
+    phase?: IntFilter<"UpgradeCampaignWorker"> | number
+    status?: EnumUpgradeCampaignWorkerStatusFilter<"UpgradeCampaignWorker"> | $Enums.UpgradeCampaignWorkerStatus
+    message?: StringNullableFilter<"UpgradeCampaignWorker"> | string | null
+    createdAt?: DateTimeFilter<"UpgradeCampaignWorker"> | Date | string
+    updatedAt?: DateTimeFilter<"UpgradeCampaignWorker"> | Date | string
+  }
+
+  export type UpgradeCampaignWorkerCreateWithoutCampaignInput = {
+    id?: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    worker: WorkerCreateNestedOneWithoutUpgradeCampaignWorkersInput
+  }
+
+  export type UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput = {
+    id?: string
+    workerId: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignWorkerCreateOrConnectWithoutCampaignInput = {
+    where: UpgradeCampaignWorkerWhereUniqueInput
+    create: XOR<UpgradeCampaignWorkerCreateWithoutCampaignInput, UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput>
+  }
+
+  export type UpgradeCampaignWorkerCreateManyCampaignInputEnvelope = {
+    data: UpgradeCampaignWorkerCreateManyCampaignInput | UpgradeCampaignWorkerCreateManyCampaignInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UpgradeCampaignWorkerUpsertWithWhereUniqueWithoutCampaignInput = {
+    where: UpgradeCampaignWorkerWhereUniqueInput
+    update: XOR<UpgradeCampaignWorkerUpdateWithoutCampaignInput, UpgradeCampaignWorkerUncheckedUpdateWithoutCampaignInput>
+    create: XOR<UpgradeCampaignWorkerCreateWithoutCampaignInput, UpgradeCampaignWorkerUncheckedCreateWithoutCampaignInput>
+  }
+
+  export type UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutCampaignInput = {
+    where: UpgradeCampaignWorkerWhereUniqueInput
+    data: XOR<UpgradeCampaignWorkerUpdateWithoutCampaignInput, UpgradeCampaignWorkerUncheckedUpdateWithoutCampaignInput>
+  }
+
+  export type UpgradeCampaignWorkerUpdateManyWithWhereWithoutCampaignInput = {
+    where: UpgradeCampaignWorkerScalarWhereInput
+    data: XOR<UpgradeCampaignWorkerUpdateManyMutationInput, UpgradeCampaignWorkerUncheckedUpdateManyWithoutCampaignInput>
+  }
+
+  export type UpgradeCampaignCreateWithoutWorkersInput = {
+    id?: string
+    targetVersion: string
+    previousVersion?: string | null
+    forceMode?: boolean
+    phaseSize?: number
+    currentPhase?: number
+    successThreshold?: number
+    failureThreshold?: number
+    status?: $Enums.UpgradeCampaignStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignUncheckedCreateWithoutWorkersInput = {
+    id?: string
+    targetVersion: string
+    previousVersion?: string | null
+    forceMode?: boolean
+    phaseSize?: number
+    currentPhase?: number
+    successThreshold?: number
+    failureThreshold?: number
+    status?: $Enums.UpgradeCampaignStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignCreateOrConnectWithoutWorkersInput = {
+    where: UpgradeCampaignWhereUniqueInput
+    create: XOR<UpgradeCampaignCreateWithoutWorkersInput, UpgradeCampaignUncheckedCreateWithoutWorkersInput>
+  }
+
+  export type WorkerCreateWithoutUpgradeCampaignWorkersInput = {
+    id?: string
+    name: string
+    deviceNumber?: string | null
+    platform?: string | null
+    arch?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    credentials?: WorkerCredentialCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerUncheckedCreateWithoutUpgradeCampaignWorkersInput = {
+    id?: string
+    name: string
+    deviceNumber?: string | null
+    platform?: string | null
+    arch?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    credentials?: WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerCreateOrConnectWithoutUpgradeCampaignWorkersInput = {
+    where: WorkerWhereUniqueInput
+    create: XOR<WorkerCreateWithoutUpgradeCampaignWorkersInput, WorkerUncheckedCreateWithoutUpgradeCampaignWorkersInput>
+  }
+
+  export type UpgradeCampaignUpsertWithoutWorkersInput = {
+    update: XOR<UpgradeCampaignUpdateWithoutWorkersInput, UpgradeCampaignUncheckedUpdateWithoutWorkersInput>
+    create: XOR<UpgradeCampaignCreateWithoutWorkersInput, UpgradeCampaignUncheckedCreateWithoutWorkersInput>
+    where?: UpgradeCampaignWhereInput
+  }
+
+  export type UpgradeCampaignUpdateToOneWithWhereWithoutWorkersInput = {
+    where?: UpgradeCampaignWhereInput
+    data: XOR<UpgradeCampaignUpdateWithoutWorkersInput, UpgradeCampaignUncheckedUpdateWithoutWorkersInput>
+  }
+
+  export type UpgradeCampaignUpdateWithoutWorkersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetVersion?: StringFieldUpdateOperationsInput | string
+    previousVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    forceMode?: BoolFieldUpdateOperationsInput | boolean
+    phaseSize?: IntFieldUpdateOperationsInput | number
+    currentPhase?: IntFieldUpdateOperationsInput | number
+    successThreshold?: FloatFieldUpdateOperationsInput | number
+    failureThreshold?: FloatFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignUncheckedUpdateWithoutWorkersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    targetVersion?: StringFieldUpdateOperationsInput | string
+    previousVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    forceMode?: BoolFieldUpdateOperationsInput | boolean
+    phaseSize?: IntFieldUpdateOperationsInput | number
+    currentPhase?: IntFieldUpdateOperationsInput | number
+    successThreshold?: FloatFieldUpdateOperationsInput | number
+    failureThreshold?: FloatFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerUpsertWithoutUpgradeCampaignWorkersInput = {
+    update: XOR<WorkerUpdateWithoutUpgradeCampaignWorkersInput, WorkerUncheckedUpdateWithoutUpgradeCampaignWorkersInput>
+    create: XOR<WorkerCreateWithoutUpgradeCampaignWorkersInput, WorkerUncheckedCreateWithoutUpgradeCampaignWorkersInput>
+    where?: WorkerWhereInput
+  }
+
+  export type WorkerUpdateToOneWithWhereWithoutUpgradeCampaignWorkersInput = {
+    where?: WorkerWhereInput
+    data: XOR<WorkerUpdateWithoutUpgradeCampaignWorkersInput, WorkerUncheckedUpdateWithoutUpgradeCampaignWorkersInput>
+  }
+
+  export type WorkerUpdateWithoutUpgradeCampaignWorkersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentials?: WorkerCredentialUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerUncheckedUpdateWithoutUpgradeCampaignWorkersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentials?: WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerCreateWithoutCredentialsInput = {
+    id?: string
+    name: string
+    deviceNumber?: string | null
+    platform?: string | null
+    arch?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerUncheckedCreateWithoutCredentialsInput = {
+    id?: string
+    name: string
+    deviceNumber?: string | null
+    platform?: string | null
+    arch?: string | null
+    version?: string | null
+    status?: $Enums.WorkerStatus
+    lastSeenAt?: Date | string | null
+    consecutiveFailures?: number
+    quarantinedAt?: Date | string | null
+    targetVersion?: string | null
+    upgradeStatus?: $Enums.WorkerUpgradeStatus
+    upgradeMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerUncheckedCreateNestedManyWithoutWorkerInput
+  }
+
+  export type WorkerCreateOrConnectWithoutCredentialsInput = {
+    where: WorkerWhereUniqueInput
+    create: XOR<WorkerCreateWithoutCredentialsInput, WorkerUncheckedCreateWithoutCredentialsInput>
+  }
+
+  export type WorkerUpsertWithoutCredentialsInput = {
+    update: XOR<WorkerUpdateWithoutCredentialsInput, WorkerUncheckedUpdateWithoutCredentialsInput>
+    create: XOR<WorkerCreateWithoutCredentialsInput, WorkerUncheckedCreateWithoutCredentialsInput>
+    where?: WorkerWhereInput
+  }
+
+  export type WorkerUpdateToOneWithWhereWithoutCredentialsInput = {
+    where?: WorkerWhereInput
+    data: XOR<WorkerUpdateWithoutCredentialsInput, WorkerUncheckedUpdateWithoutCredentialsInput>
+  }
+
+  export type WorkerUpdateWithoutCredentialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type WorkerUncheckedUpdateWithoutCredentialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    deviceNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    arch?: NullableStringFieldUpdateOperationsInput | string | null
+    version?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumWorkerStatusFieldUpdateOperationsInput | $Enums.WorkerStatus
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    consecutiveFailures?: IntFieldUpdateOperationsInput | number
+    quarantinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
+    upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    upgradeCampaignWorkers?: UpgradeCampaignWorkerUncheckedUpdateManyWithoutWorkerNestedInput
+  }
+
+  export type BacktestTaskCreateWithoutStrategyTemplateInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    results?: BacktestResultCreateNestedManyWithoutTaskInput
+  }
+
+  export type BacktestTaskUncheckedCreateWithoutStrategyTemplateInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    results?: BacktestResultUncheckedCreateNestedManyWithoutTaskInput
+  }
+
+  export type BacktestTaskCreateOrConnectWithoutStrategyTemplateInput = {
+    where: BacktestTaskWhereUniqueInput
+    create: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput>
+  }
+
+  export type BacktestTaskCreateManyStrategyTemplateInputEnvelope = {
+    data: BacktestTaskCreateManyStrategyTemplateInput | BacktestTaskCreateManyStrategyTemplateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BacktestTaskUpsertWithWhereUniqueWithoutStrategyTemplateInput = {
+    where: BacktestTaskWhereUniqueInput
+    update: XOR<BacktestTaskUpdateWithoutStrategyTemplateInput, BacktestTaskUncheckedUpdateWithoutStrategyTemplateInput>
+    create: XOR<BacktestTaskCreateWithoutStrategyTemplateInput, BacktestTaskUncheckedCreateWithoutStrategyTemplateInput>
+  }
+
+  export type BacktestTaskUpdateWithWhereUniqueWithoutStrategyTemplateInput = {
+    where: BacktestTaskWhereUniqueInput
+    data: XOR<BacktestTaskUpdateWithoutStrategyTemplateInput, BacktestTaskUncheckedUpdateWithoutStrategyTemplateInput>
+  }
+
+  export type BacktestTaskUpdateManyWithWhereWithoutStrategyTemplateInput = {
+    where: BacktestTaskScalarWhereInput
+    data: XOR<BacktestTaskUpdateManyMutationInput, BacktestTaskUncheckedUpdateManyWithoutStrategyTemplateInput>
+  }
+
+  export type BacktestTaskScalarWhereInput = {
+    AND?: BacktestTaskScalarWhereInput | BacktestTaskScalarWhereInput[]
+    OR?: BacktestTaskScalarWhereInput[]
+    NOT?: BacktestTaskScalarWhereInput | BacktestTaskScalarWhereInput[]
+    id?: StringFilter<"BacktestTask"> | string
+    strategyTemplateId?: StringFilter<"BacktestTask"> | string
+    name?: StringFilter<"BacktestTask"> | string
+    symbol?: StringFilter<"BacktestTask"> | string
+    interval?: StringFilter<"BacktestTask"> | string
+    startDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    endDate?: DateTimeFilter<"BacktestTask"> | Date | string
+    searchStrategy?: EnumSearchStrategyFilter<"BacktestTask"> | $Enums.SearchStrategy
+    optimizationParams?: JsonFilter<"BacktestTask">
+    optimizationMetrics?: StringNullableListFilter<"BacktestTask">
+    trials?: IntFilter<"BacktestTask"> | number
+    status?: EnumBacktestTaskStatusFilter<"BacktestTask"> | $Enums.BacktestTaskStatus
+    assignedWorkerId?: StringNullableFilter<"BacktestTask"> | string | null
+    leaseExpiresAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    lastHeartbeat?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    totalConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    processedConfigs?: IntNullableFilter<"BacktestTask"> | number | null
+    currentConfig?: StringNullableFilter<"BacktestTask"> | string | null
+    trialProgress?: StringNullableFilter<"BacktestTask"> | string | null
+    bestConfigIds?: StringNullableListFilter<"BacktestTask">
+    errorMessage?: StringNullableFilter<"BacktestTask"> | string | null
+    startedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"BacktestTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"BacktestTask"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestTask"> | Date | string
+  }
+
+  export type StrategyTemplateCreateWithoutTasksInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StrategyTemplateUncheckedCreateWithoutTasksInput = {
+    id?: string
+    name: string
+    category?: string | null
+    factoryConfig: JsonNullValueInput | InputJsonValue
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StrategyTemplateCreateOrConnectWithoutTasksInput = {
+    where: StrategyTemplateWhereUniqueInput
+    create: XOR<StrategyTemplateCreateWithoutTasksInput, StrategyTemplateUncheckedCreateWithoutTasksInput>
+  }
+
+  export type BacktestResultCreateWithoutTaskInput = {
+    id?: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultUncheckedCreateWithoutTaskInput = {
+    id?: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultCreateOrConnectWithoutTaskInput = {
+    where: BacktestResultWhereUniqueInput
+    create: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput>
+  }
+
+  export type BacktestResultCreateManyTaskInputEnvelope = {
+    data: BacktestResultCreateManyTaskInput | BacktestResultCreateManyTaskInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StrategyTemplateUpsertWithoutTasksInput = {
+    update: XOR<StrategyTemplateUpdateWithoutTasksInput, StrategyTemplateUncheckedUpdateWithoutTasksInput>
+    create: XOR<StrategyTemplateCreateWithoutTasksInput, StrategyTemplateUncheckedCreateWithoutTasksInput>
+    where?: StrategyTemplateWhereInput
+  }
+
+  export type StrategyTemplateUpdateToOneWithWhereWithoutTasksInput = {
+    where?: StrategyTemplateWhereInput
+    data: XOR<StrategyTemplateUpdateWithoutTasksInput, StrategyTemplateUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type StrategyTemplateUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StrategyTemplateUncheckedUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    factoryConfig?: JsonNullValueInput | InputJsonValue
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultUpsertWithWhereUniqueWithoutTaskInput = {
+    where: BacktestResultWhereUniqueInput
+    update: XOR<BacktestResultUpdateWithoutTaskInput, BacktestResultUncheckedUpdateWithoutTaskInput>
+    create: XOR<BacktestResultCreateWithoutTaskInput, BacktestResultUncheckedCreateWithoutTaskInput>
+  }
+
+  export type BacktestResultUpdateWithWhereUniqueWithoutTaskInput = {
+    where: BacktestResultWhereUniqueInput
+    data: XOR<BacktestResultUpdateWithoutTaskInput, BacktestResultUncheckedUpdateWithoutTaskInput>
+  }
+
+  export type BacktestResultUpdateManyWithWhereWithoutTaskInput = {
+    where: BacktestResultScalarWhereInput
+    data: XOR<BacktestResultUpdateManyMutationInput, BacktestResultUncheckedUpdateManyWithoutTaskInput>
+  }
+
+  export type BacktestResultScalarWhereInput = {
+    AND?: BacktestResultScalarWhereInput | BacktestResultScalarWhereInput[]
+    OR?: BacktestResultScalarWhereInput[]
+    NOT?: BacktestResultScalarWhereInput | BacktestResultScalarWhereInput[]
+    id?: StringFilter<"BacktestResult"> | string
+    taskId?: StringFilter<"BacktestResult"> | string
+    configId?: StringFilter<"BacktestResult"> | string
+    strategyConfig?: JsonFilter<"BacktestResult">
+    metrics?: JsonFilter<"BacktestResult">
+    resultFolder?: StringNullableFilter<"BacktestResult"> | string | null
+    createdAt?: DateTimeFilter<"BacktestResult"> | Date | string
+    updatedAt?: DateTimeFilter<"BacktestResult"> | Date | string
+  }
+
+  export type BacktestTaskCreateWithoutResultsInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    strategyTemplate: StrategyTemplateCreateNestedOneWithoutTasksInput
+  }
+
+  export type BacktestTaskUncheckedCreateWithoutResultsInput = {
+    id?: string
+    strategyTemplateId: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestTaskCreateOrConnectWithoutResultsInput = {
+    where: BacktestTaskWhereUniqueInput
+    create: XOR<BacktestTaskCreateWithoutResultsInput, BacktestTaskUncheckedCreateWithoutResultsInput>
+  }
+
+  export type BacktestTaskUpsertWithoutResultsInput = {
+    update: XOR<BacktestTaskUpdateWithoutResultsInput, BacktestTaskUncheckedUpdateWithoutResultsInput>
+    create: XOR<BacktestTaskCreateWithoutResultsInput, BacktestTaskUncheckedCreateWithoutResultsInput>
+    where?: BacktestTaskWhereInput
+  }
+
+  export type BacktestTaskUpdateToOneWithWhereWithoutResultsInput = {
+    where?: BacktestTaskWhereInput
+    data: XOR<BacktestTaskUpdateWithoutResultsInput, BacktestTaskUncheckedUpdateWithoutResultsInput>
+  }
+
+  export type BacktestTaskUpdateWithoutResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    strategyTemplate?: StrategyTemplateUpdateOneRequiredWithoutTasksNestedInput
+  }
+
+  export type BacktestTaskUncheckedUpdateWithoutResultsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    strategyTemplateId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ProjectCreateManyProfileInput = {
     id?: string
     title: string
@@ -20818,6 +36568,280 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     proficiency?: EnumProficiencyFieldUpdateOperationsInput | $Enums.Proficiency
     sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialCreateManyWorkerInput = {
+    id?: string
+    keyPrefix: string
+    keyHash: string
+    status?: $Enums.WorkerCredentialStatus
+    expiresAt?: Date | string | null
+    rotatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignWorkerCreateManyWorkerInput = {
+    id?: string
+    campaignId: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkerCredentialUpdateWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialUncheckedUpdateWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkerCredentialUncheckedUpdateManyWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumWorkerCredentialStatusFieldUpdateOperationsInput | $Enums.WorkerCredentialStatus
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rotatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignWorkerUpdateWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    campaign?: UpgradeCampaignUpdateOneRequiredWithoutWorkersNestedInput
+  }
+
+  export type UpgradeCampaignWorkerUncheckedUpdateWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    campaignId?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignWorkerUncheckedUpdateManyWithoutWorkerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    campaignId?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignWorkerCreateManyCampaignInput = {
+    id?: string
+    workerId: string
+    phase: number
+    status?: $Enums.UpgradeCampaignWorkerStatus
+    message?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UpgradeCampaignWorkerUpdateWithoutCampaignInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    worker?: WorkerUpdateOneRequiredWithoutUpgradeCampaignWorkersNestedInput
+  }
+
+  export type UpgradeCampaignWorkerUncheckedUpdateWithoutCampaignInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UpgradeCampaignWorkerUncheckedUpdateManyWithoutCampaignInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    workerId?: StringFieldUpdateOperationsInput | string
+    phase?: IntFieldUpdateOperationsInput | number
+    status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestTaskCreateManyStrategyTemplateInput = {
+    id?: string
+    name: string
+    symbol: string
+    interval: string
+    startDate: Date | string
+    endDate: Date | string
+    searchStrategy: $Enums.SearchStrategy
+    optimizationParams: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskCreateoptimizationMetricsInput | string[]
+    trials: number
+    status?: $Enums.BacktestTaskStatus
+    assignedWorkerId?: string | null
+    leaseExpiresAt?: Date | string | null
+    lastHeartbeat?: Date | string | null
+    totalConfigs?: number | null
+    processedConfigs?: number | null
+    currentConfig?: string | null
+    trialProgress?: string | null
+    bestConfigIds?: BacktestTaskCreatebestConfigIdsInput | string[]
+    errorMessage?: string | null
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestTaskUpdateWithoutStrategyTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: BacktestResultUpdateManyWithoutTaskNestedInput
+  }
+
+  export type BacktestTaskUncheckedUpdateWithoutStrategyTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    results?: BacktestResultUncheckedUpdateManyWithoutTaskNestedInput
+  }
+
+  export type BacktestTaskUncheckedUpdateManyWithoutStrategyTemplateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    interval?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchStrategy?: EnumSearchStrategyFieldUpdateOperationsInput | $Enums.SearchStrategy
+    optimizationParams?: JsonNullValueInput | InputJsonValue
+    optimizationMetrics?: BacktestTaskUpdateoptimizationMetricsInput | string[]
+    trials?: IntFieldUpdateOperationsInput | number
+    status?: EnumBacktestTaskStatusFieldUpdateOperationsInput | $Enums.BacktestTaskStatus
+    assignedWorkerId?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastHeartbeat?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    processedConfigs?: NullableIntFieldUpdateOperationsInput | number | null
+    currentConfig?: NullableStringFieldUpdateOperationsInput | string | null
+    trialProgress?: NullableStringFieldUpdateOperationsInput | string | null
+    bestConfigIds?: BacktestTaskUpdatebestConfigIdsInput | string[]
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultCreateManyTaskInput = {
+    id?: string
+    configId: string
+    strategyConfig: JsonNullValueInput | InputJsonValue
+    metrics: JsonNullValueInput | InputJsonValue
+    resultFolder?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BacktestResultUpdateWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultUncheckedUpdateWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BacktestResultUncheckedUpdateManyWithoutTaskInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    configId?: StringFieldUpdateOperationsInput | string
+    strategyConfig?: JsonNullValueInput | InputJsonValue
+    metrics?: JsonNullValueInput | InputJsonValue
+    resultFolder?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -1,0 +1,31 @@
+---
+title: Gateway-Owned Domain Logic with External Edge Orchestration
+description: Current architecture keeps client-facing domain logic in api-gateway and uses external edge runtimes for distributed execution.
+---
+
+# Context
+
+Earlier architecture docs referenced a `service-core` CRUD microservice as the default execution model. Current implementation has evolved:
+
+1. `apps/api-gateway` owns client-facing domain operations and orchestration.
+2. `apps/edge-agent` runs externally (Windows/Linux hosts), not as an in-cluster Helm service.
+3. Edge runtimes communicate with gateway internal edge endpoints for registration, connectivity heartbeat, task execution, and upgrade status.
+
+# Decision
+
+Adopt and document the current model as the active architecture:
+
+1. Keep domain CRUD/orchestration logic in `api-gateway` by default.
+2. Use external edge runtimes for distributed workload execution.
+3. Introduce new microservices only when justified by workload/operations (CPU-heavy, cron/background, independent scaling/SLO).
+
+# Consequences
+
+- **Simpler operational topology:** fewer always-on in-cluster app services.
+- **Clear worker control plane:** worker registry, `lastSeenAt`, `targetVersion`, and upgrade status are gateway-managed.
+- **Cross-platform execution:** edge workloads run on Windows/Linux hosts outside cluster boundaries.
+- **Tradeoff:** edge lifecycle reliability depends on heartbeat health and release metadata correctness.
+
+# Notes
+
+This ADR supersedes assumptions in earlier docs that described `service-core` as the default CRUD runtime.

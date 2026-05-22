@@ -56,9 +56,7 @@ function PortfolioContent({ userId }: { userId: string }) {
       <div className="mx-auto max-w-5xl px-6 py-10 text-center md:px-8">
         <UserX className="mx-auto size-10 text-[#a3a29e]" />
         <h1 className="mt-4 text-2xl font-bold text-[#37352f]">Profile not found</h1>
-        <p className="mt-2 text-[#787774]">
-          This user doesn&apos;t have a public profile yet.
-        </p>
+        <p className="mt-2 text-[#787774]">This user doesn&apos;t have a public profile yet.</p>
         <Link href="/">
           <Button className="mt-4">Go home</Button>
         </Link>
@@ -94,8 +92,7 @@ function PortfolioContent({ userId }: { userId: string }) {
               {socialLinks.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {socialLinks.map((link) => {
-                    const PlatformIcon =
-                      platformIcons[link.platform.toLowerCase()] || LinkIcon;
+                    const PlatformIcon = platformIcons[link.platform.toLowerCase()] || LinkIcon;
                     return (
                       <a
                         key={link.id}
@@ -115,9 +112,7 @@ function PortfolioContent({ userId }: { userId: string }) {
             </div>
             <div className="flex-1 md:border-l-2 md:border-[#e8e7e4] md:pl-6">
               <h1 className="text-[30px] font-bold text-[#37352f]">{displayName}</h1>
-              {profile.headline && (
-                <p className="mt-1 text-[#787774]">{profile.headline}</p>
-              )}
+              {profile.headline && <p className="mt-1 text-[#787774]">{profile.headline}</p>}
               {profile.location && (
                 <p className="mt-1 flex items-center gap-1 text-sm text-[#a3a29e]">
                   <MapPin className="size-3.5" />
@@ -211,9 +206,7 @@ function PortfolioContent({ userId }: { userId: string }) {
               <Chip key={skill.id} size="sm">
                 {skill.name}
                 {skill.category?.name && (
-                  <span className="ml-1.5 text-xs text-[#a3a29e]">
-                    {skill.category.name}
-                  </span>
+                  <span className="ml-1.5 text-xs text-[#a3a29e]">{skill.category.name}</span>
                 )}
               </Chip>
             ))}
@@ -410,9 +403,7 @@ function PortfolioContent({ userId }: { userId: string }) {
               >
                 <Card.Content className="p-5">
                   <h3 className="font-medium text-[#37352f]">{award.title}</h3>
-                  {award.issuer && (
-                    <p className="text-sm text-[#787774]">{award.issuer}</p>
-                  )}
+                  {award.issuer && <p className="text-sm text-[#787774]">{award.issuer}</p>}
                   {award.date && (
                     <span className="mt-1 text-xs text-[#a3a29e]">
                       {new Date(award.date).toLocaleDateString('en-US', {
@@ -442,16 +433,10 @@ function PortfolioContent({ userId }: { userId: string }) {
           </h2>
           <div className="flex flex-wrap gap-2">
             {profile.hobbies.map((hobby) => (
-              <Chip
-                key={hobby.id}
-                size="sm"
-                title={hobby.description ?? undefined}
-              >
+              <Chip key={hobby.id} size="sm" title={hobby.description ?? undefined}>
                 {hobby.name}
                 {hobby.description && (
-                  <span className="ml-1.5 text-xs text-[#a3a29e]">
-                    {hobby.description}
-                  </span>
+                  <span className="ml-1.5 text-xs text-[#a3a29e]">{hobby.description}</span>
                 )}
               </Chip>
             ))}
@@ -462,11 +447,7 @@ function PortfolioContent({ userId }: { userId: string }) {
   );
 }
 
-export default function PublicProfilePage({
-  params,
-}: {
-  params: Promise<{ userId: string }>;
-}) {
+export default function PublicProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const { userId } = use(params);
 
   return (

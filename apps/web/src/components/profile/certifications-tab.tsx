@@ -1,14 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import {
-  Button,
-  Card,
-  Skeleton,
-  TextField,
-  Label,
-  Input,
-} from '@heroui/react';
+import { Button, Card, Skeleton, TextField, Label, Input } from '@heroui/react';
 import { Award, ExternalLink, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { usePublicProfile } from '@/hooks/use-public-profile';
 import { useCreateCertification } from '@/hooks/use-create-certification';
@@ -65,12 +58,8 @@ export function CertificationsTab({ userId }: CertificationsTabProps) {
       setForm({
         name: cert.name,
         issuer: cert.issuer,
-        issueDate: cert.issueDate
-          ? new Date(cert.issueDate).toISOString().split('T')[0]
-          : '',
-        expiryDate: cert.expiryDate
-          ? new Date(cert.expiryDate).toISOString().split('T')[0]
-          : '',
+        issueDate: cert.issueDate ? new Date(cert.issueDate).toISOString().split('T')[0] : '',
+        expiryDate: cert.expiryDate ? new Date(cert.expiryDate).toISOString().split('T')[0] : '',
         url: cert.url ?? '',
       });
       setEditingId(cert.id);
@@ -126,9 +115,7 @@ export function CertificationsTab({ userId }: CertificationsTabProps) {
       {showForm && (
         <Card className="border-[#0b6e99] bg-[#d3e5ef]">
           <Card.Header>
-            <Card.Title>
-              {editingId ? 'Edit Certification' : 'New Certification'}
-            </Card.Title>
+            <Card.Title>{editingId ? 'Edit Certification' : 'New Certification'}</Card.Title>
           </Card.Header>
           <Card.Content className="gap-3">
             <TextField onChange={(v) => setForm((f) => ({ ...f, name: v }))}>

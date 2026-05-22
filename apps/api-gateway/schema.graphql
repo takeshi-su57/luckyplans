@@ -15,23 +15,6 @@ type UserProfile {
   location: String
 }
 
-type Item {
-  id: ID!
-  name: String!
-  description: String
-  createdAt: DateTime!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type ItemsResponse {
-  items: [Item!]!
-  total: Float!
-}
-
 type Project {
   id: ID!
   title: String!
@@ -44,6 +27,11 @@ type Project {
   createdAt: DateTime!
   updatedAt: DateTime!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type SkillCategory {
   id: ID!
@@ -172,17 +160,148 @@ type DeleteResult {
   success: Boolean!
 }
 
+type IssuedWorkerCredential {
+  id: ID!
+  workerId: String!
+  keyPrefix: String!
+  credential: String!
+}
+
+type EdgeEnrollmentToken {
+  id: ID!
+  label: String
+  tokenPrefix: String!
+  status: String!
+  expiresAt: DateTime
+  maxUses: Int
+  usedCount: Int!
+  lastUsedAt: DateTime
+  revokedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CreatedEdgeEnrollmentToken {
+  id: ID!
+  label: String
+  tokenPrefix: String!
+  status: String!
+  expiresAt: DateTime
+  maxUses: Int
+  usedCount: Int!
+  lastUsedAt: DateTime
+  revokedAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  token: String!
+}
+
+type EdgeRelease {
+  id: ID!
+  version: String!
+  windowsUrl: String!
+  linuxUrl: String!
+  checksum: String!
+  signature: String!
+  notes: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UpgradeCampaign {
+  id: ID!
+  targetVersion: String!
+  previousVersion: String
+  forceMode: Boolean!
+  phaseSize: Float!
+  currentPhase: Float!
+  successThreshold: Float!
+  failureThreshold: Float!
+  status: String!
+}
+
+type Worker {
+  id: ID!
+  name: String!
+  deviceNumber: String
+  platform: String
+  arch: String
+  version: String
+  hasActiveCredential: Boolean!
+  status: WorkerStatus!
+  lastSeenAt: DateTime
+  targetVersion: String
+  upgradeStatus: WorkerUpgradeStatus!
+  upgradeMessage: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum WorkerStatus {
+  ACTIVE
+  DISABLED
+  QUARANTINED
+}
+
+enum WorkerUpgradeStatus {
+  IDLE
+  UPGRADE_PENDING
+  DOWNLOADING
+  VERIFYING
+  RESTARTING
+  SUCCEEDED
+  FAILED
+  ROLLED_BACK
+}
+
+type StrategyTemplate {
+  id: ID!
+  name: String!
+  category: String
+  factoryConfig: String!
+  isActive: Boolean!
+}
+
+type BacktestTask {
+  id: ID!
+  name: String!
+  symbol: String!
+  interval: String!
+  status: String!
+  assignedWorkerId: String
+  processedConfigs: Int
+  totalConfigs: Int
+  createdAt: DateTime!
+}
+
+type BacktestResult {
+  id: ID!
+  configId: String!
+  metrics: String!
+  createdAt: DateTime!
+}
+
 type Query {
   health: String!
   me: UserProfile!
-  getItems(page: Float! = 1, limit: Float! = 10): ItemsResponse!
-  getItem(id: String!): Item
   getPublicProfile(userId: String!): PublicProfile
   getSkillCategories: [SkillCategory!]!
+  workers: [Worker!]!
+  edgeEnrollmentTokens: [EdgeEnrollmentToken!]!
+  edgeReleases: [EdgeRelease!]!
+  backtestTasks: [BacktestTask!]!
+  backtestTask(id: String!): BacktestTask
+  backtestResults(taskId: String!, options: BacktestResultsOptionsInput): [BacktestResult!]!
+}
+
+input BacktestResultsOptionsInput {
+  sort: String
+  order: String
+  limit: Int
+  offset: Int
 }
 
 type Mutation {
-  createItem(name: String!, description: String): Item!
   updateProfile(input: UpdateProfileInput!): UserProfile!
   createProject(input: CreateProjectInput!): Project!
   updateProject(id: String!, input: UpdateProjectInput!): Project
@@ -223,6 +342,24 @@ type Mutation {
   updateHobby(id: String!, input: UpdateHobbyInput!): Hobby
   deleteHobby(id: String!): DeleteResult!
   reorderHobbies(input: ReorderInput!): DeleteResult!
+  createWorker(name: String!, deviceNumber: String, platform: String, arch: String, version: String): Worker!
+  disableWorker(id: String!): Worker
+  issueWorkerCredential(id: String!): IssuedWorkerCredential!
+  revokeWorkerCredential(id: String!): Boolean!
+  rotateWorkerCredential(id: String!): IssuedWorkerCredential!
+  createEdgeEnrollmentToken(label: String, expiresAt: DateTime, maxUses: Int): CreatedEdgeEnrollmentToken!
+  revokeEdgeEnrollmentToken(id: String!): Boolean!
+  createEdgeRelease(version: String!, windowsUrl: String!, linuxUrl: String!, checksum: String!, signature: String!, notes: String): EdgeRelease!
+  setWorkerTargetVersion(workerIds: [String!]!, targetVersion: String!): Int!
+  reportWorkerUpgradeStatus(workerId: String!, status: String!, message: String): Boolean!
+  startUpgradeCampaign(workerIds: [String!]!, targetVersion: String!, forceMode: Boolean, phaseSize: Float, successThreshold: Float, failureThreshold: Float): UpgradeCampaign!
+  advanceUpgradeCampaign(campaignId: String!): UpgradeCampaign!
+  rollbackUpgradeCampaign(campaignId: String!): UpgradeCampaign!
+  createStrategyTemplate(input: CreateStrategyTemplateInput!): StrategyTemplate!
+  updateStrategyTemplate(input: UpdateStrategyTemplateInput!): StrategyTemplate!
+  createBacktestTask(input: CreateBacktestTaskInput!): BacktestTask!
+  cancelBacktestTask(taskId: String!): BacktestTask!
+  retryBacktestTask(taskId: String!): BacktestTask!
 }
 
 input UpdateProfileInput {
@@ -370,4 +507,34 @@ input CreateHobbyInput {
 input UpdateHobbyInput {
   name: String
   description: String
+}
+
+input CreateStrategyTemplateInput {
+  name: String!
+  category: String
+  factoryConfig: String!
+}
+
+input UpdateStrategyTemplateInput {
+  id: ID!
+  name: String
+  category: String
+  factoryConfig: String
+  isActive: Boolean
+}
+
+input CreateBacktestTaskInput {
+  name: String!
+  symbol: String!
+  interval: String!
+  assignedWorkerId: String!
+  searchStrategy: String!
+  strategyTemplateId: ID
+}
+
+type Subscription {
+  workerStatusUpdated: Worker!
+  workerUpgradeStatusUpdated: Worker!
+  backtestTaskUpdated: BacktestTask!
+  backtestResultCreated: BacktestResult!
 }

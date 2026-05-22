@@ -1,9 +1,9 @@
-import { SectionContainer } from "./SectionContainer";
-import { CpuIcon } from "@/components/icons/CpuIcon";
-import { ZapIcon } from "@/components/icons/ZapIcon";
-import { ChartBarIcon } from "@/components/icons/ChartBarIcon";
-import { ShieldCheckIcon } from "@/components/icons/ShieldCheckIcon";
-import { SVGProps } from "@/components/icons/types";
+import { SectionContainer } from './SectionContainer';
+import { CpuIcon } from '@/components/icons/CpuIcon';
+import { ZapIcon } from '@/components/icons/ZapIcon';
+import { ChartBarIcon } from '@/components/icons/ChartBarIcon';
+import { ShieldCheckIcon } from '@/components/icons/ShieldCheckIcon';
+import { SVGProps } from '@/components/icons/types';
 
 interface Module {
   title: string;
@@ -13,28 +13,28 @@ interface Module {
 
 const modules: Module[] = [
   {
-    title: "Perp DEX Leaderboard",
+    title: 'Perp DEX Leaderboard',
     icon: ChartBarIcon,
     description:
-      "Unified leaderboard across GNS, GMX, and AVNT. Full trader profiles with PnL, drawdown, Sharpe ratio, win rate, and position history. Multi-chain, real-time.",
+      'Unified leaderboard across GNS, GMX, and AVNT. Full trader profiles with PnL, drawdown, Sharpe ratio, win rate, and position history. Multi-chain, real-time.',
   },
   {
-    title: "Backtesting Engine",
+    title: 'Backtesting Engine',
     icon: CpuIcon,
     description:
-      "Deterministic backtesting against version-pinned historical perp DEX data. Fixed random seeds, explicit parameter hashing, reproducible outputs across runs.",
+      'Deterministic backtesting against version-pinned historical perp DEX data. Fixed random seeds, explicit parameter hashing, reproducible outputs across runs.',
   },
   {
-    title: "Execution Analytics",
+    title: 'Execution Analytics',
     icon: ZapIcon,
     description:
-      "Full order lifecycle tracking across perpetual protocols. Every open, close, liquidation, and fee \u2014 indexed, normalized, and queryable via GraphQL.",
+      'Full order lifecycle tracking across perpetual protocols. Every open, close, liquidation, and fee \u2014 indexed, normalized, and queryable via GraphQL.',
   },
   {
-    title: "On-chain Attestation",
+    title: 'On-chain Attestation',
     icon: ShieldCheckIcon,
     description:
-      "Strategy config and performance outputs are SHA-256 hashed and anchored to EVM chains. Independently verifiable by anyone with the transaction hash.",
+      'Strategy config and performance outputs are SHA-256 hashed and anchored to EVM chains. Independently verifiable by anyone with the transaction hash.',
   },
 ];
 
@@ -46,26 +46,18 @@ export function InfrastructureSection() {
           Core Platform
         </h2>
         <p className="max-w-2xl text-base text-[#787774]">
-          Two products. One data layer. Full coverage across perpetual DEX
-          protocols on EVM chains.
+          Two products. One data layer. Full coverage across perpetual DEX protocols on EVM chains.
         </p>
       </div>
 
       <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
         {modules.map((mod) => (
-          <div
-            key={mod.title}
-            className="rounded-xl border border-[#e8e7e4] bg-[#fbfbfa] p-6"
-          >
+          <div key={mod.title} className="rounded-xl border border-[#e8e7e4] bg-[#fbfbfa] p-6">
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
               <mod.icon size={20} fill="#16a34a" />
             </div>
-            <h3 className="text-lg font-semibold text-[#37352f]">
-              {mod.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#787774]">
-              {mod.description}
-            </p>
+            <h3 className="text-lg font-semibold text-[#37352f]">{mod.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[#787774]">{mod.description}</p>
           </div>
         ))}
       </div>

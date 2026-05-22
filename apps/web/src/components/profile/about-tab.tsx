@@ -137,27 +137,19 @@ export function AboutTab({ user, userId }: AboutTabProps) {
             <div className="space-y-4">
               <div>
                 <span className="text-xs text-[#a3a29e]">First Name</span>
-                <p className="text-sm font-medium text-[#37352f]">
-                  {user.firstName ?? '-'}
-                </p>
+                <p className="text-sm font-medium text-[#37352f]">{user.firstName ?? '-'}</p>
               </div>
               <div>
                 <span className="text-xs text-[#a3a29e]">Last Name</span>
-                <p className="text-sm font-medium text-[#37352f]">
-                  {user.lastName ?? '-'}
-                </p>
+                <p className="text-sm font-medium text-[#37352f]">{user.lastName ?? '-'}</p>
               </div>
               <div>
                 <span className="text-xs text-[#a3a29e]">Headline</span>
-                <p className="text-sm font-medium text-[#37352f]">
-                  {user.headline ?? '-'}
-                </p>
+                <p className="text-sm font-medium text-[#37352f]">{user.headline ?? '-'}</p>
               </div>
               <div>
                 <span className="text-xs text-[#a3a29e]">Location</span>
-                <p className="text-sm font-medium text-[#37352f]">
-                  {user.location ?? '-'}
-                </p>
+                <p className="text-sm font-medium text-[#37352f]">{user.location ?? '-'}</p>
               </div>
               <div>
                 <span className="text-xs text-[#a3a29e]">Avatar</span>

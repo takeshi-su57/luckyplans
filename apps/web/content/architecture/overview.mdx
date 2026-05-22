@@ -5,7 +5,7 @@ description: Current system architecture, service map, data flow, and infrastruc
 
 # System Architecture Overview
 
-Last updated: 2026-03-12
+Last updated: 2026-05-21
 
 ## Architecture Diagram
 
@@ -41,9 +41,14 @@ API Gateway
   │ Redis pub/sub — payload carries { userId, roles }, never the raw token
   │
   ▼
-service-core         ← NestJS microservice
-(CRUD for all
- domain entities)
+Worker Edges (`apps/edge-agent`, external runtime)
+  ▲  Internal edge APIs (`/internal/edges/*`)
+  │  - register + credential issuance
+  │  - connectivity heartbeat (`lastSeenAt`, version, targetVersion)
+  │  - task polling/results/complete/fail
+  │  - upgrade status reporting
+  ▼
+API Gateway + PostgreSQL/Prisma
 ```
 
 ## Service Map
@@ -52,15 +57,16 @@ service-core         ← NestJS microservice
 |---------|---------|---------------|
 | Keycloak | Identity Provider — user management, roles (PostgreSQL-backed) | ROPC + Admin API (gateway ↔ Keycloak server-side) |
 | `apps/web` | Next.js frontend, App Router, Apollo Client, custom auth pages, blog | GraphQL → API gateway (via Next.js rewrites / K8s ingress) |
-| `apps/api-gateway` | GraphQL API, REST auth endpoints, Redis session management | GraphQL in, Redis out |
-| `apps/service-core` | Generic CRUD for all domain entities | Redis transport |
+| `apps/api-gateway` | GraphQL API, REST auth endpoints, edge control plane (worker registry, release metadata, upgrade campaigns), Redis session management | GraphQL + internal REST APIs |
+| `apps/edge-agent` | External edge runtime: onboarding, registration, connectivity heartbeat, task execution, idle-only upgrade loop | Internal REST APIs ↔ gateway |
 
 ## Architectural Decisions
 
 Services are split by **functionality**, not by domain:
-- `service-core` handles CRUD for all entities (items, orders, etc.)
-- New microservices are only created for complex business logic (e.g., trading engine)
-- Domain types live in `packages/shared`, not in individual services
+- `api-gateway` currently owns client-facing domain operations and orchestration logic
+- edge runtimes (`apps/edge-agent`) execute distributed workloads and report state to gateway
+- new microservices are created only when workload/operations justify isolation (CPU-heavy, cron/background, independent scaling/SLO)
+- domain types live in `packages/shared`, not in individual services
 
 ## Auth Flow
 
@@ -81,10 +87,18 @@ Registration: custom `/register` page → `POST /auth/register` → gateway crea
 
 1. **Frontend** sends GraphQL query/mutation via Apollo Client (cookie sent automatically)
 2. **API Gateway** `SessionGuard` looks up session in Redis, validates, and populates `req.user`
-3. Resolver sends a Redis message via `ClientProxy.send(MessagePattern, { ...payload, userId, roles })`
-4. **Microservice** controller receives the message via `@MessagePattern`
-5. Controller delegates to service class for business logic
-6. Service returns result → controller → Redis → gateway resolver → GraphQL response → frontend
+3. Resolver executes gateway service logic (and edge orchestration when needed)
+4. Gateway persists/reads domain state via Prisma/PostgreSQL
+5. Gateway returns GraphQL response to frontend
+
+### Edge Runtime Lifecycle (Current)
+
+1. Edge starts and loads local config; if missing and interactive, runs onboarding wizard.
+2. Wizard collects display name, server URL, registration token; edge generates `edge-<human-name>-<shortid>`.
+3. Gateway registers/upserts worker by `deviceNumber` and issues credential.
+4. Edge sends connectivity heartbeat; gateway updates `lastSeenAt`, `version`, `targetVersion`, `upgradeStatus`.
+5. Edge polls tasks and reports heartbeat/results/terminal states.
+6. If `targetVersion` differs and edge is idle, upgrade flow runs and status transitions are reported.
 
 ## Shared Packages
 
@@ -102,7 +116,7 @@ Registration: custom `/register` page → `POST /auth/register` → gateway crea
 - **Deployment:** Helm charts on Kubernetes (k3s locally, any K8s in production)
 - **Auth:** Keycloak (self-hosted, PostgreSQL-backed), gateway-managed sessions with Redis store
 - **Docs:** Nextra v4 integrated at `/docs` within `apps/web`
-- **Inter-service:** Redis (pub/sub transport for NestJS microservices + session store)
+- **Inter-service/runtime:** Redis session/cache + internal edge HTTP APIs for distributed worker orchestration
 
 See deep dives:
 - [CI/CD Pipeline](/docs/architecture/ci-cd-pipeline)
@@ -112,11 +126,10 @@ See deep dives:
 
 ## Current State and Known Limitations
 
-- **Items entity uses in-memory storage** — Profile and portfolio entities (Project, Skill, Experience) use PostgreSQL/Prisma, but Items is still in-memory
-- **No tests** — CI test step exists but is a no-op
-- **No message persistence** — Redis pub/sub drops messages if a service is down
-- **Keycloak + PostgreSQL required** — local development needs `docker compose up -d` before `pnpm dev`
-- **Gateway stateful** — session store depends on Redis; Redis data loss invalidates all sessions
+- **Worker upgrade execution is policy-driven** — edge upgrades are idle-only and rely on release metadata integrity (URL/checksum/signature).
+- **Connectivity is heartbeat-based** — stale `lastSeenAt` reflects liveness issues but not root cause.
+- **Keycloak + PostgreSQL required** — local development needs `docker compose up -d` before `pnpm dev`.
+- **Gateway stateful** — session store depends on Redis; Redis data loss invalidates all sessions.
 - **Blog pages are static placeholders** — no CMS backend yet
 - **Portfolio image uploads not supported** — `imageUrl` fields accept external URLs only, no file upload
 - **No portfolio search/discovery** — public profiles are accessed directly via `/u/[userId]`, no directory or search

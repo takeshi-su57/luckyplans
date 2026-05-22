@@ -1,24 +1,13 @@
-import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { getEnvVar } from '@luckyplans/shared';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
+import { DatabaseModule } from '../database/database.module';
 import { ProfileResolver } from './profile.resolver';
 import { PortfolioResolver } from './portfolio.resolver';
+import { ProfileService } from './profile.service';
 
 @Module({
-  imports: [
-    AuthModule,
-    ClientsModule.register([
-      {
-        name: 'CORE_SERVICE',
-        transport: Transport.REDIS,
-        options: {
-          host: getEnvVar('REDIS_HOST', 'localhost'),
-          port: parseInt(getEnvVar('REDIS_PORT', '6379'), 10),
-        },
-      },
-    ]),
-  ],
-  providers: [ProfileResolver, PortfolioResolver],
+  imports: [forwardRef(() => AuthModule), DatabaseModule],
+  providers: [ProfileService, ProfileResolver, PortfolioResolver],
+  exports: [ProfileService],
 })
 export class ProfileModule {}

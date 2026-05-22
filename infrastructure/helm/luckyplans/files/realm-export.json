@@ -58,29 +58,12 @@
       "attributes": {
         "post.logout.redirect.uris": "http://localhost:3000/+https://luckyplans.xyz/"
       },
-      "redirectUris": [
-        "http://localhost:3000/*",
-        "https://luckyplans.xyz/*"
-      ],
-      "webOrigins": [
-        "http://localhost:3000",
-        "https://luckyplans.xyz"
-      ],
+      "redirectUris": ["http://localhost:3000/*", "https://luckyplans.xyz/*"],
+      "webOrigins": ["http://localhost:3000", "https://luckyplans.xyz"],
       "protocol": "openid-connect",
       "fullScopeAllowed": true,
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "profile",
-        "roles",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
+      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "email"],
+      "optionalClientScopes": ["address", "phone", "offline_access", "microprofile-jwt"]
     }
   ],
   "users": [

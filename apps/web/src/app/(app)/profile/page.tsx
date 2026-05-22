@@ -76,10 +76,7 @@ export default function ProfilePage() {
 
       {/* Tab Navigation + Content */}
       <div className="mt-6">
-        <Tabs
-          selectedKey={activeTab}
-          onSelectionChange={(key) => setActiveTab(key as TabKey)}
-        >
+        <Tabs selectedKey={activeTab} onSelectionChange={(key) => setActiveTab(key as TabKey)}>
           <Tabs.ListContainer>
             <Tabs.List aria-label="Profile sections">
               {tabConfig.map((tab) => {

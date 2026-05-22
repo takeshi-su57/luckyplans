@@ -6,3 +6,5 @@ coverage/
 .turbo/
 pnpm-lock.yaml
 infrastructure/helm/luckyplans/templates/
+packages/prisma/generated/
+apps/web/src/generated/

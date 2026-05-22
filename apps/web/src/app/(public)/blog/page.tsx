@@ -9,9 +9,7 @@ export default function BlogPage() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-20 md:px-8 md:py-28">
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">
-          Lab Notes
-        </h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">Lab Notes</h1>
         <p className="max-w-2xl text-base text-[#787774]">
           Weekly observations from building in the open.
         </p>

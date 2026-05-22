@@ -28,10 +28,7 @@ export class UploadsController {
       limits: { fileSize: 25 * 1024 * 1024 },
     }),
   )
-  async upload(
-    @UploadedFile() file: Express.Multer.File,
-    @Query('prefix') prefix?: string,
-  ) {
+  async upload(@UploadedFile() file: Express.Multer.File, @Query('prefix') prefix?: string) {
     if (!file) throw new BadRequestException('No file uploaded');
 
     const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];

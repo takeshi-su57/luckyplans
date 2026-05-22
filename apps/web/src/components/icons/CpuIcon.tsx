@@ -1,12 +1,6 @@
-import { SVGProps } from "./types";
+import { SVGProps } from './types';
 
-export function CpuIcon({
-  fill = "currentColor",
-  size = 24,
-  height,
-  width,
-  ...props
-}: SVGProps) {
+export function CpuIcon({ fill = 'currentColor', size = 24, height, width, ...props }: SVGProps) {
   return (
     <svg
       width={width || size}

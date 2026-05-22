@@ -43,8 +43,6 @@ jobs:
             dockerfile: apps/web/Dockerfile
           - service: api-gateway
             dockerfile: apps/api-gateway/Dockerfile
-          - service: service-core
-            dockerfile: apps/service-core/Dockerfile
           - service: prisma-migrate
             dockerfile: packages/prisma/Dockerfile
 

@@ -35,7 +35,7 @@ export interface PaginatedResponse<T = unknown> {
 }
 
 export enum ServiceName {
-  CORE = 'service-core',
+  CORE = 'api-gateway-core',
   API_GATEWAY = 'api-gateway',
 }
 
@@ -191,12 +191,23 @@ export interface PublicProfileData extends UserProfileData {
   hobbies: HobbyData[];
 }
 
+export enum WorkerStatus {
+  ACTIVE = 'ACTIVE',
+  DISABLED = 'DISABLED',
+}
+
+export interface WorkerData {
+  id: string;
+  name: string;
+  platform?: string;
+  version?: string;
+  status: WorkerStatus;
+  lastSeenAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export enum CoreMessagePattern {
-  GET_ITEMS = 'core.getItems',
-  GET_ITEM = 'core.getItem',
-  CREATE_ITEM = 'core.createItem',
-  UPDATE_ITEM = 'core.updateItem',
-  DELETE_ITEM = 'core.deleteItem',
   GET_PROFILE = 'core.getProfile',
   GET_OR_CREATE_PROFILE = 'core.getOrCreateProfile',
   UPDATE_PROFILE = 'core.updateProfile',

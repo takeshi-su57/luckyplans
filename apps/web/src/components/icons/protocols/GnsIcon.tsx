@@ -1,12 +1,7 @@
-import { useId } from "react";
-import { SVGProps } from "../types";
+import { useId } from 'react';
+import { SVGProps } from '../types';
 
-export function GnsIcon({
-  size = 24,
-  height,
-  width,
-  ...props
-}: SVGProps) {
+export function GnsIcon({ size = 24, height, width, ...props }: SVGProps) {
   const uid = useId();
   return (
     <svg
@@ -35,19 +30,47 @@ export function GnsIcon({
         d="M26 43.8c1.5-1 3.5 0 3.5 1.8v11.2c0 2.2-1.6 2.8-3.3 2.4a21.4 21.4 0 0 1-10.7-6c-1.1-1-1.3-2.5.2-3.5l10.2-5.9Z"
       />
       <defs>
-        <linearGradient id={`${uid}-a`} x1="18.8" x2="12.9" y1="7.9" y2="47.3" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id={`${uid}-a`}
+          x1="18.8"
+          x2="12.9"
+          y1="7.9"
+          y2="47.3"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset=".2" stopColor="#00456D" />
           <stop offset=".9" stopColor="#5FFEAE" />
         </linearGradient>
-        <linearGradient id={`${uid}-b`} x1="28.6" x2="25.5" y1="10.9" y2="23.8" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id={`${uid}-b`}
+          x1="28.6"
+          x2="25.5"
+          y1="10.9"
+          y2="23.8"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset=".1" stopColor="#005E95" />
           <stop offset="1" stopColor="#5FFEAE" />
         </linearGradient>
-        <linearGradient id={`${uid}-c`} x1="39.6" x2="51.8" y1="4.2" y2="56.1" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id={`${uid}-c`}
+          x1="39.6"
+          x2="51.8"
+          y1="4.2"
+          y2="56.1"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset=".1" stopColor="#4DFC8D" />
           <stop offset="1" stopColor="#1FC3F1" />
         </linearGradient>
-        <linearGradient id={`${uid}-d`} x1="-6.8" x2="42.7" y1="31.3" y2="64.2" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id={`${uid}-d`}
+          x1="-6.8"
+          x2="42.7"
+          y1="31.3"
+          y2="64.2"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop offset=".1" stopColor="#3EFE99" />
           <stop offset="1" stopColor="#2AABF0" />
         </linearGradient>

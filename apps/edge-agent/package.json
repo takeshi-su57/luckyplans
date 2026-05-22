@@ -1,0 +1,23 @@
+{
+  "name": "@luckyplans/edge-agent",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "lint": "eslint \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit",
+    "clean": "node -e \"const fs=require('fs');['dist','.turbo','tsconfig.tsbuildinfo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@luckyplans/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@luckyplans/config": "workspace:*",
+    "@types/node": "^25.5.0",
+    "eslint": "^10.0.3",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.4"
+  }
+}

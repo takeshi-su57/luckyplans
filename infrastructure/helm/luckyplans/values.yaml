@@ -60,6 +60,7 @@ sealedSecrets:
 secrets:
   JWT_SECRET: 'dev-jwt-secret-do-not-use-in-production'
   SESSION_SECRET: 'dev-session-secret-do-not-use-in-production'
+  WORKER_CREDENTIAL_PEPPER: 'dev-worker-credential-pepper-do-not-use-in-production'
   KEYCLOAK_CLIENT_SECRET: 'dev-client-secret'
   POSTGRES_PASSWORD: 'dev-postgres-password'
   KEYCLOAK_ADMIN_PASSWORD: 'admin'
@@ -144,33 +145,12 @@ apiGateway:
 
 # ============================================================
 # Prisma Migrate (pre-deploy Job)
-# Runs `prisma migrate deploy` before service-core starts.
+# Runs `prisma migrate deploy` before api-gateway starts.
 # ============================================================
 prismaMigrate:
   image:
     repository: luckyplans/prisma-migrate
     tag: latest
-
-# ============================================================
-# service-core (Redis transport microservice — no HTTP port)
-# ============================================================
-serviceCore:
-  image:
-    repository: luckyplans/service-core
-    tag: latest
-  replicas: 1
-  resources:
-    requests:
-      memory: '128Mi'
-      cpu: '100m'
-    limits:
-      memory: '256Mi'
-      cpu: '200m'
-  probes:
-    liveness:
-      initialDelaySeconds: 15
-      periodSeconds: 20
-      failureThreshold: 3
 
 # ============================================================
 # Web (Next.js)

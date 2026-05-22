@@ -39,13 +39,13 @@ App services run in the `luckyplans` namespace. Observability services run in th
 
 ## Prerequisites
 
-| Tool         | Version | Install                                                       |
-| ------------ | ------- | ------------------------------------------------------------- |
-| Docker       | Latest  | [docker.com](https://www.docker.com)                          |
-| k3d          | Latest  | [k3d.io](https://k3d.io)                                      |
-| kubectl      | Latest  | [kubernetes.io](https://kubernetes.io/docs/tasks/tools/)      |
-| Helm         | >= 3.0  | [helm.sh](https://helm.sh/docs/intro/install/)                |
-| cert-manager | v1.17.1 | See [Install cert-manager](#install-cert-manager) (prod only) |
+| Tool         | Version | Install                                                                                        |
+| ------------ | ------- | ---------------------------------------------------------------------------------------------- |
+| Docker       | Latest  | [docker.com](https://www.docker.com)                                                           |
+| k3d          | Latest  | [k3d.io](https://k3d.io)                                                                       |
+| kubectl      | Latest  | [kubernetes.io](https://kubernetes.io/docs/tasks/tools/)                                       |
+| Helm         | >= 3.0  | [helm.sh](https://helm.sh/docs/intro/install/)                                                 |
+| cert-manager | v1.17.1 | See [Install cert-manager](#install-cert-manager) (prod only)                                  |
 | kubeseal     | Latest  | [sealed-secrets releases](https://github.com/bitnami-labs/sealed-secrets/releases) (prod only) |
 
 ### Install k3d
@@ -254,15 +254,16 @@ Production secrets are managed via **Bitnami Sealed Secrets**. Encrypted values 
 
 ### Required secrets
 
-| Secret | Purpose |
-|--------|---------|
-| `JWT_SECRET` | API Gateway JWT token signing |
-| `SESSION_SECRET` | API Gateway session encryption |
-| `KEYCLOAK_CLIENT_SECRET` | Keycloak OIDC client authentication |
-| `POSTGRES_PASSWORD` | PostgreSQL database (used by PostgreSQL + Keycloak) |
-| `KEYCLOAK_ADMIN_PASSWORD` | Keycloak admin console login |
-| `MINIO_ACCESS_KEY` | MinIO root user (S3 access key for file uploads) |
-| `MINIO_SECRET_KEY` | MinIO root password (S3 secret key for file uploads) |
+| Secret                     | Purpose                                                       |
+| -------------------------- | ------------------------------------------------------------- |
+| `JWT_SECRET`               | API Gateway JWT token signing                                 |
+| `SESSION_SECRET`           | API Gateway session encryption                                |
+| `WORKER_CREDENTIAL_PEPPER` | API Gateway pepper for worker credential hashing/verification |
+| `KEYCLOAK_CLIENT_SECRET`   | Keycloak OIDC client authentication                           |
+| `POSTGRES_PASSWORD`        | PostgreSQL database (used by PostgreSQL + Keycloak)           |
+| `KEYCLOAK_ADMIN_PASSWORD`  | Keycloak admin console login                                  |
+| `MINIO_ACCESS_KEY`         | MinIO root user (S3 access key for file uploads)              |
+| `MINIO_SECRET_KEY`         | MinIO root password (S3 secret key for file uploads)          |
 
 ### Rotating secrets
 
@@ -277,11 +278,38 @@ Production secrets are managed via **Bitnami Sealed Secrets**. Encrypted values 
 After rotating `KEYCLOAK_CLIENT_SECRET`, update Keycloak Admin Console:
 Clients → `luckyplans-frontend` → Credentials → set the new value.
 
+After rotating `WORKER_CREDENTIAL_PEPPER`, previously issued worker credentials become invalid unless your rollout includes a dual-pepper migration strategy. Plan this as a maintenance window and re-issue credentials where needed.
+
 > **Important:** All secrets in the table above must be present in `values.prod.yaml` under `sealedSecrets.encryptedData`. If any are missing, the corresponding Pod will fail to start because its `secretKeyRef` cannot resolve — and any PVCs it mounts will stay in `WaitForFirstConsumer` indefinitely.
 
 ### Local dev secrets
 
 Local development uses plain-text dev defaults in `values.yaml` — no sealed secrets needed. The realm export pre-configures `dev-client-secret` for Keycloak.
+
+## Kubernetes Security Baseline (Helm + ArgoCD)
+
+Use this as the minimum production baseline:
+
+1. Keep `sealedSecrets.enabled: true` in `values.prod.yaml`; never commit plain-text secrets.
+2. Rotate `SESSION_SECRET`, `WORKER_CREDENTIAL_PEPPER`, `JWT_SECRET`, `KEYCLOAK_CLIENT_SECRET`, and MinIO secrets on a fixed schedule (for example, every 90 days) and after incidents.
+3. Restrict access to `values.prod.yaml`, Sealed Secrets private key backups, and CI secrets to least privilege.
+4. Enforce HTTPS-only ingress (`websecure` + HSTS middleware) and keep `certManager.enabled: true`.
+5. Keep image tags immutable (`sha-<commit>`), avoid mutable prod tags.
+6. Use non-root containers and dropped Linux capabilities (already defined in gateway Deployment); do not relax these defaults.
+7. Keep ArgoCD auto-sync with Git as source of truth; avoid manual `kubectl edit` drift in production.
+8. Scope observability access: expose Grafana/Prometheus via authenticated channels (VPN, SSO, or restricted ingress), never public anonymous endpoints.
+
+### Required update for current error
+
+If you are seeing `Missing required environment variable: WORKER_CREDENTIAL_PEPPER`, run:
+
+```bash
+./infrastructure/scripts/seal-secrets.sh --seal-only WORKER_CREDENTIAL_PEPPER
+```
+
+Then add the output key under `sealedSecrets.encryptedData` in `infrastructure/helm/luckyplans/values.prod.yaml`, commit, and let ArgoCD sync.
+
+If edge registration fails due to invalid enrollment token, create a new token in the Edges UI and revoke the compromised token.
 
 ### Key backup
 
@@ -319,6 +347,40 @@ kubectl -n monitoring port-forward svc/prometheus 9090:9090
 ```
 
 NestJS services push traces and metrics via OTLP to the OTel Collector. Promtail ships pod logs to Loki. Grafana provides unified dashboards with trace↔log correlation.
+
+## Edge Agent Release and Rollout
+
+The edge lifecycle now includes release metadata and target-version orchestration.
+
+### Release registration flow
+
+1. Build and publish edge artifacts to GitHub Releases (Windows + Linux assets).
+2. Register the release in LuckyPlans with:
+   - `version`
+   - `windowsUrl`
+   - `linuxUrl`
+   - `checksum`
+   - `signature`
+3. Set `targetVersion` for selected workers or start an upgrade campaign.
+
+### Edge rollout behavior
+
+1. Edge sends connectivity heartbeats to the gateway.
+2. Gateway returns upgrade intent when `targetVersion` differs from `version`.
+3. Edge upgrades only when idle (no active task).
+4. Edge reports upgrade statuses (`DOWNLOADING`, `VERIFYING`, `RESTARTING`, `SUCCEEDED`, `FAILED`).
+
+### Registration token requirement
+
+Edge registration requires an active enrollment token created in the Edges UI. Tokens are one-time reveal secrets and can be revoked without affecting already registered edges.
+
+Recommended operator flow:
+
+1. Open `/edges` in the app.
+2. Create an enrollment token (set optional `maxUses` / `expiresAt`).
+3. Copy the revealed token immediately (shown once).
+4. Use it only at edge onboarding prompt (`Enrollment token (from Edge UI)`).
+5. Revoke the token when onboarding is complete.
 
 ## Viewing Logs
 
