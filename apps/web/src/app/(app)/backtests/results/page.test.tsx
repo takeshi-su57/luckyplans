@@ -3,10 +3,12 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import BacktestResultsPage from './page';
 
-const useBacktestResultsMock = vi.fn(() => ({
-  data: { backtestResults: [] as Array<Record<string, unknown>> },
-  loading: false,
-  error: null,
+const { useBacktestResultsMock } = vi.hoisted(() => ({
+  useBacktestResultsMock: vi.fn(() => ({
+    data: { backtestResults: [] as Array<Record<string, unknown>> },
+    loading: false,
+    error: null,
+  })),
 }));
 
 vi.mock('@/hooks/backtests/use-backtests', () => ({
