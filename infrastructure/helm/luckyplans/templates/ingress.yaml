@@ -1,4 +1,10 @@
 {{- if .Values.ingress.enabled }}
+{{- $appHost := .Values.ingress.hosts.app | default "" -}}
+{{- $apiHost := .Values.ingress.hosts.api | default "" -}}
+{{- $adminHost := .Values.ingress.hosts.admin | default "" -}}
+{{- $legacyHost := .Values.ingress.host | default "" -}}
+{{- $legacyV0Host := .Values.legacyV0.host | default "" -}}
+{{- $useMultiHost := and $appHost (and $apiHost $adminHost) -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -16,13 +22,97 @@ spec:
   {{- end }}
   {{- if .Values.ingress.tls.enabled }}
   tls:
+    {{- if $useMultiHost }}
     - hosts:
-        - {{ .Values.ingress.host | quote }}
+        - {{ $appHost | quote }}
+      secretName: {{ .Values.ingress.tls.secrets.app | quote }}
+    - hosts:
+        - {{ $apiHost | quote }}
+      secretName: {{ .Values.ingress.tls.secrets.api | quote }}
+    - hosts:
+        - {{ $adminHost | quote }}
+      secretName: {{ .Values.ingress.tls.secrets.admin | quote }}
+    {{- if and .Values.legacyV0.enabled $legacyV0Host }}
+    - hosts:
+        - {{ $legacyV0Host | quote }}
+      secretName: {{ .Values.ingress.tls.secrets.v0api | quote }}
+    {{- end }}
+    {{- else }}
+    - hosts:
+        - {{ $legacyHost | quote }}
       secretName: {{ .Values.ingress.tls.secretName | quote }}
+    {{- end }}
   {{- end }}
   rules:
-    - {{- if .Values.ingress.host }}
-      host: {{ .Values.ingress.host | quote }}
+    {{- if $useMultiHost }}
+    - host: {{ $appHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+    - host: {{ $apiHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 3001
+    - host: {{ $adminHost | quote }}
+      http:
+        paths:
+          {{- if .Values.keycloak.enabled }}
+          - path: /realms
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 80
+          - path: /resources
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 80
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 80
+          - path: /js
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak
+                port:
+                  number: 80
+          {{- end }}
+    {{- if and .Values.legacyV0.enabled $legacyV0Host }}
+    - host: {{ $legacyV0Host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: legacy-v0-api
+                port:
+                  number: {{ .Values.legacyV0.upstreamPort }}
+    {{- end }}
+    {{- else }}
+    - {{- if $legacyHost }}
+      host: {{ $legacyHost | quote }}
       {{- end }}
       http:
         paths:
@@ -91,4 +181,5 @@ spec:
                 name: web
                 port:
                   number: 3000
+    {{- end }}
 {{- end }}

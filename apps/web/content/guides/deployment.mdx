@@ -83,6 +83,13 @@ See [TLS Certificates](/docs/architecture/tls-certificates) for full documentati
 | Replicas       | 1                 | 2                                     |
 | TLS            | off               | on (cert-manager)                     |
 
+### Production domains
+
+- `app.luckyplans.xyz` → web frontend
+- `api.luckyplans.xyz` → api-gateway (`/graphql`, `/auth`, `/uploads`, `/health`)
+- `admin.luckyplans.xyz` → Keycloak, ArgoCD (`/argocd`), Grafana (`/grafana`)
+- `v0.api.luckyplans.xyz` → legacy API routed by k3d ingress to `host.k3d.internal:9000`
+
 ## Local Deployment (laptop)
 
 ### Single command (full deploy)
@@ -188,7 +195,11 @@ ArgoCD will auto-sync the new tag.
 
 ### Prerequisites
 
-- DNS A record: `yourdomain.xyz → <your-server-ip>`
+- DNS A records:
+  - `app.luckyplans.xyz` → `<your-server-ip>`
+  - `api.luckyplans.xyz` → `<your-server-ip>`
+  - `admin.luckyplans.xyz` → `<your-server-ip>`
+  - `v0.api.luckyplans.xyz` → `<your-server-ip>`
 - Ports open on firewall: 22 (SSH), 80 (HTTP/ACME), 443 (HTTPS)
 - A GitHub PAT with `read:packages` and repo read access
 - `CD_PUSH_TOKEN`: fine-grained PAT with Contents: read+write scope (required with branch protection)
@@ -226,7 +237,7 @@ cd luckyplans
 #    Commit and push — ArgoCD will auto-sync and deploy all services
 
 # 7. Sync Keycloak client secret (after Keycloak is running)
-#    a. Log into Keycloak Admin at https://yourdomain.xyz/admin
+#    a. Log into Keycloak Admin at https://admin.luckyplans.xyz/admin
 #       Username: admin | Password: the KEYCLOAK_ADMIN_PASSWORD from step 5
 #    b. Select realm: luckyplans (top-left dropdown)
 #    c. Go to: Clients → luckyplans-frontend → Credentials tab

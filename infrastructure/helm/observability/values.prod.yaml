@@ -17,7 +17,7 @@ grafana:
   adminPassword: '' # Set via sealed secret in production
   ingress:
     enabled: true
-    host: luckyplans.xyz
+    host: admin.luckyplans.xyz
 
 loki:
   retention: 336h # 14 days

@@ -63,7 +63,7 @@ description: All environment variables, Helm values, and production overrides.
 
 Environment variables are accessed via `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. This throws on missing required variables. See `.env.example` for the full template.
 
-> **Note:** The frontend no longer requires any auth-related environment variables. Apollo Client uses a relative `/graphql` URL and session cookies are managed entirely by the gateway.
+> **Note:** The frontend no longer requires any auth-related environment variables. In local development Apollo Client uses a relative `/graphql` URL. In production the web image build arg points at `https://api.luckyplans.xyz/graphql`.
 
 ## Helm Values
 
@@ -77,7 +77,7 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 | `secrets`         | Plain-text dev secrets rendered into K8s Secret (local dev only)              |
 | `sealedSecrets.*` | Encrypted production secrets rendered as SealedSecret CRD (prod only)         |
 | `image.*`         | Container registry and pull policy                                            |
-| `ingress.*`       | Traefik ingress configuration (routes `/auth/*`, `/graphql`, `/realms/*`)     |
+| `ingress.*`       | Traefik ingress configuration (host routing for `app`, `api`, `admin`, `v0.api`) |
 | `certManager.*`   | Let's Encrypt TLS automation                                                  |
 | `redis.*`         | Redis deployment config                                                       |
 | `postgresql.*`    | PostgreSQL deployment config (Keycloak database)                              |
