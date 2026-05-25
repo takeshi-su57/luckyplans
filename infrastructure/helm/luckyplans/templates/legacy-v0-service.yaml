@@ -1,0 +1,16 @@
+{{- if .Values.legacyV0.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: legacy-v0-api
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.labels" . | nindent 4 }}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.legacyV0.upstreamHost | quote }}
+  ports:
+    - name: http
+      port: {{ .Values.legacyV0.upstreamPort }}
+      targetPort: {{ .Values.legacyV0.upstreamPort }}
+{{- end }}

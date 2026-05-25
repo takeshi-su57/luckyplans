@@ -76,11 +76,31 @@ ingress:
   className: traefik
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
-  # Empty host = match all hostnames (correct for local k3d)
+  # Deprecated compatibility key (single-host mode). Prefer ingress.hosts.*
   host: ''
+  # Preferred multi-host model.
+  hosts:
+    app: ''
+    api: ''
+    admin: ''
   tls:
     enabled: false
+    # Deprecated compatibility key (single TLS secret). Prefer ingress.tls.secrets.*
     secretName: ''
+    # Preferred per-host TLS secrets.
+    secrets:
+      app: ''
+      api: ''
+      admin: ''
+      v0api: ''
+
+# Legacy v0 API routing (external process on the same host, different port).
+legacyV0:
+  enabled: false
+  host: ''
+  # In k3d/k3s, host.k3d.internal resolves to the Docker host.
+  upstreamHost: 'host.k3d.internal'
+  upstreamPort: 8080
 
 # ============================================================
 # cert-manager (Let's Encrypt automatic TLS)

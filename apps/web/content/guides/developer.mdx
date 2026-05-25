@@ -28,6 +28,12 @@ pnpm dev
 
 Open http://localhost:3000 — Next.js rewrites proxy `/auth/*` and `/graphql` to the gateway.
 
+Domain routing in production:
+- `app.luckyplans.xyz` → web
+- `api.luckyplans.xyz` → api-gateway
+- `admin.luckyplans.xyz` → Keycloak/ArgoCD/Grafana
+- `v0.api.luckyplans.xyz` → legacy API via k3d ingress to `host.k3d.internal:9000`
+
 ## Step-by-Step Setup
 
 ### 1. Install dependencies

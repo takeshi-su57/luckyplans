@@ -10,6 +10,7 @@ out/
 
 # Turbo
 .turbo/
+.worktrees/
 
 # Environment
 .env
