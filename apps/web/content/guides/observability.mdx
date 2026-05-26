@@ -19,7 +19,7 @@ LuckyPlans includes a full observability stack covering **metrics**, **logs**, a
 Production host routing:
 - Grafana is exposed at `https://admin.luckyplans.xyz/grafana`
 - App/API traffic is split across `app.luckyplans.xyz` and `api.luckyplans.xyz`
-- Legacy API remains available at `https://v0.api.luckyplans.xyz` through k3d ingress passthrough
+- Legacy API remains available at `https://v0.api.luckyplans.xyz` through the `legacy-v0-api` in-cluster proxy
 
 ## Getting Started
 

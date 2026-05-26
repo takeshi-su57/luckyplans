@@ -88,7 +88,7 @@ See [TLS Certificates](/docs/architecture/tls-certificates) for full documentati
 - `app.luckyplans.xyz` → web frontend
 - `api.luckyplans.xyz` → api-gateway (`/graphql`, `/auth`, `/uploads`, `/health`)
 - `admin.luckyplans.xyz` → Keycloak, ArgoCD (`/argocd`), Grafana (`/grafana`)
-- `v0.api.luckyplans.xyz` → legacy API routed by k3d ingress to `host.k3d.internal:9000`
+- `v0.api.luckyplans.xyz` -> legacy API through the `legacy-v0-api` in-cluster proxy to `host.k3d.internal:9000`
 
 ## Local Deployment (laptop)
 

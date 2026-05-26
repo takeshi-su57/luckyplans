@@ -85,7 +85,7 @@ The chart creates the `luckyplans` namespace annotated with `helm.sh/resource-po
 | image tags                 | `latest`           | `sha-<commit>`                         |
 | replicas                   | `1`                | `2`                                    |
 
-Legacy service note: `v0.api.luckyplans.xyz` is routed by this Helm chart to the legacy API process on the host via `legacy-v0-api` (`ExternalName: host.k3d.internal`, port `9000`).
+Legacy service note: `v0.api.luckyplans.xyz` is routed by this Helm chart to an in-cluster `legacy-v0-api` proxy service. The proxy pod forwards traffic to the host-level legacy API at `host.k3d.internal:9000`, avoiding Traefik's default `ExternalName` service restrictions while keeping the legacy process outside Kubernetes.
 
 ## Deployment Commands
 

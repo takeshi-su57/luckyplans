@@ -98,9 +98,23 @@ ingress:
 legacyV0:
   enabled: false
   host: ''
-  # In k3d/k3s, host.k3d.internal resolves to the Docker host.
+  # In k3d, host.k3d.internal resolves to the Docker host from inside pods.
   upstreamHost: 'host.k3d.internal'
   upstreamPort: 8080
+  proxyImage: 'nginxinc/nginx-unprivileged:1.27-alpine'
+  proxyPort: 8080
+  proxyTimeouts:
+    connect: '5s'
+    send: '30s'
+    read: '30s'
+  replicas: 1
+  resources:
+    requests:
+      memory: '32Mi'
+      cpu: '10m'
+    limits:
+      memory: '64Mi'
+      cpu: '50m'
 
 # ============================================================
 # cert-manager (Let's Encrypt automatic TLS)
