@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 import nextra from 'nextra';
+import { resolveApiGatewayUrl } from './src/config/api-gateway-url';
 
 const withNextra = nextra({
   contentDirBasePath: '/docs',
@@ -10,7 +11,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@luckyplans/shared', '@heroui/react', '@heroui/styles'],
   output: 'standalone',
   async rewrites() {
-    const gatewayUrl = process.env.API_GATEWAY_URL || 'http://localhost:3001';
+    const gatewayUrl = resolveApiGatewayUrl(process.env);
     return [
       { source: '/auth/:path*', destination: `${gatewayUrl}/auth/:path*` },
       { source: '/graphql', destination: `${gatewayUrl}/graphql` },
