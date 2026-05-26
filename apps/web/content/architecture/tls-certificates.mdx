@@ -88,7 +88,7 @@ For HTTP-01 challenges to succeed, the domain must resolve to the cluster's publ
 
 Port **80** must be reachable from the internet.
 
-`v0.api.luckyplans.xyz` is routed by ingress to the host-level legacy API (`host.k3d.internal:9000`) and still requires DNS and TLS like the other hosts.
+`v0.api.luckyplans.xyz` is routed by ingress to the `legacy-v0-api` in-cluster proxy, which forwards to the host-level legacy API at `host.k3d.internal:9000`. It still requires DNS and TLS like the other hosts.
 
 ## Verification
 

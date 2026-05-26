@@ -1,16 +1,125 @@
 {{- if .Values.legacyV0.enabled }}
+{{- $component := "legacy-v0-api" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: legacy-v0-proxy-config
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+data:
+  default.conf: |
+    map $http_x_forwarded_proto $proxy_x_forwarded_proto {
+      default $http_x_forwarded_proto;
+      "" $scheme;
+    }
+
+    server {
+      listen {{ .Values.legacyV0.proxyPort }};
+
+      location = /_proxy_health {
+        access_log off;
+        return 200 "ok\n";
+      }
+
+      location / {
+        proxy_http_version 1.1;
+        proxy_connect_timeout {{ .Values.legacyV0.proxyTimeouts.connect }};
+        proxy_send_timeout {{ .Values.legacyV0.proxyTimeouts.send }};
+        proxy_read_timeout {{ .Values.legacyV0.proxyTimeouts.read }};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $proxy_x_forwarded_proto;
+        proxy_pass http://{{ .Values.legacyV0.upstreamHost }}:{{ .Values.legacyV0.upstreamPort }};
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+spec:
+  replicas: {{ .Values.legacyV0.replicas }}
+  selector:
+    matchLabels:
+      {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+      containers:
+        - name: proxy
+          image: {{ .Values.legacyV0.proxyImage | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          ports:
+            - containerPort: {{ .Values.legacyV0.proxyPort }}
+          volumeMounts:
+            - name: proxy-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+            - name: nginx-tmp
+              mountPath: /tmp
+          resources:
+            {{- toYaml .Values.legacyV0.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /_proxy_health
+              port: {{ .Values.legacyV0.proxyPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /_proxy_health
+              port: {{ .Values.legacyV0.proxyPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 30
+      volumes:
+        - name: proxy-config
+          configMap:
+            name: legacy-v0-proxy-config
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}
+        - name: nginx-tmp
+          emptyDir: {}
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: legacy-v0-api
+  name: {{ $component }}
   namespace: {{ include "luckyplans.namespace" . }}
   labels:
-    {{- include "luckyplans.labels" . | nindent 4 }}
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
 spec:
-  type: ExternalName
-  externalName: {{ .Values.legacyV0.upstreamHost | quote }}
+  type: ClusterIP
   ports:
     - name: http
       port: {{ .Values.legacyV0.upstreamPort }}
-      targetPort: {{ .Values.legacyV0.upstreamPort }}
+      targetPort: {{ .Values.legacyV0.proxyPort }}
+      protocol: TCP
+  selector:
+    {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 4 }}
 {{- end }}

@@ -32,7 +32,7 @@ Domain routing in production:
 - `app.luckyplans.xyz` → web
 - `api.luckyplans.xyz` → api-gateway
 - `admin.luckyplans.xyz` → Keycloak/ArgoCD/Grafana
-- `v0.api.luckyplans.xyz` → legacy API via k3d ingress to `host.k3d.internal:9000`
+- `v0.api.luckyplans.xyz` -> legacy API through the `legacy-v0-api` in-cluster proxy to `host.k3d.internal:9000`
 
 ## Step-by-Step Setup
 
