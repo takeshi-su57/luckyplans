@@ -99,7 +99,9 @@ legacyV0:
   enabled: false
   host: ''
   # In k3d, host.k3d.internal resolves to the Docker host from inside pods.
+  # For non-k3d clusters, set useNodeHostIP=true and run the legacy process on each node.
   upstreamHost: 'host.k3d.internal'
+  useNodeHostIP: false
   upstreamPort: 8080
   proxyImage: 'nginxinc/nginx-unprivileged:1.27-alpine'
   proxyPort: 8080

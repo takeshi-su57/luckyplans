@@ -41,6 +41,7 @@ legacyV0:
   enabled: true
   host: 'v0.api.luckyplans.xyz'
   upstreamHost: 'host.k3d.internal'
+  useNodeHostIP: true
   upstreamPort: 9000
 redis:
   resources:
