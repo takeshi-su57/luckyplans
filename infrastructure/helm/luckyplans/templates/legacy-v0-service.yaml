@@ -8,7 +8,7 @@ metadata:
   labels:
     {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
 data:
-  default.conf: |
+  default.conf.template: |
     map $http_x_forwarded_proto $proxy_x_forwarded_proto {
       default $http_x_forwarded_proto;
       "" $scheme;
@@ -31,7 +31,7 @@ data:
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $proxy_x_forwarded_proto;
-        proxy_pass http://{{ .Values.legacyV0.upstreamHost }}:{{ .Values.legacyV0.upstreamPort }};
+        proxy_pass http://${LEGACY_V0_UPSTREAM_HOST}:{{ .Values.legacyV0.upstreamPort }};
       }
     }
 ---
@@ -72,8 +72,8 @@ spec:
             - containerPort: {{ .Values.legacyV0.proxyPort }}
           volumeMounts:
             - name: proxy-config
-              mountPath: /etc/nginx/conf.d/default.conf
-              subPath: default.conf
+              mountPath: /etc/nginx/templates/default.conf.template
+              subPath: default.conf.template
               readOnly: true
             - name: nginx-cache
               mountPath: /var/cache/nginx
@@ -83,6 +83,16 @@ spec:
               mountPath: /tmp
           resources:
             {{- toYaml .Values.legacyV0.resources | nindent 12 }}
+          env:
+            {{- if .Values.legacyV0.useNodeHostIP }}
+            - name: LEGACY_V0_UPSTREAM_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            {{- else }}
+            - name: LEGACY_V0_UPSTREAM_HOST
+              value: {{ .Values.legacyV0.upstreamHost | quote }}
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /_proxy_health
