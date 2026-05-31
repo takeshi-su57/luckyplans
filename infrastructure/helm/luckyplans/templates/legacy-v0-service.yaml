@@ -59,6 +59,10 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 101
+      {{- with .Values.legacyV0.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: proxy
           image: {{ .Values.legacyV0.proxyImage | quote }}

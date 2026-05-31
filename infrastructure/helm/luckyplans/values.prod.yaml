@@ -41,7 +41,16 @@ legacyV0:
   enabled: true
   host: 'v0.api.luckyplans.xyz'
   upstreamHost: 'host.k3d.internal'
-  useNodeHostIP: true
+  useNodeHostIP: false
+  # This IP must be the Ubuntu host address reachable from inside the k3d
+  # node containers. Verify it on the server with:
+  #   docker network inspect <k3d-network-name>
+  # If the legacy service binds only to 127.0.0.1:9000, pods cannot reach it
+  # through this address; bind the legacy service to 0.0.0.0 or the host IP.
+  hostAliases:
+    - ip: '172.18.0.1'
+      hostnames:
+        - host.k3d.internal
   upstreamPort: 9000
 redis:
   resources:
