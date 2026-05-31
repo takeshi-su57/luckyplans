@@ -54,7 +54,7 @@ redis:
 apiGateway:
   image:
     repository: takeshi-su57/api-gateway
-    tag: 'sha-05e5bca'
+    tag: 'sha-2b313f8'
   replicas: 2
   resources:
     requests:
@@ -66,11 +66,11 @@ apiGateway:
 prismaMigrate:
   image:
     repository: takeshi-su57/prisma-migrate
-    tag: 'sha-05e5bca'
+    tag: 'sha-2b313f8'
 web:
   image:
     repository: takeshi-su57/web
-    tag: 'sha-05e5bca'
+    tag: 'sha-2b313f8'
   replicas: 2
   resources:
     requests:
