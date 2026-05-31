@@ -75,6 +75,8 @@ spec:
               mountPath: /etc/nginx/templates/default.conf.template
               subPath: default.conf.template
               readOnly: true
+            - name: nginx-confd
+              mountPath: /etc/nginx/conf.d
             - name: nginx-cache
               mountPath: /var/cache/nginx
             - name: nginx-run
@@ -110,6 +112,8 @@ spec:
           configMap:
             name: legacy-v0-proxy-config
         - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-confd
           emptyDir: {}
         - name: nginx-run
           emptyDir: {}
