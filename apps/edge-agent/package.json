@@ -9,7 +9,11 @@
     "type-check": "tsc --noEmit",
     "clean": "node -e \"const fs=require('fs');['dist','.turbo','tsconfig.tsbuildinfo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "service:install": "node dist/service-cli.js install",
+    "service:status": "node dist/service-cli.js status",
+    "service:restart": "node dist/service-cli.js restart",
+    "service:uninstall": "node dist/service-cli.js uninstall"
   },
   "dependencies": {
     "@luckyplans/shared": "workspace:*"

@@ -298,6 +298,58 @@ The edge runtime now:
 4. Defers upgrades while active work is running
 5. Runs upgrade only when idle and reports upgrade states
 
+### Running as an OS service
+
+Build the edge agent before installing it as a service:
+
+```bash
+pnpm --filter @luckyplans/edge-agent build
+```
+
+Before installing, run onboarding once (interactive `node apps/edge-agent/dist/main.js`) or provide valid edge runtime config. The install flow validates local config first and exits before mutating the OS service if config is missing or invalid.
+
+Linux (`systemd`) commands:
+
+```bash
+sudo pnpm --filter @luckyplans/edge-agent service:install
+sudo pnpm --filter @luckyplans/edge-agent service:status
+sudo pnpm --filter @luckyplans/edge-agent service:restart
+sudo pnpm --filter @luckyplans/edge-agent service:uninstall
+```
+
+Windows (PowerShell as Administrator) commands:
+
+```powershell
+pnpm --filter @luckyplans/edge-agent service:install
+pnpm --filter @luckyplans/edge-agent service:status
+pnpm --filter @luckyplans/edge-agent service:restart
+pnpm --filter @luckyplans/edge-agent service:uninstall
+```
+
+Uninstall removes only the OS service. It does not delete local edge config or worker credentials.
+
+Linux smoke checklist:
+
+1. `pnpm --filter @luckyplans/edge-agent build`
+2. Complete onboarding once (or verify equivalent valid edge config exists).
+3. `sudo pnpm --filter @luckyplans/edge-agent service:install`
+4. `sudo pnpm --filter @luckyplans/edge-agent service:status` reports running.
+5. Confirm heartbeat is visible from the gateway/edge observability flow.
+6. `sudo pnpm --filter @luckyplans/edge-agent service:restart`
+7. `sudo pnpm --filter @luckyplans/edge-agent service:uninstall`
+8. Confirm local config and credentials remain on disk.
+
+Windows smoke checklist:
+
+1. `pnpm --filter @luckyplans/edge-agent build`
+2. Complete onboarding once (or verify equivalent valid edge config exists).
+3. `pnpm --filter @luckyplans/edge-agent service:install`
+4. `pnpm --filter @luckyplans/edge-agent service:status` reports running.
+5. Confirm heartbeat is visible from the gateway/edge observability flow.
+6. `pnpm --filter @luckyplans/edge-agent service:restart`
+7. `pnpm --filter @luckyplans/edge-agent service:uninstall`
+8. Confirm local config and credentials remain on disk.
+
 ### Build a single service
 
 ```bash
