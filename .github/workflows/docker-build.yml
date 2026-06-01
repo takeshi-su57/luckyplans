@@ -98,7 +98,7 @@ jobs:
             ${{ matrix.service == 'web' && format('NEXT_PUBLIC_GRAPHQL_URL={0}', steps.graphql-url.outputs.url) || '' }}
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}:sha-${{ steps.sha.outputs.short }}
           format: 'table'
@@ -108,7 +108,7 @@ jobs:
 
       - name: Generate Trivy SARIF report
         if: always()
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}:sha-${{ steps.sha.outputs.short }}
           format: 'sarif'
