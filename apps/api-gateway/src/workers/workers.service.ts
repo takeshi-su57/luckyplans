@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 
+type WorkerUpgradeStatus = 'DOWNLOADING' | 'VERIFYING' | 'RESTARTING' | 'SUCCEEDED' | 'FAILED';
+
 @Injectable()
 export class WorkersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -106,6 +108,8 @@ export class WorkersService {
     version?: string;
     platform?: string;
     arch?: string;
+    upgradeStatus?: WorkerUpgradeStatus;
+    upgradeMessage?: string;
   }) {
     return this.prisma.worker.update({
       where: { id: data.workerId },
@@ -114,6 +118,8 @@ export class WorkersService {
         version: data.version,
         platform: data.platform,
         arch: data.arch?.trim() || undefined,
+        upgradeStatus: data.upgradeStatus,
+        upgradeMessage: data.upgradeMessage,
       },
     });
   }

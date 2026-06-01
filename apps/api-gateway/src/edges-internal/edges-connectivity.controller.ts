@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   ForbiddenException,
@@ -10,6 +11,8 @@ import {
 import { PrismaService } from '../database/prisma.service';
 import { WorkersService } from '../workers/workers.service';
 import { WorkerAuthGuard } from './worker-auth.guard';
+
+type UpgradeLifecycleStatus = 'DOWNLOADING' | 'VERIFYING' | 'RESTARTING' | 'SUCCEEDED' | 'FAILED';
 
 @Controller('internal/edges')
 @UseGuards(WorkerAuthGuard)
@@ -28,10 +31,16 @@ export class EdgesConnectivityController {
       currentVersion?: string;
       platform?: string;
       arch?: string;
+      activeTask?: boolean;
+      upgradeStatus?: UpgradeLifecycleStatus;
+      reason?: string;
     },
     @Req() req: { worker?: { workerId: string } },
   ) {
     this.assertWorkerIdentity(body.workerId, req);
+    if (!body.deviceNumber?.trim()) {
+      throw new BadRequestException('deviceNumber is required');
+    }
 
     const worker = await this.workersService.findWorkerById(body.workerId);
     if (!worker) {
@@ -41,12 +50,15 @@ export class EdgesConnectivityController {
       throw new ForbiddenException('deviceNumber does not match worker');
     }
 
-    await this.workersService.markConnectivity({
-      workerId: body.workerId,
-      version: body.currentVersion,
-      platform: body.platform,
-      arch: body.arch,
-    });
+    const updatedWorker =
+      (await this.workersService.markConnectivity({
+        workerId: body.workerId,
+        version: body.currentVersion,
+        platform: body.platform,
+        arch: body.arch,
+        upgradeStatus: body.upgradeStatus,
+        upgradeMessage: body.reason,
+      })) ?? worker;
 
     const targetVersion = worker.targetVersion ?? null;
     const release = targetVersion
@@ -68,8 +80,8 @@ export class EdgesConnectivityController {
     return {
       targetVersion,
       release,
-      upgradeStatus: worker.upgradeStatus,
-      upgradeMessage: worker.upgradeMessage,
+      upgradeStatus: body.upgradeStatus ?? updatedWorker.upgradeStatus,
+      upgradeMessage: body.reason ?? updatedWorker.upgradeMessage,
     };
   }
 

@@ -11,7 +11,12 @@ async function main() {
     runtimeConfig.workerId,
     runtimeConfig.credential,
   );
-  await runSinglePollExecution(client);
+  await runSinglePollExecution(client, {
+    currentVersion: runtimeConfig.currentVersion,
+    deviceNumber: runtimeConfig.deviceNumber,
+    platform: process.platform,
+    arch: process.arch,
+  });
 }
 
 type RuntimeDeps = {

@@ -16,7 +16,7 @@ describe('WorkersService', () => {
         name: 'Edge Worker',
         platform: 'linux',
         version: '1.0.0',
-        deviceNumber: 'edge-seoul-lab-a7k29f',
+        deviceNumber: 'edge-test-lab-a7k29f',
         arch: 'x64',
       }),
     ).rejects.toThrow('deviceNumber');
@@ -25,7 +25,7 @@ describe('WorkersService', () => {
         name: 'Edge Worker',
         platform: 'linux',
         version: '1.0.0',
-        deviceNumber: 'edge-seoul-lab-a7k29f',
+        deviceNumber: 'edge-test-lab-a7k29f',
         arch: 'x64',
       },
     });
@@ -89,13 +89,42 @@ describe('WorkersService', () => {
 
     await service.createWorker({
       name: 'Edge Worker',
-      deviceNumber: 'edge-seoul-lab-a7k29f',
+      deviceNumber: 'edge-test-lab-a7k29f',
       arch: '   ',
     });
 
     expect(prisma.worker.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
         arch: undefined,
+      }),
+    });
+  });
+
+  it('records connectivity and upgrade status in a single worker update', async () => {
+    const prisma = {
+      worker: {
+        update: vi.fn().mockResolvedValue({ id: 'worker_1' }),
+      },
+    };
+    const service = new WorkersService(prisma as never);
+
+    await service.markConnectivity({
+      workerId: 'worker_1',
+      version: '1.0.0',
+      platform: 'linux',
+      arch: ' x64 ',
+      upgradeStatus: 'DOWNLOADING',
+      upgradeMessage: 'download started',
+    });
+
+    expect(prisma.worker.update).toHaveBeenCalledWith({
+      where: { id: 'worker_1' },
+      data: expect.objectContaining({
+        version: '1.0.0',
+        platform: 'linux',
+        arch: 'x64',
+        upgradeStatus: 'DOWNLOADING',
+        upgradeMessage: 'download started',
       }),
     });
   });

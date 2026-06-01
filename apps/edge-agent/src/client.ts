@@ -42,6 +42,9 @@ export type UpgradeLifecycleStatus =
 export type ConnectivityHeartbeatInput = {
   activeTask: boolean;
   currentVersion: string;
+  deviceNumber?: string;
+  platform?: string;
+  arch?: string;
   upgradeStatus?: UpgradeLifecycleStatus;
   reason?: string;
 };
@@ -172,7 +175,10 @@ export class EdgeApiClient {
       headers: this.headers(),
       body: JSON.stringify({
         workerId: this.workerId,
+        deviceNumber: input.deviceNumber,
         currentVersion: input.currentVersion,
+        platform: input.platform,
+        arch: input.arch,
         activeTask: input.activeTask,
         upgradeStatus: input.upgradeStatus,
         reason: input.reason,

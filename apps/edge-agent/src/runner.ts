@@ -5,6 +5,9 @@ import { maybeUpgrade, type UpgradeStatus } from './upgrade';
 
 type RunnerOptions = {
   currentVersion?: string;
+  deviceNumber?: string;
+  platform?: string;
+  arch?: string;
   downloadUpgradeArtifact?: () => Promise<unknown>;
   verifyUpgradeArtifact?: (artifact: unknown) => Promise<boolean>;
   installUpgradeArtifact?: (artifact: unknown) => Promise<void>;
@@ -18,6 +21,9 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
   const safeSendConnectivityHeartbeat = async (payload: {
     activeTask: boolean;
     currentVersion: string;
+    deviceNumber?: string;
+    platform?: string;
+    arch?: string;
     upgradeStatus?: UpgradeStatus;
     reason?: string;
   }) => {
@@ -36,6 +42,9 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
     await safeSendConnectivityHeartbeat({
       activeTask: hasActiveTask,
       currentVersion,
+      deviceNumber: options.deviceNumber,
+      platform: options.platform,
+      arch: options.arch,
       upgradeStatus: status,
       reason: details?.reason,
     });
@@ -45,6 +54,9 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
     const connectivity = await safeSendConnectivityHeartbeat({
       activeTask: hasActiveTask,
       currentVersion,
+      deviceNumber: options.deviceNumber,
+      platform: options.platform,
+      arch: options.arch,
     });
 
     if (connectivity?.targetVersion) {

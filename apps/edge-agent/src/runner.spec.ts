@@ -147,7 +147,12 @@ describe('runSinglePollExecution', () => {
       failTask: vi.fn(),
     };
 
-    await runSinglePollExecution(client as never, { currentVersion: '1.0.0' });
+    await runSinglePollExecution(client as never, {
+      currentVersion: '1.0.0',
+      deviceNumber: 'edge-test-a1b2c3',
+      platform: 'linux',
+      arch: 'x64',
+    });
 
     const statuses = (client.sendConnectivityHeartbeat.mock.calls as unknown[][])
       .map((call) => call[0] as { upgradeStatus?: string } | undefined)
@@ -155,5 +160,31 @@ describe('runSinglePollExecution', () => {
       .map((payload) => payload.upgradeStatus);
     expect(statuses).toContain('FAILED');
     expect(statuses).not.toContain('SUCCEEDED');
+  });
+
+  it('passes edge identity metadata with connectivity heartbeats', async () => {
+    const client = {
+      pollNextTask: vi.fn().mockResolvedValue({ success: false, task: null }),
+      sendConnectivityHeartbeat: vi.fn().mockResolvedValue({}),
+      sendResults: vi.fn(),
+      sendHeartbeat: vi.fn(),
+      completeTask: vi.fn(),
+      failTask: vi.fn(),
+    };
+
+    await runSinglePollExecution(client as never, {
+      currentVersion: '1.0.0',
+      deviceNumber: 'edge-test-a1b2c3',
+      platform: 'linux',
+      arch: 'x64',
+    });
+
+    expect(client.sendConnectivityHeartbeat).toHaveBeenCalledWith({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      deviceNumber: 'edge-test-a1b2c3',
+      platform: 'linux',
+      arch: 'x64',
+    });
   });
 });
