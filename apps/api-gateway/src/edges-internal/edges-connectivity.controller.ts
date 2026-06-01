@@ -13,6 +13,7 @@ import { WorkersService } from '../workers/workers.service';
 import { WorkerAuthGuard } from './worker-auth.guard';
 
 type UpgradeLifecycleStatus = 'DOWNLOADING' | 'VERIFYING' | 'RESTARTING' | 'SUCCEEDED' | 'FAILED';
+type WorkerRuntimeState = 'IDLE' | 'BUSY' | 'UPGRADING' | 'ERROR';
 
 @Controller('internal/edges')
 @UseGuards(WorkerAuthGuard)
@@ -34,6 +35,10 @@ export class EdgesConnectivityController {
       activeTask?: boolean;
       upgradeStatus?: UpgradeLifecycleStatus;
       reason?: string;
+      runtimeState?: WorkerRuntimeState;
+      activeTaskId?: string;
+      uptimeSeconds?: number;
+      lastError?: string;
     },
     @Req() req: { worker?: { workerId: string } },
   ) {
@@ -58,6 +63,10 @@ export class EdgesConnectivityController {
         arch: body.arch,
         upgradeStatus: body.upgradeStatus,
         upgradeMessage: body.reason,
+        runtimeState: body.runtimeState,
+        activeTaskId: body.activeTaskId,
+        uptimeSeconds: body.uptimeSeconds,
+        lastError: body.lastError,
       })) ?? worker;
 
     const targetVersion = worker.targetVersion ?? null;

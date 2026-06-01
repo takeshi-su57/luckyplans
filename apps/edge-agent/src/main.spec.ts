@@ -80,6 +80,7 @@ describe('main helpers', () => {
       },
       'linux',
       'x64',
+      1_000,
     );
 
     expect(options).toEqual({
@@ -87,6 +88,7 @@ describe('main helpers', () => {
       deviceNumber: 'edge-seoul-a1b2c3',
       platform: 'linux',
       arch: 'x64',
+      runtimeStartedAtMs: 1_000,
     });
   });
 

@@ -34,8 +34,26 @@ Extend the heartbeat payload and worker display to include a small runtime healt
 - Edges UI shows current version, target version, last seen, runtime state, and upgrade status.
 - Tests cover stale worker calculation and UI rendering.
 
+## Outcome
+
+Implemented edge runtime health snapshots on the existing Worker model:
+
+- Added latest-known runtime health fields: `runtimeState`, `activeTaskId`, `uptimeSeconds`, and `lastError`.
+- Extended edge connectivity heartbeat to report runtime health.
+- Added gateway connectivity status computation with fixed thresholds: `ONLINE` within 60 seconds, `STALE` within 5 minutes, and `OFFLINE` after 5 minutes or when never seen.
+- Exposed health fields through the workers GraphQL query.
+- Updated the Edges UI to show connectivity status, runtime state, active task id, uptime, last error, version, target version, last seen, and upgrade status.
+
+Verification notes:
+
+- `pnpm --filter @luckyplans/api-gateway test -- workers.service.spec.ts edges-connectivity.controller.spec.ts` passed.
+- `pnpm --filter @luckyplans/edge-agent test -- runner.spec.ts client.spec.ts daemon.spec.ts main.spec.ts` passed.
+- `pnpm --filter @luckyplans/web test -- page.test.tsx` passed.
+- `pnpm --filter @luckyplans/prisma build` passed.
+- Prisma `db:migrate:dev` could not be run locally because Postgres was not reachable on `localhost:5434`; migration SQL was reviewed as safe additive SQL.
+
 ## Definition of Done
 
-- [ ] Gateway tests pass for health updates.
-- [ ] Web tests pass for edge state display.
-- [ ] Docs updated where worker health semantics are described.
+- [x] Gateway tests pass for health updates.
+- [x] Web tests pass for edge state display.
+- [x] Docs updated where worker health semantics are described.

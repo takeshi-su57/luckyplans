@@ -129,4 +129,39 @@ describe('EdgesConnectivityController', () => {
       ),
     ).rejects.toBeInstanceOf(ForbiddenException);
   });
+
+  it('passes runtime health fields from connectivity heartbeat to workers service', async () => {
+    workersService.findWorkerById.mockResolvedValue({
+      id: 'worker_1',
+      deviceNumber: 'edge-test-a1b2c3',
+      targetVersion: null,
+      upgradeStatus: 'IDLE',
+      upgradeMessage: null,
+    });
+    workersService.markConnectivity.mockResolvedValue(undefined);
+
+    await controller.connectivity(
+      {
+        workerId: 'worker_1',
+        deviceNumber: 'edge-test-a1b2c3',
+        currentVersion: '1.0.0',
+        platform: 'linux',
+        arch: 'x64',
+        runtimeState: 'BUSY',
+        activeTaskId: 'task_123',
+        uptimeSeconds: 120,
+        lastError: 'previous error',
+      },
+      { worker: { workerId: 'worker_1' } },
+    );
+
+    expect(workersService.markConnectivity).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runtimeState: 'BUSY',
+        activeTaskId: 'task_123',
+        uptimeSeconds: 120,
+        lastError: 'previous error',
+      }),
+    );
+  });
 });

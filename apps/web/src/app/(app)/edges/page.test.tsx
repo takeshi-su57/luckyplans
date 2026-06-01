@@ -40,13 +40,18 @@ describe('EdgesPage', () => {
         workers: [
           {
             id: 'worker-1',
-            name: 'Seoul Lab',
+            name: 'test Lab',
             platform: 'windows-x64',
             version: '1.0.0',
             status: 'ACTIVE',
             hasActiveCredential: false,
-            deviceNumber: 'edge-seoul-lab-a7k29f',
+            deviceNumber: 'edge-test-lab-a7k29f',
             lastSeenAt: '2026-05-21T12:00:00.000Z',
+            connectivityStatus: 'ONLINE',
+            runtimeState: 'IDLE',
+            activeTaskId: null,
+            uptimeSeconds: null,
+            lastError: null,
             targetVersion: '1.0.1',
             upgradeStatus: 'UPGRADE_PENDING',
             upgradeMessage: null,
@@ -65,8 +70,50 @@ describe('EdgesPage', () => {
 
     expect(screen.getByText(/Device Number:/i)).toBeInTheDocument();
     expect(screen.getByText(/Connectivity \(Last Seen\):/i)).toBeInTheDocument();
-    expect(screen.getByText(/edge-seoul-lab-a7k29f/i)).toBeInTheDocument();
+    expect(screen.getByText(/edge-test-lab-a7k29f/i)).toBeInTheDocument();
     expect(screen.getByText(/last seen/i)).toBeInTheDocument();
+  });
+
+  it('renders worker connectivity and runtime health details', () => {
+    useQueryMock.mockReturnValue({
+      data: {
+        workers: [
+          {
+            id: 'worker-1',
+            name: 'test Lab',
+            platform: 'linux',
+            version: '1.0.0',
+            status: 'ACTIVE',
+            hasActiveCredential: true,
+            deviceNumber: 'edge-test-lab-a7k29f',
+            lastSeenAt: '2026-06-01T12:00:00.000Z',
+            connectivityStatus: 'STALE',
+            runtimeState: 'BUSY',
+            activeTaskId: 'task_123',
+            uptimeSeconds: 125,
+            lastError: 'previous gateway timeout',
+            targetVersion: '1.0.1',
+            upgradeStatus: 'UPGRADE_PENDING',
+            upgradeMessage: null,
+            createdAt: '2026-05-20T12:00:00.000Z',
+            updatedAt: '2026-06-01T12:00:00.000Z',
+          },
+        ],
+        edgeEnrollmentTokens: [],
+      },
+      loading: false,
+      error: undefined,
+      refetch: vi.fn(),
+    });
+    useMutationMock.mockReturnValue([vi.fn(), { loading: false }]);
+
+    render(<EdgesPage />);
+
+    expect(screen.getByText(/Connectivity Status: STALE/i)).toBeInTheDocument();
+    expect(screen.getByText(/Runtime State: BUSY/i)).toBeInTheDocument();
+    expect(screen.getByText(/Active Task: task_123/i)).toBeInTheDocument();
+    expect(screen.getByText(/Uptime: 2m 5s/i)).toBeInTheDocument();
+    expect(screen.getByText(/Last Error: previous gateway timeout/i)).toBeInTheDocument();
   });
 
   it('disables Issue when worker already has active credential', () => {
@@ -75,13 +122,18 @@ describe('EdgesPage', () => {
         workers: [
           {
             id: 'worker-1',
-            name: 'Seoul Lab',
+            name: 'test Lab',
             platform: 'windows-x64',
             version: '1.0.0',
             status: 'ACTIVE',
             hasActiveCredential: true,
-            deviceNumber: 'edge-seoul-lab-a7k29f',
+            deviceNumber: 'edge-test-lab-a7k29f',
             lastSeenAt: '2026-05-21T12:00:00.000Z',
+            connectivityStatus: 'ONLINE',
+            runtimeState: 'IDLE',
+            activeTaskId: null,
+            uptimeSeconds: null,
+            lastError: null,
             targetVersion: '1.0.1',
             upgradeStatus: 'UPGRADE_PENDING',
             upgradeMessage: null,

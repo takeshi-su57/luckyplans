@@ -35,6 +35,28 @@ type WorkerUpgradeStatus = (typeof WorkerUpgradeStatus)[keyof typeof WorkerUpgra
 
 registerEnumType(WorkerUpgradeStatus, { name: 'WorkerUpgradeStatus' });
 
+const WorkerRuntimeState = {
+  IDLE: 'IDLE',
+  BUSY: 'BUSY',
+  UPGRADING: 'UPGRADING',
+  ERROR: 'ERROR',
+} as const;
+type WorkerRuntimeState = (typeof WorkerRuntimeState)[keyof typeof WorkerRuntimeState];
+
+registerEnumType(WorkerRuntimeState, { name: 'WorkerRuntimeState' });
+
+const WorkerConnectivityStatus = {
+  ONLINE: 'ONLINE',
+  STALE: 'STALE',
+  OFFLINE: 'OFFLINE',
+} as const;
+type WorkerConnectivityStatus =
+  (typeof WorkerConnectivityStatus)[keyof typeof WorkerConnectivityStatus];
+
+registerEnumType(WorkerConnectivityStatus, { name: 'WorkerConnectivityStatus' });
+
+const DEFAULT_CONNECTIVITY_STATUS: WorkerConnectivityStatus = 'OFFLINE';
+
 @ObjectType()
 class Worker {
   @Field(() => ID)
@@ -73,6 +95,21 @@ class Worker {
   @Field({ nullable: true })
   upgradeMessage?: string | null;
 
+  @Field(() => WorkerRuntimeState)
+  runtimeState!: WorkerRuntimeState;
+
+  @Field({ nullable: true })
+  activeTaskId?: string | null;
+
+  @Field({ nullable: true })
+  uptimeSeconds?: number | null;
+
+  @Field({ nullable: true })
+  lastError?: string | null;
+
+  @Field(() => WorkerConnectivityStatus)
+  connectivityStatus!: WorkerConnectivityStatus;
+
   @Field()
   createdAt!: Date;
 
@@ -110,6 +147,7 @@ export class WorkersResolver {
     const result: Worker = {
       ...created,
       hasActiveCredential: false,
+      connectivityStatus: DEFAULT_CONNECTIVITY_STATUS,
     };
     await this.realtimeEvents.publishWorkerStatusUpdated(result);
     return result;
@@ -122,6 +160,7 @@ export class WorkersResolver {
       const result: Worker = {
         ...updated,
         hasActiveCredential: false,
+        connectivityStatus: DEFAULT_CONNECTIVITY_STATUS,
       };
       await this.realtimeEvents.publishWorkerStatusUpdated(result);
       return result;

@@ -89,12 +89,14 @@ export function buildRunnerOptions(
   runtimeConfig: EdgeLocalConfig,
   platform: NodeJS.Platform,
   arch: string,
+  runtimeStartedAtMs = Date.now(),
 ): RunnerOptions {
   return {
     currentVersion: runtimeConfig.currentVersion,
     deviceNumber: runtimeConfig.deviceNumber,
     platform,
     arch,
+    runtimeStartedAtMs,
   };
 }
 

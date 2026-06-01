@@ -178,6 +178,16 @@ export const WorkerUpgradeStatus: {
 export type WorkerUpgradeStatus = (typeof WorkerUpgradeStatus)[keyof typeof WorkerUpgradeStatus]
 
 
+export const WorkerRuntimeState: {
+  IDLE: 'IDLE',
+  BUSY: 'BUSY',
+  UPGRADING: 'UPGRADING',
+  ERROR: 'ERROR'
+};
+
+export type WorkerRuntimeState = (typeof WorkerRuntimeState)[keyof typeof WorkerRuntimeState]
+
+
 export const UpgradeCampaignStatus: {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
@@ -234,6 +244,10 @@ export const BacktestTaskStatus: typeof $Enums.BacktestTaskStatus
 export type WorkerUpgradeStatus = $Enums.WorkerUpgradeStatus
 
 export const WorkerUpgradeStatus: typeof $Enums.WorkerUpgradeStatus
+
+export type WorkerRuntimeState = $Enums.WorkerRuntimeState
+
+export const WorkerRuntimeState: typeof $Enums.WorkerRuntimeState
 
 export type UpgradeCampaignStatus = $Enums.UpgradeCampaignStatus
 
@@ -3758,7 +3772,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Profile", 'DateTime'>
     readonly updatedAt: FieldRef<"Profile", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -5126,7 +5140,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"SocialLink", 'DateTime'>
     readonly updatedAt: FieldRef<"SocialLink", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -15914,10 +15928,12 @@ export namespace Prisma {
 
   export type WorkerAvgAggregateOutputType = {
     consecutiveFailures: number | null
+    uptimeSeconds: number | null
   }
 
   export type WorkerSumAggregateOutputType = {
     consecutiveFailures: number | null
+    uptimeSeconds: number | null
   }
 
   export type WorkerMinAggregateOutputType = {
@@ -15934,6 +15950,10 @@ export namespace Prisma {
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus | null
     upgradeMessage: string | null
+    runtimeState: $Enums.WorkerRuntimeState | null
+    activeTaskId: string | null
+    uptimeSeconds: number | null
+    lastError: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15952,6 +15972,10 @@ export namespace Prisma {
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus | null
     upgradeMessage: string | null
+    runtimeState: $Enums.WorkerRuntimeState | null
+    activeTaskId: string | null
+    uptimeSeconds: number | null
+    lastError: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15970,6 +15994,10 @@ export namespace Prisma {
     targetVersion: number
     upgradeStatus: number
     upgradeMessage: number
+    runtimeState: number
+    activeTaskId: number
+    uptimeSeconds: number
+    lastError: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -15978,10 +16006,12 @@ export namespace Prisma {
 
   export type WorkerAvgAggregateInputType = {
     consecutiveFailures?: true
+    uptimeSeconds?: true
   }
 
   export type WorkerSumAggregateInputType = {
     consecutiveFailures?: true
+    uptimeSeconds?: true
   }
 
   export type WorkerMinAggregateInputType = {
@@ -15998,6 +16028,10 @@ export namespace Prisma {
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
+    runtimeState?: true
+    activeTaskId?: true
+    uptimeSeconds?: true
+    lastError?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -16016,6 +16050,10 @@ export namespace Prisma {
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
+    runtimeState?: true
+    activeTaskId?: true
+    uptimeSeconds?: true
+    lastError?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -16034,6 +16072,10 @@ export namespace Prisma {
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
+    runtimeState?: true
+    activeTaskId?: true
+    uptimeSeconds?: true
+    lastError?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -16139,6 +16181,10 @@ export namespace Prisma {
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus
     upgradeMessage: string | null
+    runtimeState: $Enums.WorkerRuntimeState
+    activeTaskId: string | null
+    uptimeSeconds: number | null
+    lastError: string | null
     createdAt: Date
     updatedAt: Date
     _count: WorkerCountAggregateOutputType | null
@@ -16176,6 +16222,10 @@ export namespace Prisma {
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
+    runtimeState?: boolean
+    activeTaskId?: boolean
+    uptimeSeconds?: boolean
+    lastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     credentials?: boolean | Worker$credentialsArgs<ExtArgs>
@@ -16197,6 +16247,10 @@ export namespace Prisma {
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
+    runtimeState?: boolean
+    activeTaskId?: boolean
+    uptimeSeconds?: boolean
+    lastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["worker"]>
@@ -16215,6 +16269,10 @@ export namespace Prisma {
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
+    runtimeState?: boolean
+    activeTaskId?: boolean
+    uptimeSeconds?: boolean
+    lastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["worker"]>
@@ -16233,11 +16291,15 @@ export namespace Prisma {
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
+    runtimeState?: boolean
+    activeTaskId?: boolean
+    uptimeSeconds?: boolean
+    lastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "deviceNumber" | "platform" | "arch" | "version" | "status" | "lastSeenAt" | "consecutiveFailures" | "quarantinedAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
+  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "deviceNumber" | "platform" | "arch" | "version" | "status" | "lastSeenAt" | "consecutiveFailures" | "quarantinedAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "runtimeState" | "activeTaskId" | "uptimeSeconds" | "lastError" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
   export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     credentials?: boolean | Worker$credentialsArgs<ExtArgs>
     upgradeCampaignWorkers?: boolean | Worker$upgradeCampaignWorkersArgs<ExtArgs>
@@ -16266,6 +16328,10 @@ export namespace Prisma {
       targetVersion: string | null
       upgradeStatus: $Enums.WorkerUpgradeStatus
       upgradeMessage: string | null
+      runtimeState: $Enums.WorkerRuntimeState
+      activeTaskId: string | null
+      uptimeSeconds: number | null
+      lastError: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["worker"]>
@@ -16706,6 +16772,10 @@ export namespace Prisma {
     readonly targetVersion: FieldRef<"Worker", 'String'>
     readonly upgradeStatus: FieldRef<"Worker", 'WorkerUpgradeStatus'>
     readonly upgradeMessage: FieldRef<"Worker", 'String'>
+    readonly runtimeState: FieldRef<"Worker", 'WorkerRuntimeState'>
+    readonly activeTaskId: FieldRef<"Worker", 'String'>
+    readonly uptimeSeconds: FieldRef<"Worker", 'Int'>
+    readonly lastError: FieldRef<"Worker", 'String'>
     readonly createdAt: FieldRef<"Worker", 'DateTime'>
     readonly updatedAt: FieldRef<"Worker", 'DateTime'>
   }
@@ -26598,6 +26668,10 @@ export namespace Prisma {
     targetVersion: 'targetVersion',
     upgradeStatus: 'upgradeStatus',
     upgradeMessage: 'upgradeMessage',
+    runtimeState: 'runtimeState',
+    activeTaskId: 'activeTaskId',
+    uptimeSeconds: 'uptimeSeconds',
+    lastError: 'lastError',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -26871,6 +26945,20 @@ export namespace Prisma {
    */
   export type ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerUpgradeStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'WorkerRuntimeState'
+   */
+  export type EnumWorkerRuntimeStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerRuntimeState'>
+
+
+
+  /**
+   * Reference to a field of type 'WorkerRuntimeState[]'
+   */
+  export type ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerRuntimeState[]'>
+
 
 
   /**
@@ -27886,6 +27974,10 @@ export namespace Prisma {
     targetVersion?: StringNullableFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableFilter<"Worker"> | string | null
+    runtimeState?: EnumWorkerRuntimeStateFilter<"Worker"> | $Enums.WorkerRuntimeState
+    activeTaskId?: StringNullableFilter<"Worker"> | string | null
+    uptimeSeconds?: IntNullableFilter<"Worker"> | number | null
+    lastError?: StringNullableFilter<"Worker"> | string | null
     createdAt?: DateTimeFilter<"Worker"> | Date | string
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
     credentials?: WorkerCredentialListRelationFilter
@@ -27906,6 +27998,10 @@ export namespace Prisma {
     targetVersion?: SortOrderInput | SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrderInput | SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrderInput | SortOrder
+    uptimeSeconds?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     credentials?: WorkerCredentialOrderByRelationAggregateInput
@@ -27929,6 +28025,10 @@ export namespace Prisma {
     targetVersion?: StringNullableFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableFilter<"Worker"> | string | null
+    runtimeState?: EnumWorkerRuntimeStateFilter<"Worker"> | $Enums.WorkerRuntimeState
+    activeTaskId?: StringNullableFilter<"Worker"> | string | null
+    uptimeSeconds?: IntNullableFilter<"Worker"> | number | null
+    lastError?: StringNullableFilter<"Worker"> | string | null
     createdAt?: DateTimeFilter<"Worker"> | Date | string
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
     credentials?: WorkerCredentialListRelationFilter
@@ -27949,6 +28049,10 @@ export namespace Prisma {
     targetVersion?: SortOrderInput | SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrderInput | SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrderInput | SortOrder
+    uptimeSeconds?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: WorkerCountOrderByAggregateInput
@@ -27975,6 +28079,10 @@ export namespace Prisma {
     targetVersion?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    runtimeState?: EnumWorkerRuntimeStateWithAggregatesFilter<"Worker"> | $Enums.WorkerRuntimeState
+    activeTaskId?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    uptimeSeconds?: IntNullableWithAggregatesFilter<"Worker"> | number | null
+    lastError?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
   }
@@ -29648,6 +29756,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialCreateNestedManyWithoutWorkerInput
@@ -29668,6 +29780,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput
@@ -29688,6 +29804,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUpdateManyWithoutWorkerNestedInput
@@ -29708,6 +29828,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput
@@ -29728,6 +29852,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29746,6 +29874,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29764,6 +29896,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -31347,6 +31483,24 @@ export namespace Prisma {
     not?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
   }
 
+  export type EnumWorkerRuntimeStateFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerRuntimeState | EnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel> | $Enums.WorkerRuntimeState
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type WorkerCredentialListRelationFilter = {
     every?: WorkerCredentialWhereInput
     some?: WorkerCredentialWhereInput
@@ -31381,12 +31535,17 @@ export namespace Prisma {
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrder
+    uptimeSeconds?: SortOrder
+    lastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type WorkerAvgOrderByAggregateInput = {
     consecutiveFailures?: SortOrder
+    uptimeSeconds?: SortOrder
   }
 
   export type WorkerMaxOrderByAggregateInput = {
@@ -31403,6 +31562,10 @@ export namespace Prisma {
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrder
+    uptimeSeconds?: SortOrder
+    lastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -31421,12 +31584,17 @@ export namespace Prisma {
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrder
+    uptimeSeconds?: SortOrder
+    lastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type WorkerSumOrderByAggregateInput = {
     consecutiveFailures?: SortOrder
+    uptimeSeconds?: SortOrder
   }
 
   export type EnumWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -31447,6 +31615,32 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+  }
+
+  export type EnumWorkerRuntimeStateWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerRuntimeState | EnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerRuntimeStateWithAggregatesFilter<$PrismaModel> | $Enums.WorkerRuntimeState
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel>
+    _max?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EdgeReleaseCountOrderByAggregateInput = {
@@ -31737,17 +31931,6 @@ export namespace Prisma {
     not?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type EdgeEnrollmentTokenCountOrderByAggregateInput = {
     id?: SortOrder
     label?: SortOrder
@@ -31811,22 +31994,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
     _max?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -32812,6 +32979,18 @@ export namespace Prisma {
     set?: $Enums.WorkerUpgradeStatus
   }
 
+  export type EnumWorkerRuntimeStateFieldUpdateOperationsInput = {
+    set?: $Enums.WorkerRuntimeState
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type WorkerCredentialUpdateManyWithoutWorkerNestedInput = {
     create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
     connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
@@ -32978,14 +33157,6 @@ export namespace Prisma {
 
   export type EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput = {
     set?: $Enums.EdgeEnrollmentTokenStatus
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type BacktestTaskCreateNestedManyWithoutStrategyTemplateInput = {
@@ -33318,6 +33489,13 @@ export namespace Prisma {
     not?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
   }
 
+  export type NestedEnumWorkerRuntimeStateFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerRuntimeState | EnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel> | $Enums.WorkerRuntimeState
+  }
+
   export type NestedEnumWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.WorkerStatus | EnumWorkerStatusFieldRefInput<$PrismaModel>
     in?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
@@ -33336,6 +33514,43 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWorkerRuntimeStateWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerRuntimeState | EnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerRuntimeStateWithAggregatesFilter<$PrismaModel> | $Enums.WorkerRuntimeState
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel>
+    _max?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -33433,33 +33648,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
     _max?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -35536,6 +35724,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialCreateNestedManyWithoutWorkerInput
@@ -35555,6 +35747,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput
@@ -35629,6 +35825,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUpdateManyWithoutWorkerNestedInput
@@ -35648,6 +35848,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput
@@ -35667,6 +35871,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     upgradeCampaignWorkers?: UpgradeCampaignWorkerCreateNestedManyWithoutWorkerInput
@@ -35686,6 +35894,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     upgradeCampaignWorkers?: UpgradeCampaignWorkerUncheckedCreateNestedManyWithoutWorkerInput
@@ -35721,6 +35933,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     upgradeCampaignWorkers?: UpgradeCampaignWorkerUpdateManyWithoutWorkerNestedInput
@@ -35740,6 +35956,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     upgradeCampaignWorkers?: UpgradeCampaignWorkerUncheckedUpdateManyWithoutWorkerNestedInput

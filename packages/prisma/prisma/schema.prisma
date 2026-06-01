@@ -49,6 +49,13 @@ enum WorkerUpgradeStatus {
   ROLLED_BACK
 }
 
+enum WorkerRuntimeState {
+  IDLE
+  BUSY
+  UPGRADING
+  ERROR
+}
+
 enum UpgradeCampaignStatus {
   RUNNING
   PAUSED
@@ -264,6 +271,10 @@ model Worker {
   targetVersion String?
   upgradeStatus WorkerUpgradeStatus @default(IDLE)
   upgradeMessage String?
+  runtimeState WorkerRuntimeState @default(IDLE)
+  activeTaskId String?
+  uptimeSeconds Int?
+  lastError String?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   credentials WorkerCredential[]

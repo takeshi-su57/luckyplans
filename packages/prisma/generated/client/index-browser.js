@@ -265,6 +265,10 @@ exports.Prisma.WorkerScalarFieldEnum = {
   targetVersion: 'targetVersion',
   upgradeStatus: 'upgradeStatus',
   upgradeMessage: 'upgradeMessage',
+  runtimeState: 'runtimeState',
+  activeTaskId: 'activeTaskId',
+  uptimeSeconds: 'uptimeSeconds',
+  lastError: 'lastError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -430,6 +434,13 @@ exports.WorkerUpgradeStatus = exports.$Enums.WorkerUpgradeStatus = {
   SUCCEEDED: 'SUCCEEDED',
   FAILED: 'FAILED',
   ROLLED_BACK: 'ROLLED_BACK'
+};
+
+exports.WorkerRuntimeState = exports.$Enums.WorkerRuntimeState = {
+  IDLE: 'IDLE',
+  BUSY: 'BUSY',
+  UPGRADING: 'UPGRADING',
+  ERROR: 'ERROR'
 };
 
 exports.UpgradeCampaignStatus = exports.$Enums.UpgradeCampaignStatus = {

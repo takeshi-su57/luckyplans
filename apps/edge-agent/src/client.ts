@@ -39,6 +39,8 @@ export type UpgradeLifecycleStatus =
   | 'SUCCEEDED'
   | 'FAILED';
 
+export type RuntimeState = 'IDLE' | 'BUSY' | 'UPGRADING' | 'ERROR';
+
 export type ConnectivityHeartbeatInput = {
   activeTask: boolean;
   currentVersion: string;
@@ -47,6 +49,10 @@ export type ConnectivityHeartbeatInput = {
   arch?: string;
   upgradeStatus?: UpgradeLifecycleStatus;
   reason?: string;
+  runtimeState?: RuntimeState;
+  activeTaskId?: string;
+  uptimeSeconds?: number;
+  lastError?: string;
 };
 
 export type ConnectivityHeartbeatResponse = {
@@ -182,6 +188,10 @@ export class EdgeApiClient {
         activeTask: input.activeTask,
         upgradeStatus: input.upgradeStatus,
         reason: input.reason,
+        runtimeState: input.runtimeState,
+        activeTaskId: input.activeTaskId,
+        uptimeSeconds: input.uptimeSeconds,
+        lastError: input.lastError,
       }),
     });
 
