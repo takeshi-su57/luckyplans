@@ -42,8 +42,22 @@ Add a daemon runner that repeatedly sends connectivity heartbeats, polls tasks, 
 - SIGINT/SIGTERM triggers graceful shutdown without starting new work.
 - Existing single execution behavior remains testable as a smaller unit.
 
+## Outcome
+
+Implemented the edge-agent daemon loop:
+
+- Added `runEdgeDaemon` with injected sleep, shutdown signal, poll interval, and capped failure backoff.
+- Preserved `runSinglePollExecution` as the one-cycle task execution primitive.
+- Wired `main.ts` to start the daemon and register SIGINT/SIGTERM shutdown handlers.
+- Added an edge-agent package start script for running the built daemon locally.
+
+Verification notes:
+
+- `pnpm --filter @luckyplans/edge-agent test -- daemon.spec.ts main.spec.ts runner.spec.ts` passed.
+- `pnpm --filter @luckyplans/edge-agent build` passed.
+
 ## Definition of Done
 
-- [ ] Tests cover idle loop, task loop, transient failure, active task gating, and shutdown.
-- [ ] No OS-specific service installer behavior is included.
-- [ ] Edge-agent package scripts support running the daemon locally.
+- [x] Tests cover idle loop, task loop, transient failure, active task gating, and shutdown.
+- [x] No OS-specific service installer behavior is included.
+- [x] Edge-agent package scripts support running the daemon locally.

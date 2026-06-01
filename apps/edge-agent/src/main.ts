@@ -1,7 +1,8 @@
 import { EdgeApiClient } from './client';
 import { loadEdgeConfig, type EdgeLocalConfig } from './config';
+import { createShutdownSignal, runEdgeDaemon, type EdgeDaemonOptions } from './daemon';
 import { runOnboarding } from './onboarding';
-import { runSinglePollExecution } from './runner';
+import { runSinglePollExecution, type RunnerOptions } from './runner';
 
 async function main() {
   const runtimeConfig = await resolveRuntimeConfig();
@@ -11,12 +12,16 @@ async function main() {
     runtimeConfig.workerId,
     runtimeConfig.credential,
   );
-  await runSinglePollExecution(client, {
-    currentVersion: runtimeConfig.currentVersion,
-    deviceNumber: runtimeConfig.deviceNumber,
-    platform: process.platform,
-    arch: process.arch,
-  });
+  const shutdown = createShutdownSignal();
+  registerProcessShutdownHandlers(shutdown);
+  const runnerOptions = buildRunnerOptions(runtimeConfig, process.platform, process.arch);
+
+  await runEdgeDaemon(
+    buildDaemonOptions({
+      shutdown,
+      runOnce: () => runSinglePollExecution(client, runnerOptions),
+    }),
+  );
 }
 
 type RuntimeDeps = {
@@ -78,6 +83,50 @@ export async function resolveRuntimeConfig(
       arch: deps.arch ?? process.arch,
     });
   }
+}
+
+export function buildRunnerOptions(
+  runtimeConfig: EdgeLocalConfig,
+  platform: NodeJS.Platform,
+  arch: string,
+): RunnerOptions {
+  return {
+    currentVersion: runtimeConfig.currentVersion,
+    deviceNumber: runtimeConfig.deviceNumber,
+    platform,
+    arch,
+  };
+}
+
+export function buildDaemonOptions(input: {
+  runOnce: () => Promise<unknown>;
+  shutdown: EdgeDaemonOptions['shutdown'];
+  env?: NodeJS.ProcessEnv;
+}): EdgeDaemonOptions {
+  const env = input.env ?? process.env;
+  return {
+    runOnce: input.runOnce,
+    shutdown: input.shutdown,
+    pollIntervalMs: parsePositiveInt(env.EDGE_AGENT_POLL_INTERVAL_MS, 15000),
+    failureBackoffMs: parsePositiveInt(env.EDGE_AGENT_FAILURE_BACKOFF_MS, 5000),
+    maxFailureBackoffMs: parsePositiveInt(env.EDGE_AGENT_MAX_BACKOFF_MS, 60000),
+    onError: (error) => {
+      console.warn('[edge-agent] daemon iteration failed', error);
+    },
+  };
+}
+
+function parsePositiveInt(value: string | undefined, fallback: number): number {
+  if (!value) {
+    return fallback;
+  }
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function registerProcessShutdownHandlers(shutdown: ReturnType<typeof createShutdownSignal>) {
+  process.once('SIGINT', () => shutdown.request('signal'));
+  process.once('SIGTERM', () => shutdown.request('signal'));
 }
 
 function isConfigNotFoundError(error: unknown): boolean {

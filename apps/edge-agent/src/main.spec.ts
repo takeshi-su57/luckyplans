@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { resolveRuntimeConfig } from './main';
+import { buildDaemonOptions, buildRunnerOptions, resolveRuntimeConfig } from './main';
 
 describe('resolveRuntimeConfig', () => {
   it('fails fast in non-interactive mode when env and config are unavailable', async () => {
@@ -30,7 +30,7 @@ describe('resolveRuntimeConfig', () => {
       serverUrl: 'https://api.example.com',
       workerId: 'w1',
       credential: 'wk_live_1',
-      deviceNumber: 'edge-seoul-a1b2c3',
+      deviceNumber: 'edge-test-a1b2c3',
       currentVersion: '0.1.0',
     });
 
@@ -65,5 +65,46 @@ describe('resolveRuntimeConfig', () => {
     ).rejects.toThrow('Invalid edge config schema at /tmp/edge/config.json');
 
     expect(runOnboarding).not.toHaveBeenCalled();
+  });
+});
+
+describe('main helpers', () => {
+  it('builds runner options from persisted config and runtime platform', () => {
+    const options = buildRunnerOptions(
+      {
+        serverUrl: 'https://api.example.com',
+        workerId: 'worker_1',
+        credential: 'wk_live_secret',
+        deviceNumber: 'edge-seoul-a1b2c3',
+        currentVersion: '1.0.0',
+      },
+      'linux',
+      'x64',
+    );
+
+    expect(options).toEqual({
+      currentVersion: '1.0.0',
+      deviceNumber: 'edge-seoul-a1b2c3',
+      platform: 'linux',
+      arch: 'x64',
+    });
+  });
+
+  it('builds daemon options from interval environment variables', () => {
+    const shutdown = { requested: false, request: vi.fn() };
+    const runOnce = vi.fn();
+    const options = buildDaemonOptions({
+      runOnce,
+      shutdown,
+      env: {
+        EDGE_AGENT_POLL_INTERVAL_MS: '250',
+        EDGE_AGENT_FAILURE_BACKOFF_MS: '100',
+        EDGE_AGENT_MAX_BACKOFF_MS: '1000',
+      },
+    });
+
+    expect(options.pollIntervalMs).toBe(250);
+    expect(options.failureBackoffMs).toBe(100);
+    expect(options.maxFailureBackoffMs).toBe(1000);
   });
 });

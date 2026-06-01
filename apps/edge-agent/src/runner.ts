@@ -3,7 +3,7 @@ import { runGridTask } from './grid';
 import { runOptunaTask } from './optuna';
 import { maybeUpgrade, type UpgradeStatus } from './upgrade';
 
-type RunnerOptions = {
+export type RunnerOptions = {
   currentVersion?: string;
   deviceNumber?: string;
   platform?: string;
