@@ -16,8 +16,8 @@
   "devDependencies": {
     "@luckyplans/config": "workspace:*",
     "@types/node": "^25.5.0",
-    "eslint": "^10.0.3",
-    "typescript": "^5.7.0",
-    "vitest": "^3.2.4"
+    "eslint": "^10.4.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
   }
 }
