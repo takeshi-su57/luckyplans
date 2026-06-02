@@ -8,7 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { PrismaService } from '../database/prisma.service';
+import { ReleasesService } from '../workers/releases.service';
 import { WorkersService } from '../workers/workers.service';
 import { WorkerAuthGuard } from './worker-auth.guard';
 
@@ -20,7 +20,7 @@ type WorkerRuntimeState = 'IDLE' | 'BUSY' | 'UPGRADING' | 'ERROR';
 export class EdgesConnectivityController {
   constructor(
     private readonly workersService: WorkersService,
-    private readonly prisma: PrismaService,
+    private readonly releasesService: ReleasesService,
   ) {}
 
   @Post('connectivity')
@@ -32,6 +32,7 @@ export class EdgesConnectivityController {
       currentVersion?: string;
       platform?: string;
       arch?: string;
+      installType?: string;
       activeTask?: boolean;
       upgradeStatus?: UpgradeLifecycleStatus;
       reason?: string;
@@ -70,27 +71,20 @@ export class EdgesConnectivityController {
       })) ?? worker;
 
     const targetVersion = worker.targetVersion ?? null;
-    const release = targetVersion
-      ? await this.prisma.edgeRelease.findFirst({
-          where: { version: targetVersion },
-          select: {
-            version: true,
-            windowsUrl: true,
-            linuxUrl: true,
-            checksum: true,
-            signature: true,
-            signatureAlgorithm: true,
-            signingKeyId: true,
-            notes: true,
-          },
+    const releaseResult = targetVersion
+      ? await this.releasesService.getUpgradeArtifactForWorker({
+          workerId: body.workerId,
+          platform: body.platform ?? updatedWorker.platform ?? worker.platform,
+          arch: body.arch ?? updatedWorker.arch ?? worker.arch,
+          installType: body.installType,
         })
-      : null;
+      : { artifact: null, message: null };
 
     return {
       targetVersion,
-      release,
+      release: releaseResult.artifact,
       upgradeStatus: body.upgradeStatus ?? updatedWorker.upgradeStatus,
-      upgradeMessage: body.reason ?? updatedWorker.upgradeMessage,
+      upgradeMessage: body.reason ?? releaseResult.message ?? updatedWorker.upgradeMessage,
     };
   }
 

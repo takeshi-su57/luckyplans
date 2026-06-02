@@ -3,6 +3,36 @@ import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { ReleasesService } from './releases.service';
 
 @ObjectType()
+class EdgeReleaseArtifact {
+  @Field()
+  platform!: string;
+
+  @Field()
+  arch!: string;
+
+  @Field()
+  installType!: string;
+
+  @Field()
+  url!: string;
+
+  @Field()
+  checksum!: string;
+
+  @Field()
+  signature!: string;
+
+  @Field()
+  signatureAlgorithm!: string;
+
+  @Field({ nullable: true })
+  signingKeyId?: string;
+
+  @Field(() => Int, { nullable: true })
+  sizeBytes?: number;
+}
+
+@ObjectType()
 class EdgeRelease {
   @Field(() => ID)
   id!: string;
@@ -30,6 +60,9 @@ class EdgeRelease {
 
   @Field()
   updatedAt!: Date;
+
+  @Field(() => [EdgeReleaseArtifact])
+  artifacts!: EdgeReleaseArtifact[];
 }
 
 @ObjectType()
@@ -89,6 +122,11 @@ export class ReleasesResolver {
     return {
       ...created,
       notes: created.notes ?? undefined,
+      artifacts: (created.artifacts ?? []).map((artifact) => ({
+        ...artifact,
+        signingKeyId: artifact.signingKeyId ?? undefined,
+        sizeBytes: artifact.sizeBytes == null ? undefined : Number(artifact.sizeBytes),
+      })),
     };
   }
 
@@ -98,6 +136,11 @@ export class ReleasesResolver {
     return releases.map((release) => ({
       ...release,
       notes: release.notes ?? undefined,
+      artifacts: (release.artifacts ?? []).map((artifact) => ({
+        ...artifact,
+        signingKeyId: artifact.signingKeyId ?? undefined,
+        sizeBytes: artifact.sizeBytes == null ? undefined : Number(artifact.sizeBytes),
+      })),
     }));
   }
 

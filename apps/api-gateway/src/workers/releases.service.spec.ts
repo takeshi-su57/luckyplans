@@ -10,6 +10,9 @@ describe('ReleasesService', () => {
       findFirst: vi.fn(),
       findMany: vi.fn(),
     },
+    edgeReleaseArtifact: {
+      findFirst: vi.fn(),
+    },
     worker: {
       updateMany: vi.fn(),
       update: vi.fn(),
@@ -64,6 +67,31 @@ describe('ReleasesService', () => {
 
     expect(created.version).toBe('1.0.0');
     expect(prisma.edgeRelease.create).toHaveBeenCalledOnce();
+    expect(prisma.edgeRelease.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        version: '1.0.0',
+        artifacts: {
+          create: [
+            expect.objectContaining({
+              platform: 'win32',
+              arch: 'x64',
+              installType: 'service',
+              url: 'https://example.com/windows.exe',
+              checksum,
+              signature,
+            }),
+            expect.objectContaining({
+              platform: 'linux',
+              arch: 'x64',
+              installType: 'service',
+              url: 'https://example.com/linux.tar.gz',
+              checksum,
+              signature,
+            }),
+          ],
+        },
+      }),
+    });
   });
 
   it('sets target version for selected workers', async () => {
@@ -171,5 +199,132 @@ describe('ReleasesService', () => {
 
     expect(release?.version).toBe('1.2.3');
     expect(release?.linuxUrl).toMatch(/^https:/);
+  });
+
+  it('returns Linux x64 service artifact metadata for a worker target version', async () => {
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_1',
+      targetVersion: '1.2.3',
+      platform: 'linux',
+      arch: 'x64',
+    });
+    prisma.edgeReleaseArtifact.findFirst.mockResolvedValue({
+      release: { version: '1.2.3', notes: null },
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'service',
+      url: 'https://example.com/releases/1.2.3/linux-x64.tar.gz',
+      checksum: 'a'.repeat(64),
+      signature: 'sig-linux',
+      signatureAlgorithm: 'ed25519',
+      signingKeyId: 'main',
+      sizeBytes: BigInt(1234),
+    });
+
+    const result = await service.getUpgradeArtifactForWorker({
+      workerId: 'worker_1',
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'service',
+    });
+
+    expect(result).toEqual({
+      artifact: {
+        version: '1.2.3',
+        platform: 'linux',
+        arch: 'x64',
+        installType: 'service',
+        url: 'https://example.com/releases/1.2.3/linux-x64.tar.gz',
+        checksum: 'a'.repeat(64),
+        signature: 'sig-linux',
+        signatureAlgorithm: 'ed25519',
+        signingKeyId: 'main',
+        sizeBytes: 1234,
+      },
+      message: null,
+    });
+    expect(prisma.edgeReleaseArtifact.findFirst).toHaveBeenCalledWith({
+      where: {
+        release: { version: '1.2.3' },
+        platform: 'linux',
+        arch: 'x64',
+        installType: 'service',
+      },
+      select: expect.any(Object),
+    });
+  });
+
+  it('normalizes windows platform before resolving artifact metadata', async () => {
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_2',
+      targetVersion: '1.2.3',
+      platform: 'windows',
+      arch: 'x64',
+    });
+    prisma.edgeReleaseArtifact.findFirst.mockResolvedValue({
+      release: { version: '1.2.3', notes: null },
+      platform: 'win32',
+      arch: 'x64',
+      installType: 'service',
+      url: 'https://example.com/releases/1.2.3/windows-x64.zip',
+      checksum: 'b'.repeat(64),
+      signature: 'sig-windows',
+      signatureAlgorithm: 'ed25519',
+      signingKeyId: 'main',
+      sizeBytes: null,
+    });
+
+    const result = await service.getUpgradeArtifactForWorker({
+      workerId: 'worker_2',
+      platform: 'windows',
+      arch: 'x64',
+    });
+
+    expect(result.artifact?.platform).toBe('win32');
+    expect(result.artifact?.url).toBe('https://example.com/releases/1.2.3/windows-x64.zip');
+    expect(prisma.edgeReleaseArtifact.findFirst.mock.calls[0][0].where).toMatchObject({
+      platform: 'win32',
+      arch: 'x64',
+      installType: 'service',
+    });
+  });
+
+  it('returns no artifact when worker has no target version', async () => {
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_3',
+      targetVersion: null,
+      platform: 'linux',
+      arch: 'x64',
+    });
+
+    const result = await service.getUpgradeArtifactForWorker({
+      workerId: 'worker_3',
+      platform: 'linux',
+      arch: 'x64',
+    });
+
+    expect(result).toEqual({ artifact: null, message: null });
+    expect(prisma.edgeReleaseArtifact.findFirst).not.toHaveBeenCalled();
+  });
+
+  it('returns clear message when artifact is incompatible with worker platform and arch', async () => {
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_4',
+      targetVersion: '1.2.3',
+      platform: 'linux',
+      arch: 'arm64',
+    });
+    prisma.edgeReleaseArtifact.findFirst.mockResolvedValue(null);
+
+    const result = await service.getUpgradeArtifactForWorker({
+      workerId: 'worker_4',
+      platform: 'linux',
+      arch: 'arm64',
+    });
+
+    expect(result).toEqual({
+      artifact: null,
+      message: 'No compatible edge release artifact found for 1.2.3 on linux/arm64/service',
+    });
   });
 });

@@ -287,6 +287,22 @@ exports.Prisma.EdgeReleaseScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.EdgeReleaseArtifactScalarFieldEnum = {
+  id: 'id',
+  releaseId: 'releaseId',
+  platform: 'platform',
+  arch: 'arch',
+  installType: 'installType',
+  url: 'url',
+  checksum: 'checksum',
+  signature: 'signature',
+  signatureAlgorithm: 'signatureAlgorithm',
+  signingKeyId: 'signingKeyId',
+  sizeBytes: 'sizeBytes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UpgradeCampaignScalarFieldEnum = {
   id: 'id',
   targetVersion: 'targetVersion',
@@ -498,6 +514,7 @@ exports.Prisma.ModelName = {
   Hobby: 'Hobby',
   Worker: 'Worker',
   EdgeRelease: 'EdgeRelease',
+  EdgeReleaseArtifact: 'EdgeReleaseArtifact',
   UpgradeCampaign: 'UpgradeCampaign',
   UpgradeCampaignWorker: 'UpgradeCampaignWorker',
   WorkerCredential: 'WorkerCredential',

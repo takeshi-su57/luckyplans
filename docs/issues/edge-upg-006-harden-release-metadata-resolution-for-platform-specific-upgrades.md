@@ -34,8 +34,24 @@ Make release lookup return the correct artifact metadata for the requesting edge
 - Missing or incompatible release metadata returns no upgrade artifact and a clear upgrade message.
 - Tests cover Linux, Windows, missing release, unsupported arch, and checksum/signature presence.
 
+## Outcome
+
+Implemented platform-specific release metadata resolution:
+
+- Added artifact-level release metadata for platform, arch, install type, URL, checksum, signature, signing key id, and size.
+- Preserved existing release records and backfilled default Linux/Windows service artifacts.
+- Routed edge connectivity upgrade lookup through `ReleasesService`.
+- Returned no artifact plus a clear message when no compatible artifact exists.
+- Kept release management in the API gateway workers module.
+
+Verification notes:
+
+- `pnpm --filter @luckyplans/api-gateway test -- releases.service.spec.ts edges-connectivity.controller.spec.ts` passed.
+- `pnpm --filter @luckyplans/api-gateway type-check` passed.
+- Full repository gates passed: `pnpm lint`, `pnpm type-check`, `pnpm build`, `pnpm format:check`, and `git diff --check`.
+
 ## Definition of Done
 
-- [ ] Release service tests pass.
-- [ ] Connectivity controller tests pass.
-- [ ] No new microservice is introduced.
+- [x] Release service tests pass.
+- [x] Connectivity controller tests pass.
+- [x] No new microservice is introduced.

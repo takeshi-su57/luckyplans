@@ -36,6 +36,48 @@ type EdgeReleaseRecord = {
   notes?: string | null;
   createdAt: Date;
   updatedAt: Date;
+  artifacts?: Array<{
+    platform: string;
+    arch: string;
+    installType: string;
+    url: string;
+    checksum: string;
+    signature: string;
+    signatureAlgorithm: string;
+    signingKeyId?: string | null;
+    sizeBytes?: bigint | number | null;
+  }>;
+};
+
+type EdgeReleaseArtifactRecord = {
+  release: { version: string; notes?: string | null };
+  platform: string;
+  arch: string;
+  installType: string;
+  url: string;
+  checksum: string;
+  signature: string;
+  signatureAlgorithm: string;
+  signingKeyId?: string | null;
+  sizeBytes?: bigint | number | null;
+};
+
+export type EdgeUpgradeArtifactMetadata = {
+  version: string;
+  platform: string;
+  arch: string;
+  installType: string;
+  url: string;
+  checksum: string;
+  signature: string;
+  signatureAlgorithm: string;
+  signingKeyId?: string | null;
+  sizeBytes?: number | null;
+};
+
+export type EdgeUpgradeArtifactLookupResult = {
+  artifact: EdgeUpgradeArtifactMetadata | null;
+  message: string | null;
 };
 
 type UpgradeCampaignRecord = {
@@ -80,6 +122,15 @@ export class ReleasesService {
           updateMany: (args: unknown) => Promise<{ count: number }>;
           update: (args: unknown) => Promise<Record<string, unknown>>;
           findMany: (args: unknown) => Promise<Array<{ id: string; version?: string | null }>>;
+          findUnique: (args: unknown) => Promise<{
+            id: string;
+            targetVersion?: string | null;
+            platform?: string | null;
+            arch?: string | null;
+          } | null>;
+        };
+        edgeReleaseArtifact: {
+          findFirst: (args: unknown) => Promise<EdgeReleaseArtifactRecord | null>;
         };
       }
     ).edgeRelease;
@@ -117,22 +168,61 @@ export class ReleasesService {
     return (
       this.prisma as unknown as {
         worker: {
-          findUnique: (
-            args: unknown,
-          ) => Promise<{ id: string; targetVersion?: string | null } | null>;
+          findUnique: (args: unknown) => Promise<{
+            id: string;
+            targetVersion?: string | null;
+            platform?: string | null;
+            arch?: string | null;
+          } | null>;
         };
       }
     ).worker;
   }
 
+  private get releaseArtifacts() {
+    return (
+      this.prisma as unknown as {
+        edgeReleaseArtifact: {
+          findFirst: (args: unknown) => Promise<EdgeReleaseArtifactRecord | null>;
+        };
+      }
+    ).edgeReleaseArtifact;
+  }
+
   async createRelease(input: CreateReleaseInput): Promise<EdgeReleaseRecord> {
     this.validateReleaseInput(input);
     this.verifyReleaseSignature(input);
+    const signatureAlgorithm = input.signatureAlgorithm ?? 'ed25519';
+    const signingKeyId = input.signingKeyId ?? null;
     return this.releases.create({
       data: {
         ...input,
-        signatureAlgorithm: input.signatureAlgorithm ?? 'ed25519',
-        signingKeyId: input.signingKeyId ?? null,
+        signatureAlgorithm,
+        signingKeyId,
+        artifacts: {
+          create: [
+            {
+              platform: 'win32',
+              arch: 'x64',
+              installType: 'service',
+              url: input.windowsUrl,
+              checksum: input.checksum,
+              signature: input.signature,
+              signatureAlgorithm,
+              signingKeyId,
+            },
+            {
+              platform: 'linux',
+              arch: 'x64',
+              installType: 'service',
+              url: input.linuxUrl,
+              checksum: input.checksum,
+              signature: input.signature,
+              signatureAlgorithm,
+              signingKeyId,
+            },
+          ],
+        },
       },
     });
   }
@@ -140,6 +230,7 @@ export class ReleasesService {
   async listReleases(): Promise<EdgeReleaseRecord[]> {
     return this.releases.findMany({
       orderBy: { createdAt: 'desc' },
+      include: { artifacts: true },
     });
   }
 
@@ -154,6 +245,77 @@ export class ReleasesService {
     return this.releases.findFirst({
       where: { version: worker.targetVersion },
     });
+  }
+
+  async getUpgradeArtifactForWorker(input: {
+    workerId: string;
+    platform?: string | null;
+    arch?: string | null;
+    installType?: string | null;
+  }): Promise<EdgeUpgradeArtifactLookupResult> {
+    const worker = await this.workers.findUnique({
+      where: { id: input.workerId },
+      select: { id: true, targetVersion: true, platform: true, arch: true },
+    });
+
+    if (!worker?.targetVersion) {
+      return { artifact: null, message: null };
+    }
+
+    const platform = this.normalizePlatform(input.platform ?? worker.platform);
+    const arch = this.normalizeArch(input.arch ?? worker.arch);
+    const installType = this.normalizeInstallType(input.installType);
+
+    if (!platform || !arch) {
+      return {
+        artifact: null,
+        message: `Cannot resolve edge release artifact for ${worker.targetVersion}: platform and arch are required`,
+      };
+    }
+
+    const artifact = await this.releaseArtifacts.findFirst({
+      where: {
+        release: { version: worker.targetVersion },
+        platform,
+        arch,
+        installType,
+      },
+      select: {
+        release: { select: { version: true, notes: true } },
+        platform: true,
+        arch: true,
+        installType: true,
+        url: true,
+        checksum: true,
+        signature: true,
+        signatureAlgorithm: true,
+        signingKeyId: true,
+        sizeBytes: true,
+      },
+    });
+
+    if (!artifact) {
+      return {
+        artifact: null,
+        message: `No compatible edge release artifact found for ${worker.targetVersion} on ${platform}/${arch}/${installType}`,
+      };
+    }
+
+    return {
+      artifact: {
+        version: artifact.release.version,
+        platform: artifact.platform,
+        arch: artifact.arch,
+        installType: artifact.installType,
+        url: artifact.url,
+        checksum: artifact.checksum,
+        signature: artifact.signature,
+        signatureAlgorithm: artifact.signatureAlgorithm,
+        signingKeyId: artifact.signingKeyId ?? null,
+        sizeBytes: artifact.sizeBytes == null ? null : Number(artifact.sizeBytes),
+      },
+      message: null,
+    };
   }
 
   async setWorkerTargetVersion(workerIds: string[], targetVersion: string) {
@@ -335,5 +497,27 @@ export class ReleasesService {
     if (!ok) {
       throw new BadRequestException('Release signature verification failed');
     }
+  }
+
+  private normalizePlatform(platform: string | null | undefined): string | null {
+    if (!platform) return null;
+    const normalized = platform.toLowerCase();
+    if (normalized === 'windows') return 'win32';
+    if (normalized === 'win32') return 'win32';
+    if (normalized === 'linux') return 'linux';
+    return normalized;
+  }
+
+  private normalizeArch(arch: string | null | undefined): string | null {
+    if (!arch) return null;
+    const normalized = arch.toLowerCase();
+    if (normalized === 'amd64') return 'x64';
+    if (normalized === 'x86_64') return 'x64';
+    if (normalized === 'arm64' || normalized === 'aarch64') return 'arm64';
+    return normalized;
+  }
+
+  private normalizeInstallType(installType: string | null | undefined): string {
+    return installType?.toLowerCase() || 'service';
   }
 }

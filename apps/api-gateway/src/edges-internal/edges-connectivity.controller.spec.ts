@@ -7,12 +7,13 @@ describe('EdgesConnectivityController', () => {
     findWorkerById: vi.fn(),
     markConnectivity: vi.fn(),
   };
-  const prisma = {
-    edgeRelease: {
-      findFirst: vi.fn(),
-    },
+  const releasesService = {
+    getUpgradeArtifactForWorker: vi.fn(),
   };
-  const controller = new EdgesConnectivityController(workersService as never, prisma as never);
+  const controller = new EdgesConnectivityController(
+    workersService as never,
+    releasesService as never,
+  );
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -25,15 +26,20 @@ describe('EdgesConnectivityController', () => {
       targetVersion: '1.2.3',
     });
     workersService.markConnectivity.mockResolvedValue(undefined);
-    prisma.edgeRelease.findFirst.mockResolvedValue({
-      version: '1.2.3',
-      windowsUrl: 'https://example.com/windows.zip',
-      linuxUrl: 'https://example.com/linux.tgz',
-      checksum: 'a'.repeat(64),
-      signature: 'sig',
-      signatureAlgorithm: 'ed25519',
-      signingKeyId: 'main',
-      notes: 'notes',
+    releasesService.getUpgradeArtifactForWorker.mockResolvedValue({
+      artifact: {
+        version: '1.2.3',
+        platform: 'linux',
+        arch: 'x64',
+        installType: 'service',
+        url: 'https://example.com/linux-x64.tgz',
+        checksum: 'a'.repeat(64),
+        signature: 'sig',
+        signatureAlgorithm: 'ed25519',
+        signingKeyId: 'main',
+        sizeBytes: 1234,
+      },
+      message: null,
     });
 
     const result = await controller.connectivity(
@@ -48,7 +54,24 @@ describe('EdgesConnectivityController', () => {
     );
 
     expect(result.targetVersion).toBe('1.2.3');
-    expect(result.release?.version).toBe('1.2.3');
+    expect(result.release).toEqual({
+      version: '1.2.3',
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'service',
+      url: 'https://example.com/linux-x64.tgz',
+      checksum: 'a'.repeat(64),
+      signature: 'sig',
+      signatureAlgorithm: 'ed25519',
+      signingKeyId: 'main',
+      sizeBytes: 1234,
+    });
+    expect(releasesService.getUpgradeArtifactForWorker).toHaveBeenCalledWith({
+      workerId: 'worker_1',
+      platform: 'linux',
+      arch: 'x64',
+      installType: undefined,
+    });
     expect(workersService.markConnectivity).toHaveBeenCalledWith({
       workerId: 'worker_1',
       version: '0.1.0',
@@ -109,6 +132,37 @@ describe('EdgesConnectivityController', () => {
     });
     expect(result.upgradeStatus).toBe('DOWNLOADING');
     expect(result.upgradeMessage).toBe('download started');
+  });
+
+  it('returns clear upgrade message when no compatible release artifact exists', async () => {
+    workersService.findWorkerById.mockResolvedValue({
+      id: 'worker_1',
+      deviceNumber: 'edge-test-a1b2c3',
+      targetVersion: '1.2.3',
+      upgradeStatus: 'UPGRADE_PENDING',
+      upgradeMessage: null,
+    });
+    workersService.markConnectivity.mockResolvedValue(undefined);
+    releasesService.getUpgradeArtifactForWorker.mockResolvedValue({
+      artifact: null,
+      message: 'No compatible edge release artifact found for 1.2.3 on linux/arm64/service',
+    });
+
+    const result = await controller.connectivity(
+      {
+        workerId: 'worker_1',
+        deviceNumber: 'edge-test-a1b2c3',
+        currentVersion: '1.0.0',
+        platform: 'linux',
+        arch: 'arm64',
+      },
+      { worker: { workerId: 'worker_1' } },
+    );
+
+    expect(result.release).toBeNull();
+    expect(result.upgradeMessage).toBe(
+      'No compatible edge release artifact found for 1.2.3 on linux/arm64/service',
+    );
   });
 
   it('rejects connectivity when worker binding does not match', async () => {

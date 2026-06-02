@@ -297,8 +297,30 @@ model EdgeRelease {
   notes      String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  artifacts  EdgeReleaseArtifact[]
 
   @@map("edge_releases")
+}
+
+model EdgeReleaseArtifact {
+  id                 String      @id @default(cuid())
+  releaseId          String
+  release            EdgeRelease @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+  platform           String
+  arch               String
+  installType        String      @default("service")
+  url                String
+  checksum           String
+  signature          String
+  signatureAlgorithm String      @default("ed25519")
+  signingKeyId       String?
+  sizeBytes          BigInt?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@unique([releaseId, platform, arch, installType])
+  @@index([platform, arch, installType])
+  @@map("edge_release_artifacts")
 }
 
 model UpgradeCampaign {
