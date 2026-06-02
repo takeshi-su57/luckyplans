@@ -1,8 +1,11 @@
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { EdgeApiClient } from './client';
 import { loadEdgeConfig, type EdgeLocalConfig } from './config';
 import { createShutdownSignal, runEdgeDaemon, type EdgeDaemonOptions } from './daemon';
 import { runOnboarding } from './onboarding';
 import { runSinglePollExecution, type RunnerOptions } from './runner';
+import { downloadAndVerifyUpgradeArtifact } from './upgrade-artifact';
 
 async function main() {
   const runtimeConfig = await resolveRuntimeConfig();
@@ -90,12 +93,26 @@ export function buildRunnerOptions(
   platform: NodeJS.Platform,
   arch: string,
   runtimeStartedAtMs = Date.now(),
+  env: NodeJS.ProcessEnv = process.env,
 ): RunnerOptions {
+  const stagingDir =
+    env.EDGE_AGENT_UPGRADE_STAGING_DIR ?? join(tmpdir(), 'luckyplans-edge-upgrades');
+  const trustedPublicKeyPem = env.EDGE_AGENT_UPGRADE_TRUSTED_PUBLIC_KEY_PEM;
   return {
     currentVersion: runtimeConfig.currentVersion,
     deviceNumber: runtimeConfig.deviceNumber,
     platform,
     arch,
+    installType: 'service',
+    downloadUpgradeArtifact: trustedPublicKeyPem
+      ? (release) =>
+          downloadAndVerifyUpgradeArtifact({
+            release,
+            stagingDir,
+            trustedPublicKeyPem,
+          })
+      : undefined,
+    verifyUpgradeArtifact: trustedPublicKeyPem ? async () => true : undefined,
     runtimeStartedAtMs,
   };
 }

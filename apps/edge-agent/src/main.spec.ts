@@ -81,15 +81,45 @@ describe('main helpers', () => {
       'linux',
       'x64',
       1_000,
+      {
+        EDGE_AGENT_UPGRADE_STAGING_DIR: '/var/tmp/luckyplans-edge-upgrades',
+        EDGE_AGENT_UPGRADE_TRUSTED_PUBLIC_KEY_PEM:
+          '-----BEGIN PUBLIC KEY-----\nkey\n-----END PUBLIC KEY-----',
+      },
     );
 
-    expect(options).toEqual({
-      currentVersion: '1.0.0',
-      deviceNumber: 'edge-seoul-a1b2c3',
-      platform: 'linux',
-      arch: 'x64',
-      runtimeStartedAtMs: 1_000,
-    });
+    expect(options.currentVersion).toBe('1.0.0');
+    expect(options.deviceNumber).toBe('edge-seoul-a1b2c3');
+    expect(options.platform).toBe('linux');
+    expect(options.arch).toBe('x64');
+    expect(options.runtimeStartedAtMs).toBe(1_000);
+    expect(options.installType).toBe('service');
+    expect(options.downloadUpgradeArtifact).toBeTypeOf('function');
+    expect(options.verifyUpgradeArtifact).toBeTypeOf('function');
+    expect(options.installUpgradeArtifact).toBeUndefined();
+  });
+
+  it('leaves upgrade handlers unavailable when no trusted public key is configured', () => {
+    const options = buildRunnerOptions(
+      {
+        serverUrl: 'https://api.example.com',
+        workerId: 'worker_1',
+        credential: 'wk_live_secret',
+        deviceNumber: 'edge-seoul-a1b2c3',
+        currentVersion: '1.0.0',
+      },
+      'linux',
+      'x64',
+      1_000,
+      {
+        EDGE_AGENT_UPGRADE_STAGING_DIR: '/var/tmp/luckyplans-edge-upgrades',
+      },
+    );
+
+    expect(options.installType).toBe('service');
+    expect(options.downloadUpgradeArtifact).toBeUndefined();
+    expect(options.verifyUpgradeArtifact).toBeUndefined();
+    expect(options.installUpgradeArtifact).toBeUndefined();
   });
 
   it('builds daemon options from interval environment variables', () => {

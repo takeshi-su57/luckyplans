@@ -1,4 +1,4 @@
-import { EdgeApiClient, type RuntimeState } from './client';
+import { EdgeApiClient, type EdgeReleaseArtifactMetadata } from './client';
 import { runGridTask } from './grid';
 import { runOptunaTask } from './optuna';
 import { maybeUpgrade, type UpgradeStatus } from './upgrade';
@@ -8,8 +8,12 @@ export type RunnerOptions = {
   deviceNumber?: string;
   platform?: string;
   arch?: string;
-  downloadUpgradeArtifact?: () => Promise<unknown>;
-  verifyUpgradeArtifact?: (artifact: unknown) => Promise<boolean>;
+  installType?: string;
+  downloadUpgradeArtifact?: (release: EdgeReleaseArtifactMetadata) => Promise<unknown>;
+  verifyUpgradeArtifact?: (
+    artifact: unknown,
+    release: EdgeReleaseArtifactMetadata,
+  ) => Promise<boolean>;
   installUpgradeArtifact?: (artifact: unknown) => Promise<void>;
   runtimeStartedAtMs?: number;
   now?: () => number;
@@ -29,19 +33,9 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
   const currentVersion = options.currentVersion ?? '0.0.0';
   const uptimeSeconds = getUptimeSeconds(options);
 
-  const safeSendConnectivityHeartbeat = async (payload: {
-    activeTask: boolean;
-    currentVersion: string;
-    deviceNumber?: string;
-    platform?: string;
-    arch?: string;
-    upgradeStatus?: UpgradeStatus;
-    reason?: string;
-    runtimeState?: RuntimeState;
-    activeTaskId?: string;
-    uptimeSeconds?: number;
-    lastError?: string;
-  }) => {
+  const safeSendConnectivityHeartbeat = async (
+    payload: Parameters<EdgeApiClient['sendConnectivityHeartbeat']>[0],
+  ) => {
     if (typeof client.sendConnectivityHeartbeat !== 'function') {
       return null;
     }
@@ -60,6 +54,7 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
       deviceNumber: options.deviceNumber,
       platform: options.platform,
       arch: options.arch,
+      installType: options.installType,
       upgradeStatus: status,
       reason: details?.reason,
       runtimeState: 'UPGRADING',
@@ -75,20 +70,28 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
       deviceNumber: options.deviceNumber,
       platform: options.platform,
       arch: options.arch,
+      installType: options.installType,
       runtimeState: hasActiveTask ? 'BUSY' : 'IDLE',
       activeTaskId: lease.task?.taskId,
       uptimeSeconds,
     });
 
     if (connectivity?.targetVersion) {
+      const release = connectivity.release ?? undefined;
       await maybeUpgrade({
         activeTask: hasActiveTask,
         currentVersion,
         targetVersion: connectivity.targetVersion,
         reportStatus: reportUpgradeStatus,
-        download: options.downloadUpgradeArtifact,
-        verify: options.verifyUpgradeArtifact,
-        install: options.installUpgradeArtifact,
+        download:
+          release && options.downloadUpgradeArtifact
+            ? () => options.downloadUpgradeArtifact!(release)
+            : undefined,
+        verify:
+          release && options.verifyUpgradeArtifact
+            ? (artifact: unknown) => options.verifyUpgradeArtifact!(artifact, release)
+            : undefined,
+        install: release ? options.installUpgradeArtifact : undefined,
       });
     }
   }
@@ -153,6 +156,7 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
       deviceNumber: options.deviceNumber,
       platform: options.platform,
       arch: options.arch,
+      installType: options.installType,
       runtimeState: 'ERROR',
       activeTaskId: lease.task.taskId,
       uptimeSeconds,

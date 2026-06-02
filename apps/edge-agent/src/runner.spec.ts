@@ -24,7 +24,21 @@ function createLeaseTask(overrides: Partial<{ taskId: string }> = {}) {
 
 function createMockClient(input: {
   lease: Awaited<ReturnType<typeof createLeaseTask>> | { success: boolean; task: null };
-  connectivity?: { targetVersion?: string | null };
+  connectivity?: {
+    targetVersion?: string | null;
+    release?: {
+      version: string;
+      platform: string;
+      arch: string;
+      installType: string;
+      url: string;
+      checksum: string;
+      signature: string;
+      signatureAlgorithm: string;
+      signingKeyId?: string | null;
+      sizeBytes?: number | null;
+    } | null;
+  };
   sendResultsError?: Error;
 }) {
   return {
@@ -295,6 +309,39 @@ describe('runSinglePollExecution', () => {
         uptimeSeconds: 2,
       }),
     );
+  });
+
+  it('passes resolved release metadata to upgrade download and verify handlers', async () => {
+    const release = {
+      version: '1.0.1',
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'tarball',
+      url: 'https://example.com/edge-upgrade.tar.gz',
+      checksum: 'checksum-123',
+      signature: 'signature-123',
+      signatureAlgorithm: 'ed25519',
+    };
+    const downloadUpgradeArtifact = vi.fn().mockResolvedValue('artifact');
+    const verifyUpgradeArtifact = vi.fn().mockResolvedValue(true);
+    const installUpgradeArtifact = vi.fn().mockResolvedValue(undefined);
+    const client = createMockClient({
+      lease: { success: true, task: null },
+      connectivity: {
+        targetVersion: '1.0.1',
+        release,
+      },
+    });
+
+    await runSinglePollExecution(client as never, {
+      currentVersion: '1.0.0',
+      downloadUpgradeArtifact,
+      verifyUpgradeArtifact,
+      installUpgradeArtifact,
+    });
+
+    expect(downloadUpgradeArtifact).toHaveBeenCalledWith(release);
+    expect(verifyUpgradeArtifact).toHaveBeenCalledWith('artifact', release);
   });
 
   it('reports ERROR runtime state and last error when task execution fails', async () => {

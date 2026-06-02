@@ -86,6 +86,71 @@ describe('maybeUpgrade', () => {
     ]);
   });
 
+  it('sanitizes sensitive download failure reasons before returning and reporting them', async () => {
+    const reportStatus = vi.fn();
+    const sensitiveReason =
+      'download failed: https://user:pass@example.com/a.tgz?token=secret&signature=abc123';
+
+    const result = await maybeUpgrade({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      targetVersion: '1.0.1',
+      reportStatus,
+      download: vi.fn().mockRejectedValue(new Error(sensitiveReason)),
+      verify: vi.fn(),
+      install: vi.fn(),
+    });
+
+    expect(result.performed).toBe(true);
+    expect(result.status).toBe('FAILED');
+    expect(result.reason).not.toContain('token=secret');
+    expect(result.reason).not.toContain('user:pass');
+    expect(reportStatus).toHaveBeenCalledWith(
+      'FAILED',
+      expect.objectContaining({
+        reason: expect.not.stringContaining('token=secret'),
+      }),
+    );
+    expect(reportStatus).toHaveBeenCalledWith(
+      'FAILED',
+      expect.objectContaining({
+        reason: expect.not.stringContaining('user:pass'),
+      }),
+    );
+  });
+
+  it('sanitizes malformed URL-shaped failure reasons before returning and reporting them', async () => {
+    const reportStatus = vi.fn();
+    const sensitiveReason =
+      'download failed: https://user:pass@[::1?X-Amz-Signature=secret&X-Amz-Credential=credential';
+
+    const result = await maybeUpgrade({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      targetVersion: '1.0.1',
+      reportStatus,
+      download: vi.fn().mockRejectedValue(new Error(sensitiveReason)),
+      verify: vi.fn(),
+      install: vi.fn(),
+    });
+
+    expect(result.reason).not.toContain('X-Amz-Signature');
+    expect(result.reason).not.toContain('X-Amz-Credential');
+    expect(result.reason).not.toContain('user:pass');
+    expect(reportStatus).toHaveBeenCalledWith(
+      'FAILED',
+      expect.objectContaining({
+        reason: expect.not.stringContaining('X-Amz-Signature'),
+      }),
+    );
+    expect(reportStatus).toHaveBeenCalledWith(
+      'FAILED',
+      expect.objectContaining({
+        reason: expect.not.stringContaining('user:pass'),
+      }),
+    );
+  });
+
   it('does not execute upgrade when handlers are missing and reports failed status', async () => {
     const reportStatus = vi.fn();
     const result = await maybeUpgrade({

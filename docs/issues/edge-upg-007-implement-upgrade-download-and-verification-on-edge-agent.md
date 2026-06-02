@@ -12,6 +12,16 @@ Related:
 - `apps/edge-agent/src/upgrade.spec.ts`
 - `apps/edge-agent/src/client.ts`
 
+## Status
+
+Closed by implementation.
+
+## Verification
+
+- `pnpm --filter @luckyplans/edge-agent test -- upgrade-artifact.spec.ts`
+- `pnpm --filter @luckyplans/edge-agent test -- upgrade.spec.ts`
+- `pnpm --filter @luckyplans/edge-agent type-check`
+
 ## Motivation
 
 The current upgrade module models the state machine but does not yet establish production-grade artifact download, checksum verification, signature verification, and failure reporting.
@@ -37,6 +47,6 @@ Implement the artifact verification portion of the upgrade flow while leaving pr
 
 ## Definition of Done
 
-- [ ] Tests cover successful download/verify, checksum mismatch, signature mismatch, non-HTTPS URL rejection, and network failure.
-- [ ] Upgrade install/restart is still stubbed or injected.
-- [ ] Security-sensitive logs are reviewed.
+- [x] Tests cover successful download/verify, checksum mismatch, signature mismatch, non-HTTPS URL rejection, and network failure.
+- [x] Upgrade install/restart is still stubbed or injected.
+- [x] Security-sensitive logs are reviewed.

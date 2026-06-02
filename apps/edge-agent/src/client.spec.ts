@@ -19,6 +19,7 @@ describe('EdgeApiClient', () => {
       deviceNumber: 'edge-test-a1b2c3',
       platform: 'linux',
       arch: 'x64',
+      installType: 'service',
       upgradeStatus: 'DOWNLOADING',
       reason: 'testing status payload',
     });
@@ -33,6 +34,7 @@ describe('EdgeApiClient', () => {
           currentVersion: '1.0.0',
           platform: 'linux',
           arch: 'x64',
+          installType: 'service',
           activeTask: true,
           upgradeStatus: 'DOWNLOADING',
           reason: 'testing status payload',
@@ -67,5 +69,69 @@ describe('EdgeApiClient', () => {
         lastError: 'previous error',
       }),
     );
+  });
+
+  it('returns release artifact metadata from connectivity heartbeat response', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        targetVersion: '2.0.0',
+        release: {
+          version: '2.0.0',
+          platform: 'linux',
+          arch: 'x64',
+          installType: 'tarball',
+          url: 'https://downloads.example.com/edge-agent-2.0.0.tar.gz',
+          checksum: 'a'.repeat(64),
+          signature: 'sig-123',
+          signatureAlgorithm: 'ed25519',
+          signingKeyId: 'key-abc',
+          sizeBytes: 1024,
+        },
+        upgradeStatus: 'DOWNLOADING',
+        upgradeMessage: null,
+      }),
+    } as Response);
+    const client = new EdgeApiClient('https://api.example.com', 'worker_1', 'wk_secret');
+
+    const response = await client.sendConnectivityHeartbeat({
+      activeTask: true,
+      currentVersion: '1.0.0',
+      deviceNumber: 'edge-test-a1b2c3',
+      runtimeState: 'BUSY',
+      activeTaskId: 'task_123',
+      uptimeSeconds: 12,
+      lastError: 'previous error',
+    });
+
+    expect(response.targetVersion).toBe('2.0.0');
+    expect(response.release?.url).toBe('https://downloads.example.com/edge-agent-2.0.0.tar.gz');
+    expect(response.release?.checksum).toBe('a'.repeat(64));
+    expect(response.release?.signatureAlgorithm).toBe('ed25519');
+    expect(response.upgradeStatus).toBe('DOWNLOADING');
+    expect(response.upgradeMessage).toBeNull();
+  });
+
+  it('accepts persisted upgrade status responses without release metadata', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        targetVersion: '2.0.0',
+        release: null,
+        upgradeStatus: 'UPGRADE_PENDING',
+        upgradeMessage: 'No compatible artifact found',
+      }),
+    } as Response);
+    const client = new EdgeApiClient('https://api.example.com', 'worker_1', 'wk_secret');
+
+    const response = await client.sendConnectivityHeartbeat({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      deviceNumber: 'edge-test-a1b2c3',
+    });
+
+    expect(response.release).toBeNull();
+    expect(response.upgradeStatus).toBe('UPGRADE_PENDING');
+    expect(response.upgradeMessage).toBe('No compatible artifact found');
   });
 });

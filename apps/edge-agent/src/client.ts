@@ -39,7 +39,26 @@ export type UpgradeLifecycleStatus =
   | 'SUCCEEDED'
   | 'FAILED';
 
+export type WorkerUpgradeStatus =
+  | 'IDLE'
+  | 'UPGRADE_PENDING'
+  | UpgradeLifecycleStatus
+  | 'ROLLED_BACK';
+
 export type RuntimeState = 'IDLE' | 'BUSY' | 'UPGRADING' | 'ERROR';
+
+export type EdgeReleaseArtifactMetadata = {
+  version: string;
+  platform: string;
+  arch: string;
+  installType: string;
+  url: string;
+  checksum: string;
+  signature: string;
+  signatureAlgorithm: string;
+  signingKeyId?: string | null;
+  sizeBytes?: number | null;
+};
 
 export type ConnectivityHeartbeatInput = {
   activeTask: boolean;
@@ -47,6 +66,7 @@ export type ConnectivityHeartbeatInput = {
   deviceNumber?: string;
   platform?: string;
   arch?: string;
+  installType?: string;
   upgradeStatus?: UpgradeLifecycleStatus;
   reason?: string;
   runtimeState?: RuntimeState;
@@ -57,6 +77,9 @@ export type ConnectivityHeartbeatInput = {
 
 export type ConnectivityHeartbeatResponse = {
   targetVersion?: string | null;
+  release?: EdgeReleaseArtifactMetadata | null;
+  upgradeStatus?: WorkerUpgradeStatus;
+  upgradeMessage?: string | null;
 };
 
 export class EdgeApiClient {
@@ -185,6 +208,7 @@ export class EdgeApiClient {
         currentVersion: input.currentVersion,
         platform: input.platform,
         arch: input.arch,
+        installType: input.installType,
         activeTask: input.activeTask,
         upgradeStatus: input.upgradeStatus,
         reason: input.reason,
