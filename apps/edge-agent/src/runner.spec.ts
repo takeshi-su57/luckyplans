@@ -340,8 +340,14 @@ describe('runSinglePollExecution', () => {
       installUpgradeArtifact,
     });
 
+    const statuses = (client.sendConnectivityHeartbeat.mock.calls as unknown[][])
+      .map((call) => call[0] as { upgradeStatus?: string } | undefined)
+      .filter((payload): payload is { upgradeStatus: string } => Boolean(payload?.upgradeStatus))
+      .map((payload) => payload.upgradeStatus);
+
     expect(downloadUpgradeArtifact).toHaveBeenCalledWith(release);
     expect(verifyUpgradeArtifact).toHaveBeenCalledWith('artifact', release);
+    expect(statuses).toEqual(['DOWNLOADING', 'VERIFYING', 'RESTARTING']);
   });
 
   it('reports ERROR runtime state and last error when task execution fails', async () => {

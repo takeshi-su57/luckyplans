@@ -52,8 +52,7 @@ export async function maybeUpgrade(input: MaybeUpgradeInput): Promise<MaybeUpgra
 
     await input.reportStatus('RESTARTING');
     await input.install(artifact);
-    await input.reportStatus('SUCCEEDED');
-    return { performed: true, nextVersion: target, status: 'SUCCEEDED' };
+    return { performed: true, nextVersion: target, status: 'RESTARTING' };
   } catch (error) {
     const reason = sanitizeFailureReason(error instanceof Error ? error.message : String(error));
     await input.reportStatus('FAILED', { reason });

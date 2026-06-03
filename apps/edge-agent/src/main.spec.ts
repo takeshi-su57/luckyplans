@@ -1,4 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('./upgrade-installer', () => ({
+  installVerifiedUpgradeArtifact: vi.fn(),
+}));
+
+import { installVerifiedUpgradeArtifact } from './upgrade-installer';
 import { buildDaemonOptions, buildRunnerOptions, resolveRuntimeConfig } from './main';
 
 describe('resolveRuntimeConfig', () => {
@@ -69,7 +75,8 @@ describe('resolveRuntimeConfig', () => {
 });
 
 describe('main helpers', () => {
-  it('builds runner options from persisted config and runtime platform', () => {
+  it('wires verified upgrade install with trusted-key env paths', async () => {
+    const artifact = { url: 'https://cdn.example.com/upgrade.tgz' };
     const options = buildRunnerOptions(
       {
         serverUrl: 'https://api.example.com',
@@ -85,6 +92,8 @@ describe('main helpers', () => {
         EDGE_AGENT_UPGRADE_STAGING_DIR: '/var/tmp/luckyplans-edge-upgrades',
         EDGE_AGENT_UPGRADE_TRUSTED_PUBLIC_KEY_PEM:
           '-----BEGIN PUBLIC KEY-----\nkey\n-----END PUBLIC KEY-----',
+        EDGE_AGENT_UPGRADE_INSTALL_ROOT: '/srv/luckyplans/edge',
+        EDGE_AGENT_UPGRADE_ACTIVE_VERSION_PATH: '/srv/luckyplans/edge/current',
       },
     );
 
@@ -96,7 +105,14 @@ describe('main helpers', () => {
     expect(options.installType).toBe('service');
     expect(options.downloadUpgradeArtifact).toBeTypeOf('function');
     expect(options.verifyUpgradeArtifact).toBeTypeOf('function');
-    expect(options.installUpgradeArtifact).toBeUndefined();
+    expect(options.installUpgradeArtifact).toEqual(expect.any(Function));
+
+    await options.installUpgradeArtifact?.(artifact);
+
+    expect(installVerifiedUpgradeArtifact).toHaveBeenCalledWith(artifact, {
+      installRoot: '/srv/luckyplans/edge',
+      activeVersionPath: '/srv/luckyplans/edge/current',
+    });
   });
 
   it('leaves upgrade handlers unavailable when no trusted public key is configured', () => {

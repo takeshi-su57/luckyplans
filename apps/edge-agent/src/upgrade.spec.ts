@@ -32,12 +32,13 @@ describe('maybeUpgrade', () => {
 
     expect(result.performed).toBe(true);
     expect(result.nextVersion).toBe('1.0.1');
+    expect(result.status).toBe('RESTARTING');
     expect(reportStatus.mock.calls.map((call) => call[0])).toEqual([
       'DOWNLOADING',
       'VERIFYING',
       'RESTARTING',
-      'SUCCEEDED',
     ]);
+    expect(reportStatus).not.toHaveBeenCalledWith('SUCCEEDED');
   });
 
   it('fails upgrade and keeps current version when verification returns false', async () => {
@@ -187,6 +188,6 @@ describe('maybeUpgrade', () => {
 
     expect(result.performed).toBe(true);
     expect(result.nextVersion).toBe('v1.0.1-beta.2');
-    expect(result.status).toBe('SUCCEEDED');
+    expect(result.status).toBe('RESTARTING');
   });
 });

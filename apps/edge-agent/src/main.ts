@@ -6,6 +6,7 @@ import { createShutdownSignal, runEdgeDaemon, type EdgeDaemonOptions } from './d
 import { runOnboarding } from './onboarding';
 import { runSinglePollExecution, type RunnerOptions } from './runner';
 import { downloadAndVerifyUpgradeArtifact } from './upgrade-artifact';
+import { installVerifiedUpgradeArtifact } from './upgrade-installer';
 
 async function main() {
   const runtimeConfig = await resolveRuntimeConfig();
@@ -98,6 +99,8 @@ export function buildRunnerOptions(
   const stagingDir =
     env.EDGE_AGENT_UPGRADE_STAGING_DIR ?? join(tmpdir(), 'luckyplans-edge-upgrades');
   const trustedPublicKeyPem = env.EDGE_AGENT_UPGRADE_TRUSTED_PUBLIC_KEY_PEM;
+  const installRoot = env.EDGE_AGENT_UPGRADE_INSTALL_ROOT;
+  const activeVersionPath = env.EDGE_AGENT_UPGRADE_ACTIVE_VERSION_PATH;
   return {
     currentVersion: runtimeConfig.currentVersion,
     deviceNumber: runtimeConfig.deviceNumber,
@@ -113,6 +116,14 @@ export function buildRunnerOptions(
           })
       : undefined,
     verifyUpgradeArtifact: trustedPublicKeyPem ? async () => true : undefined,
+    installUpgradeArtifact: trustedPublicKeyPem
+      ? async (artifact) => {
+          await installVerifiedUpgradeArtifact(artifact, {
+            installRoot,
+            activeVersionPath,
+          });
+        }
+      : undefined,
     runtimeStartedAtMs,
   };
 }

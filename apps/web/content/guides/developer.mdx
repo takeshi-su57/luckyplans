@@ -326,6 +326,26 @@ pnpm --filter @luckyplans/edge-agent service:restart
 pnpm --filter @luckyplans/edge-agent service:uninstall
 ```
 
+### Edge Agent Upgrade Install Smoke Checklist
+
+Upgrade install and the service restart it performs require the same privileges as edge-agent service management: `sudo` on Linux and an elevated terminal/service account configuration on Windows.
+
+Linux:
+
+1. Build the edge-agent package and install the service with `sudo pnpm --filter @luckyplans/edge-agent service:install`.
+2. Before starting or restarting the service, configure `EDGE_AGENT_UPGRADE_TRUSTED_PUBLIC_KEY_PEM`, `EDGE_AGENT_UPGRADE_STAGING_DIR`, `EDGE_AGENT_UPGRADE_INSTALL_ROOT`, and `EDGE_AGENT_UPGRADE_ACTIVE_VERSION_PATH` in the service manager environment, or inject them into the `systemd` unit environment as appropriate for the host.
+3. Trigger a release decision and confirm heartbeat reports `DOWNLOADING`, `VERIFYING`, then `RESTARTING`.
+4. Confirm `systemctl status luckyplans-edge-agent --no-pager` shows the restarted service.
+5. Confirm the active version marker contains the target version.
+
+Windows:
+
+1. Build the edge-agent package and install the service from an elevated terminal with `pnpm --filter @luckyplans/edge-agent service:install`.
+2. Before starting or restarting the service, configure `EDGE_AGENT_UPGRADE_TRUSTED_PUBLIC_KEY_PEM`, `EDGE_AGENT_UPGRADE_STAGING_DIR`, `EDGE_AGENT_UPGRADE_INSTALL_ROOT`, and `EDGE_AGENT_UPGRADE_ACTIVE_VERSION_PATH` in the service account environment or through the Windows service manager setup you use for the host.
+3. Trigger a release decision and confirm heartbeat reports `DOWNLOADING`, `VERIFYING`, then `RESTARTING`.
+4. Confirm `sc.exe query luckyplans-edge-agent` shows the service running after restart.
+5. Confirm the active version marker contains the target version.
+
 Uninstall removes only the OS service. It does not delete local edge config or worker credentials.
 
 Linux smoke checklist:
