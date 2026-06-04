@@ -7,6 +7,7 @@ import { runOnboarding } from './onboarding';
 import { runSinglePollExecution, type RunnerOptions } from './runner';
 import { downloadAndVerifyUpgradeArtifact } from './upgrade-artifact';
 import { installVerifiedUpgradeArtifact } from './upgrade-installer';
+import { confirmPendingUpgrade, shouldSuppressUpgradeRetry } from './upgrade-recovery';
 
 async function main() {
   const runtimeConfig = await resolveRuntimeConfig();
@@ -19,6 +20,7 @@ async function main() {
   const shutdown = createShutdownSignal();
   registerProcessShutdownHandlers(shutdown);
   const runnerOptions = buildRunnerOptions(runtimeConfig, process.platform, process.arch);
+  await confirmStartupRecovery(client, runnerOptions);
 
   await runEdgeDaemon(
     buildDaemonOptions({
@@ -101,6 +103,12 @@ export function buildRunnerOptions(
   const trustedPublicKeyPem = env.EDGE_AGENT_UPGRADE_TRUSTED_PUBLIC_KEY_PEM;
   const installRoot = env.EDGE_AGENT_UPGRADE_INSTALL_ROOT;
   const activeVersionPath = env.EDGE_AGENT_UPGRADE_ACTIVE_VERSION_PATH;
+  const recoveryStatePath =
+    env.EDGE_AGENT_UPGRADE_RECOVERY_STATE_PATH ??
+    join(tmpdir(), 'luckyplans-edge-upgrade-recovery.json');
+  const failedTargetPath =
+    env.EDGE_AGENT_UPGRADE_FAILED_TARGET_PATH ??
+    join(tmpdir(), 'luckyplans-edge-upgrade-failed-target.json');
   return {
     currentVersion: runtimeConfig.currentVersion,
     deviceNumber: runtimeConfig.deviceNumber,
@@ -121,11 +129,50 @@ export function buildRunnerOptions(
           await installVerifiedUpgradeArtifact(artifact, {
             installRoot,
             activeVersionPath,
+            previousVersion: runtimeConfig.currentVersion,
+            recoveryStatePath,
+            failedTargetPath,
           });
         }
       : undefined,
+    recoveryStatePath: trustedPublicKeyPem ? recoveryStatePath : undefined,
+    suppressUpgradeRetry: trustedPublicKeyPem
+      ? (targetVersion) =>
+          shouldSuppressUpgradeRetry({
+            failedTargetPath,
+            targetVersion,
+          })
+      : undefined,
     runtimeStartedAtMs,
   };
+}
+
+export async function confirmStartupRecovery(
+  client: Pick<EdgeApiClient, 'sendConnectivityHeartbeat'>,
+  options: RunnerOptions,
+) {
+  if (!options.currentVersion || !options.recoveryStatePath) {
+    return { handled: false };
+  }
+
+  return confirmPendingUpgrade({
+    statePath: options.recoveryStatePath,
+    currentVersion: options.currentVersion,
+    reportStatus: async (status, details) => {
+      await client.sendConnectivityHeartbeat({
+        activeTask: false,
+        currentVersion: options.currentVersion ?? '0.0.0',
+        deviceNumber: options.deviceNumber,
+        platform: options.platform,
+        arch: options.arch,
+        installType: options.installType,
+        upgradeStatus: status,
+        reason: details?.reason,
+        runtimeState: 'UPGRADING',
+        uptimeSeconds: getUptimeSeconds(options),
+      });
+    },
+  });
 }
 
 export function buildDaemonOptions(input: {
@@ -152,6 +199,14 @@ function parsePositiveInt(value: string | undefined, fallback: number): number {
   }
   const parsed = Number.parseInt(value, 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function getUptimeSeconds(options: Pick<RunnerOptions, 'runtimeStartedAtMs' | 'now'>) {
+  if (options.runtimeStartedAtMs === undefined) {
+    return undefined;
+  }
+  const now = options.now ?? Date.now;
+  return Math.max(0, Math.floor((now() - options.runtimeStartedAtMs) / 1000));
 }
 
 function registerProcessShutdownHandlers(shutdown: ReturnType<typeof createShutdownSignal>) {

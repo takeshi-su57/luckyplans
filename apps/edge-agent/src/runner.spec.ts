@@ -350,6 +350,49 @@ describe('runSinglePollExecution', () => {
     expect(statuses).toEqual(['DOWNLOADING', 'VERIFYING', 'RESTARTING']);
   });
 
+  it('suppresses failed target retries before downloading upgrade artifacts', async () => {
+    const release = {
+      version: '1.0.1',
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'tarball',
+      url: 'https://example.com/edge-upgrade.tar.gz',
+      checksum: 'checksum-123',
+      signature: 'signature-123',
+      signatureAlgorithm: 'ed25519',
+    };
+    const downloadUpgradeArtifact = vi.fn().mockResolvedValue('artifact');
+    const verifyUpgradeArtifact = vi.fn().mockResolvedValue(true);
+    const installUpgradeArtifact = vi.fn().mockResolvedValue(undefined);
+    const suppressUpgradeRetry = vi.fn().mockResolvedValue(true);
+    const client = createMockClient({
+      lease: { success: true, task: null },
+      connectivity: {
+        targetVersion: '1.0.1',
+        release,
+      },
+    });
+
+    await runSinglePollExecution(client as never, {
+      currentVersion: '1.0.0',
+      suppressUpgradeRetry,
+      downloadUpgradeArtifact,
+      verifyUpgradeArtifact,
+      installUpgradeArtifact,
+    });
+
+    expect(suppressUpgradeRetry).toHaveBeenCalledWith('1.0.1');
+    expect(downloadUpgradeArtifact).not.toHaveBeenCalled();
+    expect(verifyUpgradeArtifact).not.toHaveBeenCalled();
+    expect(installUpgradeArtifact).not.toHaveBeenCalled();
+    expect(client.sendConnectivityHeartbeat).toHaveBeenCalledWith(
+      expect.objectContaining({
+        upgradeStatus: 'FAILED',
+        reason: 'upgrade retry suppressed for previously failed target 1.0.1',
+      }),
+    );
+  });
+
   it('reports ERROR runtime state and last error when task execution fails', async () => {
     const client = createMockClient({
       lease: createLeaseTask({ taskId: 'task_error' }),

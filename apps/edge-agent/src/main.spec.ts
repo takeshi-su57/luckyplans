@@ -4,8 +4,19 @@ vi.mock('./upgrade-installer', () => ({
   installVerifiedUpgradeArtifact: vi.fn(),
 }));
 
+vi.mock('./upgrade-recovery', () => ({
+  confirmPendingUpgrade: vi.fn(),
+  shouldSuppressUpgradeRetry: vi.fn(),
+}));
+
 import { installVerifiedUpgradeArtifact } from './upgrade-installer';
-import { buildDaemonOptions, buildRunnerOptions, resolveRuntimeConfig } from './main';
+import {
+  confirmStartupRecovery,
+  buildDaemonOptions,
+  buildRunnerOptions,
+  resolveRuntimeConfig,
+} from './main';
+import { confirmPendingUpgrade, shouldSuppressUpgradeRetry } from './upgrade-recovery';
 
 describe('resolveRuntimeConfig', () => {
   it('fails fast in non-interactive mode when env and config are unavailable', async () => {
@@ -94,6 +105,8 @@ describe('main helpers', () => {
           '-----BEGIN PUBLIC KEY-----\nkey\n-----END PUBLIC KEY-----',
         EDGE_AGENT_UPGRADE_INSTALL_ROOT: '/srv/luckyplans/edge',
         EDGE_AGENT_UPGRADE_ACTIVE_VERSION_PATH: '/srv/luckyplans/edge/current',
+        EDGE_AGENT_UPGRADE_RECOVERY_STATE_PATH: '/var/lib/luckyplans-edge/recovery.json',
+        EDGE_AGENT_UPGRADE_FAILED_TARGET_PATH: '/var/lib/luckyplans-edge/failed-target.json',
       },
     );
 
@@ -106,12 +119,73 @@ describe('main helpers', () => {
     expect(options.downloadUpgradeArtifact).toBeTypeOf('function');
     expect(options.verifyUpgradeArtifact).toBeTypeOf('function');
     expect(options.installUpgradeArtifact).toEqual(expect.any(Function));
+    expect(options.recoveryStatePath).toBe('/var/lib/luckyplans-edge/recovery.json');
+    expect(options.suppressUpgradeRetry).toEqual(expect.any(Function));
+
+    vi.mocked(shouldSuppressUpgradeRetry).mockResolvedValueOnce(false);
+    await expect(options.suppressUpgradeRetry?.('1.1.0')).resolves.toBe(false);
+    expect(shouldSuppressUpgradeRetry).toHaveBeenCalledWith({
+      failedTargetPath: '/var/lib/luckyplans-edge/failed-target.json',
+      targetVersion: '1.1.0',
+    });
 
     await options.installUpgradeArtifact?.(artifact);
 
     expect(installVerifiedUpgradeArtifact).toHaveBeenCalledWith(artifact, {
       installRoot: '/srv/luckyplans/edge',
       activeVersionPath: '/srv/luckyplans/edge/current',
+      previousVersion: '1.0.0',
+      recoveryStatePath: '/var/lib/luckyplans-edge/recovery.json',
+      failedTargetPath: '/var/lib/luckyplans-edge/failed-target.json',
+    });
+  });
+
+  it('confirms pending startup recovery through connectivity heartbeat', async () => {
+    vi.mocked(confirmPendingUpgrade).mockResolvedValueOnce({
+      handled: true,
+      status: 'ROLLED_BACK',
+      reason: 'rolled back to previous version',
+    });
+    const client = {
+      sendConnectivityHeartbeat: vi.fn().mockResolvedValue({}),
+    };
+
+    const result = await confirmStartupRecovery(client as never, {
+      currentVersion: '1.1.0',
+      deviceNumber: 'edge-seoul-a1b2c3',
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'service',
+      recoveryStatePath: '/var/lib/luckyplans-edge/recovery.json',
+      runtimeStartedAtMs: 1_000,
+      now: () => 4_500,
+    });
+
+    expect(result).toEqual({
+      handled: true,
+      status: 'ROLLED_BACK',
+      reason: 'rolled back to previous version',
+    });
+    expect(confirmPendingUpgrade).toHaveBeenCalledWith({
+      statePath: '/var/lib/luckyplans-edge/recovery.json',
+      currentVersion: '1.1.0',
+      reportStatus: expect.any(Function),
+    });
+
+    const reportStatus = vi.mocked(confirmPendingUpgrade).mock.calls[0]?.[0].reportStatus;
+    await reportStatus?.('ROLLED_BACK', { reason: 'rolled back to previous version' });
+
+    expect(client.sendConnectivityHeartbeat).toHaveBeenCalledWith({
+      activeTask: false,
+      currentVersion: '1.1.0',
+      deviceNumber: 'edge-seoul-a1b2c3',
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'service',
+      upgradeStatus: 'ROLLED_BACK',
+      reason: 'rolled back to previous version',
+      runtimeState: 'UPGRADING',
+      uptimeSeconds: 3,
     });
   });
 

@@ -15,6 +15,8 @@ export type RunnerOptions = {
     release: EdgeReleaseArtifactMetadata,
   ) => Promise<boolean>;
   installUpgradeArtifact?: (artifact: unknown) => Promise<void>;
+  suppressUpgradeRetry?: (targetVersion: string) => Promise<boolean> | boolean;
+  recoveryStatePath?: string;
   runtimeStartedAtMs?: number;
   now?: () => number;
 };
@@ -92,6 +94,7 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
             ? (artifact: unknown) => options.verifyUpgradeArtifact!(artifact, release)
             : undefined,
         install: release ? options.installUpgradeArtifact : undefined,
+        isTargetSuppressed: options.suppressUpgradeRetry,
       });
     }
   }

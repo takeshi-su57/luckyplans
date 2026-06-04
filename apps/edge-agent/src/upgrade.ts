@@ -8,6 +8,7 @@ export type MaybeUpgradeInput = {
   download?: (() => Promise<unknown>) | undefined;
   verify?: ((artifact: unknown) => Promise<boolean>) | undefined;
   install?: ((artifact: unknown) => Promise<void>) | undefined;
+  isTargetSuppressed?: (targetVersion: string) => Promise<boolean> | boolean;
 };
 
 export type MaybeUpgradeResult = {
@@ -21,6 +22,13 @@ export async function maybeUpgrade(input: MaybeUpgradeInput): Promise<MaybeUpgra
   const target = input.targetVersion;
   if (input.activeTask || !target || compareVersions(target, input.currentVersion) <= 0) {
     return { performed: false, nextVersion: input.currentVersion };
+  }
+  if (await input.isTargetSuppressed?.(target)) {
+    const reason = sanitizeFailureReason(
+      `upgrade retry suppressed for previously failed target ${target}`,
+    );
+    await input.reportStatus('FAILED', { reason });
+    return { performed: false, nextVersion: input.currentVersion, status: 'FAILED', reason };
   }
   if (!input.download || !input.verify || !input.install) {
     const reason = sanitizeFailureReason('upgrade handlers not configured');

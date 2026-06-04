@@ -36,6 +36,13 @@ Track previous version state locally, detect failed boot or failed post-upgrade 
 
 ## Definition of Done
 
-- [ ] Tests cover healthy upgrade, failed boot rollback, failed heartbeat rollback, and retry suppression.
-- [ ] Manual recovery docs exist.
-- [ ] Edges UI can distinguish failed upgrade from rolled back upgrade.
+- [x] Tests cover healthy upgrade, failed boot rollback, failed heartbeat rollback, and retry suppression.
+- [x] Manual recovery docs exist.
+- [x] Edges UI can distinguish failed upgrade from rolled back upgrade.
+
+## Implementation Notes
+
+- Edge-agent records pending recovery state before switching active versions.
+- A successful first post-upgrade heartbeat reports `SUCCEEDED` and clears recovery state.
+- Failed boot confirmation or failed health confirmation rolls back the active marker, records the failed target, restarts the service, and reports `ROLLED_BACK` or `FAILED` with a safe reason.
+- Retry suppression prevents repeated installs for the same failed target version.

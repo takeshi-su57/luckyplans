@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, type Mock } from 'vitest';
 import { installVerifiedUpgradeArtifact, type UpgradeInstallerFs } from './upgrade-installer';
 import type { VerifiedUpgradeArtifact } from './upgrade-artifact';
 
@@ -65,6 +65,7 @@ describe('upgrade-installer', () => {
       copyFile: vi.fn().mockRejectedValue(new Error('copy failed')),
     });
     const restartService = vi.fn();
+    const recordPendingRecovery = vi.fn().mockResolvedValue(undefined);
     const installRoot = join('/opt/luckyplans/edge-agent', 'releases');
     const activeVersionPath = join('/opt/luckyplans/edge-agent', 'active-version');
 
@@ -74,10 +75,81 @@ describe('upgrade-installer', () => {
         activeVersionPath,
         fs,
         restartService,
+        previousVersion: '1.2.2',
+        recoveryStatePath: join('/opt/luckyplans/edge-agent', 'pending-recovery.json'),
+        failedTargetPath: join('/opt/luckyplans/edge-agent', 'failed-target.json'),
+        recordPendingRecovery,
       }),
     ).rejects.toThrow('copy failed');
 
+    expect(recordPendingRecovery).not.toHaveBeenCalled();
     expect(fs.writeFile).not.toHaveBeenCalled();
+    expect(fs.rename).not.toHaveBeenCalled();
+    expect(restartService).not.toHaveBeenCalled();
+  });
+
+  it('records previous and target version before switching active marker', async () => {
+    const fs = createFs();
+    const recordPendingRecovery = vi.fn().mockResolvedValue(undefined);
+    const restartService = vi.fn().mockResolvedValue(undefined);
+    const installRoot = join('/opt/luckyplans/edge-agent', 'releases');
+    const activeVersionPath = join('/opt/luckyplans/edge-agent', 'active-version');
+    const recoveryStatePath = join('/opt/luckyplans/edge-agent', 'pending-recovery.json');
+    const failedTargetPath = join('/opt/luckyplans/edge-agent', 'failed-target.json');
+    const releaseDir = join(installRoot, '1.2.3');
+
+    await installVerifiedUpgradeArtifact(artifact(), {
+      installRoot,
+      activeVersionPath,
+      fs,
+      restartService,
+      previousVersion: '1.2.2',
+      recoveryStatePath,
+      failedTargetPath,
+      recordPendingRecovery,
+    });
+
+    expect(recordPendingRecovery).toHaveBeenCalledWith({
+      statePath: recoveryStatePath,
+      previousVersion: '1.2.2',
+      targetVersion: '1.2.3',
+      releaseDir,
+      activeVersionPath,
+      failedTargetPath,
+    });
+    expect((fs.copyFile as Mock).mock.invocationCallOrder[0]).toBeLessThan(
+      recordPendingRecovery.mock.invocationCallOrder[0],
+    );
+    expect(recordPendingRecovery.mock.invocationCallOrder[0]).toBeLessThan(
+      (fs.rename as Mock).mock.invocationCallOrder[0],
+    );
+    expect((fs.rename as Mock).mock.invocationCallOrder[0]).toBeLessThan(
+      restartService.mock.invocationCallOrder[0],
+    );
+  });
+
+  it('does not switch active marker or restart when pending recovery recording fails', async () => {
+    const fs = createFs();
+    const restartService = vi.fn();
+    const recordPendingRecovery = vi
+      .fn()
+      .mockRejectedValue(new Error('pending recovery write failed'));
+    const installRoot = join('/opt/luckyplans/edge-agent', 'releases');
+    const activeVersionPath = join('/opt/luckyplans/edge-agent', 'active-version');
+
+    await expect(
+      installVerifiedUpgradeArtifact(artifact(), {
+        installRoot,
+        activeVersionPath,
+        fs,
+        restartService,
+        previousVersion: '1.2.2',
+        recoveryStatePath: join('/opt/luckyplans/edge-agent', 'pending-recovery.json'),
+        failedTargetPath: join('/opt/luckyplans/edge-agent', 'failed-target.json'),
+        recordPendingRecovery,
+      }),
+    ).rejects.toThrow('pending recovery write failed');
+
     expect(fs.rename).not.toHaveBeenCalled();
     expect(restartService).not.toHaveBeenCalled();
   });

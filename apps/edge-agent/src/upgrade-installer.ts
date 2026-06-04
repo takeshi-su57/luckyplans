@@ -8,6 +8,7 @@ import {
 import { basename, join } from 'node:path';
 import { restartEdgeService } from './service-manager';
 import type { VerifiedUpgradeArtifact } from './upgrade-artifact';
+import { createPendingRecoveryState } from './upgrade-recovery';
 
 export type UpgradeInstallResult = {
   installedVersion: string;
@@ -28,6 +29,10 @@ export type InstallVerifiedUpgradeArtifactOptions = {
   activeVersionPath?: string;
   fs?: UpgradeInstallerFs;
   restartService?: () => Promise<void>;
+  previousVersion?: string;
+  recoveryStatePath?: string;
+  failedTargetPath?: string;
+  recordPendingRecovery?: typeof createPendingRecoveryState;
   now?: () => number;
   pid?: number;
 };
@@ -93,6 +98,7 @@ export async function installVerifiedUpgradeArtifact(
     rm: rmFs,
   };
   const restartService = options.restartService ?? (() => restartEdgeService());
+  const recordPendingRecovery = options.recordPendingRecovery ?? createPendingRecoveryState;
   const now = options.now ?? Date.now;
   const pid = options.pid ?? process.pid;
 
@@ -108,6 +114,18 @@ export async function installVerifiedUpgradeArtifact(
 
   await fs.mkdir(releaseDir, { recursive: true });
   await fs.copyFile(artifact.path, stagedArtifactPath);
+
+  if (options.previousVersion && options.recoveryStatePath && options.failedTargetPath) {
+    await recordPendingRecovery({
+      statePath: options.recoveryStatePath,
+      previousVersion: options.previousVersion,
+      targetVersion: artifact.version,
+      releaseDir,
+      activeVersionPath,
+      failedTargetPath: options.failedTargetPath,
+    });
+  }
+
   await fs.writeFile(tempMarkerPath, `${artifact.version}\n`, 'utf8');
 
   try {

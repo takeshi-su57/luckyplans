@@ -116,6 +116,65 @@ describe('EdgesPage', () => {
     expect(screen.getByText(/Last Error: previous gateway timeout/i)).toBeInTheDocument();
   });
 
+  it('distinguishes failed and rolled back upgrade statuses', () => {
+    useQueryMock.mockReturnValue({
+      data: {
+        workers: [
+          {
+            id: 'worker-failed',
+            name: 'failed edge',
+            platform: 'linux',
+            version: '1.0.0',
+            status: 'ACTIVE',
+            hasActiveCredential: true,
+            deviceNumber: 'edge-failed-a1b2c3',
+            lastSeenAt: '2026-06-01T12:00:00.000Z',
+            connectivityStatus: 'ONLINE',
+            runtimeState: 'ERROR',
+            activeTaskId: null,
+            uptimeSeconds: 125,
+            lastError: 'install failed',
+            targetVersion: '1.0.1',
+            upgradeStatus: 'FAILED',
+            upgradeMessage: 'install failed',
+            createdAt: '2026-05-20T12:00:00.000Z',
+            updatedAt: '2026-06-01T12:00:00.000Z',
+          },
+          {
+            id: 'worker-rolled-back',
+            name: 'rolled back edge',
+            platform: 'linux',
+            version: '1.0.0',
+            status: 'ACTIVE',
+            hasActiveCredential: true,
+            deviceNumber: 'edge-rolled-back-a1b2c3',
+            lastSeenAt: '2026-06-01T12:00:00.000Z',
+            connectivityStatus: 'ONLINE',
+            runtimeState: 'IDLE',
+            activeTaskId: null,
+            uptimeSeconds: 125,
+            lastError: null,
+            targetVersion: '1.0.1',
+            upgradeStatus: 'ROLLED_BACK',
+            upgradeMessage: 'rolled back to 1.0.0',
+            createdAt: '2026-05-20T12:00:00.000Z',
+            updatedAt: '2026-06-01T12:00:00.000Z',
+          },
+        ],
+        edgeEnrollmentTokens: [],
+      },
+      loading: false,
+      error: undefined,
+      refetch: vi.fn(),
+    });
+    useMutationMock.mockReturnValue([vi.fn(), { loading: false }]);
+
+    render(<EdgesPage />);
+
+    expect(screen.getByText('Upgrade Status: Failed')).toBeInTheDocument();
+    expect(screen.getByText('Upgrade Status: Rolled Back')).toBeInTheDocument();
+  });
+
   it('disables Issue when worker already has active credential', () => {
     useQueryMock.mockReturnValue({
       data: {

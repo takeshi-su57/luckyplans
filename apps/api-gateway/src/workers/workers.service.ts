@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 
-type WorkerUpgradeStatus = 'DOWNLOADING' | 'VERIFYING' | 'RESTARTING' | 'SUCCEEDED' | 'FAILED';
+type WorkerUpgradeStatus =
+  | 'DOWNLOADING'
+  | 'VERIFYING'
+  | 'RESTARTING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'ROLLED_BACK';
 type WorkerRuntimeState = 'IDLE' | 'BUSY' | 'UPGRADING' | 'ERROR';
 type WorkerConnectivityStatus = 'ONLINE' | 'STALE' | 'OFFLINE';
 

@@ -134,6 +134,42 @@ describe('EdgesConnectivityController', () => {
     expect(result.upgradeMessage).toBe('download started');
   });
 
+  it('persists rolled back upgrade status from connectivity heartbeat', async () => {
+    workersService.findWorkerById.mockResolvedValue({
+      id: 'worker_1',
+      deviceNumber: 'edge-test-a1b2c3',
+      targetVersion: null,
+      upgradeStatus: 'RESTARTING',
+      upgradeMessage: null,
+    });
+    workersService.markConnectivity.mockResolvedValue(undefined);
+
+    const result = await controller.connectivity(
+      {
+        workerId: 'worker_1',
+        deviceNumber: 'edge-test-a1b2c3',
+        currentVersion: '1.0.0',
+        platform: 'linux',
+        arch: 'x64',
+        activeTask: false,
+        upgradeStatus: 'ROLLED_BACK',
+        reason: 'rolled back to 1.0.0',
+      },
+      { worker: { workerId: 'worker_1' } },
+    );
+
+    expect(workersService.markConnectivity).toHaveBeenCalledWith({
+      workerId: 'worker_1',
+      version: '1.0.0',
+      platform: 'linux',
+      arch: 'x64',
+      upgradeStatus: 'ROLLED_BACK',
+      upgradeMessage: 'rolled back to 1.0.0',
+    });
+    expect(result.upgradeStatus).toBe('ROLLED_BACK');
+    expect(result.upgradeMessage).toBe('rolled back to 1.0.0');
+  });
+
   it('returns clear upgrade message when no compatible release artifact exists', async () => {
     workersService.findWorkerById.mockResolvedValue({
       id: 'worker_1',

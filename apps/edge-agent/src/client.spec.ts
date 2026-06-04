@@ -43,6 +43,25 @@ describe('EdgeApiClient', () => {
     );
   });
 
+  it('sends rolled back connectivity status', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({}),
+    } as Response);
+    const client = new EdgeApiClient('https://api.example.com', 'worker_1', 'wk_live_secret');
+
+    await client.sendConnectivityHeartbeat({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      upgradeStatus: 'ROLLED_BACK',
+      reason: 'rolled back to previous version',
+    });
+
+    const body = JSON.parse(fetchMock.mock.calls[0]?.[1]?.body as string);
+    expect(body.upgradeStatus).toBe('ROLLED_BACK');
+    expect(body.reason).toBe('rolled back to previous version');
+  });
+
   it('sends runtime health fields in connectivity heartbeat', async () => {
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
       ok: true,

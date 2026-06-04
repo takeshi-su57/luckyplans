@@ -234,6 +234,20 @@ function formatUptime(seconds?: number | null): string {
   return `${minutes}m ${remainingSeconds}s`;
 }
 
+function formatUpgradeStatus(status: Worker['upgradeStatus']): string {
+  const labels: Record<Worker['upgradeStatus'], string> = {
+    IDLE: 'Idle',
+    UPGRADE_PENDING: 'Upgrade Pending',
+    DOWNLOADING: 'Downloading',
+    VERIFYING: 'Verifying',
+    RESTARTING: 'Restarting',
+    SUCCEEDED: 'Succeeded',
+    FAILED: 'Failed',
+    ROLLED_BACK: 'Rolled Back',
+  };
+  return labels[status];
+}
+
 export default function EdgesPage() {
   const [name, setName] = useState('');
   const [platform, setPlatform] = useState('');
@@ -558,7 +572,9 @@ export default function EdgesPage() {
                   <p className="text-xs text-[#9ca3af]">
                     Target Version: {worker.targetVersion ?? 'Not set'}
                   </p>
-                  <p className="text-xs text-[#9ca3af]">Upgrade Status: {worker.upgradeStatus}</p>
+                  <p className="text-xs text-[#9ca3af]">
+                    Upgrade Status: {formatUpgradeStatus(worker.upgradeStatus)}
+                  </p>
                   <p className="text-xs text-[#9ca3af]">
                     Credential: {worker.hasActiveCredential ? 'Active' : 'None'}
                   </p>

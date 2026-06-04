@@ -12,7 +12,13 @@ import { ReleasesService } from '../workers/releases.service';
 import { WorkersService } from '../workers/workers.service';
 import { WorkerAuthGuard } from './worker-auth.guard';
 
-type UpgradeLifecycleStatus = 'DOWNLOADING' | 'VERIFYING' | 'RESTARTING' | 'SUCCEEDED' | 'FAILED';
+type UpgradeLifecycleStatus =
+  | 'DOWNLOADING'
+  | 'VERIFYING'
+  | 'RESTARTING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'ROLLED_BACK';
 type WorkerRuntimeState = 'IDLE' | 'BUSY' | 'UPGRADING' | 'ERROR';
 
 @Controller('internal/edges')

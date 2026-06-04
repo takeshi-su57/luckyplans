@@ -41,6 +41,37 @@ describe('maybeUpgrade', () => {
     expect(reportStatus).not.toHaveBeenCalledWith('SUCCEEDED');
   });
 
+  it('suppresses reinstall for a failed target version', async () => {
+    const reportStatus = vi.fn();
+    const download = vi.fn();
+    const verify = vi.fn();
+    const install = vi.fn();
+
+    const result = await maybeUpgrade({
+      activeTask: false,
+      currentVersion: '1.0.0',
+      targetVersion: '1.1.0',
+      reportStatus,
+      isTargetSuppressed: async (targetVersion) => targetVersion === '1.1.0',
+      download,
+      verify,
+      install,
+    });
+
+    expect(result).toEqual({
+      performed: false,
+      nextVersion: '1.0.0',
+      status: 'FAILED',
+      reason: 'upgrade retry suppressed for previously failed target 1.1.0',
+    });
+    expect(reportStatus).toHaveBeenCalledWith('FAILED', {
+      reason: 'upgrade retry suppressed for previously failed target 1.1.0',
+    });
+    expect(download).not.toHaveBeenCalled();
+    expect(verify).not.toHaveBeenCalled();
+    expect(install).not.toHaveBeenCalled();
+  });
+
   it('fails upgrade and keeps current version when verification returns false', async () => {
     const reportStatus = vi.fn();
     const result = await maybeUpgrade({

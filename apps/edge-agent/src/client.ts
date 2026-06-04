@@ -37,7 +37,8 @@ export type UpgradeLifecycleStatus =
   | 'VERIFYING'
   | 'RESTARTING'
   | 'SUCCEEDED'
-  | 'FAILED';
+  | 'FAILED'
+  | 'ROLLED_BACK';
 
 export type WorkerUpgradeStatus =
   | 'IDLE'

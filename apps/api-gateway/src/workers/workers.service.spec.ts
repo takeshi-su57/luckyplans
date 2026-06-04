@@ -129,6 +129,32 @@ describe('WorkersService', () => {
     });
   });
 
+  it('records rolled back upgrade status during connectivity update', async () => {
+    const prisma = {
+      worker: {
+        update: vi.fn().mockResolvedValue({ id: 'worker_1' }),
+      },
+    };
+    const service = new WorkersService(prisma as never);
+
+    await service.markConnectivity({
+      workerId: 'worker_1',
+      version: '1.0.0',
+      platform: 'linux',
+      arch: 'x64',
+      upgradeStatus: 'ROLLED_BACK',
+      upgradeMessage: 'rolled back to 1.0.0',
+    });
+
+    expect(prisma.worker.update).toHaveBeenCalledWith({
+      where: { id: 'worker_1' },
+      data: expect.objectContaining({
+        upgradeStatus: 'ROLLED_BACK',
+        upgradeMessage: 'rolled back to 1.0.0',
+      }),
+    });
+  });
+
   it('computes worker connectivity status from fixed lastSeenAt thresholds', async () => {
     const now = new Date('2026-06-01T12:00:00.000Z');
     const prisma = {

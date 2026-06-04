@@ -29,6 +29,7 @@ pnpm dev
 Open http://localhost:3000 — Next.js rewrites proxy `/auth/*` and `/graphql` to the gateway.
 
 Domain routing in production:
+
 - `app.luckyplans.xyz` → web
 - `api.luckyplans.xyz` → api-gateway
 - `admin.luckyplans.xyz` → Keycloak/ArgoCD/Grafana
@@ -277,7 +278,7 @@ It then generates a device number in this format:
 
 `edge-<human-name>-<shortid>`
 
-Example: `edge-seoul-lab-a7k29f`
+Example: `edge-test-lab-a7k29f`
 
 ### Non-interactive/headless behavior
 
@@ -345,6 +346,18 @@ Windows:
 3. Trigger a release decision and confirm heartbeat reports `DOWNLOADING`, `VERIFYING`, then `RESTARTING`.
 4. Confirm `sc.exe query luckyplans-edge-agent` shows the service running after restart.
 5. Confirm the active version marker contains the target version.
+
+### Edge Agent Upgrade Recovery Smoke Checklist
+
+Recovery requires the same service-management privileges as upgrade install.
+
+1. Confirm `EDGE_AGENT_UPGRADE_RECOVERY_STATE_PATH` and `EDGE_AGENT_UPGRADE_FAILED_TARGET_PATH` are configured for the service.
+2. Trigger an upgrade to a test target version.
+3. Confirm the recovery state file records the previous version, target version, release directory, and attempt id before restart.
+4. Simulate a failed boot or failed first post-upgrade connectivity heartbeat.
+5. Confirm the active version marker is restored to the previous version.
+6. Confirm the edge reports `ROLLED_BACK` with a safe reason.
+7. Re-send the same target version and confirm the edge does not reinstall it repeatedly.
 
 Uninstall removes only the OS service. It does not delete local edge config or worker credentials.
 
