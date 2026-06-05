@@ -31,6 +31,13 @@ WebSocket sessions, generic artifact transfer, and a separate microservice remai
 - [EDGE-UPG-013 - [Chore]: Decide whether WebSocket sessions are needed](edge-upg-013-decide-whether-websocket-sessions-are-needed.md)
 - [EDGE-UPG-014 - [Chore]: Global verification and documentation sync](edge-upg-014-global-verification-and-documentation-sync.md)
 
+## Deferred Follow-Up Issues
+
+These are not part of the current milestone. Start them only when their trigger conditions are met in the linked architecture decision records.
+
+- [DEFERRED-EDGE-TASK-ARTIFACT-TRANSFER - [Feature]: Add task artifact transfer when task data outgrows REST JSON](deferred-edge-task-artifact-transfer.md)
+- [DEFERRED-EDGE-WEBSOCKET-SESSIONS - [Feature]: Add persistent edge WebSocket sessions when low-latency commands are required](deferred-edge-websocket-sessions.md)
+
 ## Current Codebase Baseline
 
 - `apps/edge-agent` already has onboarding, local config, polling task execution, connectivity heartbeat, and a basic idle-only upgrade state machine.
