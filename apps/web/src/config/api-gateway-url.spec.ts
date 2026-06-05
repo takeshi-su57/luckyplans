@@ -27,4 +27,3 @@ describe('resolveApiGatewayUrl', () => {
     ).toBe('http://localhost:3001');
   });
 });
-

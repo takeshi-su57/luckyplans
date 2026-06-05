@@ -75,6 +75,7 @@ Required behavior:
 ### Skill Routing Matrix (Always Check Before Work)
 
 Process skills (run first when applicable):
+
 - `using-superpowers`: mandatory at task start.
 - `brainstorming`: before creative feature/design work.
 - `systematic-debugging`: before fixing bugs/failures.
@@ -84,12 +85,14 @@ Process skills (run first when applicable):
 - `verification-before-completion`: before claiming done.
 
 Implementation skills:
+
 - Frontend: use relevant `frontend/*` skills for page/component/hook/route/auth/apollo changes.
 - Services: `create-gateway-module` for gateway module work.
 - Microservices: `scaffold-microservice` only after decision matrix justification.
 - Packages: `update-shared-kernel` for shared contracts/utils, `prisma-safe-migrations` for schema changes.
 
 Completion and collaboration skills:
+
 - `add-testing-foundation`: when adding or expanding tests.
 - `maintain-project-docs`: when behavior/contracts/docs diverge.
 - `requesting-code-review` and `receiving-code-review`: for review loops.
@@ -134,6 +137,7 @@ No active rule files are required; architecture/security/process guidance is in 
 Converted Claude skills now live in `.agents/skills/`:
 
 Frontend scope:
+
 - `frontend/add-frontend-page/SKILL.md`
 - `frontend/apply-ui-baseline/SKILL.md`
 - `frontend/create-graphql-hook/SKILL.md`
@@ -146,15 +150,18 @@ Frontend scope:
 - `frontend/run-frontend-codegen/SKILL.md`
 
 Services scope:
+
 - `services/create-gateway-module/SKILL.md`
 - `services/scaffold-submodule/SKILL.md`
 - `services/scaffold-microservice/SKILL.md`
 
 Packages scope:
+
 - `packages/update-shared-kernel/SKILL.md`
 - `packages/prisma-safe-migrations/SKILL.md`
 
 Cross-cutting:
+
 - `add-testing-foundation/SKILL.md`
 - `maintain-project-docs/SKILL.md`
 - `prepare-pull-request/SKILL.md`
@@ -193,6 +200,3 @@ When tests exist for touched areas, run them before claiming completion.
 - Treat `AGENTS.md` as the primary AI context file for Codex.
 - Keep `.agents/rules/*` and `.agents/skills/*` in sync with real architecture decisions.
 - If you update standards/workflows, update docs in `apps/web/content/` and related rules.
-
-
-

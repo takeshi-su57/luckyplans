@@ -363,16 +363,68 @@ NestJS services push traces and metrics via OTLP to the OTel Collector. Promtail
 
 The edge lifecycle now includes release metadata and target-version orchestration.
 
+### Required release signing secrets
+
+Release metadata is signed before registration. CI requires these GitHub Actions secrets:
+
+| Secret                             | Purpose                                                                 |
+| ---------------------------------- | ----------------------------------------------------------------------- |
+| `EDGE_RELEASE_SIGNING_PRIVATE_KEY` | Ed25519 private key in PEM format used to sign artifact SHA-256 values. |
+| `EDGE_RELEASE_SIGNING_KEY_ID`      | Stable key identifier written into release metadata for auditability.   |
+
+The API gateway verifies registered release signatures with `EDGE_RELEASE_SIGNING_PUBLIC_KEY`. Never commit either signing key to git.
+
+### Artifact publishing flow
+
+Use the **Edge Agent Release** GitHub Actions workflow to build release assets. Manual runs require a semver `version` and `signing_key_id`. Tag runs publish assets when the pushed tag matches `edge-agent-v*`.
+
+The workflow produces:
+
+- `luckyplans-edge-agent-v<version>-linux-x64-service.tar.gz`
+- `luckyplans-edge-agent-v<version>-win32-x64-service.zip`
+- detached `.sig` files for each artifact
+- `SHA256SUMS`
+- `manifest.json`
+
+The generated manifest contains gateway-compatible artifact metadata:
+
+- `version`
+- `platform`
+- `arch`
+- `installType`
+- `url`
+- `checksum`
+- `signature`
+- `signatureAlgorithm`
+- `signingKeyId`
+- `sizeBytes`
+
+For a local dry run:
+
+```bash
+pnpm --filter @luckyplans/edge-agent build
+EDGE_RELEASE_SIGNING_PRIVATE_KEY="$(cat ./edge-release-private-key.pem)" \
+  pnpm --filter @luckyplans/edge-agent release:build -- \
+  --version 1.2.3 \
+  --base-url https://github.com/takeshi-su57/luckyplans/releases/download/edge-agent-v1.2.3 \
+  --signing-key-id edge-release-2026-06
+```
+
 ### Release registration flow
 
-1. Build and publish edge artifacts to GitHub Releases (Windows + Linux assets).
-2. Register the release in LuckyPlans with:
-   - `version`
-   - `windowsUrl`
-   - `linuxUrl`
-   - `checksum`
-   - `signature`
-3. Set `targetVersion` for selected workers or start an upgrade campaign.
+1. Build and publish edge artifacts with the **Edge Agent Release** workflow.
+2. Open the generated `manifest.json`.
+3. Register the release in LuckyPlans using the current `createEdgeRelease` mutation:
+   - `version`: manifest `version`
+   - `windowsUrl`: `win32` artifact `url`
+   - `linuxUrl`: `linux` artifact `url`
+   - `checksum`: checksum for the primary registered artifact
+   - `signature`: signature for that checksum
+   - `notes`: optional operator notes
+4. Confirm `edgeReleases` returns artifact records for `linux/x64/service` and `win32/x64/service`.
+5. Set `targetVersion` for selected workers or start an upgrade campaign.
+
+The current gateway mutation preserves the legacy top-level `windowsUrl`, `linuxUrl`, `checksum`, and `signature` fields while backfilling platform-specific artifact rows. Keep the manifest with the release record so operators can compare the registered metadata against the CI-produced artifact set.
 
 ### Edge rollout behavior
 

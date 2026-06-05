@@ -10,6 +10,7 @@
     "clean": "node -e \"const fs=require('fs');['dist','.turbo','tsconfig.tsbuildinfo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
     "test": "vitest run",
     "test:watch": "vitest",
+    "release:build": "node scripts/build-release.mjs",
     "service:install": "node dist/service-cli.js install",
     "service:status": "node dist/service-cli.js status",
     "service:restart": "node dist/service-cli.js restart",

@@ -40,6 +40,7 @@
 ### Task 1: Add Worker Device Identity Schema
 
 **Files:**
+
 - Modify: `packages/prisma/prisma/schema.prisma`
 - Create: `packages/prisma/prisma/migrations/<timestamp>_add_worker_device_number_and_arch/migration.sql`
 
@@ -97,6 +98,7 @@ git commit -m "feat(prisma): add edge deviceNumber and arch fields"
 ### Task 2: Implement Edge Device Number + Config Persistence
 
 **Files:**
+
 - Create: `apps/edge-agent/src/device-number.ts`
 - Create: `apps/edge-agent/src/config.ts`
 - Create: `apps/edge-agent/src/device-number.spec.ts`
@@ -107,13 +109,19 @@ git commit -m "feat(prisma): add edge deviceNumber and arch fields"
 ```ts
 // apps/edge-agent/src/device-number.spec.ts
 it('builds edge-<slug>-<shortid> format', () => {
-  const value = buildDeviceNumber('Seoul Lab', () => 'a7k29f');
-  expect(value).toBe('edge-seoul-lab-a7k29f');
+  const value = buildDeviceNumber('test Lab', () => 'a7k29f');
+  expect(value).toBe('edge-test-lab-a7k29f');
 });
 
 // apps/edge-agent/src/config.spec.ts
 it('saves and reloads edge config', async () => {
-  const cfg = { serverUrl: 'https://api.example.com', workerId: 'w1', deviceNumber: 'edge-x-a1b2c3', credential: 'wk_live_x_y', currentVersion: '0.1.0' };
+  const cfg = {
+    serverUrl: 'https://api.example.com',
+    workerId: 'w1',
+    deviceNumber: 'edge-x-a1b2c3',
+    credential: 'wk_live_x_y',
+    currentVersion: '0.1.0',
+  };
   await saveEdgeConfig(cfg, testPath);
   await expect(loadEdgeConfig(testPath)).resolves.toMatchObject(cfg);
 });
@@ -129,11 +137,12 @@ Expected: FAIL due to missing modules/functions.
 ```ts
 // apps/edge-agent/src/device-number.ts
 export function buildDeviceNumber(name: string, shortIdFactory: () => string): string {
-  const slug = name
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '') || 'edge';
+  const slug =
+    name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'edge';
   return `edge-${slug}-${shortIdFactory()}`;
 }
 ```
@@ -164,6 +173,7 @@ git commit -m "feat(edge-agent): add device number generation and local config p
 ### Task 3: Implement Interactive Onboarding Wizard
 
 **Files:**
+
 - Create: `apps/edge-agent/src/onboarding.ts`
 - Modify: `apps/edge-agent/src/client.ts`
 - Modify: `apps/edge-agent/src/main.ts`
@@ -173,7 +183,11 @@ git commit -m "feat(edge-agent): add device number generation and local config p
 
 ```ts
 it('prompts for name/server/token and persists registration result', async () => {
-  const result = await runOnboarding({ prompt: fakePrompt, client: fakeClient, configPath: tempPath });
+  const result = await runOnboarding({
+    prompt: fakePrompt,
+    client: fakeClient,
+    configPath: tempPath,
+  });
   expect(result.deviceNumber.startsWith('edge-')).toBe(true);
   expect(result.workerId).toBe('worker_1');
 });
@@ -222,6 +236,7 @@ git commit -m "feat(edge-agent): add first-run interactive onboarding wizard"
 ### Task 4: Add Registration and Connectivity Endpoints in Gateway
 
 **Files:**
+
 - Create: `apps/api-gateway/src/edges-internal/edges-registration.controller.ts`
 - Create: `apps/api-gateway/src/edges-internal/edges-connectivity.controller.ts`
 - Modify: `apps/api-gateway/src/edges-internal/edges-internal.module.ts`
@@ -233,13 +248,25 @@ git commit -m "feat(edge-agent): add first-run interactive onboarding wizard"
 
 ```ts
 it('registers new edge and returns workerId + credential', async () => {
-  const res = await controller.register({ deviceNumber: 'edge-seoul-a1b2c3', displayName: 'Seoul Lab', platform: 'linux', arch: 'x64', edgeVersion: '0.1.0', token: 'reg_token' });
+  const res = await controller.register({
+    deviceNumber: 'edge-test-a1b2c3',
+    displayName: 'test Lab',
+    platform: 'linux',
+    arch: 'x64',
+    edgeVersion: '0.1.0',
+    token: 'reg_token',
+  });
   expect(res.workerId).toBeDefined();
   expect(res.credential.startsWith('wk_live_')).toBe(true);
 });
 
 it('updates lastSeenAt and returns upgrade intent in heartbeat', async () => {
-  const res = await controller.connectivity({ workerId: 'w1', deviceNumber: 'edge-seoul-a1b2c3', currentVersion: '0.1.0', activeTask: false });
+  const res = await controller.connectivity({
+    workerId: 'w1',
+    deviceNumber: 'edge-test-a1b2c3',
+    currentVersion: '0.1.0',
+    activeTask: false,
+  });
   expect(res).toHaveProperty('targetVersion');
 });
 ```
@@ -276,6 +303,7 @@ git commit -m "feat(api-gateway): add edge registration and connectivity heartbe
 ### Task 5: Wire Upgrade Metadata Resolution on Server
 
 **Files:**
+
 - Modify: `apps/api-gateway/src/workers/releases.service.ts`
 - Modify: `apps/api-gateway/src/workers/releases.service.spec.ts`
 
@@ -319,6 +347,7 @@ git commit -m "feat(workers): expose release lookup for worker target version"
 ### Task 6: Implement Edge Idle-Only Auto-Upgrade Loop
 
 **Files:**
+
 - Create: `apps/edge-agent/src/upgrade.ts`
 - Modify: `apps/edge-agent/src/runner.ts`
 - Modify: `apps/edge-agent/src/client.ts`
@@ -328,12 +357,20 @@ git commit -m "feat(workers): expose release lookup for worker target version"
 
 ```ts
 it('defers upgrade while task is active', async () => {
-  const result = await maybeUpgrade({ activeTask: true, currentVersion: '1.0.0', targetVersion: '1.0.1' });
+  const result = await maybeUpgrade({
+    activeTask: true,
+    currentVersion: '1.0.0',
+    targetVersion: '1.0.1',
+  });
   expect(result.performed).toBe(false);
 });
 
 it('runs download/verify/install flow when idle and target is newer', async () => {
-  const result = await maybeUpgrade({ activeTask: false, currentVersion: '1.0.0', targetVersion: '1.0.1' });
+  const result = await maybeUpgrade({
+    activeTask: false,
+    currentVersion: '1.0.0',
+    targetVersion: '1.0.1',
+  });
   expect(result.performed).toBe(true);
 });
 ```
@@ -367,6 +404,7 @@ git commit -m "feat(edge-agent): add idle-only auto-upgrade execution flow"
 ### Task 7: Update Edges UI and Docs
 
 **Files:**
+
 - Modify: `apps/web/src/app/(app)/edges/page.tsx`
 - Modify: `apps/web/src/app/(app)/edges/page.test.tsx`
 - Modify: `apps/web/content/system/api.mdx`
@@ -394,9 +432,11 @@ Expected: FAIL for missing columns/labels.
 
 ```mdx
 ### Internal Edge Registration
+
 POST /internal/edges/register
 
 ### Internal Edge Connectivity Heartbeat
+
 POST /internal/edges/connectivity
 ```
 
@@ -415,6 +455,7 @@ git commit -m "feat(web): display edge device connectivity and document internal
 ### Task 8: Full Verification Gate
 
 **Files:**
+
 - Modify: (none expected; only if verification exposes defects)
 
 - [ ] **Step 1: Run lint**

@@ -78,7 +78,7 @@ Format:
 
 Example:
 
-`edge-seoul-lab-a7k29f`
+`edge-test-lab-a7k29f`
 
 Rules:
 
