@@ -35,5 +35,5 @@ Document the concrete task-data requirements and decide whether to keep REST JSO
 
 ## Definition of Done
 
-- [ ] Decision doc committed.
-- [ ] No artifact implementation included.
+- [x] Decision doc committed: `apps/web/content/architecture/decisions/2026-06-05-defer-task-artifact-transfer.mdx`.
+- [x] No artifact implementation included.
