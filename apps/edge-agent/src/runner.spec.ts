@@ -151,7 +151,11 @@ describe('runSinglePollExecution', () => {
   });
 
   it('tolerates connectivity heartbeat errors and continues task execution', async () => {
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const logger = {
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
     const client = {
       pollNextTask: vi.fn().mockResolvedValue({
         success: true,
@@ -178,12 +182,44 @@ describe('runSinglePollExecution', () => {
       failTask: vi.fn().mockResolvedValue({ success: true, status: 'FAILED' }),
     };
 
-    const result = await runSinglePollExecution(client as never, { currentVersion: '1.0.0' });
+    const result = await runSinglePollExecution(client as never, {
+      currentVersion: '1.0.0',
+      logger,
+    });
 
     expect(result.executed).toBe(true);
     expect(client.sendResults).toHaveBeenCalledOnce();
-    expect(warnSpy).toHaveBeenCalled();
-    warnSpy.mockRestore();
+    expect(logger.warn).toHaveBeenCalledWith('edge.heartbeat.failed', {
+      errorType: 'Error',
+    });
+  });
+
+  it('logs upgrade status reports without raw reasons', async () => {
+    const logger = {
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
+    const client = createMockClient({
+      lease: { success: true, task: null },
+      connectivity: { targetVersion: '1.0.1' },
+    });
+
+    await runSinglePollExecution(client as never, {
+      currentVersion: '1.0.0',
+      suppressUpgradeRetry: async () => true,
+      logger,
+    });
+
+    expect(logger.info).toHaveBeenCalledWith('edge.upgrade.status_reported', {
+      status: 'FAILED',
+      hasReason: true,
+      reasonLength: 59,
+    });
+    expect(logger.info).not.toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ reason: expect.any(String) }),
+    );
   });
 
   it('does not report upgrade success when connectivity suggests upgrade but handlers are missing', async () => {

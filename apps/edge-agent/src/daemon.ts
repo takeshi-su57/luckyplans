@@ -1,3 +1,5 @@
+import { edgeAgentLogger, type EdgeAgentLogger } from './logger';
+
 export type ShutdownReason = 'signal' | 'test';
 
 export type ShutdownSignal = {
@@ -17,6 +19,7 @@ export type EdgeDaemonOptions = {
   failureBackoffMs?: number;
   maxFailureBackoffMs?: number;
   onError?: (error: unknown) => void;
+  logger?: EdgeAgentLogger;
 };
 
 export function createShutdownSignal(): ShutdownSignal {
@@ -43,22 +46,33 @@ export async function runEdgeDaemon(options: EdgeDaemonOptions): Promise<void> {
   const pollIntervalMs = options.pollIntervalMs ?? 15000;
   const failureBackoffMs = options.failureBackoffMs ?? 5000;
   const maxFailureBackoffMs = options.maxFailureBackoffMs ?? 60000;
+  const logger = options.logger ?? edgeAgentLogger;
   let nextFailureBackoffMs = failureBackoffMs;
 
-  while (!shutdown.requested) {
-    try {
-      await options.runOnce();
-      nextFailureBackoffMs = failureBackoffMs;
-      if (!shutdown.requested) {
-        await sleep(pollIntervalMs, shutdown);
+  logger.info('edge.daemon.started', {
+    pollIntervalMs,
+    failureBackoffMs,
+    maxFailureBackoffMs,
+  });
+
+  try {
+    while (!shutdown.requested) {
+      try {
+        await options.runOnce();
+        nextFailureBackoffMs = failureBackoffMs;
+        if (!shutdown.requested) {
+          await sleep(pollIntervalMs, shutdown);
+        }
+      } catch (error) {
+        options.onError?.(error);
+        if (!shutdown.requested) {
+          await sleep(nextFailureBackoffMs, shutdown);
+        }
+        nextFailureBackoffMs = Math.min(nextFailureBackoffMs * 2, maxFailureBackoffMs);
       }
-    } catch (error) {
-      options.onError?.(error);
-      if (!shutdown.requested) {
-        await sleep(nextFailureBackoffMs, shutdown);
-      }
-      nextFailureBackoffMs = Math.min(nextFailureBackoffMs * 2, maxFailureBackoffMs);
     }
+  } finally {
+    logger.info('edge.daemon.stopped', { reason: shutdown.reason ?? 'unknown' });
   }
 }
 

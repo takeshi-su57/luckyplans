@@ -35,6 +35,6 @@ Expose lifecycle metrics/log events and document runbooks for common failure mod
 
 ## Definition of Done
 
-- [ ] Docs updated.
-- [ ] Tests or snapshots cover UI/doc-visible behavior where applicable.
-- [ ] Sensitive logging reviewed.
+- [x] Docs updated.
+- [x] Tests or snapshots cover UI/doc-visible behavior where applicable.
+- [x] Sensitive logging reviewed.

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Logger } from '@nestjs/common';
 import { generateKeyPairSync, sign } from 'crypto';
 import { ReleasesService } from './releases.service';
 
@@ -22,9 +23,11 @@ describe('ReleasesService', () => {
   };
 
   let service: ReleasesService;
+  let loggerSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    loggerSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => undefined);
     service = new ReleasesService(prisma as never);
     const { publicKey, privateKey } = generateKeyPairSync('ed25519');
     signingPrivateKeyPem = privateKey.export({
@@ -104,6 +107,17 @@ describe('ReleasesService', () => {
     expect(prisma.worker.updateMany).toHaveBeenCalledOnce();
   });
 
+  it('logs target version assignments without release payload details', async () => {
+    prisma.edgeRelease.findFirst.mockResolvedValue({ id: 'rel_1', version: '1.0.1' });
+    prisma.worker.updateMany.mockResolvedValue({ count: 2 });
+
+    await service.setWorkerTargetVersion(['w1', 'w2'], '1.0.1');
+
+    expect(loggerSpy).toHaveBeenCalledWith(
+      'edge.upgrade.target_assigned workerCount=2 targetVersion=1.0.1 updatedCount=2',
+    );
+  });
+
   it('starts rollout campaign and seeds first phase workers', async () => {
     prisma.edgeRelease.findFirst.mockResolvedValue({ id: 'rel_1', version: '1.0.1' });
     prisma.worker.findMany.mockResolvedValue([
@@ -163,6 +177,24 @@ describe('ReleasesService', () => {
 
     expect(updated.upgradeStatus).toBe('DOWNLOADING');
     expect(prisma.worker.update).toHaveBeenCalledOnce();
+  });
+
+  it('logs worker upgrade status transitions without raw messages', async () => {
+    (prisma as unknown as Record<string, unknown>).upgradeCampaignWorker = {
+      updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+    };
+    prisma.worker.update.mockResolvedValue({
+      id: 'w1',
+      upgradeStatus: 'FAILED',
+      upgradeMessage: 'verification failed for token=secret',
+    });
+
+    await service.reportWorkerUpgradeStatus('w1', 'FAILED', 'verification failed for token=secret');
+
+    expect(loggerSpy).toHaveBeenCalledWith(
+      'edge.upgrade.status_transition workerId=w1 status=FAILED hasMessage=true messageLength=36',
+    );
+    expect(loggerSpy).not.toHaveBeenCalledWith(expect.stringContaining('token=secret'));
   });
 
   it('rejects invalid release checksum/signature/version payloads', async () => {

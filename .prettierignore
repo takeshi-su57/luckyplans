@@ -8,3 +8,4 @@ pnpm-lock.yaml
 infrastructure/helm/luckyplans/templates/
 packages/prisma/generated/
 apps/web/src/generated/
+apps/web/next-env.d.ts

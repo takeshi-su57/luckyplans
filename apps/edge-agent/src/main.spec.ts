@@ -15,6 +15,7 @@ import {
   buildDaemonOptions,
   buildRunnerOptions,
   resolveRuntimeConfig,
+  shouldRunMain,
 } from './main';
 import { confirmPendingUpgrade, shouldSuppressUpgradeRetry } from './upgrade-recovery';
 
@@ -86,6 +87,10 @@ describe('resolveRuntimeConfig', () => {
 });
 
 describe('main helpers', () => {
+  it('does not auto-start the runtime under vitest', () => {
+    expect(shouldRunMain({ VITEST: 'true' })).toBe(false);
+  });
+
   it('wires verified upgrade install with trusted-key env paths', async () => {
     const artifact = { url: 'https://cdn.example.com/upgrade.tgz' };
     const options = buildRunnerOptions(
@@ -215,9 +220,15 @@ describe('main helpers', () => {
   it('builds daemon options from interval environment variables', () => {
     const shutdown = { requested: false, request: vi.fn() };
     const runOnce = vi.fn();
+    const logger = {
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
     const options = buildDaemonOptions({
       runOnce,
       shutdown,
+      logger,
       env: {
         EDGE_AGENT_POLL_INTERVAL_MS: '250',
         EDGE_AGENT_FAILURE_BACKOFF_MS: '100',
@@ -228,5 +239,9 @@ describe('main helpers', () => {
     expect(options.pollIntervalMs).toBe(250);
     expect(options.failureBackoffMs).toBe(100);
     expect(options.maxFailureBackoffMs).toBe(1000);
+    options.onError?.(new Error('token=secret'));
+    expect(logger.warn).toHaveBeenCalledWith('edge.daemon.iteration_failed', {
+      errorType: 'Error',
+    });
   });
 });

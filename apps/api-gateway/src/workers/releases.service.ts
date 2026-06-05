@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { createPublicKey, verify as verifySignature } from 'crypto';
 import { getEnvVar } from '@luckyplans/shared';
 import { PrismaService } from '../database/prisma.service';
@@ -94,6 +94,8 @@ type UpgradeCampaignRecord = {
 
 @Injectable()
 export class ReleasesService {
+  private readonly logger = new Logger(ReleasesService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   private get releases() {
@@ -330,6 +332,9 @@ export class ReleasesService {
         upgradeStatus: 'UPGRADE_PENDING',
       },
     });
+    this.logger.log(
+      `edge.upgrade.target_assigned workerCount=${workerIds.length} targetVersion=${targetVersion} updatedCount=${result.count}`,
+    );
     return result.count;
   }
 
@@ -463,6 +468,9 @@ export class ReleasesService {
         upgradeMessage: message ?? null,
       },
     });
+    this.logger.log(
+      `edge.upgrade.status_transition workerId=${workerId} status=${status} hasMessage=${Boolean(message)} messageLength=${message?.length ?? 0}`,
+    );
     await this.campaignWorkers.updateMany({
       where: { workerId, status: 'IN_PROGRESS' },
       data: {

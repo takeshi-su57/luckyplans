@@ -1,5 +1,6 @@
 import { EdgeApiClient, type EdgeReleaseArtifactMetadata } from './client';
 import { runGridTask } from './grid';
+import { edgeAgentLogger, getErrorType, type EdgeAgentLogger } from './logger';
 import { runOptunaTask } from './optuna';
 import { maybeUpgrade, type UpgradeStatus } from './upgrade';
 
@@ -19,6 +20,7 @@ export type RunnerOptions = {
   recoveryStatePath?: string;
   runtimeStartedAtMs?: number;
   now?: () => number;
+  logger?: EdgeAgentLogger;
 };
 
 function getUptimeSeconds(options: RunnerOptions): number | undefined {
@@ -34,6 +36,7 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
   const hasActiveTask = Boolean(lease.success && lease.task);
   const currentVersion = options.currentVersion ?? '0.0.0';
   const uptimeSeconds = getUptimeSeconds(options);
+  const logger = options.logger ?? edgeAgentLogger;
 
   const safeSendConnectivityHeartbeat = async (
     payload: Parameters<EdgeApiClient['sendConnectivityHeartbeat']>[0],
@@ -44,12 +47,17 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
     try {
       return await client.sendConnectivityHeartbeat(payload);
     } catch (error) {
-      console.warn('[edge-agent] connectivity heartbeat failed', error);
+      logger.warn('edge.heartbeat.failed', { errorType: getErrorType(error) });
       return null;
     }
   };
 
   const reportUpgradeStatus = async (status: UpgradeStatus, details?: { reason?: string }) => {
+    logger.info('edge.upgrade.status_reported', {
+      status,
+      hasReason: Boolean(details?.reason),
+      reasonLength: details?.reason?.length ?? 0,
+    });
     await safeSendConnectivityHeartbeat({
       activeTask: hasActiveTask,
       currentVersion,

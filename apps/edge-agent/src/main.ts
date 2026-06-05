@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { EdgeApiClient } from './client';
 import { loadEdgeConfig, type EdgeLocalConfig } from './config';
 import { createShutdownSignal, runEdgeDaemon, type EdgeDaemonOptions } from './daemon';
+import { edgeAgentLogger, getErrorType, type EdgeAgentLogger } from './logger';
 import { runOnboarding } from './onboarding';
 import { runSinglePollExecution, type RunnerOptions } from './runner';
 import { downloadAndVerifyUpgradeArtifact } from './upgrade-artifact';
@@ -18,8 +19,15 @@ async function main() {
     runtimeConfig.credential,
   );
   const shutdown = createShutdownSignal();
-  registerProcessShutdownHandlers(shutdown);
+  registerProcessShutdownHandlers(shutdown, edgeAgentLogger);
   const runnerOptions = buildRunnerOptions(runtimeConfig, process.platform, process.arch);
+  edgeAgentLogger.info('edge.runtime.started', {
+    workerId: runtimeConfig.workerId,
+    deviceNumber: runtimeConfig.deviceNumber,
+    currentVersion: runtimeConfig.currentVersion,
+    platform: process.platform,
+    arch: process.arch,
+  });
   await confirmStartupRecovery(client, runnerOptions);
 
   await runEdgeDaemon(
@@ -178,17 +186,20 @@ export async function confirmStartupRecovery(
 export function buildDaemonOptions(input: {
   runOnce: () => Promise<unknown>;
   shutdown: EdgeDaemonOptions['shutdown'];
+  logger?: EdgeAgentLogger;
   env?: NodeJS.ProcessEnv;
 }): EdgeDaemonOptions {
   const env = input.env ?? process.env;
+  const logger = input.logger ?? edgeAgentLogger;
   return {
     runOnce: input.runOnce,
     shutdown: input.shutdown,
+    logger,
     pollIntervalMs: parsePositiveInt(env.EDGE_AGENT_POLL_INTERVAL_MS, 15000),
     failureBackoffMs: parsePositiveInt(env.EDGE_AGENT_FAILURE_BACKOFF_MS, 5000),
     maxFailureBackoffMs: parsePositiveInt(env.EDGE_AGENT_MAX_BACKOFF_MS, 60000),
     onError: (error) => {
-      console.warn('[edge-agent] daemon iteration failed', error);
+      logger.warn('edge.daemon.iteration_failed', { errorType: getErrorType(error) });
     },
   };
 }
@@ -209,9 +220,18 @@ function getUptimeSeconds(options: Pick<RunnerOptions, 'runtimeStartedAtMs' | 'n
   return Math.max(0, Math.floor((now() - options.runtimeStartedAtMs) / 1000));
 }
 
-function registerProcessShutdownHandlers(shutdown: ReturnType<typeof createShutdownSignal>) {
-  process.once('SIGINT', () => shutdown.request('signal'));
-  process.once('SIGTERM', () => shutdown.request('signal'));
+function registerProcessShutdownHandlers(
+  shutdown: ReturnType<typeof createShutdownSignal>,
+  logger: EdgeAgentLogger,
+) {
+  process.once('SIGINT', () => {
+    logger.info('edge.runtime.shutdown_requested', { signal: 'SIGINT' });
+    shutdown.request('signal');
+  });
+  process.once('SIGTERM', () => {
+    logger.info('edge.runtime.shutdown_requested', { signal: 'SIGTERM' });
+    shutdown.request('signal');
+  });
 }
 
 function isConfigNotFoundError(error: unknown): boolean {
@@ -222,9 +242,13 @@ function isConfigNotFoundError(error: unknown): boolean {
   return candidate.code === 'ENOENT';
 }
 
-if (process.env.NODE_ENV !== 'test') {
+export function shouldRunMain(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.NODE_ENV !== 'test' && env.VITEST !== 'true';
+}
+
+if (shouldRunMain()) {
   main().catch((error) => {
-    console.error('[edge-agent] fatal', error);
+    edgeAgentLogger.error('edge.runtime.fatal', { errorType: getErrorType(error) });
     process.exitCode = 1;
   });
 }

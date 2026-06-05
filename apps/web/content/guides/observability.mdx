@@ -174,7 +174,7 @@ Edge fleet operations are visible through worker state and upgrade status transi
    - `DOWNLOADING`
    - `VERIFYING`
    - `RESTARTING`
-   - `SUCCEEDED` / `FAILED`
+   - `SUCCEEDED` / `FAILED` / `ROLLED_BACK`
 
 ### Useful log queries for edge flows
 
@@ -186,6 +186,16 @@ Edge fleet operations are visible through worker state and upgrade status transi
 # Upgrade lifecycle status logs
 {service_name="api-gateway"} |= "upgradeStatus"
 
+# Gateway edge lifecycle transition logs
+{service_name="api-gateway"} |= "edge.upgrade.status_transition"
+{service_name="api-gateway"} |= "edge.upgrade.target_assigned"
+
+# Edge-agent lifecycle logs collected from service stdout/stderr
+{service_name=~"edge-agent|luckyplans-edge-agent"} |= "edge.daemon.started"
+{service_name=~"edge-agent|luckyplans-edge-agent"} |= "edge.heartbeat.failed"
+{service_name=~"edge-agent|luckyplans-edge-agent"} |= "edge.upgrade.status_reported"
+{service_name=~"edge-agent|luckyplans-edge-agent"} |= "edge.runtime.shutdown_requested"
+
 # Credential audit events
 {service_name="api-gateway"} |= "audit credential."
 ```
@@ -195,6 +205,9 @@ Edge fleet operations are visible through worker state and upgrade status transi
 1. **Stale `lastSeenAt`**: worker likely offline, blocked, or unable to reach gateway.
 2. **`targetVersion` set but status never leaves `UPGRADE_PENDING`**: worker is likely busy (idle-only upgrade policy) or connectivity is unstable.
 3. **Frequent `FAILED` upgrades**: verify release URLs, checksum/signature metadata, and edge host permissions.
+4. **`ROLLED_BACK` status**: check the recovery state path, failed target marker, and service restart logs.
+
+For step-by-step operator procedures, see [Edge Lifecycle Operator Runbooks](/docs/guides/developer#edge-lifecycle-operator-runbooks).
 
 ## Querying Metrics
 

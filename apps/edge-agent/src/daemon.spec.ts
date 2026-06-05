@@ -22,6 +22,36 @@ describe('runEdgeDaemon', () => {
     expect(sleep).toHaveBeenCalledWith(15000, shutdown);
   });
 
+  it('logs daemon start and stop lifecycle events', async () => {
+    const shutdown = createShutdownSignal();
+    const runOnce = vi.fn().mockResolvedValue({ executed: false });
+    const sleep = vi.fn().mockImplementation(async () => {
+      shutdown.request('test');
+    });
+    const logger = {
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    };
+
+    await runEdgeDaemon({
+      runOnce,
+      shutdown,
+      sleep,
+      pollIntervalMs: 15000,
+      failureBackoffMs: 5000,
+      maxFailureBackoffMs: 60000,
+      logger,
+    });
+
+    expect(logger.info).toHaveBeenCalledWith('edge.daemon.started', {
+      pollIntervalMs: 15000,
+      failureBackoffMs: 5000,
+      maxFailureBackoffMs: 60000,
+    });
+    expect(logger.info).toHaveBeenCalledWith('edge.daemon.stopped', { reason: 'test' });
+  });
+
   it('uses capped exponential backoff for transient failures', async () => {
     const shutdown = createShutdownSignal();
     const runOnce = vi
