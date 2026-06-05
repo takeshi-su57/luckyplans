@@ -35,5 +35,5 @@ Evaluate polling after daemon stabilization and decide whether WebSocket session
 
 ## Definition of Done
 
-- [ ] Decision doc committed.
-- [ ] No WebSocket implementation included.
+- [x] Decision doc committed: `apps/web/content/architecture/decisions/2026-06-05-defer-edge-websocket-sessions.mdx`.
+- [x] No WebSocket implementation included.
