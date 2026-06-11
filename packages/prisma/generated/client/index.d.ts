@@ -79,6 +79,11 @@ export type Worker = $Result.DefaultSelection<Prisma.$WorkerPayload>
  */
 export type EdgeRelease = $Result.DefaultSelection<Prisma.$EdgeReleasePayload>
 /**
+ * Model EdgeReleaseArtifact
+ * 
+ */
+export type EdgeReleaseArtifact = $Result.DefaultSelection<Prisma.$EdgeReleaseArtifactPayload>
+/**
  * Model UpgradeCampaign
  * 
  */
@@ -178,6 +183,16 @@ export const WorkerUpgradeStatus: {
 export type WorkerUpgradeStatus = (typeof WorkerUpgradeStatus)[keyof typeof WorkerUpgradeStatus]
 
 
+export const WorkerRuntimeState: {
+  IDLE: 'IDLE',
+  BUSY: 'BUSY',
+  UPGRADING: 'UPGRADING',
+  ERROR: 'ERROR'
+};
+
+export type WorkerRuntimeState = (typeof WorkerRuntimeState)[keyof typeof WorkerRuntimeState]
+
+
 export const UpgradeCampaignStatus: {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
@@ -234,6 +249,10 @@ export const BacktestTaskStatus: typeof $Enums.BacktestTaskStatus
 export type WorkerUpgradeStatus = $Enums.WorkerUpgradeStatus
 
 export const WorkerUpgradeStatus: typeof $Enums.WorkerUpgradeStatus
+
+export type WorkerRuntimeState = $Enums.WorkerRuntimeState
+
+export const WorkerRuntimeState: typeof $Enums.WorkerRuntimeState
 
 export type UpgradeCampaignStatus = $Enums.UpgradeCampaignStatus
 
@@ -497,6 +516,16 @@ export class PrismaClient<
     * ```
     */
   get edgeRelease(): Prisma.EdgeReleaseDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.edgeReleaseArtifact`: Exposes CRUD operations for the **EdgeReleaseArtifact** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EdgeReleaseArtifacts
+    * const edgeReleaseArtifacts = await prisma.edgeReleaseArtifact.findMany()
+    * ```
+    */
+  get edgeReleaseArtifact(): Prisma.EdgeReleaseArtifactDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.upgradeCampaign`: Exposes CRUD operations for the **UpgradeCampaign** model.
@@ -1014,6 +1043,7 @@ export namespace Prisma {
     Hobby: 'Hobby',
     Worker: 'Worker',
     EdgeRelease: 'EdgeRelease',
+    EdgeReleaseArtifact: 'EdgeReleaseArtifact',
     UpgradeCampaign: 'UpgradeCampaign',
     UpgradeCampaignWorker: 'UpgradeCampaignWorker',
     WorkerCredential: 'WorkerCredential',
@@ -1036,7 +1066,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker" | "edgeRelease" | "upgradeCampaign" | "upgradeCampaignWorker" | "workerCredential" | "edgeEnrollmentToken" | "strategyTemplate" | "backtestTask" | "backtestResult"
+      modelProps: "profile" | "socialLink" | "skillCategory" | "project" | "skill" | "experience" | "education" | "certification" | "language" | "award" | "hobby" | "worker" | "edgeRelease" | "edgeReleaseArtifact" | "upgradeCampaign" | "upgradeCampaignWorker" | "workerCredential" | "edgeEnrollmentToken" | "strategyTemplate" | "backtestTask" | "backtestResult"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2002,6 +2032,80 @@ export namespace Prisma {
           }
         }
       }
+      EdgeReleaseArtifact: {
+        payload: Prisma.$EdgeReleaseArtifactPayload<ExtArgs>
+        fields: Prisma.EdgeReleaseArtifactFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EdgeReleaseArtifactFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EdgeReleaseArtifactFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>
+          }
+          findFirst: {
+            args: Prisma.EdgeReleaseArtifactFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EdgeReleaseArtifactFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>
+          }
+          findMany: {
+            args: Prisma.EdgeReleaseArtifactFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>[]
+          }
+          create: {
+            args: Prisma.EdgeReleaseArtifactCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>
+          }
+          createMany: {
+            args: Prisma.EdgeReleaseArtifactCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EdgeReleaseArtifactCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>[]
+          }
+          delete: {
+            args: Prisma.EdgeReleaseArtifactDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>
+          }
+          update: {
+            args: Prisma.EdgeReleaseArtifactUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>
+          }
+          deleteMany: {
+            args: Prisma.EdgeReleaseArtifactDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EdgeReleaseArtifactUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EdgeReleaseArtifactUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>[]
+          }
+          upsert: {
+            args: Prisma.EdgeReleaseArtifactUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EdgeReleaseArtifactPayload>
+          }
+          aggregate: {
+            args: Prisma.EdgeReleaseArtifactAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEdgeReleaseArtifact>
+          }
+          groupBy: {
+            args: Prisma.EdgeReleaseArtifactGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EdgeReleaseArtifactGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EdgeReleaseArtifactCountArgs<ExtArgs>
+            result: $Utils.Optional<EdgeReleaseArtifactCountAggregateOutputType> | number
+          }
+        }
+      }
       UpgradeCampaign: {
         payload: Prisma.$UpgradeCampaignPayload<ExtArgs>
         fields: Prisma.UpgradeCampaignFieldRefs
@@ -2641,6 +2745,7 @@ export namespace Prisma {
     hobby?: HobbyOmit
     worker?: WorkerOmit
     edgeRelease?: EdgeReleaseOmit
+    edgeReleaseArtifact?: EdgeReleaseArtifactOmit
     upgradeCampaign?: UpgradeCampaignOmit
     upgradeCampaignWorker?: UpgradeCampaignWorkerOmit
     workerCredential?: WorkerCredentialOmit
@@ -2903,6 +3008,37 @@ export namespace Prisma {
    */
   export type WorkerCountOutputTypeCountUpgradeCampaignWorkersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: UpgradeCampaignWorkerWhereInput
+  }
+
+
+  /**
+   * Count Type EdgeReleaseCountOutputType
+   */
+
+  export type EdgeReleaseCountOutputType = {
+    artifacts: number
+  }
+
+  export type EdgeReleaseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    artifacts?: boolean | EdgeReleaseCountOutputTypeCountArtifactsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * EdgeReleaseCountOutputType without action
+   */
+  export type EdgeReleaseCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseCountOutputType
+     */
+    select?: EdgeReleaseCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * EdgeReleaseCountOutputType without action
+   */
+  export type EdgeReleaseCountOutputTypeCountArtifactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EdgeReleaseArtifactWhereInput
   }
 
 
@@ -15914,10 +16050,12 @@ export namespace Prisma {
 
   export type WorkerAvgAggregateOutputType = {
     consecutiveFailures: number | null
+    uptimeSeconds: number | null
   }
 
   export type WorkerSumAggregateOutputType = {
     consecutiveFailures: number | null
+    uptimeSeconds: number | null
   }
 
   export type WorkerMinAggregateOutputType = {
@@ -15934,6 +16072,10 @@ export namespace Prisma {
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus | null
     upgradeMessage: string | null
+    runtimeState: $Enums.WorkerRuntimeState | null
+    activeTaskId: string | null
+    uptimeSeconds: number | null
+    lastError: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15952,6 +16094,10 @@ export namespace Prisma {
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus | null
     upgradeMessage: string | null
+    runtimeState: $Enums.WorkerRuntimeState | null
+    activeTaskId: string | null
+    uptimeSeconds: number | null
+    lastError: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -15970,6 +16116,10 @@ export namespace Prisma {
     targetVersion: number
     upgradeStatus: number
     upgradeMessage: number
+    runtimeState: number
+    activeTaskId: number
+    uptimeSeconds: number
+    lastError: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -15978,10 +16128,12 @@ export namespace Prisma {
 
   export type WorkerAvgAggregateInputType = {
     consecutiveFailures?: true
+    uptimeSeconds?: true
   }
 
   export type WorkerSumAggregateInputType = {
     consecutiveFailures?: true
+    uptimeSeconds?: true
   }
 
   export type WorkerMinAggregateInputType = {
@@ -15998,6 +16150,10 @@ export namespace Prisma {
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
+    runtimeState?: true
+    activeTaskId?: true
+    uptimeSeconds?: true
+    lastError?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -16016,6 +16172,10 @@ export namespace Prisma {
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
+    runtimeState?: true
+    activeTaskId?: true
+    uptimeSeconds?: true
+    lastError?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -16034,6 +16194,10 @@ export namespace Prisma {
     targetVersion?: true
     upgradeStatus?: true
     upgradeMessage?: true
+    runtimeState?: true
+    activeTaskId?: true
+    uptimeSeconds?: true
+    lastError?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -16139,6 +16303,10 @@ export namespace Prisma {
     targetVersion: string | null
     upgradeStatus: $Enums.WorkerUpgradeStatus
     upgradeMessage: string | null
+    runtimeState: $Enums.WorkerRuntimeState
+    activeTaskId: string | null
+    uptimeSeconds: number | null
+    lastError: string | null
     createdAt: Date
     updatedAt: Date
     _count: WorkerCountAggregateOutputType | null
@@ -16176,6 +16344,10 @@ export namespace Prisma {
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
+    runtimeState?: boolean
+    activeTaskId?: boolean
+    uptimeSeconds?: boolean
+    lastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     credentials?: boolean | Worker$credentialsArgs<ExtArgs>
@@ -16197,6 +16369,10 @@ export namespace Prisma {
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
+    runtimeState?: boolean
+    activeTaskId?: boolean
+    uptimeSeconds?: boolean
+    lastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["worker"]>
@@ -16215,6 +16391,10 @@ export namespace Prisma {
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
+    runtimeState?: boolean
+    activeTaskId?: boolean
+    uptimeSeconds?: boolean
+    lastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["worker"]>
@@ -16233,11 +16413,15 @@ export namespace Prisma {
     targetVersion?: boolean
     upgradeStatus?: boolean
     upgradeMessage?: boolean
+    runtimeState?: boolean
+    activeTaskId?: boolean
+    uptimeSeconds?: boolean
+    lastError?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "deviceNumber" | "platform" | "arch" | "version" | "status" | "lastSeenAt" | "consecutiveFailures" | "quarantinedAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
+  export type WorkerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "deviceNumber" | "platform" | "arch" | "version" | "status" | "lastSeenAt" | "consecutiveFailures" | "quarantinedAt" | "targetVersion" | "upgradeStatus" | "upgradeMessage" | "runtimeState" | "activeTaskId" | "uptimeSeconds" | "lastError" | "createdAt" | "updatedAt", ExtArgs["result"]["worker"]>
   export type WorkerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     credentials?: boolean | Worker$credentialsArgs<ExtArgs>
     upgradeCampaignWorkers?: boolean | Worker$upgradeCampaignWorkersArgs<ExtArgs>
@@ -16266,6 +16450,10 @@ export namespace Prisma {
       targetVersion: string | null
       upgradeStatus: $Enums.WorkerUpgradeStatus
       upgradeMessage: string | null
+      runtimeState: $Enums.WorkerRuntimeState
+      activeTaskId: string | null
+      uptimeSeconds: number | null
+      lastError: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["worker"]>
@@ -16706,6 +16894,10 @@ export namespace Prisma {
     readonly targetVersion: FieldRef<"Worker", 'String'>
     readonly upgradeStatus: FieldRef<"Worker", 'WorkerUpgradeStatus'>
     readonly upgradeMessage: FieldRef<"Worker", 'String'>
+    readonly runtimeState: FieldRef<"Worker", 'WorkerRuntimeState'>
+    readonly activeTaskId: FieldRef<"Worker", 'String'>
+    readonly uptimeSeconds: FieldRef<"Worker", 'Int'>
+    readonly lastError: FieldRef<"Worker", 'String'>
     readonly createdAt: FieldRef<"Worker", 'DateTime'>
     readonly updatedAt: FieldRef<"Worker", 'DateTime'>
   }
@@ -17379,6 +17571,8 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    artifacts?: boolean | EdgeRelease$artifactsArgs<ExtArgs>
+    _count?: boolean | EdgeReleaseCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["edgeRelease"]>
 
   export type EdgeReleaseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -17424,10 +17618,18 @@ export namespace Prisma {
   }
 
   export type EdgeReleaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "version" | "windowsUrl" | "linuxUrl" | "checksum" | "signature" | "signatureAlgorithm" | "signingKeyId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["edgeRelease"]>
+  export type EdgeReleaseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    artifacts?: boolean | EdgeRelease$artifactsArgs<ExtArgs>
+    _count?: boolean | EdgeReleaseCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type EdgeReleaseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type EdgeReleaseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $EdgeReleasePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "EdgeRelease"
-    objects: {}
+    objects: {
+      artifacts: Prisma.$EdgeReleaseArtifactPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       version: string
@@ -17834,6 +18036,7 @@ export namespace Prisma {
    */
   export interface Prisma__EdgeReleaseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    artifacts<T extends EdgeRelease$artifactsArgs<ExtArgs> = {}>(args?: Subset<T, EdgeRelease$artifactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17891,6 +18094,10 @@ export namespace Prisma {
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
+    /**
      * Filter, which EdgeRelease to fetch.
      */
     where: EdgeReleaseWhereUniqueInput
@@ -17909,6 +18116,10 @@ export namespace Prisma {
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
+    /**
      * Filter, which EdgeRelease to fetch.
      */
     where: EdgeReleaseWhereUniqueInput
@@ -17926,6 +18137,10 @@ export namespace Prisma {
      * Omit specific fields from the EdgeRelease
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
     /**
      * Filter, which EdgeRelease to fetch.
      */
@@ -17975,6 +18190,10 @@ export namespace Prisma {
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
+    /**
      * Filter, which EdgeRelease to fetch.
      */
     where?: EdgeReleaseWhereInput
@@ -18022,6 +18241,10 @@ export namespace Prisma {
      * Omit specific fields from the EdgeRelease
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
     /**
      * Filter, which EdgeReleases to fetch.
      */
@@ -18071,6 +18294,10 @@ export namespace Prisma {
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
+    /**
      * The data needed to create a EdgeRelease.
      */
     data: XOR<EdgeReleaseCreateInput, EdgeReleaseUncheckedCreateInput>
@@ -18118,6 +18345,10 @@ export namespace Prisma {
      * Omit specific fields from the EdgeRelease
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
     /**
      * The data needed to update a EdgeRelease.
      */
@@ -18185,6 +18416,10 @@ export namespace Prisma {
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
+    /**
      * The filter to search for the EdgeRelease to update in case it exists.
      */
     where: EdgeReleaseWhereUniqueInput
@@ -18211,6 +18446,10 @@ export namespace Prisma {
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
+    /**
      * Filter which EdgeRelease to delete.
      */
     where: EdgeReleaseWhereUniqueInput
@@ -18231,6 +18470,30 @@ export namespace Prisma {
   }
 
   /**
+   * EdgeRelease.artifacts
+   */
+  export type EdgeRelease$artifactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    where?: EdgeReleaseArtifactWhereInput
+    orderBy?: EdgeReleaseArtifactOrderByWithRelationInput | EdgeReleaseArtifactOrderByWithRelationInput[]
+    cursor?: EdgeReleaseArtifactWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EdgeReleaseArtifactScalarFieldEnum | EdgeReleaseArtifactScalarFieldEnum[]
+  }
+
+  /**
    * EdgeRelease without action
    */
   export type EdgeReleaseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18242,6 +18505,1211 @@ export namespace Prisma {
      * Omit specific fields from the EdgeRelease
      */
     omit?: EdgeReleaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EdgeReleaseArtifact
+   */
+
+  export type AggregateEdgeReleaseArtifact = {
+    _count: EdgeReleaseArtifactCountAggregateOutputType | null
+    _avg: EdgeReleaseArtifactAvgAggregateOutputType | null
+    _sum: EdgeReleaseArtifactSumAggregateOutputType | null
+    _min: EdgeReleaseArtifactMinAggregateOutputType | null
+    _max: EdgeReleaseArtifactMaxAggregateOutputType | null
+  }
+
+  export type EdgeReleaseArtifactAvgAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type EdgeReleaseArtifactSumAggregateOutputType = {
+    sizeBytes: bigint | null
+  }
+
+  export type EdgeReleaseArtifactMinAggregateOutputType = {
+    id: string | null
+    releaseId: string | null
+    platform: string | null
+    arch: string | null
+    installType: string | null
+    url: string | null
+    checksum: string | null
+    signature: string | null
+    signatureAlgorithm: string | null
+    signingKeyId: string | null
+    sizeBytes: bigint | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeReleaseArtifactMaxAggregateOutputType = {
+    id: string | null
+    releaseId: string | null
+    platform: string | null
+    arch: string | null
+    installType: string | null
+    url: string | null
+    checksum: string | null
+    signature: string | null
+    signatureAlgorithm: string | null
+    signingKeyId: string | null
+    sizeBytes: bigint | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EdgeReleaseArtifactCountAggregateOutputType = {
+    id: number
+    releaseId: number
+    platform: number
+    arch: number
+    installType: number
+    url: number
+    checksum: number
+    signature: number
+    signatureAlgorithm: number
+    signingKeyId: number
+    sizeBytes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EdgeReleaseArtifactAvgAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type EdgeReleaseArtifactSumAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type EdgeReleaseArtifactMinAggregateInputType = {
+    id?: true
+    releaseId?: true
+    platform?: true
+    arch?: true
+    installType?: true
+    url?: true
+    checksum?: true
+    signature?: true
+    signatureAlgorithm?: true
+    signingKeyId?: true
+    sizeBytes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeReleaseArtifactMaxAggregateInputType = {
+    id?: true
+    releaseId?: true
+    platform?: true
+    arch?: true
+    installType?: true
+    url?: true
+    checksum?: true
+    signature?: true
+    signatureAlgorithm?: true
+    signingKeyId?: true
+    sizeBytes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EdgeReleaseArtifactCountAggregateInputType = {
+    id?: true
+    releaseId?: true
+    platform?: true
+    arch?: true
+    installType?: true
+    url?: true
+    checksum?: true
+    signature?: true
+    signatureAlgorithm?: true
+    signingKeyId?: true
+    sizeBytes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EdgeReleaseArtifactAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeReleaseArtifact to aggregate.
+     */
+    where?: EdgeReleaseArtifactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleaseArtifacts to fetch.
+     */
+    orderBy?: EdgeReleaseArtifactOrderByWithRelationInput | EdgeReleaseArtifactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EdgeReleaseArtifactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleaseArtifacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleaseArtifacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EdgeReleaseArtifacts
+    **/
+    _count?: true | EdgeReleaseArtifactCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EdgeReleaseArtifactAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EdgeReleaseArtifactSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EdgeReleaseArtifactMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EdgeReleaseArtifactMaxAggregateInputType
+  }
+
+  export type GetEdgeReleaseArtifactAggregateType<T extends EdgeReleaseArtifactAggregateArgs> = {
+        [P in keyof T & keyof AggregateEdgeReleaseArtifact]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEdgeReleaseArtifact[P]>
+      : GetScalarType<T[P], AggregateEdgeReleaseArtifact[P]>
+  }
+
+
+
+
+  export type EdgeReleaseArtifactGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EdgeReleaseArtifactWhereInput
+    orderBy?: EdgeReleaseArtifactOrderByWithAggregationInput | EdgeReleaseArtifactOrderByWithAggregationInput[]
+    by: EdgeReleaseArtifactScalarFieldEnum[] | EdgeReleaseArtifactScalarFieldEnum
+    having?: EdgeReleaseArtifactScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EdgeReleaseArtifactCountAggregateInputType | true
+    _avg?: EdgeReleaseArtifactAvgAggregateInputType
+    _sum?: EdgeReleaseArtifactSumAggregateInputType
+    _min?: EdgeReleaseArtifactMinAggregateInputType
+    _max?: EdgeReleaseArtifactMaxAggregateInputType
+  }
+
+  export type EdgeReleaseArtifactGroupByOutputType = {
+    id: string
+    releaseId: string
+    platform: string
+    arch: string
+    installType: string
+    url: string
+    checksum: string
+    signature: string
+    signatureAlgorithm: string
+    signingKeyId: string | null
+    sizeBytes: bigint | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EdgeReleaseArtifactCountAggregateOutputType | null
+    _avg: EdgeReleaseArtifactAvgAggregateOutputType | null
+    _sum: EdgeReleaseArtifactSumAggregateOutputType | null
+    _min: EdgeReleaseArtifactMinAggregateOutputType | null
+    _max: EdgeReleaseArtifactMaxAggregateOutputType | null
+  }
+
+  type GetEdgeReleaseArtifactGroupByPayload<T extends EdgeReleaseArtifactGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EdgeReleaseArtifactGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EdgeReleaseArtifactGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EdgeReleaseArtifactGroupByOutputType[P]>
+            : GetScalarType<T[P], EdgeReleaseArtifactGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EdgeReleaseArtifactSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    releaseId?: boolean
+    platform?: boolean
+    arch?: boolean
+    installType?: boolean
+    url?: boolean
+    checksum?: boolean
+    signature?: boolean
+    signatureAlgorithm?: boolean
+    signingKeyId?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    release?: boolean | EdgeReleaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["edgeReleaseArtifact"]>
+
+  export type EdgeReleaseArtifactSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    releaseId?: boolean
+    platform?: boolean
+    arch?: boolean
+    installType?: boolean
+    url?: boolean
+    checksum?: boolean
+    signature?: boolean
+    signatureAlgorithm?: boolean
+    signingKeyId?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    release?: boolean | EdgeReleaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["edgeReleaseArtifact"]>
+
+  export type EdgeReleaseArtifactSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    releaseId?: boolean
+    platform?: boolean
+    arch?: boolean
+    installType?: boolean
+    url?: boolean
+    checksum?: boolean
+    signature?: boolean
+    signatureAlgorithm?: boolean
+    signingKeyId?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    release?: boolean | EdgeReleaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["edgeReleaseArtifact"]>
+
+  export type EdgeReleaseArtifactSelectScalar = {
+    id?: boolean
+    releaseId?: boolean
+    platform?: boolean
+    arch?: boolean
+    installType?: boolean
+    url?: boolean
+    checksum?: boolean
+    signature?: boolean
+    signatureAlgorithm?: boolean
+    signingKeyId?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EdgeReleaseArtifactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "releaseId" | "platform" | "arch" | "installType" | "url" | "checksum" | "signature" | "signatureAlgorithm" | "signingKeyId" | "sizeBytes" | "createdAt" | "updatedAt", ExtArgs["result"]["edgeReleaseArtifact"]>
+  export type EdgeReleaseArtifactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    release?: boolean | EdgeReleaseDefaultArgs<ExtArgs>
+  }
+  export type EdgeReleaseArtifactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    release?: boolean | EdgeReleaseDefaultArgs<ExtArgs>
+  }
+  export type EdgeReleaseArtifactIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    release?: boolean | EdgeReleaseDefaultArgs<ExtArgs>
+  }
+
+  export type $EdgeReleaseArtifactPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EdgeReleaseArtifact"
+    objects: {
+      release: Prisma.$EdgeReleasePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      releaseId: string
+      platform: string
+      arch: string
+      installType: string
+      url: string
+      checksum: string
+      signature: string
+      signatureAlgorithm: string
+      signingKeyId: string | null
+      sizeBytes: bigint | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["edgeReleaseArtifact"]>
+    composites: {}
+  }
+
+  type EdgeReleaseArtifactGetPayload<S extends boolean | null | undefined | EdgeReleaseArtifactDefaultArgs> = $Result.GetResult<Prisma.$EdgeReleaseArtifactPayload, S>
+
+  type EdgeReleaseArtifactCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EdgeReleaseArtifactFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EdgeReleaseArtifactCountAggregateInputType | true
+    }
+
+  export interface EdgeReleaseArtifactDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EdgeReleaseArtifact'], meta: { name: 'EdgeReleaseArtifact' } }
+    /**
+     * Find zero or one EdgeReleaseArtifact that matches the filter.
+     * @param {EdgeReleaseArtifactFindUniqueArgs} args - Arguments to find a EdgeReleaseArtifact
+     * @example
+     * // Get one EdgeReleaseArtifact
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EdgeReleaseArtifactFindUniqueArgs>(args: SelectSubset<T, EdgeReleaseArtifactFindUniqueArgs<ExtArgs>>): Prisma__EdgeReleaseArtifactClient<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EdgeReleaseArtifact that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EdgeReleaseArtifactFindUniqueOrThrowArgs} args - Arguments to find a EdgeReleaseArtifact
+     * @example
+     * // Get one EdgeReleaseArtifact
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EdgeReleaseArtifactFindUniqueOrThrowArgs>(args: SelectSubset<T, EdgeReleaseArtifactFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EdgeReleaseArtifactClient<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeReleaseArtifact that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseArtifactFindFirstArgs} args - Arguments to find a EdgeReleaseArtifact
+     * @example
+     * // Get one EdgeReleaseArtifact
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EdgeReleaseArtifactFindFirstArgs>(args?: SelectSubset<T, EdgeReleaseArtifactFindFirstArgs<ExtArgs>>): Prisma__EdgeReleaseArtifactClient<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EdgeReleaseArtifact that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseArtifactFindFirstOrThrowArgs} args - Arguments to find a EdgeReleaseArtifact
+     * @example
+     * // Get one EdgeReleaseArtifact
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EdgeReleaseArtifactFindFirstOrThrowArgs>(args?: SelectSubset<T, EdgeReleaseArtifactFindFirstOrThrowArgs<ExtArgs>>): Prisma__EdgeReleaseArtifactClient<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EdgeReleaseArtifacts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseArtifactFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EdgeReleaseArtifacts
+     * const edgeReleaseArtifacts = await prisma.edgeReleaseArtifact.findMany()
+     * 
+     * // Get first 10 EdgeReleaseArtifacts
+     * const edgeReleaseArtifacts = await prisma.edgeReleaseArtifact.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const edgeReleaseArtifactWithIdOnly = await prisma.edgeReleaseArtifact.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EdgeReleaseArtifactFindManyArgs>(args?: SelectSubset<T, EdgeReleaseArtifactFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EdgeReleaseArtifact.
+     * @param {EdgeReleaseArtifactCreateArgs} args - Arguments to create a EdgeReleaseArtifact.
+     * @example
+     * // Create one EdgeReleaseArtifact
+     * const EdgeReleaseArtifact = await prisma.edgeReleaseArtifact.create({
+     *   data: {
+     *     // ... data to create a EdgeReleaseArtifact
+     *   }
+     * })
+     * 
+     */
+    create<T extends EdgeReleaseArtifactCreateArgs>(args: SelectSubset<T, EdgeReleaseArtifactCreateArgs<ExtArgs>>): Prisma__EdgeReleaseArtifactClient<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EdgeReleaseArtifacts.
+     * @param {EdgeReleaseArtifactCreateManyArgs} args - Arguments to create many EdgeReleaseArtifacts.
+     * @example
+     * // Create many EdgeReleaseArtifacts
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EdgeReleaseArtifactCreateManyArgs>(args?: SelectSubset<T, EdgeReleaseArtifactCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EdgeReleaseArtifacts and returns the data saved in the database.
+     * @param {EdgeReleaseArtifactCreateManyAndReturnArgs} args - Arguments to create many EdgeReleaseArtifacts.
+     * @example
+     * // Create many EdgeReleaseArtifacts
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EdgeReleaseArtifacts and only return the `id`
+     * const edgeReleaseArtifactWithIdOnly = await prisma.edgeReleaseArtifact.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EdgeReleaseArtifactCreateManyAndReturnArgs>(args?: SelectSubset<T, EdgeReleaseArtifactCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EdgeReleaseArtifact.
+     * @param {EdgeReleaseArtifactDeleteArgs} args - Arguments to delete one EdgeReleaseArtifact.
+     * @example
+     * // Delete one EdgeReleaseArtifact
+     * const EdgeReleaseArtifact = await prisma.edgeReleaseArtifact.delete({
+     *   where: {
+     *     // ... filter to delete one EdgeReleaseArtifact
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EdgeReleaseArtifactDeleteArgs>(args: SelectSubset<T, EdgeReleaseArtifactDeleteArgs<ExtArgs>>): Prisma__EdgeReleaseArtifactClient<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EdgeReleaseArtifact.
+     * @param {EdgeReleaseArtifactUpdateArgs} args - Arguments to update one EdgeReleaseArtifact.
+     * @example
+     * // Update one EdgeReleaseArtifact
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EdgeReleaseArtifactUpdateArgs>(args: SelectSubset<T, EdgeReleaseArtifactUpdateArgs<ExtArgs>>): Prisma__EdgeReleaseArtifactClient<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EdgeReleaseArtifacts.
+     * @param {EdgeReleaseArtifactDeleteManyArgs} args - Arguments to filter EdgeReleaseArtifacts to delete.
+     * @example
+     * // Delete a few EdgeReleaseArtifacts
+     * const { count } = await prisma.edgeReleaseArtifact.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EdgeReleaseArtifactDeleteManyArgs>(args?: SelectSubset<T, EdgeReleaseArtifactDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeReleaseArtifacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseArtifactUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EdgeReleaseArtifacts
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EdgeReleaseArtifactUpdateManyArgs>(args: SelectSubset<T, EdgeReleaseArtifactUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EdgeReleaseArtifacts and returns the data updated in the database.
+     * @param {EdgeReleaseArtifactUpdateManyAndReturnArgs} args - Arguments to update many EdgeReleaseArtifacts.
+     * @example
+     * // Update many EdgeReleaseArtifacts
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EdgeReleaseArtifacts and only return the `id`
+     * const edgeReleaseArtifactWithIdOnly = await prisma.edgeReleaseArtifact.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EdgeReleaseArtifactUpdateManyAndReturnArgs>(args: SelectSubset<T, EdgeReleaseArtifactUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EdgeReleaseArtifact.
+     * @param {EdgeReleaseArtifactUpsertArgs} args - Arguments to update or create a EdgeReleaseArtifact.
+     * @example
+     * // Update or create a EdgeReleaseArtifact
+     * const edgeReleaseArtifact = await prisma.edgeReleaseArtifact.upsert({
+     *   create: {
+     *     // ... data to create a EdgeReleaseArtifact
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EdgeReleaseArtifact we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EdgeReleaseArtifactUpsertArgs>(args: SelectSubset<T, EdgeReleaseArtifactUpsertArgs<ExtArgs>>): Prisma__EdgeReleaseArtifactClient<$Result.GetResult<Prisma.$EdgeReleaseArtifactPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EdgeReleaseArtifacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseArtifactCountArgs} args - Arguments to filter EdgeReleaseArtifacts to count.
+     * @example
+     * // Count the number of EdgeReleaseArtifacts
+     * const count = await prisma.edgeReleaseArtifact.count({
+     *   where: {
+     *     // ... the filter for the EdgeReleaseArtifacts we want to count
+     *   }
+     * })
+    **/
+    count<T extends EdgeReleaseArtifactCountArgs>(
+      args?: Subset<T, EdgeReleaseArtifactCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EdgeReleaseArtifactCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EdgeReleaseArtifact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseArtifactAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EdgeReleaseArtifactAggregateArgs>(args: Subset<T, EdgeReleaseArtifactAggregateArgs>): Prisma.PrismaPromise<GetEdgeReleaseArtifactAggregateType<T>>
+
+    /**
+     * Group by EdgeReleaseArtifact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EdgeReleaseArtifactGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EdgeReleaseArtifactGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EdgeReleaseArtifactGroupByArgs['orderBy'] }
+        : { orderBy?: EdgeReleaseArtifactGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EdgeReleaseArtifactGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEdgeReleaseArtifactGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EdgeReleaseArtifact model
+   */
+  readonly fields: EdgeReleaseArtifactFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EdgeReleaseArtifact.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EdgeReleaseArtifactClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    release<T extends EdgeReleaseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EdgeReleaseDefaultArgs<ExtArgs>>): Prisma__EdgeReleaseClient<$Result.GetResult<Prisma.$EdgeReleasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EdgeReleaseArtifact model
+   */
+  interface EdgeReleaseArtifactFieldRefs {
+    readonly id: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly releaseId: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly platform: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly arch: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly installType: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly url: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly checksum: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly signature: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly signatureAlgorithm: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly signingKeyId: FieldRef<"EdgeReleaseArtifact", 'String'>
+    readonly sizeBytes: FieldRef<"EdgeReleaseArtifact", 'BigInt'>
+    readonly createdAt: FieldRef<"EdgeReleaseArtifact", 'DateTime'>
+    readonly updatedAt: FieldRef<"EdgeReleaseArtifact", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EdgeReleaseArtifact findUnique
+   */
+  export type EdgeReleaseArtifactFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which EdgeReleaseArtifact to fetch.
+     */
+    where: EdgeReleaseArtifactWhereUniqueInput
+  }
+
+  /**
+   * EdgeReleaseArtifact findUniqueOrThrow
+   */
+  export type EdgeReleaseArtifactFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which EdgeReleaseArtifact to fetch.
+     */
+    where: EdgeReleaseArtifactWhereUniqueInput
+  }
+
+  /**
+   * EdgeReleaseArtifact findFirst
+   */
+  export type EdgeReleaseArtifactFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which EdgeReleaseArtifact to fetch.
+     */
+    where?: EdgeReleaseArtifactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleaseArtifacts to fetch.
+     */
+    orderBy?: EdgeReleaseArtifactOrderByWithRelationInput | EdgeReleaseArtifactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeReleaseArtifacts.
+     */
+    cursor?: EdgeReleaseArtifactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleaseArtifacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleaseArtifacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleaseArtifacts.
+     */
+    distinct?: EdgeReleaseArtifactScalarFieldEnum | EdgeReleaseArtifactScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeReleaseArtifact findFirstOrThrow
+   */
+  export type EdgeReleaseArtifactFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which EdgeReleaseArtifact to fetch.
+     */
+    where?: EdgeReleaseArtifactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleaseArtifacts to fetch.
+     */
+    orderBy?: EdgeReleaseArtifactOrderByWithRelationInput | EdgeReleaseArtifactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EdgeReleaseArtifacts.
+     */
+    cursor?: EdgeReleaseArtifactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleaseArtifacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleaseArtifacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleaseArtifacts.
+     */
+    distinct?: EdgeReleaseArtifactScalarFieldEnum | EdgeReleaseArtifactScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeReleaseArtifact findMany
+   */
+  export type EdgeReleaseArtifactFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which EdgeReleaseArtifacts to fetch.
+     */
+    where?: EdgeReleaseArtifactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EdgeReleaseArtifacts to fetch.
+     */
+    orderBy?: EdgeReleaseArtifactOrderByWithRelationInput | EdgeReleaseArtifactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EdgeReleaseArtifacts.
+     */
+    cursor?: EdgeReleaseArtifactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EdgeReleaseArtifacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EdgeReleaseArtifacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EdgeReleaseArtifacts.
+     */
+    distinct?: EdgeReleaseArtifactScalarFieldEnum | EdgeReleaseArtifactScalarFieldEnum[]
+  }
+
+  /**
+   * EdgeReleaseArtifact create
+   */
+  export type EdgeReleaseArtifactCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EdgeReleaseArtifact.
+     */
+    data: XOR<EdgeReleaseArtifactCreateInput, EdgeReleaseArtifactUncheckedCreateInput>
+  }
+
+  /**
+   * EdgeReleaseArtifact createMany
+   */
+  export type EdgeReleaseArtifactCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EdgeReleaseArtifacts.
+     */
+    data: EdgeReleaseArtifactCreateManyInput | EdgeReleaseArtifactCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EdgeReleaseArtifact createManyAndReturn
+   */
+  export type EdgeReleaseArtifactCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * The data used to create many EdgeReleaseArtifacts.
+     */
+    data: EdgeReleaseArtifactCreateManyInput | EdgeReleaseArtifactCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EdgeReleaseArtifact update
+   */
+  export type EdgeReleaseArtifactUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EdgeReleaseArtifact.
+     */
+    data: XOR<EdgeReleaseArtifactUpdateInput, EdgeReleaseArtifactUncheckedUpdateInput>
+    /**
+     * Choose, which EdgeReleaseArtifact to update.
+     */
+    where: EdgeReleaseArtifactWhereUniqueInput
+  }
+
+  /**
+   * EdgeReleaseArtifact updateMany
+   */
+  export type EdgeReleaseArtifactUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EdgeReleaseArtifacts.
+     */
+    data: XOR<EdgeReleaseArtifactUpdateManyMutationInput, EdgeReleaseArtifactUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeReleaseArtifacts to update
+     */
+    where?: EdgeReleaseArtifactWhereInput
+    /**
+     * Limit how many EdgeReleaseArtifacts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeReleaseArtifact updateManyAndReturn
+   */
+  export type EdgeReleaseArtifactUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * The data used to update EdgeReleaseArtifacts.
+     */
+    data: XOR<EdgeReleaseArtifactUpdateManyMutationInput, EdgeReleaseArtifactUncheckedUpdateManyInput>
+    /**
+     * Filter which EdgeReleaseArtifacts to update
+     */
+    where?: EdgeReleaseArtifactWhereInput
+    /**
+     * Limit how many EdgeReleaseArtifacts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EdgeReleaseArtifact upsert
+   */
+  export type EdgeReleaseArtifactUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EdgeReleaseArtifact to update in case it exists.
+     */
+    where: EdgeReleaseArtifactWhereUniqueInput
+    /**
+     * In case the EdgeReleaseArtifact found by the `where` argument doesn't exist, create a new EdgeReleaseArtifact with this data.
+     */
+    create: XOR<EdgeReleaseArtifactCreateInput, EdgeReleaseArtifactUncheckedCreateInput>
+    /**
+     * In case the EdgeReleaseArtifact was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EdgeReleaseArtifactUpdateInput, EdgeReleaseArtifactUncheckedUpdateInput>
+  }
+
+  /**
+   * EdgeReleaseArtifact delete
+   */
+  export type EdgeReleaseArtifactDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
+    /**
+     * Filter which EdgeReleaseArtifact to delete.
+     */
+    where: EdgeReleaseArtifactWhereUniqueInput
+  }
+
+  /**
+   * EdgeReleaseArtifact deleteMany
+   */
+  export type EdgeReleaseArtifactDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EdgeReleaseArtifacts to delete
+     */
+    where?: EdgeReleaseArtifactWhereInput
+    /**
+     * Limit how many EdgeReleaseArtifacts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EdgeReleaseArtifact without action
+   */
+  export type EdgeReleaseArtifactDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EdgeReleaseArtifact
+     */
+    select?: EdgeReleaseArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EdgeReleaseArtifact
+     */
+    omit?: EdgeReleaseArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EdgeReleaseArtifactInclude<ExtArgs> | null
   }
 
 
@@ -26598,6 +28066,10 @@ export namespace Prisma {
     targetVersion: 'targetVersion',
     upgradeStatus: 'upgradeStatus',
     upgradeMessage: 'upgradeMessage',
+    runtimeState: 'runtimeState',
+    activeTaskId: 'activeTaskId',
+    uptimeSeconds: 'uptimeSeconds',
+    lastError: 'lastError',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -26620,6 +28092,25 @@ export namespace Prisma {
   };
 
   export type EdgeReleaseScalarFieldEnum = (typeof EdgeReleaseScalarFieldEnum)[keyof typeof EdgeReleaseScalarFieldEnum]
+
+
+  export const EdgeReleaseArtifactScalarFieldEnum: {
+    id: 'id',
+    releaseId: 'releaseId',
+    platform: 'platform',
+    arch: 'arch',
+    installType: 'installType',
+    url: 'url',
+    checksum: 'checksum',
+    signature: 'signature',
+    signatureAlgorithm: 'signatureAlgorithm',
+    signingKeyId: 'signingKeyId',
+    sizeBytes: 'sizeBytes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EdgeReleaseArtifactScalarFieldEnum = (typeof EdgeReleaseArtifactScalarFieldEnum)[keyof typeof EdgeReleaseArtifactScalarFieldEnum]
 
 
   export const UpgradeCampaignScalarFieldEnum: {
@@ -26870,6 +28361,34 @@ export namespace Prisma {
    * Reference to a field of type 'WorkerUpgradeStatus[]'
    */
   export type ListEnumWorkerUpgradeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerUpgradeStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerRuntimeState'
+   */
+  export type EnumWorkerRuntimeStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerRuntimeState'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkerRuntimeState[]'
+   */
+  export type ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkerRuntimeState[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BigInt'
+   */
+  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+  /**
+   * Reference to a field of type 'BigInt[]'
+   */
+  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
     
 
 
@@ -27886,6 +29405,10 @@ export namespace Prisma {
     targetVersion?: StringNullableFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableFilter<"Worker"> | string | null
+    runtimeState?: EnumWorkerRuntimeStateFilter<"Worker"> | $Enums.WorkerRuntimeState
+    activeTaskId?: StringNullableFilter<"Worker"> | string | null
+    uptimeSeconds?: IntNullableFilter<"Worker"> | number | null
+    lastError?: StringNullableFilter<"Worker"> | string | null
     createdAt?: DateTimeFilter<"Worker"> | Date | string
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
     credentials?: WorkerCredentialListRelationFilter
@@ -27906,6 +29429,10 @@ export namespace Prisma {
     targetVersion?: SortOrderInput | SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrderInput | SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrderInput | SortOrder
+    uptimeSeconds?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     credentials?: WorkerCredentialOrderByRelationAggregateInput
@@ -27929,6 +29456,10 @@ export namespace Prisma {
     targetVersion?: StringNullableFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableFilter<"Worker"> | string | null
+    runtimeState?: EnumWorkerRuntimeStateFilter<"Worker"> | $Enums.WorkerRuntimeState
+    activeTaskId?: StringNullableFilter<"Worker"> | string | null
+    uptimeSeconds?: IntNullableFilter<"Worker"> | number | null
+    lastError?: StringNullableFilter<"Worker"> | string | null
     createdAt?: DateTimeFilter<"Worker"> | Date | string
     updatedAt?: DateTimeFilter<"Worker"> | Date | string
     credentials?: WorkerCredentialListRelationFilter
@@ -27949,6 +29480,10 @@ export namespace Prisma {
     targetVersion?: SortOrderInput | SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrderInput | SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrderInput | SortOrder
+    uptimeSeconds?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: WorkerCountOrderByAggregateInput
@@ -27975,6 +29510,10 @@ export namespace Prisma {
     targetVersion?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusWithAggregatesFilter<"Worker"> | $Enums.WorkerUpgradeStatus
     upgradeMessage?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    runtimeState?: EnumWorkerRuntimeStateWithAggregatesFilter<"Worker"> | $Enums.WorkerRuntimeState
+    activeTaskId?: StringNullableWithAggregatesFilter<"Worker"> | string | null
+    uptimeSeconds?: IntNullableWithAggregatesFilter<"Worker"> | number | null
+    lastError?: StringNullableWithAggregatesFilter<"Worker"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Worker"> | Date | string
   }
@@ -27994,6 +29533,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"EdgeRelease"> | string | null
     createdAt?: DateTimeFilter<"EdgeRelease"> | Date | string
     updatedAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+    artifacts?: EdgeReleaseArtifactListRelationFilter
   }
 
   export type EdgeReleaseOrderByWithRelationInput = {
@@ -28008,6 +29548,7 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    artifacts?: EdgeReleaseArtifactOrderByRelationAggregateInput
   }
 
   export type EdgeReleaseWhereUniqueInput = Prisma.AtLeast<{
@@ -28025,6 +29566,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"EdgeRelease"> | string | null
     createdAt?: DateTimeFilter<"EdgeRelease"> | Date | string
     updatedAt?: DateTimeFilter<"EdgeRelease"> | Date | string
+    artifacts?: EdgeReleaseArtifactListRelationFilter
   }, "id" | "version">
 
   export type EdgeReleaseOrderByWithAggregationInput = {
@@ -28059,6 +29601,104 @@ export namespace Prisma {
     notes?: StringNullableWithAggregatesFilter<"EdgeRelease"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"EdgeRelease"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"EdgeRelease"> | Date | string
+  }
+
+  export type EdgeReleaseArtifactWhereInput = {
+    AND?: EdgeReleaseArtifactWhereInput | EdgeReleaseArtifactWhereInput[]
+    OR?: EdgeReleaseArtifactWhereInput[]
+    NOT?: EdgeReleaseArtifactWhereInput | EdgeReleaseArtifactWhereInput[]
+    id?: StringFilter<"EdgeReleaseArtifact"> | string
+    releaseId?: StringFilter<"EdgeReleaseArtifact"> | string
+    platform?: StringFilter<"EdgeReleaseArtifact"> | string
+    arch?: StringFilter<"EdgeReleaseArtifact"> | string
+    installType?: StringFilter<"EdgeReleaseArtifact"> | string
+    url?: StringFilter<"EdgeReleaseArtifact"> | string
+    checksum?: StringFilter<"EdgeReleaseArtifact"> | string
+    signature?: StringFilter<"EdgeReleaseArtifact"> | string
+    signatureAlgorithm?: StringFilter<"EdgeReleaseArtifact"> | string
+    signingKeyId?: StringNullableFilter<"EdgeReleaseArtifact"> | string | null
+    sizeBytes?: BigIntNullableFilter<"EdgeReleaseArtifact"> | bigint | number | null
+    createdAt?: DateTimeFilter<"EdgeReleaseArtifact"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeReleaseArtifact"> | Date | string
+    release?: XOR<EdgeReleaseScalarRelationFilter, EdgeReleaseWhereInput>
+  }
+
+  export type EdgeReleaseArtifactOrderByWithRelationInput = {
+    id?: SortOrder
+    releaseId?: SortOrder
+    platform?: SortOrder
+    arch?: SortOrder
+    installType?: SortOrder
+    url?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    release?: EdgeReleaseOrderByWithRelationInput
+  }
+
+  export type EdgeReleaseArtifactWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    releaseId_platform_arch_installType?: EdgeReleaseArtifactReleaseIdPlatformArchInstallTypeCompoundUniqueInput
+    AND?: EdgeReleaseArtifactWhereInput | EdgeReleaseArtifactWhereInput[]
+    OR?: EdgeReleaseArtifactWhereInput[]
+    NOT?: EdgeReleaseArtifactWhereInput | EdgeReleaseArtifactWhereInput[]
+    releaseId?: StringFilter<"EdgeReleaseArtifact"> | string
+    platform?: StringFilter<"EdgeReleaseArtifact"> | string
+    arch?: StringFilter<"EdgeReleaseArtifact"> | string
+    installType?: StringFilter<"EdgeReleaseArtifact"> | string
+    url?: StringFilter<"EdgeReleaseArtifact"> | string
+    checksum?: StringFilter<"EdgeReleaseArtifact"> | string
+    signature?: StringFilter<"EdgeReleaseArtifact"> | string
+    signatureAlgorithm?: StringFilter<"EdgeReleaseArtifact"> | string
+    signingKeyId?: StringNullableFilter<"EdgeReleaseArtifact"> | string | null
+    sizeBytes?: BigIntNullableFilter<"EdgeReleaseArtifact"> | bigint | number | null
+    createdAt?: DateTimeFilter<"EdgeReleaseArtifact"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeReleaseArtifact"> | Date | string
+    release?: XOR<EdgeReleaseScalarRelationFilter, EdgeReleaseWhereInput>
+  }, "id" | "releaseId_platform_arch_installType">
+
+  export type EdgeReleaseArtifactOrderByWithAggregationInput = {
+    id?: SortOrder
+    releaseId?: SortOrder
+    platform?: SortOrder
+    arch?: SortOrder
+    installType?: SortOrder
+    url?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EdgeReleaseArtifactCountOrderByAggregateInput
+    _avg?: EdgeReleaseArtifactAvgOrderByAggregateInput
+    _max?: EdgeReleaseArtifactMaxOrderByAggregateInput
+    _min?: EdgeReleaseArtifactMinOrderByAggregateInput
+    _sum?: EdgeReleaseArtifactSumOrderByAggregateInput
+  }
+
+  export type EdgeReleaseArtifactScalarWhereWithAggregatesInput = {
+    AND?: EdgeReleaseArtifactScalarWhereWithAggregatesInput | EdgeReleaseArtifactScalarWhereWithAggregatesInput[]
+    OR?: EdgeReleaseArtifactScalarWhereWithAggregatesInput[]
+    NOT?: EdgeReleaseArtifactScalarWhereWithAggregatesInput | EdgeReleaseArtifactScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    releaseId?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    platform?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    arch?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    installType?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    url?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    checksum?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    signature?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    signatureAlgorithm?: StringWithAggregatesFilter<"EdgeReleaseArtifact"> | string
+    signingKeyId?: StringNullableWithAggregatesFilter<"EdgeReleaseArtifact"> | string | null
+    sizeBytes?: BigIntNullableWithAggregatesFilter<"EdgeReleaseArtifact"> | bigint | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"EdgeReleaseArtifact"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EdgeReleaseArtifact"> | Date | string
   }
 
   export type UpgradeCampaignWhereInput = {
@@ -29648,6 +31288,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialCreateNestedManyWithoutWorkerInput
@@ -29668,6 +31312,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput
@@ -29688,6 +31336,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUpdateManyWithoutWorkerNestedInput
@@ -29708,6 +31360,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput
@@ -29728,6 +31384,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29746,6 +31406,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29764,6 +31428,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -29780,6 +31448,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    artifacts?: EdgeReleaseArtifactCreateNestedManyWithoutReleaseInput
   }
 
   export type EdgeReleaseUncheckedCreateInput = {
@@ -29794,6 +31463,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    artifacts?: EdgeReleaseArtifactUncheckedCreateNestedManyWithoutReleaseInput
   }
 
   export type EdgeReleaseUpdateInput = {
@@ -29808,6 +31478,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artifacts?: EdgeReleaseArtifactUpdateManyWithoutReleaseNestedInput
   }
 
   export type EdgeReleaseUncheckedUpdateInput = {
@@ -29822,6 +31493,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    artifacts?: EdgeReleaseArtifactUncheckedUpdateManyWithoutReleaseNestedInput
   }
 
   export type EdgeReleaseCreateManyInput = {
@@ -29862,6 +31534,117 @@ export namespace Prisma {
     signatureAlgorithm?: StringFieldUpdateOperationsInput | string
     signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseArtifactCreateInput = {
+    id?: string
+    platform: string
+    arch: string
+    installType?: string
+    url: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    sizeBytes?: bigint | number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    release: EdgeReleaseCreateNestedOneWithoutArtifactsInput
+  }
+
+  export type EdgeReleaseArtifactUncheckedCreateInput = {
+    id?: string
+    releaseId: string
+    platform: string
+    arch: string
+    installType?: string
+    url: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    sizeBytes?: bigint | number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseArtifactUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    arch?: StringFieldUpdateOperationsInput | string
+    installType?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    release?: EdgeReleaseUpdateOneRequiredWithoutArtifactsNestedInput
+  }
+
+  export type EdgeReleaseArtifactUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    releaseId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    arch?: StringFieldUpdateOperationsInput | string
+    installType?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseArtifactCreateManyInput = {
+    id?: string
+    releaseId: string
+    platform: string
+    arch: string
+    installType?: string
+    url: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    sizeBytes?: bigint | number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseArtifactUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    arch?: StringFieldUpdateOperationsInput | string
+    installType?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseArtifactUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    releaseId?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    arch?: StringFieldUpdateOperationsInput | string
+    installType?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -31347,6 +33130,24 @@ export namespace Prisma {
     not?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
   }
 
+  export type EnumWorkerRuntimeStateFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerRuntimeState | EnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel> | $Enums.WorkerRuntimeState
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type WorkerCredentialListRelationFilter = {
     every?: WorkerCredentialWhereInput
     some?: WorkerCredentialWhereInput
@@ -31381,12 +33182,17 @@ export namespace Prisma {
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrder
+    uptimeSeconds?: SortOrder
+    lastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type WorkerAvgOrderByAggregateInput = {
     consecutiveFailures?: SortOrder
+    uptimeSeconds?: SortOrder
   }
 
   export type WorkerMaxOrderByAggregateInput = {
@@ -31403,6 +33209,10 @@ export namespace Prisma {
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrder
+    uptimeSeconds?: SortOrder
+    lastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -31421,12 +33231,17 @@ export namespace Prisma {
     targetVersion?: SortOrder
     upgradeStatus?: SortOrder
     upgradeMessage?: SortOrder
+    runtimeState?: SortOrder
+    activeTaskId?: SortOrder
+    uptimeSeconds?: SortOrder
+    lastError?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type WorkerSumOrderByAggregateInput = {
     consecutiveFailures?: SortOrder
+    uptimeSeconds?: SortOrder
   }
 
   export type EnumWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -31447,6 +33262,42 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+  }
+
+  export type EnumWorkerRuntimeStateWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerRuntimeState | EnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerRuntimeStateWithAggregatesFilter<$PrismaModel> | $Enums.WorkerRuntimeState
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel>
+    _max?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type EdgeReleaseArtifactListRelationFilter = {
+    every?: EdgeReleaseArtifactWhereInput
+    some?: EdgeReleaseArtifactWhereInput
+    none?: EdgeReleaseArtifactWhereInput
+  }
+
+  export type EdgeReleaseArtifactOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type EdgeReleaseCountOrderByAggregateInput = {
@@ -31489,6 +33340,101 @@ export namespace Prisma {
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type EdgeReleaseScalarRelationFilter = {
+    is?: EdgeReleaseWhereInput
+    isNot?: EdgeReleaseWhereInput
+  }
+
+  export type EdgeReleaseArtifactReleaseIdPlatformArchInstallTypeCompoundUniqueInput = {
+    releaseId: string
+    platform: string
+    arch: string
+    installType: string
+  }
+
+  export type EdgeReleaseArtifactCountOrderByAggregateInput = {
+    id?: SortOrder
+    releaseId?: SortOrder
+    platform?: SortOrder
+    arch?: SortOrder
+    installType?: SortOrder
+    url?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseArtifactAvgOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type EdgeReleaseArtifactMaxOrderByAggregateInput = {
+    id?: SortOrder
+    releaseId?: SortOrder
+    platform?: SortOrder
+    arch?: SortOrder
+    installType?: SortOrder
+    url?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseArtifactMinOrderByAggregateInput = {
+    id?: SortOrder
+    releaseId?: SortOrder
+    platform?: SortOrder
+    arch?: SortOrder
+    installType?: SortOrder
+    url?: SortOrder
+    checksum?: SortOrder
+    signature?: SortOrder
+    signatureAlgorithm?: SortOrder
+    signingKeyId?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EdgeReleaseArtifactSumOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -31737,17 +33683,6 @@ export namespace Prisma {
     not?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel> | $Enums.EdgeEnrollmentTokenStatus
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type EdgeEnrollmentTokenCountOrderByAggregateInput = {
     id?: SortOrder
     label?: SortOrder
@@ -31811,22 +33746,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
     _max?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -32812,6 +34731,18 @@ export namespace Prisma {
     set?: $Enums.WorkerUpgradeStatus
   }
 
+  export type EnumWorkerRuntimeStateFieldUpdateOperationsInput = {
+    set?: $Enums.WorkerRuntimeState
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type WorkerCredentialUpdateManyWithoutWorkerNestedInput = {
     create?: XOR<WorkerCredentialCreateWithoutWorkerInput, WorkerCredentialUncheckedCreateWithoutWorkerInput> | WorkerCredentialCreateWithoutWorkerInput[] | WorkerCredentialUncheckedCreateWithoutWorkerInput[]
     connectOrCreate?: WorkerCredentialCreateOrConnectWithoutWorkerInput | WorkerCredentialCreateOrConnectWithoutWorkerInput[]
@@ -32866,6 +34797,70 @@ export namespace Prisma {
     update?: UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutWorkerInput | UpgradeCampaignWorkerUpdateWithWhereUniqueWithoutWorkerInput[]
     updateMany?: UpgradeCampaignWorkerUpdateManyWithWhereWithoutWorkerInput | UpgradeCampaignWorkerUpdateManyWithWhereWithoutWorkerInput[]
     deleteMany?: UpgradeCampaignWorkerScalarWhereInput | UpgradeCampaignWorkerScalarWhereInput[]
+  }
+
+  export type EdgeReleaseArtifactCreateNestedManyWithoutReleaseInput = {
+    create?: XOR<EdgeReleaseArtifactCreateWithoutReleaseInput, EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput> | EdgeReleaseArtifactCreateWithoutReleaseInput[] | EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput[]
+    connectOrCreate?: EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput | EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput[]
+    createMany?: EdgeReleaseArtifactCreateManyReleaseInputEnvelope
+    connect?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+  }
+
+  export type EdgeReleaseArtifactUncheckedCreateNestedManyWithoutReleaseInput = {
+    create?: XOR<EdgeReleaseArtifactCreateWithoutReleaseInput, EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput> | EdgeReleaseArtifactCreateWithoutReleaseInput[] | EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput[]
+    connectOrCreate?: EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput | EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput[]
+    createMany?: EdgeReleaseArtifactCreateManyReleaseInputEnvelope
+    connect?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+  }
+
+  export type EdgeReleaseArtifactUpdateManyWithoutReleaseNestedInput = {
+    create?: XOR<EdgeReleaseArtifactCreateWithoutReleaseInput, EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput> | EdgeReleaseArtifactCreateWithoutReleaseInput[] | EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput[]
+    connectOrCreate?: EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput | EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput[]
+    upsert?: EdgeReleaseArtifactUpsertWithWhereUniqueWithoutReleaseInput | EdgeReleaseArtifactUpsertWithWhereUniqueWithoutReleaseInput[]
+    createMany?: EdgeReleaseArtifactCreateManyReleaseInputEnvelope
+    set?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+    disconnect?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+    delete?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+    connect?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+    update?: EdgeReleaseArtifactUpdateWithWhereUniqueWithoutReleaseInput | EdgeReleaseArtifactUpdateWithWhereUniqueWithoutReleaseInput[]
+    updateMany?: EdgeReleaseArtifactUpdateManyWithWhereWithoutReleaseInput | EdgeReleaseArtifactUpdateManyWithWhereWithoutReleaseInput[]
+    deleteMany?: EdgeReleaseArtifactScalarWhereInput | EdgeReleaseArtifactScalarWhereInput[]
+  }
+
+  export type EdgeReleaseArtifactUncheckedUpdateManyWithoutReleaseNestedInput = {
+    create?: XOR<EdgeReleaseArtifactCreateWithoutReleaseInput, EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput> | EdgeReleaseArtifactCreateWithoutReleaseInput[] | EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput[]
+    connectOrCreate?: EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput | EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput[]
+    upsert?: EdgeReleaseArtifactUpsertWithWhereUniqueWithoutReleaseInput | EdgeReleaseArtifactUpsertWithWhereUniqueWithoutReleaseInput[]
+    createMany?: EdgeReleaseArtifactCreateManyReleaseInputEnvelope
+    set?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+    disconnect?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+    delete?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+    connect?: EdgeReleaseArtifactWhereUniqueInput | EdgeReleaseArtifactWhereUniqueInput[]
+    update?: EdgeReleaseArtifactUpdateWithWhereUniqueWithoutReleaseInput | EdgeReleaseArtifactUpdateWithWhereUniqueWithoutReleaseInput[]
+    updateMany?: EdgeReleaseArtifactUpdateManyWithWhereWithoutReleaseInput | EdgeReleaseArtifactUpdateManyWithWhereWithoutReleaseInput[]
+    deleteMany?: EdgeReleaseArtifactScalarWhereInput | EdgeReleaseArtifactScalarWhereInput[]
+  }
+
+  export type EdgeReleaseCreateNestedOneWithoutArtifactsInput = {
+    create?: XOR<EdgeReleaseCreateWithoutArtifactsInput, EdgeReleaseUncheckedCreateWithoutArtifactsInput>
+    connectOrCreate?: EdgeReleaseCreateOrConnectWithoutArtifactsInput
+    connect?: EdgeReleaseWhereUniqueInput
+  }
+
+  export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
+  export type EdgeReleaseUpdateOneRequiredWithoutArtifactsNestedInput = {
+    create?: XOR<EdgeReleaseCreateWithoutArtifactsInput, EdgeReleaseUncheckedCreateWithoutArtifactsInput>
+    connectOrCreate?: EdgeReleaseCreateOrConnectWithoutArtifactsInput
+    upsert?: EdgeReleaseUpsertWithoutArtifactsInput
+    connect?: EdgeReleaseWhereUniqueInput
+    update?: XOR<XOR<EdgeReleaseUpdateToOneWithWhereWithoutArtifactsInput, EdgeReleaseUpdateWithoutArtifactsInput>, EdgeReleaseUncheckedUpdateWithoutArtifactsInput>
   }
 
   export type UpgradeCampaignWorkerCreateNestedManyWithoutCampaignInput = {
@@ -32978,14 +34973,6 @@ export namespace Prisma {
 
   export type EnumEdgeEnrollmentTokenStatusFieldUpdateOperationsInput = {
     set?: $Enums.EdgeEnrollmentTokenStatus
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type BacktestTaskCreateNestedManyWithoutStrategyTemplateInput = {
@@ -33318,6 +35305,13 @@ export namespace Prisma {
     not?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel> | $Enums.WorkerUpgradeStatus
   }
 
+  export type NestedEnumWorkerRuntimeStateFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerRuntimeState | EnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel> | $Enums.WorkerRuntimeState
+  }
+
   export type NestedEnumWorkerStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.WorkerStatus | EnumWorkerStatusFieldRefInput<$PrismaModel>
     in?: $Enums.WorkerStatus[] | ListEnumWorkerStatusFieldRefInput<$PrismaModel>
@@ -33336,6 +35330,70 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
     _max?: NestedEnumWorkerUpgradeStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumWorkerRuntimeStateWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkerRuntimeState | EnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    in?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    notIn?: $Enums.WorkerRuntimeState[] | ListEnumWorkerRuntimeStateFieldRefInput<$PrismaModel>
+    not?: NestedEnumWorkerRuntimeStateWithAggregatesFilter<$PrismaModel> | $Enums.WorkerRuntimeState
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel>
+    _max?: NestedEnumWorkerRuntimeStateFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -33433,33 +35491,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
     _max?: NestedEnumEdgeEnrollmentTokenStatusFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -35443,6 +37474,153 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"UpgradeCampaignWorker"> | Date | string
   }
 
+  export type EdgeReleaseArtifactCreateWithoutReleaseInput = {
+    id?: string
+    platform: string
+    arch: string
+    installType?: string
+    url: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    sizeBytes?: bigint | number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput = {
+    id?: string
+    platform: string
+    arch: string
+    installType?: string
+    url: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    sizeBytes?: bigint | number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseArtifactCreateOrConnectWithoutReleaseInput = {
+    where: EdgeReleaseArtifactWhereUniqueInput
+    create: XOR<EdgeReleaseArtifactCreateWithoutReleaseInput, EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput>
+  }
+
+  export type EdgeReleaseArtifactCreateManyReleaseInputEnvelope = {
+    data: EdgeReleaseArtifactCreateManyReleaseInput | EdgeReleaseArtifactCreateManyReleaseInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EdgeReleaseArtifactUpsertWithWhereUniqueWithoutReleaseInput = {
+    where: EdgeReleaseArtifactWhereUniqueInput
+    update: XOR<EdgeReleaseArtifactUpdateWithoutReleaseInput, EdgeReleaseArtifactUncheckedUpdateWithoutReleaseInput>
+    create: XOR<EdgeReleaseArtifactCreateWithoutReleaseInput, EdgeReleaseArtifactUncheckedCreateWithoutReleaseInput>
+  }
+
+  export type EdgeReleaseArtifactUpdateWithWhereUniqueWithoutReleaseInput = {
+    where: EdgeReleaseArtifactWhereUniqueInput
+    data: XOR<EdgeReleaseArtifactUpdateWithoutReleaseInput, EdgeReleaseArtifactUncheckedUpdateWithoutReleaseInput>
+  }
+
+  export type EdgeReleaseArtifactUpdateManyWithWhereWithoutReleaseInput = {
+    where: EdgeReleaseArtifactScalarWhereInput
+    data: XOR<EdgeReleaseArtifactUpdateManyMutationInput, EdgeReleaseArtifactUncheckedUpdateManyWithoutReleaseInput>
+  }
+
+  export type EdgeReleaseArtifactScalarWhereInput = {
+    AND?: EdgeReleaseArtifactScalarWhereInput | EdgeReleaseArtifactScalarWhereInput[]
+    OR?: EdgeReleaseArtifactScalarWhereInput[]
+    NOT?: EdgeReleaseArtifactScalarWhereInput | EdgeReleaseArtifactScalarWhereInput[]
+    id?: StringFilter<"EdgeReleaseArtifact"> | string
+    releaseId?: StringFilter<"EdgeReleaseArtifact"> | string
+    platform?: StringFilter<"EdgeReleaseArtifact"> | string
+    arch?: StringFilter<"EdgeReleaseArtifact"> | string
+    installType?: StringFilter<"EdgeReleaseArtifact"> | string
+    url?: StringFilter<"EdgeReleaseArtifact"> | string
+    checksum?: StringFilter<"EdgeReleaseArtifact"> | string
+    signature?: StringFilter<"EdgeReleaseArtifact"> | string
+    signatureAlgorithm?: StringFilter<"EdgeReleaseArtifact"> | string
+    signingKeyId?: StringNullableFilter<"EdgeReleaseArtifact"> | string | null
+    sizeBytes?: BigIntNullableFilter<"EdgeReleaseArtifact"> | bigint | number | null
+    createdAt?: DateTimeFilter<"EdgeReleaseArtifact"> | Date | string
+    updatedAt?: DateTimeFilter<"EdgeReleaseArtifact"> | Date | string
+  }
+
+  export type EdgeReleaseCreateWithoutArtifactsInput = {
+    id?: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseUncheckedCreateWithoutArtifactsInput = {
+    id?: string
+    version: string
+    windowsUrl: string
+    linuxUrl: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseCreateOrConnectWithoutArtifactsInput = {
+    where: EdgeReleaseWhereUniqueInput
+    create: XOR<EdgeReleaseCreateWithoutArtifactsInput, EdgeReleaseUncheckedCreateWithoutArtifactsInput>
+  }
+
+  export type EdgeReleaseUpsertWithoutArtifactsInput = {
+    update: XOR<EdgeReleaseUpdateWithoutArtifactsInput, EdgeReleaseUncheckedUpdateWithoutArtifactsInput>
+    create: XOR<EdgeReleaseCreateWithoutArtifactsInput, EdgeReleaseUncheckedCreateWithoutArtifactsInput>
+    where?: EdgeReleaseWhereInput
+  }
+
+  export type EdgeReleaseUpdateToOneWithWhereWithoutArtifactsInput = {
+    where?: EdgeReleaseWhereInput
+    data: XOR<EdgeReleaseUpdateWithoutArtifactsInput, EdgeReleaseUncheckedUpdateWithoutArtifactsInput>
+  }
+
+  export type EdgeReleaseUpdateWithoutArtifactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseUncheckedUpdateWithoutArtifactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    version?: StringFieldUpdateOperationsInput | string
+    windowsUrl?: StringFieldUpdateOperationsInput | string
+    linuxUrl?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UpgradeCampaignWorkerCreateWithoutCampaignInput = {
     id?: string
     phase: number
@@ -35536,6 +37714,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialCreateNestedManyWithoutWorkerInput
@@ -35555,6 +37737,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     credentials?: WorkerCredentialUncheckedCreateNestedManyWithoutWorkerInput
@@ -35629,6 +37815,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUpdateManyWithoutWorkerNestedInput
@@ -35648,6 +37838,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     credentials?: WorkerCredentialUncheckedUpdateManyWithoutWorkerNestedInput
@@ -35667,6 +37861,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     upgradeCampaignWorkers?: UpgradeCampaignWorkerCreateNestedManyWithoutWorkerInput
@@ -35686,6 +37884,10 @@ export namespace Prisma {
     targetVersion?: string | null
     upgradeStatus?: $Enums.WorkerUpgradeStatus
     upgradeMessage?: string | null
+    runtimeState?: $Enums.WorkerRuntimeState
+    activeTaskId?: string | null
+    uptimeSeconds?: number | null
+    lastError?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     upgradeCampaignWorkers?: UpgradeCampaignWorkerUncheckedCreateNestedManyWithoutWorkerInput
@@ -35721,6 +37923,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     upgradeCampaignWorkers?: UpgradeCampaignWorkerUpdateManyWithoutWorkerNestedInput
@@ -35740,6 +37946,10 @@ export namespace Prisma {
     targetVersion?: NullableStringFieldUpdateOperationsInput | string | null
     upgradeStatus?: EnumWorkerUpgradeStatusFieldUpdateOperationsInput | $Enums.WorkerUpgradeStatus
     upgradeMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    runtimeState?: EnumWorkerRuntimeStateFieldUpdateOperationsInput | $Enums.WorkerRuntimeState
+    activeTaskId?: NullableStringFieldUpdateOperationsInput | string | null
+    uptimeSeconds?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     upgradeCampaignWorkers?: UpgradeCampaignWorkerUncheckedUpdateManyWithoutWorkerNestedInput
@@ -36652,6 +38862,66 @@ export namespace Prisma {
     phase?: IntFieldUpdateOperationsInput | number
     status?: EnumUpgradeCampaignWorkerStatusFieldUpdateOperationsInput | $Enums.UpgradeCampaignWorkerStatus
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseArtifactCreateManyReleaseInput = {
+    id?: string
+    platform: string
+    arch: string
+    installType?: string
+    url: string
+    checksum: string
+    signature: string
+    signatureAlgorithm?: string
+    signingKeyId?: string | null
+    sizeBytes?: bigint | number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EdgeReleaseArtifactUpdateWithoutReleaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    arch?: StringFieldUpdateOperationsInput | string
+    installType?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseArtifactUncheckedUpdateWithoutReleaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    arch?: StringFieldUpdateOperationsInput | string
+    installType?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EdgeReleaseArtifactUncheckedUpdateManyWithoutReleaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    platform?: StringFieldUpdateOperationsInput | string
+    arch?: StringFieldUpdateOperationsInput | string
+    installType?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    checksum?: StringFieldUpdateOperationsInput | string
+    signature?: StringFieldUpdateOperationsInput | string
+    signatureAlgorithm?: StringFieldUpdateOperationsInput | string
+    signingKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

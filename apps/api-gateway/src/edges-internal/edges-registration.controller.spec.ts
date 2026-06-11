@@ -27,7 +27,7 @@ describe('EdgesRegistrationController', () => {
   it('registers edge and returns workerId credential and deviceNumber', async () => {
     workersService.upsertWorkerByDeviceNumber.mockResolvedValue({
       id: 'worker_1',
-      deviceNumber: 'edge-seoul-a1b2c3',
+      deviceNumber: 'edge-test-a1b2c3',
     });
     credentialsService.issueCredential.mockResolvedValue({
       credential: 'wk_live_12345678_0123456789abcdef0123456789abcdef0123456789abcdef',
@@ -36,8 +36,8 @@ describe('EdgesRegistrationController', () => {
     const result = await controller.register(
       {
         token: 'etr_live_12345678_abcdef0123456789abcdef0123456789abcdef0123456789',
-        displayName: 'Seoul Lab',
-        deviceNumber: 'edge-seoul-a1b2c3',
+        displayName: 'test Lab',
+        deviceNumber: 'edge-test-a1b2c3',
         platform: 'linux',
         arch: 'x64',
         edgeVersion: '0.1.0',
@@ -47,7 +47,7 @@ describe('EdgesRegistrationController', () => {
 
     expect(result).toEqual({
       workerId: 'worker_1',
-      deviceNumber: 'edge-seoul-a1b2c3',
+      deviceNumber: 'edge-test-a1b2c3',
       credential: 'wk_live_12345678_0123456789abcdef0123456789abcdef0123456789abcdef',
     });
   });
@@ -55,7 +55,7 @@ describe('EdgesRegistrationController', () => {
   it('accepts EDGE_REGISTRATION_TOKEN via Authorization bearer header', async () => {
     workersService.upsertWorkerByDeviceNumber.mockResolvedValue({
       id: 'worker_2',
-      deviceNumber: 'edge-seoul-z9y8x7',
+      deviceNumber: 'edge-test-z9y8x7',
     });
     credentialsService.issueCredential.mockResolvedValue({
       credential: 'wk_live_87654321_abcdef0123456789abcdef0123456789abcdef0123456789',
@@ -63,8 +63,8 @@ describe('EdgesRegistrationController', () => {
 
     const result = await controller.register(
       {
-        displayName: 'Seoul Lab 2',
-        deviceNumber: 'edge-seoul-z9y8x7',
+        displayName: 'test Lab 2',
+        deviceNumber: 'edge-test-z9y8x7',
         platform: 'windows',
         arch: 'x64',
         edgeVersion: '0.1.0',
@@ -74,7 +74,7 @@ describe('EdgesRegistrationController', () => {
 
     expect(result).toEqual({
       workerId: 'worker_2',
-      deviceNumber: 'edge-seoul-z9y8x7',
+      deviceNumber: 'edge-test-z9y8x7',
       credential: 'wk_live_87654321_abcdef0123456789abcdef0123456789abcdef0123456789',
     });
   });
@@ -86,8 +86,8 @@ describe('EdgesRegistrationController', () => {
       controller.register(
         {
           token: 'wrong_token',
-          displayName: 'Seoul Lab',
-          deviceNumber: 'edge-seoul-a1b2c3',
+          displayName: 'test Lab',
+          deviceNumber: 'edge-test-a1b2c3',
           platform: 'linux',
           arch: 'x64',
           edgeVersion: '0.1.0',
@@ -101,8 +101,8 @@ describe('EdgesRegistrationController', () => {
     await expect(
       controller.register(
         {
-          displayName: 'Seoul Lab',
-          deviceNumber: 'edge-seoul-a1b2c3',
+          displayName: 'test Lab',
+          deviceNumber: 'edge-test-a1b2c3',
           platform: 'linux',
           arch: 'x64',
           edgeVersion: '0.1.0',

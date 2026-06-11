@@ -15,6 +15,11 @@ const WorkersQuery = gql`
       status
       lastSeenAt
       hasActiveCredential
+      connectivityStatus
+      runtimeState
+      activeTaskId
+      uptimeSeconds
+      lastError
       targetVersion
       upgradeStatus
       upgradeMessage
@@ -126,6 +131,11 @@ type Worker = {
   version?: string | null;
   status: 'ACTIVE' | 'DISABLED';
   hasActiveCredential?: boolean | null;
+  connectivityStatus: 'ONLINE' | 'STALE' | 'OFFLINE';
+  runtimeState: 'IDLE' | 'BUSY' | 'UPGRADING' | 'ERROR';
+  activeTaskId?: string | null;
+  uptimeSeconds?: number | null;
+  lastError?: string | null;
   targetVersion?: string | null;
   upgradeStatus:
     | 'IDLE'
@@ -211,6 +221,32 @@ type RevokeEdgeEnrollmentTokenMutationData = {
 type RevokeEdgeEnrollmentTokenMutationVariables = {
   id: string;
 };
+
+function formatUptime(seconds?: number | null): string {
+  if (seconds === null || seconds === undefined) {
+    return 'N/A';
+  }
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  if (minutes === 0) {
+    return `${remainingSeconds}s`;
+  }
+  return `${minutes}m ${remainingSeconds}s`;
+}
+
+function formatUpgradeStatus(status: Worker['upgradeStatus']): string {
+  const labels: Record<Worker['upgradeStatus'], string> = {
+    IDLE: 'Idle',
+    UPGRADE_PENDING: 'Upgrade Pending',
+    DOWNLOADING: 'Downloading',
+    VERIFYING: 'Verifying',
+    RESTARTING: 'Restarting',
+    SUCCEEDED: 'Succeeded',
+    FAILED: 'Failed',
+    ROLLED_BACK: 'Rolled Back',
+  };
+  return labels[status];
+}
 
 export default function EdgesPage() {
   const [name, setName] = useState('');
@@ -379,7 +415,7 @@ export default function EdgesPage() {
         <form className="grid gap-3 sm:grid-cols-4" onSubmit={onSubmit}>
           <input
             required
-            placeholder="Name (edge-seoul-01)"
+            placeholder="Name (edge-test-01)"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="rounded-md border border-[#d1d5db] px-3 py-2 text-sm"
@@ -518,12 +554,27 @@ export default function EdgesPage() {
                   </p>
                   <p className="text-xs text-[#9ca3af]">Connectivity (Last Seen): {lastSeen}</p>
                   <p className="text-xs text-[#9ca3af]">
+                    Connectivity Status: {worker.connectivityStatus}
+                  </p>
+                  <p className="text-xs text-[#9ca3af]">Runtime State: {worker.runtimeState}</p>
+                  <p className="text-xs text-[#9ca3af]">
+                    Active Task: {worker.activeTaskId ?? 'None'}
+                  </p>
+                  <p className="text-xs text-[#9ca3af]">
+                    Uptime: {formatUptime(worker.uptimeSeconds)}
+                  </p>
+                  {worker.lastError ? (
+                    <p className="text-xs text-[#9ca3af]">Last Error: {worker.lastError}</p>
+                  ) : null}
+                  <p className="text-xs text-[#9ca3af]">
                     Current Version: {worker.version ?? 'N/A'}
                   </p>
                   <p className="text-xs text-[#9ca3af]">
                     Target Version: {worker.targetVersion ?? 'Not set'}
                   </p>
-                  <p className="text-xs text-[#9ca3af]">Upgrade Status: {worker.upgradeStatus}</p>
+                  <p className="text-xs text-[#9ca3af]">
+                    Upgrade Status: {formatUpgradeStatus(worker.upgradeStatus)}
+                  </p>
                   <p className="text-xs text-[#9ca3af]">
                     Credential: {worker.hasActiveCredential ? 'Active' : 'None'}
                   </p>

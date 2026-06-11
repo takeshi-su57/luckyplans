@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -9,6 +10,7 @@ import {
   Subscription,
   registerEnumType,
 } from '@nestjs/graphql';
+import { SessionGuard } from '../auth/session.guard';
 import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { WorkersService } from './workers.service';
 
@@ -34,6 +36,28 @@ const WorkerUpgradeStatus = {
 type WorkerUpgradeStatus = (typeof WorkerUpgradeStatus)[keyof typeof WorkerUpgradeStatus];
 
 registerEnumType(WorkerUpgradeStatus, { name: 'WorkerUpgradeStatus' });
+
+const WorkerRuntimeState = {
+  IDLE: 'IDLE',
+  BUSY: 'BUSY',
+  UPGRADING: 'UPGRADING',
+  ERROR: 'ERROR',
+} as const;
+type WorkerRuntimeState = (typeof WorkerRuntimeState)[keyof typeof WorkerRuntimeState];
+
+registerEnumType(WorkerRuntimeState, { name: 'WorkerRuntimeState' });
+
+const WorkerConnectivityStatus = {
+  ONLINE: 'ONLINE',
+  STALE: 'STALE',
+  OFFLINE: 'OFFLINE',
+} as const;
+type WorkerConnectivityStatus =
+  (typeof WorkerConnectivityStatus)[keyof typeof WorkerConnectivityStatus];
+
+registerEnumType(WorkerConnectivityStatus, { name: 'WorkerConnectivityStatus' });
+
+const DEFAULT_CONNECTIVITY_STATUS: WorkerConnectivityStatus = 'OFFLINE';
 
 @ObjectType()
 class Worker {
@@ -73,6 +97,21 @@ class Worker {
   @Field({ nullable: true })
   upgradeMessage?: string | null;
 
+  @Field(() => WorkerRuntimeState)
+  runtimeState!: WorkerRuntimeState;
+
+  @Field({ nullable: true })
+  activeTaskId?: string | null;
+
+  @Field({ nullable: true })
+  uptimeSeconds?: number | null;
+
+  @Field({ nullable: true })
+  lastError?: string | null;
+
+  @Field(() => WorkerConnectivityStatus)
+  connectivityStatus!: WorkerConnectivityStatus;
+
   @Field()
   createdAt!: Date;
 
@@ -88,11 +127,13 @@ export class WorkersResolver {
   ) {}
 
   @Query(() => [Worker])
+  @UseGuards(SessionGuard)
   async workers(): Promise<Worker[]> {
     return this.workersService.getWorkers();
   }
 
   @Mutation(() => Worker)
+  @UseGuards(SessionGuard)
   async createWorker(
     @Args('name') name: string,
     @Args('deviceNumber', { nullable: true }) deviceNumber?: string,
@@ -110,18 +151,21 @@ export class WorkersResolver {
     const result: Worker = {
       ...created,
       hasActiveCredential: false,
+      connectivityStatus: DEFAULT_CONNECTIVITY_STATUS,
     };
     await this.realtimeEvents.publishWorkerStatusUpdated(result);
     return result;
   }
 
   @Mutation(() => Worker, { nullable: true })
+  @UseGuards(SessionGuard)
   async disableWorker(@Args('id') id: string): Promise<Worker | null> {
     const updated = await this.workersService.disableWorker(id);
     if (updated) {
       const result: Worker = {
         ...updated,
         hasActiveCredential: false,
+        connectivityStatus: DEFAULT_CONNECTIVITY_STATUS,
       };
       await this.realtimeEvents.publishWorkerStatusUpdated(result);
       return result;

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   ForbiddenException,
@@ -7,16 +8,25 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { PrismaService } from '../database/prisma.service';
+import { ReleasesService } from '../workers/releases.service';
 import { WorkersService } from '../workers/workers.service';
 import { WorkerAuthGuard } from './worker-auth.guard';
+
+type UpgradeLifecycleStatus =
+  | 'DOWNLOADING'
+  | 'VERIFYING'
+  | 'RESTARTING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'ROLLED_BACK';
+type WorkerRuntimeState = 'IDLE' | 'BUSY' | 'UPGRADING' | 'ERROR';
 
 @Controller('internal/edges')
 @UseGuards(WorkerAuthGuard)
 export class EdgesConnectivityController {
   constructor(
     private readonly workersService: WorkersService,
-    private readonly prisma: PrismaService,
+    private readonly releasesService: ReleasesService,
   ) {}
 
   @Post('connectivity')
@@ -28,10 +38,21 @@ export class EdgesConnectivityController {
       currentVersion?: string;
       platform?: string;
       arch?: string;
+      installType?: string;
+      activeTask?: boolean;
+      upgradeStatus?: UpgradeLifecycleStatus;
+      reason?: string;
+      runtimeState?: WorkerRuntimeState;
+      activeTaskId?: string;
+      uptimeSeconds?: number;
+      lastError?: string;
     },
     @Req() req: { worker?: { workerId: string } },
   ) {
     this.assertWorkerIdentity(body.workerId, req);
+    if (!body.deviceNumber?.trim()) {
+      throw new BadRequestException('deviceNumber is required');
+    }
 
     const worker = await this.workersService.findWorkerById(body.workerId);
     if (!worker) {
@@ -41,35 +62,41 @@ export class EdgesConnectivityController {
       throw new ForbiddenException('deviceNumber does not match worker');
     }
 
-    await this.workersService.markConnectivity({
-      workerId: body.workerId,
-      version: body.currentVersion,
-      platform: body.platform,
-      arch: body.arch,
-    });
+    const updatedWorker =
+      (await this.workersService.markConnectivity({
+        workerId: body.workerId,
+        version: body.currentVersion,
+        platform: body.platform,
+        arch: body.arch,
+        upgradeStatus: body.upgradeStatus,
+        upgradeMessage: body.reason,
+        runtimeState: body.runtimeState,
+        activeTaskId: body.activeTaskId,
+        uptimeSeconds: body.uptimeSeconds,
+        lastError: body.lastError,
+      })) ?? worker;
+
+    await this.releasesService.syncWorkerUpgradeStatusFromHeartbeat(
+      body.workerId,
+      body.upgradeStatus,
+      body.reason,
+    );
 
     const targetVersion = worker.targetVersion ?? null;
-    const release = targetVersion
-      ? await this.prisma.edgeRelease.findFirst({
-          where: { version: targetVersion },
-          select: {
-            version: true,
-            windowsUrl: true,
-            linuxUrl: true,
-            checksum: true,
-            signature: true,
-            signatureAlgorithm: true,
-            signingKeyId: true,
-            notes: true,
-          },
+    const releaseResult = targetVersion
+      ? await this.releasesService.getUpgradeArtifactForWorker({
+          workerId: body.workerId,
+          platform: body.platform ?? updatedWorker.platform ?? worker.platform,
+          arch: body.arch ?? updatedWorker.arch ?? worker.arch,
+          installType: body.installType,
         })
-      : null;
+      : { artifact: null, message: null };
 
     return {
       targetVersion,
-      release,
-      upgradeStatus: worker.upgradeStatus,
-      upgradeMessage: worker.upgradeMessage,
+      release: releaseResult.artifact,
+      upgradeStatus: body.upgradeStatus ?? updatedWorker.upgradeStatus,
+      upgradeMessage: body.reason ?? releaseResult.message ?? updatedWorker.upgradeMessage,
     };
   }
 

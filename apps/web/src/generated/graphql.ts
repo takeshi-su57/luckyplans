@@ -191,6 +191,7 @@ export type EdgeEnrollmentToken = {
 
 export type EdgeRelease = {
   __typename?: 'EdgeRelease';
+  artifacts: Array<EdgeReleaseArtifact>;
   checksum: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
@@ -200,6 +201,32 @@ export type EdgeRelease = {
   updatedAt: Scalars['DateTime']['output'];
   version: Scalars['String']['output'];
   windowsUrl: Scalars['String']['output'];
+};
+
+export type EdgeReleaseArtifact = {
+  __typename?: 'EdgeReleaseArtifact';
+  arch: Scalars['String']['output'];
+  checksum: Scalars['String']['output'];
+  installType: Scalars['String']['output'];
+  platform: Scalars['String']['output'];
+  signature: Scalars['String']['output'];
+  signatureAlgorithm: Scalars['String']['output'];
+  signingKeyId?: Maybe<Scalars['String']['output']>;
+  sizeBytes?: Maybe<Scalars['Int']['output']>;
+  url: Scalars['String']['output'];
+};
+
+export type EdgeReleaseArtifactInput = {
+  arch: Scalars['String']['input'];
+  checksum: Scalars['String']['input'];
+  installType: Scalars['String']['input'];
+  platform: Scalars['String']['input'];
+  signature: Scalars['String']['input'];
+  signatureAlgorithm?: InputMaybe<Scalars['String']['input']>;
+  signingKeyId?: InputMaybe<Scalars['String']['input']>;
+  sizeBytes?: InputMaybe<Scalars['Int']['input']>;
+  url: Scalars['String']['input'];
+  version?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Education = {
@@ -353,6 +380,7 @@ export type MutationCreateEdgeEnrollmentTokenArgs = {
 
 
 export type MutationCreateEdgeReleaseArgs = {
+  artifacts?: InputMaybe<Array<EdgeReleaseArtifactInput>>;
   checksum: Scalars['String']['input'];
   linuxUrl: Scalars['String']['input'];
   notes?: InputMaybe<Scalars['String']['input']>;
@@ -876,21 +904,37 @@ export type UserProfile = {
 
 export type Worker = {
   __typename?: 'Worker';
+  activeTaskId?: Maybe<Scalars['String']['output']>;
   arch?: Maybe<Scalars['String']['output']>;
+  connectivityStatus: WorkerConnectivityStatus;
   createdAt: Scalars['DateTime']['output'];
   deviceNumber?: Maybe<Scalars['String']['output']>;
   hasActiveCredential: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
+  lastError?: Maybe<Scalars['String']['output']>;
   lastSeenAt?: Maybe<Scalars['DateTime']['output']>;
   name: Scalars['String']['output'];
   platform?: Maybe<Scalars['String']['output']>;
+  runtimeState: WorkerRuntimeState;
   status: WorkerStatus;
   targetVersion?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
   upgradeMessage?: Maybe<Scalars['String']['output']>;
   upgradeStatus: WorkerUpgradeStatus;
+  uptimeSeconds?: Maybe<Scalars['Float']['output']>;
   version?: Maybe<Scalars['String']['output']>;
 };
+
+export type WorkerConnectivityStatus =
+  | 'OFFLINE'
+  | 'ONLINE'
+  | 'STALE';
+
+export type WorkerRuntimeState =
+  | 'BUSY'
+  | 'ERROR'
+  | 'IDLE'
+  | 'UPGRADING';
 
 export type WorkerStatus =
   | 'ACTIVE'
@@ -910,7 +954,7 @@ export type WorkerUpgradeStatus =
 export type WorkersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, deviceNumber?: string | null, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, hasActiveCredential: boolean, targetVersion?: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage?: string | null, createdAt: string, updatedAt: string }>, edgeEnrollmentTokens: Array<{ __typename?: 'EdgeEnrollmentToken', id: string, label?: string | null, tokenPrefix: string, status: string, expiresAt?: string | null, maxUses?: number | null, usedCount: number, lastUsedAt?: string | null, revokedAt?: string | null, createdAt: string, updatedAt: string }> };
+export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, deviceNumber?: string | null, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, hasActiveCredential: boolean, connectivityStatus: WorkerConnectivityStatus, runtimeState: WorkerRuntimeState, activeTaskId?: string | null, uptimeSeconds?: number | null, lastError?: string | null, targetVersion?: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage?: string | null, createdAt: string, updatedAt: string }>, edgeEnrollmentTokens: Array<{ __typename?: 'EdgeEnrollmentToken', id: string, label?: string | null, tokenPrefix: string, status: string, expiresAt?: string | null, maxUses?: number | null, usedCount: number, lastUsedAt?: string | null, revokedAt?: string | null, createdAt: string, updatedAt: string }> };
 
 export type CreateWorkerMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -1318,7 +1362,7 @@ export type UpdateSocialLinkMutationVariables = Exact<{
 export type UpdateSocialLinkMutation = { __typename?: 'Mutation', updateSocialLink?: { __typename?: 'SocialLink', id: string, platform: string, url: string, label?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 
-export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"hasActiveCredential"}},{"kind":"Field","name":{"kind":"Name","value":"targetVersion"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeStatus"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edgeEnrollmentTokens"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"maxUses"}},{"kind":"Field","name":{"kind":"Name","value":"usedCount"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"revokedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;
+export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"hasActiveCredential"}},{"kind":"Field","name":{"kind":"Name","value":"connectivityStatus"}},{"kind":"Field","name":{"kind":"Name","value":"runtimeState"}},{"kind":"Field","name":{"kind":"Name","value":"activeTaskId"}},{"kind":"Field","name":{"kind":"Name","value":"uptimeSeconds"}},{"kind":"Field","name":{"kind":"Name","value":"lastError"}},{"kind":"Field","name":{"kind":"Name","value":"targetVersion"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeStatus"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edgeEnrollmentTokens"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"maxUses"}},{"kind":"Field","name":{"kind":"Name","value":"usedCount"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"revokedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;
 export const CreateWorkerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateWorker"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"platform"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"version"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createWorker"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"platform"},"value":{"kind":"Variable","name":{"kind":"Name","value":"platform"}}},{"kind":"Argument","name":{"kind":"Name","value":"version"},"value":{"kind":"Variable","name":{"kind":"Name","value":"version"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<CreateWorkerMutation, CreateWorkerMutationVariables>;
 export const DisableWorkerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DisableWorker"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"disableWorker"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]} as unknown as DocumentNode<DisableWorkerMutation, DisableWorkerMutationVariables>;
 export const SetWorkerTargetVersionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetWorkerTargetVersion"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workerIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetVersion"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setWorkerTargetVersion"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workerIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workerIds"}}},{"kind":"Argument","name":{"kind":"Name","value":"targetVersion"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetVersion"}}}]}]}}]} as unknown as DocumentNode<SetWorkerTargetVersionMutation, SetWorkerTargetVersionMutationVariables>;

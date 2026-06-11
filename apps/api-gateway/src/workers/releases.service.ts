@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { createPublicKey, verify as verifySignature } from 'crypto';
 import { getEnvVar } from '@luckyplans/shared';
 import { PrismaService } from '../database/prisma.service';
@@ -12,6 +12,17 @@ type CreateReleaseInput = {
   signatureAlgorithm?: string;
   signingKeyId?: string;
   notes?: string;
+  artifacts?: Array<{
+    platform: string;
+    arch: string;
+    installType: string;
+    url: string;
+    checksum: string;
+    signature: string;
+    signatureAlgorithm?: string;
+    signingKeyId?: string;
+    sizeBytes?: number;
+  }>;
 };
 
 type WorkerUpgradeStatus =
@@ -36,6 +47,48 @@ type EdgeReleaseRecord = {
   notes?: string | null;
   createdAt: Date;
   updatedAt: Date;
+  artifacts?: Array<{
+    platform: string;
+    arch: string;
+    installType: string;
+    url: string;
+    checksum: string;
+    signature: string;
+    signatureAlgorithm: string;
+    signingKeyId?: string | null;
+    sizeBytes?: bigint | number | null;
+  }>;
+};
+
+type EdgeReleaseArtifactRecord = {
+  release: { version: string; notes?: string | null };
+  platform: string;
+  arch: string;
+  installType: string;
+  url: string;
+  checksum: string;
+  signature: string;
+  signatureAlgorithm: string;
+  signingKeyId?: string | null;
+  sizeBytes?: bigint | number | null;
+};
+
+export type EdgeUpgradeArtifactMetadata = {
+  version: string;
+  platform: string;
+  arch: string;
+  installType: string;
+  url: string;
+  checksum: string;
+  signature: string;
+  signatureAlgorithm: string;
+  signingKeyId?: string | null;
+  sizeBytes?: number | null;
+};
+
+export type EdgeUpgradeArtifactLookupResult = {
+  artifact: EdgeUpgradeArtifactMetadata | null;
+  message: string | null;
 };
 
 type UpgradeCampaignRecord = {
@@ -50,8 +103,17 @@ type UpgradeCampaignRecord = {
   status: 'RUNNING' | 'PAUSED' | 'SUCCEEDED' | 'FAILED' | 'ROLLED_BACK';
 };
 
+type UpgradeCampaignWorkerRecord = {
+  workerId: string;
+  phase?: number;
+  status?: string;
+  campaignId: string;
+};
+
 @Injectable()
 export class ReleasesService {
+  private readonly logger = new Logger(ReleasesService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   private get releases() {
@@ -69,17 +131,22 @@ export class ReleasesService {
         };
         upgradeCampaignWorker: {
           createMany: (args: unknown) => Promise<{ count: number }>;
-          findMany: (
-            args: unknown,
-          ) => Promise<
-            Array<{ workerId: string; phase: number; status: string; campaignId: string }>
-          >;
+          findMany: (args: unknown) => Promise<UpgradeCampaignWorkerRecord[]>;
           updateMany: (args: unknown) => Promise<{ count: number }>;
         };
         worker: {
           updateMany: (args: unknown) => Promise<{ count: number }>;
           update: (args: unknown) => Promise<Record<string, unknown>>;
           findMany: (args: unknown) => Promise<Array<{ id: string; version?: string | null }>>;
+          findUnique: (args: unknown) => Promise<{
+            id: string;
+            targetVersion?: string | null;
+            platform?: string | null;
+            arch?: string | null;
+          } | null>;
+        };
+        edgeReleaseArtifact: {
+          findFirst: (args: unknown) => Promise<EdgeReleaseArtifactRecord | null>;
         };
       }
     ).edgeRelease;
@@ -102,11 +169,7 @@ export class ReleasesService {
       this.prisma as unknown as {
         upgradeCampaignWorker: {
           createMany: (args: unknown) => Promise<{ count: number }>;
-          findMany: (
-            args: unknown,
-          ) => Promise<
-            Array<{ workerId: string; phase: number; status: string; campaignId: string }>
-          >;
+          findMany: (args: unknown) => Promise<UpgradeCampaignWorkerRecord[]>;
           updateMany: (args: unknown) => Promise<{ count: number }>;
         };
       }
@@ -117,22 +180,41 @@ export class ReleasesService {
     return (
       this.prisma as unknown as {
         worker: {
-          findUnique: (
-            args: unknown,
-          ) => Promise<{ id: string; targetVersion?: string | null } | null>;
+          findUnique: (args: unknown) => Promise<{
+            id: string;
+            targetVersion?: string | null;
+            platform?: string | null;
+            arch?: string | null;
+          } | null>;
         };
       }
     ).worker;
   }
 
+  private get releaseArtifacts() {
+    return (
+      this.prisma as unknown as {
+        edgeReleaseArtifact: {
+          findFirst: (args: unknown) => Promise<EdgeReleaseArtifactRecord | null>;
+        };
+      }
+    ).edgeReleaseArtifact;
+  }
+
   async createRelease(input: CreateReleaseInput): Promise<EdgeReleaseRecord> {
     this.validateReleaseInput(input);
     this.verifyReleaseSignature(input);
+    const signatureAlgorithm = input.signatureAlgorithm ?? 'ed25519';
+    const signingKeyId = input.signingKeyId ?? null;
+    const artifacts = this.buildReleaseArtifacts(input, signatureAlgorithm, signingKeyId);
     return this.releases.create({
       data: {
         ...input,
-        signatureAlgorithm: input.signatureAlgorithm ?? 'ed25519',
-        signingKeyId: input.signingKeyId ?? null,
+        signatureAlgorithm,
+        signingKeyId,
+        artifacts: {
+          create: artifacts,
+        },
       },
     });
   }
@@ -140,6 +222,7 @@ export class ReleasesService {
   async listReleases(): Promise<EdgeReleaseRecord[]> {
     return this.releases.findMany({
       orderBy: { createdAt: 'desc' },
+      include: { artifacts: true },
     });
   }
 
@@ -156,6 +239,77 @@ export class ReleasesService {
     });
   }
 
+  async getUpgradeArtifactForWorker(input: {
+    workerId: string;
+    platform?: string | null;
+    arch?: string | null;
+    installType?: string | null;
+  }): Promise<EdgeUpgradeArtifactLookupResult> {
+    const worker = await this.workers.findUnique({
+      where: { id: input.workerId },
+      select: { id: true, targetVersion: true, platform: true, arch: true },
+    });
+
+    if (!worker?.targetVersion) {
+      return { artifact: null, message: null };
+    }
+
+    const platform = this.normalizePlatform(input.platform ?? worker.platform);
+    const arch = this.normalizeArch(input.arch ?? worker.arch);
+    const installType = this.normalizeInstallType(input.installType);
+
+    if (!platform || !arch) {
+      return {
+        artifact: null,
+        message: `Cannot resolve edge release artifact for ${worker.targetVersion}: platform and arch are required`,
+      };
+    }
+
+    const artifact = await this.releaseArtifacts.findFirst({
+      where: {
+        release: { version: worker.targetVersion },
+        platform,
+        arch,
+        installType,
+      },
+      select: {
+        release: { select: { version: true, notes: true } },
+        platform: true,
+        arch: true,
+        installType: true,
+        url: true,
+        checksum: true,
+        signature: true,
+        signatureAlgorithm: true,
+        signingKeyId: true,
+        sizeBytes: true,
+      },
+    });
+
+    if (!artifact) {
+      return {
+        artifact: null,
+        message: `No compatible edge release artifact found for ${worker.targetVersion} on ${platform}/${arch}/${installType}`,
+      };
+    }
+
+    return {
+      artifact: {
+        version: artifact.release.version,
+        platform: artifact.platform,
+        arch: artifact.arch,
+        installType: artifact.installType,
+        url: artifact.url,
+        checksum: artifact.checksum,
+        signature: artifact.signature,
+        signatureAlgorithm: artifact.signatureAlgorithm,
+        signingKeyId: artifact.signingKeyId ?? null,
+        sizeBytes: artifact.sizeBytes == null ? null : Number(artifact.sizeBytes),
+      },
+      message: null,
+    };
+  }
+
   async setWorkerTargetVersion(workerIds: string[], targetVersion: string) {
     const release = await this.releases.findFirst({ where: { version: targetVersion } });
     if (!release) {
@@ -168,6 +322,9 @@ export class ReleasesService {
         upgradeStatus: 'UPGRADE_PENDING',
       },
     });
+    this.logger.log(
+      `edge.upgrade.target_assigned workerCount=${workerIds.length} targetVersion=${targetVersion} updatedCount=${result.count}`,
+    );
     return result.count;
   }
 
@@ -234,7 +391,8 @@ export class ReleasesService {
     const successRatio =
       phaseWorkers.filter((worker) => worker.status === 'SUCCEEDED').length / phaseWorkers.length;
     const failureRatio =
-      phaseWorkers.filter((worker) => worker.status === 'FAILED').length / phaseWorkers.length;
+      phaseWorkers.filter((worker) => worker.status === 'FAILED' || worker.status === 'ROLLED_BACK')
+        .length / phaseWorkers.length;
 
     if (failureRatio >= campaign.failureThreshold) {
       return this.campaigns.update({
@@ -301,14 +459,50 @@ export class ReleasesService {
         upgradeMessage: message ?? null,
       },
     });
+    this.logger.log(
+      `edge.upgrade.status_transition workerId=${workerId} status=${status} hasMessage=${Boolean(message)} messageLength=${message?.length ?? 0}`,
+    );
+    await this.updateActiveCampaignWorkerStatus(workerId, status);
+    return updated;
+  }
+
+  async syncWorkerUpgradeStatusFromHeartbeat(
+    workerId: string,
+    status?: WorkerUpgradeStatus,
+    message?: string,
+  ) {
+    if (!status) return;
+    this.logger.log(
+      `edge.upgrade.heartbeat_status workerId=${workerId} status=${status} hasMessage=${Boolean(message)} messageLength=${message?.length ?? 0}`,
+    );
+    await this.updateActiveCampaignWorkerStatus(workerId, status);
+  }
+
+  private async updateActiveCampaignWorkerStatus(workerId: string, status: WorkerUpgradeStatus) {
+    const campaignStatus = this.toCampaignWorkerStatus(status);
+    const activeCampaignWorkers =
+      campaignStatus === 'IN_PROGRESS'
+        ? []
+        : await this.campaignWorkers.findMany({
+            where: { workerId, status: 'IN_PROGRESS' },
+            select: { campaignId: true },
+          });
+
     await this.campaignWorkers.updateMany({
       where: { workerId, status: 'IN_PROGRESS' },
-      data: {
-        status:
-          status === 'SUCCEEDED' ? 'SUCCEEDED' : status === 'FAILED' ? 'FAILED' : 'IN_PROGRESS',
-      },
+      data: { status: campaignStatus },
     });
-    return updated;
+
+    for (const campaignId of new Set(activeCampaignWorkers.map((worker) => worker.campaignId))) {
+      await this.advanceUpgradeCampaign(campaignId);
+    }
+  }
+
+  private toCampaignWorkerStatus(status: WorkerUpgradeStatus) {
+    if (status === 'SUCCEEDED') return 'SUCCEEDED';
+    if (status === 'FAILED') return 'FAILED';
+    if (status === 'ROLLED_BACK') return 'ROLLED_BACK';
+    return 'IN_PROGRESS';
   }
 
   private validateReleaseInput(input: CreateReleaseInput) {
@@ -335,5 +529,125 @@ export class ReleasesService {
     if (!ok) {
       throw new BadRequestException('Release signature verification failed');
     }
+  }
+
+  private buildReleaseArtifacts(
+    input: CreateReleaseInput,
+    signatureAlgorithm: string,
+    signingKeyId: string | null,
+  ) {
+    const artifacts = input.artifacts?.map((artifact) => ({
+      platform: this.normalizeRequiredPlatform(artifact.platform),
+      arch: this.normalizeRequiredArch(artifact.arch),
+      installType: this.normalizeInstallType(artifact.installType),
+      url: artifact.url,
+      checksum: artifact.checksum,
+      signature: artifact.signature,
+      signatureAlgorithm: artifact.signatureAlgorithm ?? signatureAlgorithm,
+      signingKeyId: artifact.signingKeyId ?? signingKeyId,
+      sizeBytes: artifact.sizeBytes,
+    })) ?? [
+      {
+        platform: 'win32',
+        arch: 'x64',
+        installType: 'service',
+        url: input.windowsUrl,
+        checksum: input.checksum,
+        signature: input.signature,
+        signatureAlgorithm,
+        signingKeyId,
+      },
+      {
+        platform: 'linux',
+        arch: 'x64',
+        installType: 'service',
+        url: input.linuxUrl,
+        checksum: input.checksum,
+        signature: input.signature,
+        signatureAlgorithm,
+        signingKeyId,
+      },
+    ];
+
+    const seenArtifactTargets = new Set<string>();
+    for (const artifact of artifacts) {
+      const key = `${artifact.platform}/${artifact.arch}/${artifact.installType}`;
+      if (seenArtifactTargets.has(key)) {
+        throw new BadRequestException(`Duplicate edge release artifact target: ${key}`);
+      }
+      seenArtifactTargets.add(key);
+      this.validateReleaseArtifactInput(artifact);
+      this.verifyReleaseArtifactSignature(artifact);
+    }
+
+    return artifacts;
+  }
+
+  private validateReleaseArtifactInput(input: {
+    url: string;
+    checksum: string;
+    signature: string;
+    signatureAlgorithm: string;
+    sizeBytes?: number;
+  }) {
+    if (!/^https:\/\//.test(input.url)) {
+      throw new BadRequestException('Release artifact URLs must use HTTPS');
+    }
+    if (!/^[a-f0-9]{64}$/i.test(input.checksum)) {
+      throw new BadRequestException('Invalid release artifact checksum format');
+    }
+    if (!input.signature.trim()) {
+      throw new BadRequestException('Release artifact signature is required');
+    }
+    if (input.signatureAlgorithm.toLowerCase() !== 'ed25519') {
+      throw new BadRequestException('Unsupported release artifact signature algorithm');
+    }
+    if (
+      input.sizeBytes !== undefined &&
+      (!Number.isInteger(input.sizeBytes) || input.sizeBytes < 0)
+    ) {
+      throw new BadRequestException('Release artifact sizeBytes must be a non-negative integer');
+    }
+  }
+
+  private verifyReleaseArtifactSignature(input: { checksum: string; signature: string }) {
+    const publicKeyPem = getEnvVar('EDGE_RELEASE_SIGNING_PUBLIC_KEY');
+    const key = createPublicKey(publicKeyPem);
+    const payload = Buffer.from(input.checksum, 'utf8');
+    const signature = Buffer.from(input.signature, 'base64');
+    const ok = verifySignature(null, payload, key, signature);
+    if (!ok) {
+      throw new BadRequestException('Release artifact signature verification failed');
+    }
+  }
+
+  private normalizePlatform(platform: string | null | undefined): string | null {
+    if (!platform) return null;
+    const normalized = platform.toLowerCase();
+    if (normalized === 'windows') return 'win32';
+    if (normalized === 'win32') return 'win32';
+    if (normalized === 'linux') return 'linux';
+    return normalized;
+  }
+
+  private normalizeRequiredPlatform(platform: string): string {
+    return this.normalizePlatform(platform) ?? platform;
+  }
+
+  private normalizeArch(arch: string | null | undefined): string | null {
+    if (!arch) return null;
+    const normalized = arch.toLowerCase();
+    if (normalized === 'amd64') return 'x64';
+    if (normalized === 'x86_64') return 'x64';
+    if (normalized === 'arm64' || normalized === 'aarch64') return 'arm64';
+    return normalized;
+  }
+
+  private normalizeRequiredArch(arch: string): string {
+    return this.normalizeArch(arch) ?? arch;
+  }
+
+  private normalizeInstallType(installType: string | null | undefined): string {
+    return installType?.toLowerCase() || 'service';
   }
 }

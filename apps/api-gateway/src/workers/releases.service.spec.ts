@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Logger } from '@nestjs/common';
 import { generateKeyPairSync, sign } from 'crypto';
 import { ReleasesService } from './releases.service';
 
@@ -10,18 +11,28 @@ describe('ReleasesService', () => {
       findFirst: vi.fn(),
       findMany: vi.fn(),
     },
+    edgeReleaseArtifact: {
+      findFirst: vi.fn(),
+    },
     worker: {
       updateMany: vi.fn(),
       update: vi.fn(),
       findMany: vi.fn(),
       findUnique: vi.fn(),
     },
+    upgradeCampaignWorker: {
+      createMany: vi.fn(),
+      findMany: vi.fn(),
+      updateMany: vi.fn(),
+    },
   };
 
   let service: ReleasesService;
+  let loggerSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    loggerSpy = vi.spyOn(Logger.prototype, 'log').mockImplementation(() => undefined);
     service = new ReleasesService(prisma as never);
     const { publicKey, privateKey } = generateKeyPairSync('ed25519');
     signingPrivateKeyPem = privateKey.export({
@@ -64,6 +75,113 @@ describe('ReleasesService', () => {
 
     expect(created.version).toBe('1.0.0');
     expect(prisma.edgeRelease.create).toHaveBeenCalledOnce();
+    expect(prisma.edgeRelease.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        version: '1.0.0',
+        artifacts: {
+          create: [
+            expect.objectContaining({
+              platform: 'win32',
+              arch: 'x64',
+              installType: 'service',
+              url: 'https://example.com/windows.exe',
+              checksum,
+              signature,
+            }),
+            expect.objectContaining({
+              platform: 'linux',
+              arch: 'x64',
+              installType: 'service',
+              url: 'https://example.com/linux.tar.gz',
+              checksum,
+              signature,
+            }),
+          ],
+        },
+      }),
+    });
+  });
+
+  it('creates release artifacts with distinct per-platform checksums and signatures', async () => {
+    const windowsChecksum = 'b'.repeat(64);
+    const linuxChecksum = 'a'.repeat(64);
+    const windowsSignature = sign(
+      null,
+      Buffer.from(windowsChecksum, 'utf8'),
+      signingPrivateKeyPem,
+    ).toString('base64');
+    const linuxSignature = sign(
+      null,
+      Buffer.from(linuxChecksum, 'utf8'),
+      signingPrivateKeyPem,
+    ).toString('base64');
+    prisma.edgeRelease.create.mockResolvedValue({
+      id: 'rel_123',
+      version: '1.2.3',
+      windowsUrl: 'https://example.com/releases/edge-agent-1.2.3-win32-x64-service.zip',
+      linuxUrl: 'https://example.com/releases/edge-agent-1.2.3-linux-x64-service.tar.gz',
+      checksum: windowsChecksum,
+      signature: windowsSignature,
+      signatureAlgorithm: 'ed25519',
+      signingKeyId: null,
+      notes: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      artifacts: [],
+    });
+
+    await service.createRelease({
+      version: '1.2.3',
+      windowsUrl: 'https://example.com/releases/edge-agent-1.2.3-win32-x64-service.zip',
+      linuxUrl: 'https://example.com/releases/edge-agent-1.2.3-linux-x64-service.tar.gz',
+      checksum: windowsChecksum,
+      signature: windowsSignature,
+      artifacts: [
+        {
+          platform: 'win32',
+          arch: 'x64',
+          installType: 'service',
+          url: 'https://example.com/releases/edge-agent-1.2.3-win32-x64-service.zip',
+          checksum: windowsChecksum,
+          signature: windowsSignature,
+          signatureAlgorithm: 'ed25519',
+          sizeBytes: 1234,
+        },
+        {
+          platform: 'linux',
+          arch: 'x64',
+          installType: 'service',
+          url: 'https://example.com/releases/edge-agent-1.2.3-linux-x64-service.tar.gz',
+          checksum: linuxChecksum,
+          signature: linuxSignature,
+          signatureAlgorithm: 'ed25519',
+          sizeBytes: 2345,
+        },
+      ],
+    } as never);
+
+    expect(prisma.edgeRelease.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          artifacts: {
+            create: expect.arrayContaining([
+              expect.objectContaining({
+                platform: 'win32',
+                checksum: windowsChecksum,
+                signature: windowsSignature,
+                sizeBytes: 1234,
+              }),
+              expect.objectContaining({
+                platform: 'linux',
+                checksum: linuxChecksum,
+                signature: linuxSignature,
+                sizeBytes: 2345,
+              }),
+            ]),
+          },
+        }),
+      }),
+    );
   });
 
   it('sets target version for selected workers', async () => {
@@ -74,6 +192,17 @@ describe('ReleasesService', () => {
 
     expect(updated).toBe(2);
     expect(prisma.worker.updateMany).toHaveBeenCalledOnce();
+  });
+
+  it('logs target version assignments without release payload details', async () => {
+    prisma.edgeRelease.findFirst.mockResolvedValue({ id: 'rel_1', version: '1.0.1' });
+    prisma.worker.updateMany.mockResolvedValue({ count: 2 });
+
+    await service.setWorkerTargetVersion(['w1', 'w2'], '1.0.1');
+
+    expect(loggerSpy).toHaveBeenCalledWith(
+      'edge.upgrade.target_assigned workerCount=2 targetVersion=1.0.1 updatedCount=2',
+    );
   });
 
   it('starts rollout campaign and seeds first phase workers', async () => {
@@ -137,6 +266,120 @@ describe('ReleasesService', () => {
     expect(prisma.worker.update).toHaveBeenCalledOnce();
   });
 
+  it('updates active campaign worker status from heartbeat-reported terminal upgrade status', async () => {
+    const campaignWorkers = {
+      findMany: vi.fn().mockResolvedValue([]),
+      updateMany: vi.fn().mockResolvedValue({ count: 1 }),
+    };
+    (prisma as unknown as Record<string, unknown>).upgradeCampaignWorker = campaignWorkers;
+
+    await service.syncWorkerUpgradeStatusFromHeartbeat('w1', 'SUCCEEDED', undefined);
+
+    expect(prisma.worker.update).not.toHaveBeenCalled();
+    expect(campaignWorkers.updateMany).toHaveBeenCalledWith({
+      where: { workerId: 'w1', status: 'IN_PROGRESS' },
+      data: { status: 'SUCCEEDED' },
+    });
+  });
+
+  it('advances affected campaigns after heartbeat-reported terminal upgrade status', async () => {
+    const campaignWorkers = {
+      findMany: vi
+        .fn()
+        .mockResolvedValueOnce([{ campaignId: 'camp_1' }])
+        .mockResolvedValueOnce([
+          { workerId: 'w1', phase: 0, status: 'SUCCEEDED', campaignId: 'camp_1' },
+        ]),
+      updateMany: vi.fn().mockResolvedValue({ count: 1 }),
+    };
+    (prisma as unknown as Record<string, unknown>).upgradeCampaignWorker = campaignWorkers;
+    (prisma as unknown as Record<string, unknown>).upgradeCampaign = {
+      findUnique: vi.fn().mockResolvedValue({
+        id: 'camp_1',
+        targetVersion: '1.2.3',
+        currentPhase: 0,
+        successThreshold: 1,
+        failureThreshold: 0.5,
+        status: 'RUNNING',
+      }),
+      update: vi.fn().mockResolvedValue({
+        id: 'camp_1',
+        targetVersion: '1.2.3',
+        currentPhase: 0,
+        successThreshold: 1,
+        failureThreshold: 0.5,
+        status: 'SUCCEEDED',
+      }),
+    };
+
+    await service.syncWorkerUpgradeStatusFromHeartbeat('w1', 'SUCCEEDED', undefined);
+
+    expect(
+      (prisma as never as { upgradeCampaign: { update: ReturnType<typeof vi.fn> } }).upgradeCampaign
+        .update,
+    ).toHaveBeenCalledWith({
+      where: { id: 'camp_1' },
+      data: { status: 'SUCCEEDED' },
+    });
+  });
+
+  it('treats rolled back campaign workers as failures during campaign advancement', async () => {
+    (prisma as unknown as Record<string, unknown>).upgradeCampaign = {
+      findUnique: vi.fn().mockResolvedValue({
+        id: 'camp_1',
+        targetVersion: '1.2.3',
+        currentPhase: 0,
+        successThreshold: 1,
+        failureThreshold: 0.5,
+        status: 'RUNNING',
+      }),
+      update: vi.fn().mockResolvedValue({
+        id: 'camp_1',
+        targetVersion: '1.2.3',
+        currentPhase: 0,
+        successThreshold: 1,
+        failureThreshold: 0.5,
+        status: 'PAUSED',
+      }),
+    };
+    (prisma as unknown as Record<string, unknown>).upgradeCampaignWorker = {
+      findMany: vi.fn().mockResolvedValue([
+        { workerId: 'w1', phase: 0, status: 'ROLLED_BACK', campaignId: 'camp_1' },
+        { workerId: 'w2', phase: 0, status: 'SUCCEEDED', campaignId: 'camp_1' },
+      ]),
+      updateMany: vi.fn(),
+    };
+
+    await service.advanceUpgradeCampaign('camp_1');
+
+    expect(
+      (prisma as never as { upgradeCampaign: { update: ReturnType<typeof vi.fn> } }).upgradeCampaign
+        .update,
+    ).toHaveBeenCalledWith({
+      where: { id: 'camp_1' },
+      data: { status: 'PAUSED' },
+    });
+  });
+
+  it('logs worker upgrade status transitions without raw messages', async () => {
+    (prisma as unknown as Record<string, unknown>).upgradeCampaignWorker = {
+      findMany: vi.fn().mockResolvedValue([]),
+      updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+    };
+    prisma.worker.update.mockResolvedValue({
+      id: 'w1',
+      upgradeStatus: 'FAILED',
+      upgradeMessage: 'verification failed for token=secret',
+    });
+
+    await service.reportWorkerUpgradeStatus('w1', 'FAILED', 'verification failed for token=secret');
+
+    expect(loggerSpy).toHaveBeenCalledWith(
+      'edge.upgrade.status_transition workerId=w1 status=FAILED hasMessage=true messageLength=36',
+    );
+    expect(loggerSpy).not.toHaveBeenCalledWith(expect.stringContaining('token=secret'));
+  });
+
   it('rejects invalid release checksum/signature/version payloads', async () => {
     await expect(
       service.createRelease({
@@ -147,6 +390,36 @@ describe('ReleasesService', () => {
         signature: '',
       }),
     ).rejects.toThrow('Invalid release version format');
+
+    expect(prisma.edgeRelease.create).not.toHaveBeenCalled();
+  });
+
+  it('rejects release artifacts with unsupported signature algorithms', async () => {
+    const checksum = 'a'.repeat(64);
+    const signature = sign(null, Buffer.from(checksum, 'utf8'), signingPrivateKeyPem).toString(
+      'base64',
+    );
+
+    await expect(
+      service.createRelease({
+        version: '1.0.0',
+        windowsUrl: 'https://example.com/windows.exe',
+        linuxUrl: 'https://example.com/linux.tar.gz',
+        checksum,
+        signature,
+        artifacts: [
+          {
+            platform: 'linux',
+            arch: 'x64',
+            installType: 'service',
+            url: 'https://example.com/linux.tar.gz',
+            checksum,
+            signature,
+            signatureAlgorithm: 'rsa-sha256',
+          },
+        ],
+      } as never),
+    ).rejects.toThrow('Unsupported release artifact signature algorithm');
 
     expect(prisma.edgeRelease.create).not.toHaveBeenCalled();
   });
@@ -171,5 +444,132 @@ describe('ReleasesService', () => {
 
     expect(release?.version).toBe('1.2.3');
     expect(release?.linuxUrl).toMatch(/^https:/);
+  });
+
+  it('returns Linux x64 service artifact metadata for a worker target version', async () => {
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_1',
+      targetVersion: '1.2.3',
+      platform: 'linux',
+      arch: 'x64',
+    });
+    prisma.edgeReleaseArtifact.findFirst.mockResolvedValue({
+      release: { version: '1.2.3', notes: null },
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'service',
+      url: 'https://example.com/releases/1.2.3/linux-x64.tar.gz',
+      checksum: 'a'.repeat(64),
+      signature: 'sig-linux',
+      signatureAlgorithm: 'ed25519',
+      signingKeyId: 'main',
+      sizeBytes: BigInt(1234),
+    });
+
+    const result = await service.getUpgradeArtifactForWorker({
+      workerId: 'worker_1',
+      platform: 'linux',
+      arch: 'x64',
+      installType: 'service',
+    });
+
+    expect(result).toEqual({
+      artifact: {
+        version: '1.2.3',
+        platform: 'linux',
+        arch: 'x64',
+        installType: 'service',
+        url: 'https://example.com/releases/1.2.3/linux-x64.tar.gz',
+        checksum: 'a'.repeat(64),
+        signature: 'sig-linux',
+        signatureAlgorithm: 'ed25519',
+        signingKeyId: 'main',
+        sizeBytes: 1234,
+      },
+      message: null,
+    });
+    expect(prisma.edgeReleaseArtifact.findFirst).toHaveBeenCalledWith({
+      where: {
+        release: { version: '1.2.3' },
+        platform: 'linux',
+        arch: 'x64',
+        installType: 'service',
+      },
+      select: expect.any(Object),
+    });
+  });
+
+  it('normalizes windows platform before resolving artifact metadata', async () => {
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_2',
+      targetVersion: '1.2.3',
+      platform: 'windows',
+      arch: 'x64',
+    });
+    prisma.edgeReleaseArtifact.findFirst.mockResolvedValue({
+      release: { version: '1.2.3', notes: null },
+      platform: 'win32',
+      arch: 'x64',
+      installType: 'service',
+      url: 'https://example.com/releases/1.2.3/windows-x64.zip',
+      checksum: 'b'.repeat(64),
+      signature: 'sig-windows',
+      signatureAlgorithm: 'ed25519',
+      signingKeyId: 'main',
+      sizeBytes: null,
+    });
+
+    const result = await service.getUpgradeArtifactForWorker({
+      workerId: 'worker_2',
+      platform: 'windows',
+      arch: 'x64',
+    });
+
+    expect(result.artifact?.platform).toBe('win32');
+    expect(result.artifact?.url).toBe('https://example.com/releases/1.2.3/windows-x64.zip');
+    expect(prisma.edgeReleaseArtifact.findFirst.mock.calls[0][0].where).toMatchObject({
+      platform: 'win32',
+      arch: 'x64',
+      installType: 'service',
+    });
+  });
+
+  it('returns no artifact when worker has no target version', async () => {
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_3',
+      targetVersion: null,
+      platform: 'linux',
+      arch: 'x64',
+    });
+
+    const result = await service.getUpgradeArtifactForWorker({
+      workerId: 'worker_3',
+      platform: 'linux',
+      arch: 'x64',
+    });
+
+    expect(result).toEqual({ artifact: null, message: null });
+    expect(prisma.edgeReleaseArtifact.findFirst).not.toHaveBeenCalled();
+  });
+
+  it('returns clear message when artifact is incompatible with worker platform and arch', async () => {
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_4',
+      targetVersion: '1.2.3',
+      platform: 'linux',
+      arch: 'arm64',
+    });
+    prisma.edgeReleaseArtifact.findFirst.mockResolvedValue(null);
+
+    const result = await service.getUpgradeArtifactForWorker({
+      workerId: 'worker_4',
+      platform: 'linux',
+      arch: 'arm64',
+    });
+
+    expect(result).toEqual({
+      artifact: null,
+      message: 'No compatible edge release artifact found for 1.2.3 on linux/arm64/service',
+    });
   });
 });

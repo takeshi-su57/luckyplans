@@ -9,16 +9,20 @@ This repository is configured for Codex-native workflows.
 3. Local skills and rules under `.agents/rules/` and `.agents/skills/`
 4. Default assistant behavior
 
-## Mandatory Skill Workflow
+## Cost-Aware Skill Workflow
 
-Use `.agents/skills/using-superpowers/SKILL.md` at the start of every new task.
+This repository defaults to GPT-5.5-class coding work. Because the model is more capable and more expensive, `AGENTS.md` is the authoritative router for skill loading.
 
 Required behavior:
 
-1. Check for relevant skills before implementation work.
-2. Prioritize process skills first (`brainstorming`, `systematic-debugging`, `test-driven-development`).
-3. If a skill has a checklist, track and complete it step-by-step.
-4. Do not skip skill flow because a task looks simple.
+1. Check the skill routing table before loading any full `SKILL.md` body.
+2. Load **necessary** skills automatically only when their trigger clearly matches the task.
+3. For **optional** skills, ask the user once before loading: "This may benefit from `<skill>`, but it adds workflow overhead. Load it?"
+4. Never auto-load **deprecated** skills. Load them only when the user explicitly names the skill or requests that exact workflow.
+5. When multiple skills could apply, load the smallest specific skill first and avoid stacking broad process skills unless the task genuinely needs them.
+6. Do not edit `.agents/skills/*` just to change routing behavior. Keep routing and necessity decisions in `AGENTS.md`.
+
+`using-superpowers` remains the startup router, but this table overrides its broad "1% chance" auto-load behavior inside this repository.
 
 ## Project Context
 
@@ -72,30 +76,69 @@ Required behavior:
 - `scaffold-microservice`: create new microservice app + Docker + Helm + ArgoCD path.
 - `docs/architecture/microservice-decision-matrix.md`: required decision reference before new service creation.
 
-### Skill Routing Matrix (Always Check Before Work)
+### Necessary Skills (Auto-Load When Needed)
 
-Process skills (run first when applicable):
-- `using-superpowers`: mandatory at task start.
-- `brainstorming`: before creative feature/design work.
-- `systematic-debugging`: before fixing bugs/failures.
-- `test-driven-development`: before implementing feature/behavior changes.
-- `writing-plans`: after spec approval, before implementation.
-- `executing-plans` or `subagent-driven-development`: when executing an approved plan.
-- `verification-before-completion`: before claiming done.
+Use these without asking when the trigger clearly matches:
 
-Implementation skills:
-- Frontend: use relevant `frontend/*` skills for page/component/hook/route/auth/apollo changes.
-- Services: `create-gateway-module` for gateway module work.
-- Microservices: `scaffold-microservice` only after decision matrix justification.
-- Packages: `update-shared-kernel` for shared contracts/utils, `prisma-safe-migrations` for schema changes.
+| Skill | Trigger |
+| --- | --- |
+| `using-superpowers` | Start of a new task, as a lightweight router governed by this table. |
+| `systematic-debugging` | Bugs, failing tests, CI failures, unexpected behavior, or regressions. |
+| `test-driven-development` | Production behavior changes, bug fixes, or refactors where behavior must remain stable. Skip for docs-only, routing-only, generated, or pure config edits unless behavior is affected. |
+| `verification-before-completion` | Before claiming work is complete, fixed, passing, committed, or PR-ready. |
+| `receiving-code-review` | User provides review feedback or asks to address comments. |
+| `add-testing-foundation` | Adding or expanding tests, test utilities, or test conventions. |
+| `maintain-project-docs` | Code, architecture, infrastructure, or public behavior changes require synchronized docs. |
+| `prepare-pull-request` | User asks to open or update a PR. |
+| `write-conventional-commit` | User asks for a commit or commit message. |
+| `write-github-issue` | User asks to create or refine an issue. |
+| `frontend/add-frontend-page` | Adding a Next.js App Router page in `apps/web`. |
+| `frontend/apply-ui-baseline` | Implementing or changing visible UI in `apps/web`. |
+| `frontend/create-graphql-hook` | Adding or changing frontend GraphQL operations/hooks. |
+| `frontend/customize-frontend-component` | Modifying an existing frontend component. |
+| `frontend/enforce-apollo-state-boundary` | Frontend GraphQL/cache state ownership changes. |
+| `frontend/enforce-frontend-auth-boundary` | Frontend auth/session-adjacent behavior. |
+| `frontend/follow-nextjs-route-conventions` | Creating or reorganizing `apps/web` routes. |
+| `frontend/frontend-reference-minimal` | LuckyPlans frontend constraints not covered by a narrower frontend skill. |
+| `frontend/implement-apollo-page-boundary` | Next.js pages consuming Apollo-backed client hooks. |
+| `frontend/run-frontend-codegen` | Inline `graphql()` operations changed in `apps/web`. |
+| `services/create-gateway-module` | Creating or extending API gateway modules. |
+| `services/scaffold-microservice` | User explicitly requests a new microservice or decision matrix indicates one is justified. |
+| `packages/update-shared-kernel` | Shared contracts, enums, message patterns, or cross-cutting utilities. |
+| `packages/prisma-safe-migrations` | Prisma schema or migration changes. |
 
-Completion and collaboration skills:
-- `add-testing-foundation`: when adding or expanding tests.
-- `maintain-project-docs`: when behavior/contracts/docs diverge.
-- `requesting-code-review` and `receiving-code-review`: for review loops.
-- `prepare-pull-request`: before opening/updating PR.
-- `write-conventional-commit`: before any commit message.
-- `write-github-issue`: when creating scope/feature/bug issues.
+### Optional Skills (Ask Before Loading)
+
+Ask the user before loading these because they add heavy process, subagents, or extra context:
+
+| Skill | Ask when |
+| --- | --- |
+| `brainstorming` | Requirements are ambiguous, product/design direction is open, or the user asks for ideation. For small scoped edits, summarize assumptions and proceed without loading it. |
+| `writing-plans` | Work spans several phases or the user wants a written implementation plan. Small changes do not need a formal plan. |
+| `executing-plans` | A written plan exists and the user wants this session to execute it step-by-step. |
+| `subagent-driven-development` | User wants agent delegation or a large approved plan has independent tasks. Requires explicit user approval for subagent cost. |
+| `dispatching-parallel-agents` | Multiple independent failures/tasks could be delegated in parallel. Requires explicit user approval for subagent cost. |
+| `requesting-code-review` | Major feature, risky refactor, or pre-merge review would benefit from a separate reviewer. Ask before spawning review agents. |
+| `using-git-worktrees` | Isolation would help but the user did not explicitly request a new worktree. |
+| `finishing-a-development-branch` | Implementation is complete and the user wants merge/PR/cleanup guidance. |
+| `remembering-conversations` | Historical context might help, but the current repo context is enough to proceed. |
+| `write-adr` | Architecture decision should be recorded but the user did not ask for an ADR. |
+
+### Deprecated Skills (Explicit Mention Only)
+
+Do not auto-load these:
+
+| Skill | Replacement / reason |
+| --- | --- |
+| `writing-skills` | Skill files should not be refactored for normal LuckyPlans workflow tuning. Update `AGENTS.md` routing instead unless the user explicitly asks to create, edit, or test a skill. |
+| `services/scaffold-submodule` | Legacy routing. Use `services/create-gateway-module` for gateway modules or `services/scaffold-microservice` for justified microservices. |
+
+### Loading Discipline
+
+- Do not load a skill because it has a broad trigger if this table classifies it as optional or deprecated.
+- Do not load multiple process skills up front. Start with the narrowest necessary one, then load more only when the task reaches that phase.
+- Prefer local file inspection and targeted commands over loading historical or subagent workflows.
+- Subagents are cost-heavy under GPT-5.5. Use them only after explicit user approval or when the user directly asks for delegation/parallel agents.
 
 ## Prisma Safety
 
@@ -115,13 +158,13 @@ Completion and collaboration skills:
 ## Framework Sync
 
 - `AGENTS.md` is the primary source of truth for architecture and process.
-- Prefer skills for repeatable workflows; keep rules only for stable reference constraints.
-- When architecture/security/workflow changes, update `AGENTS.md` and affected skills/docs in the same change.
-- Before claiming completion, run and verify:
-  - `pnpm lint`
-  - `pnpm type-check`
-  - `pnpm build`
-  - `pnpm format:check`
+- Prefer skills for repeatable implementation rules; keep workflow routing and cost policy in `AGENTS.md`.
+- When architecture/security/workflow changes, update `AGENTS.md` and affected product docs. Do not edit `.agents/skills/*` unless the user explicitly requests skill authoring or skill refactoring.
+- Before claiming completion, run the smallest verification that proves the touched surface:
+  - Production code, package, infrastructure, or Prisma changes: `pnpm lint`, `pnpm type-check`, `pnpm build`, `pnpm format:check`.
+  - Frontend GraphQL operation changes: `pnpm --filter @luckyplans/web codegen`, then the full gate above.
+  - Tests changed: run the targeted test command first, then broader gates if production behavior or shared config changed.
+  - Docs, `AGENTS.md`, or workflow-routing-only changes: inspect the diff and run `git diff --check`.
 
 ## Codex Rulebook
 
@@ -134,6 +177,7 @@ No active rule files are required; architecture/security/process guidance is in 
 Converted Claude skills now live in `.agents/skills/`:
 
 Frontend scope:
+
 - `frontend/add-frontend-page/SKILL.md`
 - `frontend/apply-ui-baseline/SKILL.md`
 - `frontend/create-graphql-hook/SKILL.md`
@@ -146,15 +190,18 @@ Frontend scope:
 - `frontend/run-frontend-codegen/SKILL.md`
 
 Services scope:
+
 - `services/create-gateway-module/SKILL.md`
 - `services/scaffold-submodule/SKILL.md`
 - `services/scaffold-microservice/SKILL.md`
 
 Packages scope:
+
 - `packages/update-shared-kernel/SKILL.md`
 - `packages/prisma-safe-migrations/SKILL.md`
 
 Cross-cutting:
+
 - `add-testing-foundation/SKILL.md`
 - `maintain-project-docs/SKILL.md`
 - `prepare-pull-request/SKILL.md`
@@ -162,7 +209,7 @@ Cross-cutting:
 - `write-github-issue/SKILL.md`
 - `write-adr/SKILL.md`
 
-Existing process/system skills remain under `.agents/skills/`.
+Existing process/system skills remain under `.agents/skills/`, but their presence does not imply automatic loading. Use the necessary/optional/deprecated routing table above.
 
 ## Key Commands
 
@@ -177,7 +224,9 @@ Existing process/system skills remain under `.agents/skills/`.
 
 ## Before Completing Any Change
 
-Run:
+Use risk-based verification:
+
+- For production code, package, infrastructure, or Prisma changes, run:
 
 ```bash
 pnpm lint
@@ -186,13 +235,11 @@ pnpm build
 pnpm format:check
 ```
 
-When tests exist for touched areas, run them before claiming completion.
+- For docs, `AGENTS.md`, or workflow-routing-only changes, run `git diff --check` and inspect the relevant diff.
+- When tests exist for touched behavior, run them before claiming completion.
 
 ## Maintenance
 
 - Treat `AGENTS.md` as the primary AI context file for Codex.
 - Keep `.agents/rules/*` and `.agents/skills/*` in sync with real architecture decisions.
 - If you update standards/workflows, update docs in `apps/web/content/` and related rules.
-
-
-

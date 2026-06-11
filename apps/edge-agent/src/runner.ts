@@ -1,43 +1,75 @@
-import { EdgeApiClient } from './client';
+import { EdgeApiClient, type EdgeReleaseArtifactMetadata } from './client';
 import { runGridTask } from './grid';
+import { edgeAgentLogger, getErrorType, type EdgeAgentLogger } from './logger';
 import { runOptunaTask } from './optuna';
 import { maybeUpgrade, type UpgradeStatus } from './upgrade';
 
-type RunnerOptions = {
+export type RunnerOptions = {
   currentVersion?: string;
-  downloadUpgradeArtifact?: () => Promise<unknown>;
-  verifyUpgradeArtifact?: (artifact: unknown) => Promise<boolean>;
+  deviceNumber?: string;
+  platform?: string;
+  arch?: string;
+  installType?: string;
+  downloadUpgradeArtifact?: (release: EdgeReleaseArtifactMetadata) => Promise<unknown>;
+  verifyUpgradeArtifact?: (
+    artifact: unknown,
+    release: EdgeReleaseArtifactMetadata,
+  ) => Promise<boolean>;
   installUpgradeArtifact?: (artifact: unknown) => Promise<void>;
+  suppressUpgradeRetry?: (targetVersion: string) => Promise<boolean> | boolean;
+  recoveryStatePath?: string;
+  runtimeStartedAtMs?: number;
+  now?: () => number;
+  logger?: EdgeAgentLogger;
 };
+
+function getUptimeSeconds(options: RunnerOptions): number | undefined {
+  if (options.runtimeStartedAtMs === undefined) {
+    return undefined;
+  }
+  const now = options.now ?? Date.now;
+  return Math.max(0, Math.floor((now() - options.runtimeStartedAtMs) / 1000));
+}
 
 export async function runSinglePollExecution(client: EdgeApiClient, options: RunnerOptions = {}) {
   const lease = await client.pollNextTask();
   const hasActiveTask = Boolean(lease.success && lease.task);
   const currentVersion = options.currentVersion ?? '0.0.0';
+  const uptimeSeconds = getUptimeSeconds(options);
+  const logger = options.logger ?? edgeAgentLogger;
 
-  const safeSendConnectivityHeartbeat = async (payload: {
-    activeTask: boolean;
-    currentVersion: string;
-    upgradeStatus?: UpgradeStatus;
-    reason?: string;
-  }) => {
+  const safeSendConnectivityHeartbeat = async (
+    payload: Parameters<EdgeApiClient['sendConnectivityHeartbeat']>[0],
+  ) => {
     if (typeof client.sendConnectivityHeartbeat !== 'function') {
       return null;
     }
     try {
       return await client.sendConnectivityHeartbeat(payload);
     } catch (error) {
-      console.warn('[edge-agent] connectivity heartbeat failed', error);
+      logger.warn('edge.heartbeat.failed', { errorType: getErrorType(error) });
       return null;
     }
   };
 
   const reportUpgradeStatus = async (status: UpgradeStatus, details?: { reason?: string }) => {
+    logger.info('edge.upgrade.status_reported', {
+      status,
+      hasReason: Boolean(details?.reason),
+      reasonLength: details?.reason?.length ?? 0,
+    });
     await safeSendConnectivityHeartbeat({
       activeTask: hasActiveTask,
       currentVersion,
+      deviceNumber: options.deviceNumber,
+      platform: options.platform,
+      arch: options.arch,
+      installType: options.installType,
       upgradeStatus: status,
       reason: details?.reason,
+      runtimeState: 'UPGRADING',
+      activeTaskId: lease.task?.taskId,
+      uptimeSeconds,
     });
   };
 
@@ -45,17 +77,32 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
     const connectivity = await safeSendConnectivityHeartbeat({
       activeTask: hasActiveTask,
       currentVersion,
+      deviceNumber: options.deviceNumber,
+      platform: options.platform,
+      arch: options.arch,
+      installType: options.installType,
+      runtimeState: hasActiveTask ? 'BUSY' : 'IDLE',
+      activeTaskId: lease.task?.taskId,
+      uptimeSeconds,
     });
 
     if (connectivity?.targetVersion) {
+      const release = connectivity.release ?? undefined;
       await maybeUpgrade({
         activeTask: hasActiveTask,
         currentVersion,
         targetVersion: connectivity.targetVersion,
         reportStatus: reportUpgradeStatus,
-        download: options.downloadUpgradeArtifact,
-        verify: options.verifyUpgradeArtifact,
-        install: options.installUpgradeArtifact,
+        download:
+          release && options.downloadUpgradeArtifact
+            ? () => options.downloadUpgradeArtifact!(release)
+            : undefined,
+        verify:
+          release && options.verifyUpgradeArtifact
+            ? (artifact: unknown) => options.verifyUpgradeArtifact!(artifact, release)
+            : undefined,
+        install: release ? options.installUpgradeArtifact : undefined,
+        isTargetSuppressed: options.suppressUpgradeRetry,
       });
     }
   }
@@ -114,6 +161,18 @@ export async function runSinglePollExecution(client: EdgeApiClient, options: Run
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     await client.failTask(lease.task.taskId, message);
+    await safeSendConnectivityHeartbeat({
+      activeTask: false,
+      currentVersion,
+      deviceNumber: options.deviceNumber,
+      platform: options.platform,
+      arch: options.arch,
+      installType: options.installType,
+      runtimeState: 'ERROR',
+      activeTaskId: lease.task.taskId,
+      uptimeSeconds,
+      lastError: message,
+    });
     return { executed: false, error: message };
   }
 }

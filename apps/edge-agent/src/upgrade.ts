@@ -8,6 +8,7 @@ export type MaybeUpgradeInput = {
   download?: (() => Promise<unknown>) | undefined;
   verify?: ((artifact: unknown) => Promise<boolean>) | undefined;
   install?: ((artifact: unknown) => Promise<void>) | undefined;
+  isTargetSuppressed?: (targetVersion: string) => Promise<boolean> | boolean;
 };
 
 export type MaybeUpgradeResult = {
@@ -22,8 +23,15 @@ export async function maybeUpgrade(input: MaybeUpgradeInput): Promise<MaybeUpgra
   if (input.activeTask || !target || compareVersions(target, input.currentVersion) <= 0) {
     return { performed: false, nextVersion: input.currentVersion };
   }
+  if (await input.isTargetSuppressed?.(target)) {
+    const reason = sanitizeFailureReason(
+      `upgrade retry suppressed for previously failed target ${target}`,
+    );
+    await input.reportStatus('FAILED', { reason });
+    return { performed: false, nextVersion: input.currentVersion, status: 'FAILED', reason };
+  }
   if (!input.download || !input.verify || !input.install) {
-    const reason = 'upgrade handlers not configured';
+    const reason = sanitizeFailureReason('upgrade handlers not configured');
     await input.reportStatus('FAILED', { reason });
     return {
       performed: false,
@@ -40,7 +48,8 @@ export async function maybeUpgrade(input: MaybeUpgradeInput): Promise<MaybeUpgra
     await input.reportStatus('VERIFYING');
     const verified = await input.verify(artifact);
     if (!verified) {
-      await input.reportStatus('FAILED', { reason: 'verification failed' });
+      const reason = sanitizeFailureReason('verification failed');
+      await input.reportStatus('FAILED', { reason });
       return {
         performed: true,
         nextVersion: input.currentVersion,
@@ -51,10 +60,9 @@ export async function maybeUpgrade(input: MaybeUpgradeInput): Promise<MaybeUpgra
 
     await input.reportStatus('RESTARTING');
     await input.install(artifact);
-    await input.reportStatus('SUCCEEDED');
-    return { performed: true, nextVersion: target, status: 'SUCCEEDED' };
+    return { performed: true, nextVersion: target, status: 'RESTARTING' };
   } catch (error) {
-    const reason = error instanceof Error ? error.message : String(error);
+    const reason = sanitizeFailureReason(error instanceof Error ? error.message : String(error));
     await input.reportStatus('FAILED', { reason });
     return { performed: true, nextVersion: input.currentVersion, status: 'FAILED', reason };
   }
@@ -86,4 +94,20 @@ function normalize(version: string): number[] {
       return match ? Number.parseInt(match[0], 10) : 0;
     })
     .map((value) => (Number.isFinite(value) ? value : 0));
+}
+
+function sanitizeFailureReason(reason: string): string {
+  return reason.replace(/https?:\/\/[^\s"'`<>]+/g, (value) => {
+    const credentialRedacted = value.replace(/(https?:\/\/)[^/?#\s"'`<>@]+@/i, '$1');
+    try {
+      const url = new URL(credentialRedacted);
+      url.username = '';
+      url.password = '';
+      url.search = '';
+      url.hash = '';
+      return url.toString();
+    } catch {
+      return credentialRedacted.replace(/[?#].*$/, '');
+    }
+  });
 }

@@ -12,4 +12,6 @@ export default {
   '2026-03-16-prisma-postgresql-persistence': 'PostgreSQL Persistence with Prisma ORM',
   '2026-05-21-gateway-edge-orchestration':
     'Gateway-Owned Domain Logic with External Edge Orchestration',
+  '2026-06-05-defer-task-artifact-transfer': 'Defer Generic Task Artifact Transfer',
+  '2026-06-05-defer-edge-websocket-sessions': 'Defer Edge WebSocket Sessions',
 };

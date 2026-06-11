@@ -22,6 +22,7 @@ describe('BacktestService', () => {
       update: vi.fn(),
     },
     worker: {
+      findUnique: vi.fn(),
       update: vi.fn(),
     },
   };
@@ -150,6 +151,58 @@ describe('BacktestService', () => {
     expect(prisma.worker.update).toHaveBeenCalledOnce();
   });
 
+  it('keeps worker active before quarantine threshold', async () => {
+    prisma.backtestTask.findUnique.mockResolvedValue({
+      id: 'task_1',
+      status: 'PROCESSING',
+      assignedWorkerId: 'worker_1',
+    });
+    prisma.backtestTask.update.mockResolvedValue({
+      id: 'task_1',
+      status: 'FAILED',
+    });
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_1',
+      consecutiveFailures: 0,
+    });
+
+    const result = await service.fail('task_1', 'worker_1', 'runtime exploded');
+
+    expect(result.status).toBe('FAILED');
+    expect(prisma.worker.update).toHaveBeenCalledWith({
+      where: { id: 'worker_1' },
+      data: { consecutiveFailures: { increment: 1 } },
+    });
+  });
+
+  it('quarantines worker on the third consecutive failure', async () => {
+    prisma.backtestTask.findUnique.mockResolvedValue({
+      id: 'task_1',
+      status: 'PROCESSING',
+      assignedWorkerId: 'worker_1',
+    });
+    prisma.backtestTask.update.mockResolvedValue({
+      id: 'task_1',
+      status: 'FAILED',
+    });
+    prisma.worker.findUnique.mockResolvedValue({
+      id: 'worker_1',
+      consecutiveFailures: 2,
+    });
+
+    const result = await service.fail('task_1', 'worker_1', 'runtime exploded');
+
+    expect(result.status).toBe('FAILED');
+    expect(prisma.worker.update).toHaveBeenCalledWith({
+      where: { id: 'worker_1' },
+      data: {
+        consecutiveFailures: { increment: 1 },
+        status: 'QUARANTINED',
+        quarantinedAt: expect.any(Date),
+      },
+    });
+  });
+
   it('rejects complete when task is not PROCESSING', async () => {
     prisma.backtestTask.findUnique.mockResolvedValue({
       id: 'task_1',
@@ -166,6 +219,30 @@ describe('BacktestService', () => {
     ).rejects.toThrow('Task cannot be completed in current state');
 
     expect(prisma.backtestTask.update).not.toHaveBeenCalled();
+  });
+
+  it('resets worker consecutive failures after successful completion', async () => {
+    prisma.backtestTask.findUnique.mockResolvedValue({
+      id: 'task_1',
+      status: 'PROCESSING',
+      assignedWorkerId: 'worker_1',
+    });
+    prisma.backtestTask.update.mockResolvedValue({
+      id: 'task_1',
+      status: 'DONE',
+    });
+
+    const result = await service.complete('task_1', 'worker_1', {
+      bestConfigIds: ['cfg_1'],
+      processedConfigs: 10,
+      totalConfigs: 10,
+    });
+
+    expect(result.status).toBe('DONE');
+    expect(prisma.worker.update).toHaveBeenCalledWith({
+      where: { id: 'worker_1' },
+      data: { consecutiveFailures: 0 },
+    });
   });
 
   it('rejects fail when task is not PROCESSING', async () => {

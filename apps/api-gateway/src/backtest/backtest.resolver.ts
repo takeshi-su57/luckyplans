@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -10,6 +11,7 @@ import {
   Resolver,
   Subscription,
 } from '@nestjs/graphql';
+import { SessionGuard } from '../auth/session.guard';
 import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { BacktestService } from './backtest.service';
 
@@ -150,6 +152,7 @@ export class BacktestResolver {
   ) {}
 
   @Mutation(() => StrategyTemplate)
+  @UseGuards(SessionGuard)
   async createStrategyTemplate(
     @Args('input') input: CreateStrategyTemplateInput,
   ): Promise<StrategyTemplate> {
@@ -157,6 +160,7 @@ export class BacktestResolver {
   }
 
   @Mutation(() => StrategyTemplate)
+  @UseGuards(SessionGuard)
   async updateStrategyTemplate(
     @Args('input') input: UpdateStrategyTemplateInput,
   ): Promise<StrategyTemplate> {
@@ -164,6 +168,7 @@ export class BacktestResolver {
   }
 
   @Mutation(() => BacktestTask)
+  @UseGuards(SessionGuard)
   async createBacktestTask(@Args('input') input: CreateBacktestTaskInput): Promise<BacktestTask> {
     const created = await this.backtestService.createBacktestTask(input);
     await this.realtimeEvents.publishBacktestTaskUpdated(created);
@@ -171,6 +176,7 @@ export class BacktestResolver {
   }
 
   @Mutation(() => BacktestTask)
+  @UseGuards(SessionGuard)
   async cancelBacktestTask(@Args('taskId') taskId: string): Promise<BacktestTask> {
     const updated = await this.backtestService.cancelBacktestTask(taskId);
     await this.realtimeEvents.publishBacktestTaskUpdated(updated);
@@ -178,6 +184,7 @@ export class BacktestResolver {
   }
 
   @Mutation(() => BacktestTask)
+  @UseGuards(SessionGuard)
   async retryBacktestTask(@Args('taskId') taskId: string): Promise<BacktestTask> {
     const updated = await this.backtestService.retryBacktestTask(taskId);
     await this.realtimeEvents.publishBacktestTaskUpdated(updated);
@@ -185,16 +192,19 @@ export class BacktestResolver {
   }
 
   @Query(() => [BacktestTask])
+  @UseGuards(SessionGuard)
   async backtestTasks(): Promise<BacktestTask[]> {
     return this.backtestService.listBacktestTasks();
   }
 
   @Query(() => BacktestTask, { nullable: true })
+  @UseGuards(SessionGuard)
   async backtestTask(@Args('id') id: string): Promise<BacktestTask | null> {
     return this.backtestService.getBacktestTask(id);
   }
 
   @Query(() => [BacktestResult])
+  @UseGuards(SessionGuard)
   async backtestResults(
     @Args('taskId') taskId: string,
     @Args('options', { nullable: true }) options?: BacktestResultsOptionsInput,

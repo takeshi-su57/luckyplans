@@ -265,6 +265,10 @@ exports.Prisma.WorkerScalarFieldEnum = {
   targetVersion: 'targetVersion',
   upgradeStatus: 'upgradeStatus',
   upgradeMessage: 'upgradeMessage',
+  runtimeState: 'runtimeState',
+  activeTaskId: 'activeTaskId',
+  uptimeSeconds: 'uptimeSeconds',
+  lastError: 'lastError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -279,6 +283,22 @@ exports.Prisma.EdgeReleaseScalarFieldEnum = {
   signatureAlgorithm: 'signatureAlgorithm',
   signingKeyId: 'signingKeyId',
   notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EdgeReleaseArtifactScalarFieldEnum = {
+  id: 'id',
+  releaseId: 'releaseId',
+  platform: 'platform',
+  arch: 'arch',
+  installType: 'installType',
+  url: 'url',
+  checksum: 'checksum',
+  signature: 'signature',
+  signatureAlgorithm: 'signatureAlgorithm',
+  signingKeyId: 'signingKeyId',
+  sizeBytes: 'sizeBytes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -432,6 +452,13 @@ exports.WorkerUpgradeStatus = exports.$Enums.WorkerUpgradeStatus = {
   ROLLED_BACK: 'ROLLED_BACK'
 };
 
+exports.WorkerRuntimeState = exports.$Enums.WorkerRuntimeState = {
+  IDLE: 'IDLE',
+  BUSY: 'BUSY',
+  UPGRADING: 'UPGRADING',
+  ERROR: 'ERROR'
+};
+
 exports.UpgradeCampaignStatus = exports.$Enums.UpgradeCampaignStatus = {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
@@ -487,6 +514,7 @@ exports.Prisma.ModelName = {
   Hobby: 'Hobby',
   Worker: 'Worker',
   EdgeRelease: 'EdgeRelease',
+  EdgeReleaseArtifact: 'EdgeReleaseArtifact',
   UpgradeCampaign: 'UpgradeCampaign',
   UpgradeCampaignWorker: 'UpgradeCampaignWorker',
   WorkerCredential: 'WorkerCredential',

@@ -1,4 +1,4 @@
-FROM node:25-alpine AS base
+FROM node:26-alpine AS base
 RUN apk add --no-cache libc6-compat
 RUN npm install -g pnpm@11.2.2
 # Harden pnpm against transient/slow network in CI and local container builds.
@@ -33,7 +33,7 @@ ENV STANDALONE=true
 RUN pnpm turbo run build --filter=@luckyplans/web
 
 # --- Production runner ---
-FROM node:25-alpine AS runner
+FROM node:26-alpine AS runner
 RUN apk upgrade --no-cache
 WORKDIR /app
 

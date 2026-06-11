@@ -19,7 +19,7 @@ type ParsedMetrics = {
 export default function BacktestResultsPage() {
   const [taskId, setTaskId] = useState('');
   const { data, loading, error } = useBacktestResults(taskId.trim());
-  const rows = ((data?.backtestResults ?? []) as ResultRow[]) ?? [];
+  const rows = (data?.backtestResults ?? []) as ResultRow[];
 
   const sorted = useMemo(() => {
     const enriched = rows.map((row) => ({ row, metrics: parseMetrics(row.metrics) }));

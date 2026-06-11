@@ -3,12 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "start": "node dist/main.js",
     "build": "tsc --build",
     "lint": "eslint \"src/**/*.ts\"",
     "type-check": "tsc --noEmit",
     "clean": "node -e \"const fs=require('fs');['dist','.turbo','tsconfig.tsbuildinfo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "release:build": "node scripts/build-release.mjs",
+    "service:install": "node dist/service-cli.js install",
+    "service:status": "node dist/service-cli.js status",
+    "service:restart": "node dist/service-cli.js restart",
+    "service:uninstall": "node dist/service-cli.js uninstall"
   },
   "dependencies": {
     "@luckyplans/shared": "workspace:*"
@@ -16,8 +22,8 @@
   "devDependencies": {
     "@luckyplans/config": "workspace:*",
     "@types/node": "^25.5.0",
-    "eslint": "^10.0.3",
-    "typescript": "^5.7.0",
-    "vitest": "^3.2.4"
+    "eslint": "^10.4.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
   }
 }

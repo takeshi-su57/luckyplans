@@ -1,0 +1,100 @@
+name: Edge Agent Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Edge agent semver version, for example 1.2.3'
+        required: true
+        type: string
+      signing_key_id:
+        description: 'Signing key identifier recorded in release metadata'
+        required: true
+        type: string
+  push:
+    tags:
+      - 'edge-agent-v*'
+
+concurrency:
+  group: edge-agent-release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    name: Build edge-agent release artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      EDGE_RELEASE_SIGNING_PRIVATE_KEY: ${{ secrets.EDGE_RELEASE_SIGNING_PRIVATE_KEY }}
+      EDGE_RELEASE_SIGNING_KEY_ID: ${{ inputs.signing_key_id || secrets.EDGE_RELEASE_SIGNING_KEY_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve release version
+        id: release
+        shell: bash
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            version="${GITHUB_REF_NAME#edge-agent-v}"
+          else
+            version="${{ inputs.version }}"
+          fi
+
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid edge-agent release version: $version" >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=edge-agent-v$version" >> "$GITHUB_OUTPUT"
+          echo "base_url=https://github.com/${{ github.repository }}/releases/download/edge-agent-v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Build edge agent
+        run: pnpm --filter @luckyplans/edge-agent build
+
+      - name: Build release artifacts
+        run: >
+          pnpm --filter @luckyplans/edge-agent release:build --
+          --version "${{ steps.release.outputs.version }}"
+          --base-url "${{ steps.release.outputs.base_url }}"
+          --out-dir "dist/edge-agent-releases/v${{ steps.release.outputs.version }}"
+          --signing-key-id "${EDGE_RELEASE_SIGNING_KEY_ID}"
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: edge-agent-v${{ steps.release.outputs.version }}
+          path: dist/edge-agent-releases/v${{ steps.release.outputs.version }}/*
+          if-no-files-found: error
+
+      - name: Publish GitHub Release assets
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "${{ steps.release.outputs.tag }}" >/dev/null 2>&1 || \
+            gh release create "${{ steps.release.outputs.tag }}" \
+              --title "Edge Agent v${{ steps.release.outputs.version }}" \
+              --notes "LuckyPlans edge-agent release v${{ steps.release.outputs.version }}"
+
+          gh release upload "${{ steps.release.outputs.tag }}" \
+            dist/edge-agent-releases/v${{ steps.release.outputs.version }}/* \
+            --clobber
