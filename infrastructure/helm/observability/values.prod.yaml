@@ -3,40 +3,56 @@
 # ============================================================
 
 prometheus:
-  retention: 15d
-  storage: 10Gi
+  retention: 3d
+  storage: 3Gi
   resources:
     requests:
-      memory: '512Mi'
-      cpu: '200m'
+      memory: '256Mi'
+      cpu: '100m'
     limits:
-      memory: '1Gi'
-      cpu: '500m'
+      memory: '768Mi'
+      cpu: '400m'
 
 grafana:
   adminPassword: '' # Set via sealed secret in production
   ingress:
     enabled: true
     host: admin.luckyplans.xyz
+  resources:
+    requests:
+      memory: '96Mi'
+      cpu: '50m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
+
+otelCollector:
+  resources:
+    requests:
+      memory: '96Mi'
+      cpu: '50m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
 
 loki:
-  retention: 336h # 14 days
-  storage: 10Gi
+  retention: 72h # 3 days
+  storage: 3Gi
   resources:
     requests:
-      memory: '256Mi'
-      cpu: '100m'
+      memory: '128Mi'
+      cpu: '50m'
     limits:
-      memory: '512Mi'
-      cpu: '300m'
+      memory: '384Mi'
+      cpu: '200m'
 
 tempo:
-  retention: 168h # 7 days
-  storage: 5Gi
+  retention: 24h # 1 day
+  storage: 1Gi
   resources:
     requests:
-      memory: '256Mi'
-      cpu: '100m'
+      memory: '128Mi'
+      cpu: '50m'
     limits:
-      memory: '512Mi'
-      cpu: '300m'
+      memory: '256Mi'
+      cpu: '200m'
