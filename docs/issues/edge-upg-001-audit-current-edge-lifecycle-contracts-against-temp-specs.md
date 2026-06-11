@@ -9,7 +9,7 @@ Labels: `type:chore`, `priority:high`, `area:edge-agent`, `area:api-gateway`, `a
 Related:
 
 - `docs/issues/edge-upg-001-current-state-audit.md`
-- `docs/temp/*`
+- Historical temporary edge architecture drafts, superseded by this issue chain and later removed.
 - `docs/superpowers/specs/2026-05-21-edge-lifecycle-design.md`
 - `docs/superpowers/plans/2026-05-21-edge-lifecycle-mvp-implementation-plan.md`
 
@@ -23,7 +23,7 @@ Create a current-state audit that maps each desired capability to existing files
 
 ## Scope
 
-- Review `docs/temp/*`.
+- Review the historical temporary edge architecture drafts captured in `docs/issues/edge-upg-001-current-state-audit.md`.
 - Review `docs/superpowers/specs/2026-05-21-edge-lifecycle-design.md`.
 - Review `apps/edge-agent/src/*`.
 - Review `apps/api-gateway/src/edges-internal/*`.

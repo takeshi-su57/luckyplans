@@ -401,6 +401,10 @@ export class BacktestService {
       },
     });
     this.logger.log(`audit task.complete taskId=${taskId} workerId=${workerId}`);
+    await this.prisma.worker.update({
+      where: { id: workerId },
+      data: { consecutiveFailures: 0 },
+    });
     return { status: updated.status };
   }
 
@@ -429,13 +433,25 @@ export class BacktestService {
     });
     this.logger.log(`audit task.fail taskId=${taskId} workerId=${workerId}`);
 
+    const worker = await this.prisma.worker.findUnique({
+      where: { id: workerId },
+      select: { consecutiveFailures: true },
+    });
+    const nextFailureCount =
+      typeof worker?.consecutiveFailures === 'number' ? worker.consecutiveFailures + 1 : 1;
+    const shouldQuarantine = nextFailureCount >= 3;
+
     await this.prisma.worker.update({
       where: { id: workerId },
-      data: {
-        consecutiveFailures: { increment: 1 },
-        status: 'QUARANTINED',
-        quarantinedAt: new Date(),
-      },
+      data: shouldQuarantine
+        ? {
+            consecutiveFailures: { increment: 1 },
+            status: 'QUARANTINED',
+            quarantinedAt: new Date(),
+          }
+        : {
+            consecutiveFailures: { increment: 1 },
+          },
     });
 
     return { status: updated.status };

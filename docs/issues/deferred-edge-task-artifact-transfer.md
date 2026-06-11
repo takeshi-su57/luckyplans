@@ -9,7 +9,8 @@ Labels: `type:feature`, `priority:deferred`, `area:architecture`, `area:api-gate
 Related:
 
 - `apps/web/content/architecture/decisions/2026-06-05-defer-task-artifact-transfer.mdx`
-- `docs/temp/2026-05-27-edge-architecture-phase-3-artifacts.md`
+- `docs/issues/edge-upg-012-decide-whether-artifact-transfer-is-needed-for-task-payloads-results.md`
+- `docs/issues/edge-upg-001-current-state-audit.md`
 
 ## Motivation
 

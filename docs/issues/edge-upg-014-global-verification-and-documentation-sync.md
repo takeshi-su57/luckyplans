@@ -36,15 +36,15 @@ The edge lifecycle touches agent runtime, gateway contracts, Prisma data, web UI
 
 Captured on 2026-06-05:
 
-| Command | Result |
-|---------|--------|
-| `pnpm.cmd lint` | Pass: Turbo reported 7 successful tasks. |
-| `pnpm.cmd type-check` | Pass: Turbo reported 7 successful tasks. |
-| `pnpm.cmd build` | Pass: Turbo reported 5 successful tasks. |
-| `pnpm.cmd format:check` | Pass: Prettier reported all matched files use code style. |
-| `pnpm.cmd --filter @luckyplans/edge-agent test` | Pass: 16 test files, 106 tests passed, 1 skipped. |
-| `pnpm.cmd --filter @luckyplans/api-gateway test` | Pass: 9 test files, 56 tests passed. |
-| `pnpm.cmd --filter @luckyplans/web test` | Pass: 4 test files, 11 tests passed. |
+| Command                                          | Result                                                    |
+| ------------------------------------------------ | --------------------------------------------------------- |
+| `pnpm.cmd lint`                                  | Pass: Turbo reported 7 successful tasks.                  |
+| `pnpm.cmd type-check`                            | Pass: Turbo reported 7 successful tasks.                  |
+| `pnpm.cmd build`                                 | Pass: Turbo reported 5 successful tasks.                  |
+| `pnpm.cmd format:check`                          | Pass: Prettier reported all matched files use code style. |
+| `pnpm.cmd --filter @luckyplans/edge-agent test`  | Pass: 16 test files, 106 tests passed, 1 skipped.         |
+| `pnpm.cmd --filter @luckyplans/api-gateway test` | Pass: 9 test files, 56 tests passed.                      |
+| `pnpm.cmd --filter @luckyplans/web test`         | Pass: 4 test files, 11 tests passed.                      |
 
 Notes:
 
@@ -55,11 +55,8 @@ Notes:
 ## Documentation Sync
 
 - Active architecture docs describe REST polling, connectivity heartbeat, task execution, edge upgrades, release publishing, observability, and runbooks.
-- `docs/temp/2026-05-27-edge-architecture-phase-1-identity-session.md` now points to the WebSocket deferral ADR.
-- `docs/temp/2026-05-27-edge-architecture-phase-2-tasks-leases.md` now points to the accepted REST polling issue chain and WebSocket deferral ADR.
-- `docs/temp/2026-05-27-edge-architecture-phase-3-artifacts.md` now points to the task artifact transfer deferral ADR.
-- `docs/temp/2026-05-27-edge-architecture-phase-4-updates-security-observability.md` now points to the accepted implementation issues and deferral ADRs.
-- `docs/temp/new.md` is marked as a historical temp design.
+- Historical temporary edge architecture drafts were superseded by this issue chain and later removed because they were temporary planning material.
+- Active docs now point to the REST polling implementation, release publishing flow, observability runbooks, WebSocket deferral ADR, and task artifact transfer deferral ADR.
 
 ## Deferred Work
 

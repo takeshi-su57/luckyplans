@@ -206,6 +206,19 @@ type EdgeRelease {
   notes: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  artifacts: [EdgeReleaseArtifact!]!
+}
+
+type EdgeReleaseArtifact {
+  platform: String!
+  arch: String!
+  installType: String!
+  url: String!
+  checksum: String!
+  signature: String!
+  signatureAlgorithm: String!
+  signingKeyId: String
+  sizeBytes: Int
 }
 
 type UpgradeCampaign {
@@ -233,6 +246,11 @@ type Worker {
   targetVersion: String
   upgradeStatus: WorkerUpgradeStatus!
   upgradeMessage: String
+  runtimeState: WorkerRuntimeState!
+  activeTaskId: String
+  uptimeSeconds: Float
+  lastError: String
+  connectivityStatus: WorkerConnectivityStatus!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -252,6 +270,19 @@ enum WorkerUpgradeStatus {
   SUCCEEDED
   FAILED
   ROLLED_BACK
+}
+
+enum WorkerRuntimeState {
+  IDLE
+  BUSY
+  UPGRADING
+  ERROR
+}
+
+enum WorkerConnectivityStatus {
+  ONLINE
+  STALE
+  OFFLINE
 }
 
 type StrategyTemplate {
@@ -342,17 +373,42 @@ type Mutation {
   updateHobby(id: String!, input: UpdateHobbyInput!): Hobby
   deleteHobby(id: String!): DeleteResult!
   reorderHobbies(input: ReorderInput!): DeleteResult!
-  createWorker(name: String!, deviceNumber: String, platform: String, arch: String, version: String): Worker!
+  createWorker(
+    name: String!
+    deviceNumber: String
+    platform: String
+    arch: String
+    version: String
+  ): Worker!
   disableWorker(id: String!): Worker
   issueWorkerCredential(id: String!): IssuedWorkerCredential!
   revokeWorkerCredential(id: String!): Boolean!
   rotateWorkerCredential(id: String!): IssuedWorkerCredential!
-  createEdgeEnrollmentToken(label: String, expiresAt: DateTime, maxUses: Int): CreatedEdgeEnrollmentToken!
+  createEdgeEnrollmentToken(
+    label: String
+    expiresAt: DateTime
+    maxUses: Int
+  ): CreatedEdgeEnrollmentToken!
   revokeEdgeEnrollmentToken(id: String!): Boolean!
-  createEdgeRelease(version: String!, windowsUrl: String!, linuxUrl: String!, checksum: String!, signature: String!, notes: String): EdgeRelease!
+  createEdgeRelease(
+    version: String!
+    windowsUrl: String!
+    linuxUrl: String!
+    checksum: String!
+    signature: String!
+    artifacts: [EdgeReleaseArtifactInput!]
+    notes: String
+  ): EdgeRelease!
   setWorkerTargetVersion(workerIds: [String!]!, targetVersion: String!): Int!
   reportWorkerUpgradeStatus(workerId: String!, status: String!, message: String): Boolean!
-  startUpgradeCampaign(workerIds: [String!]!, targetVersion: String!, forceMode: Boolean, phaseSize: Float, successThreshold: Float, failureThreshold: Float): UpgradeCampaign!
+  startUpgradeCampaign(
+    workerIds: [String!]!
+    targetVersion: String!
+    forceMode: Boolean
+    phaseSize: Float
+    successThreshold: Float
+    failureThreshold: Float
+  ): UpgradeCampaign!
   advanceUpgradeCampaign(campaignId: String!): UpgradeCampaign!
   rollbackUpgradeCampaign(campaignId: String!): UpgradeCampaign!
   createStrategyTemplate(input: CreateStrategyTemplateInput!): StrategyTemplate!
@@ -360,6 +416,19 @@ type Mutation {
   createBacktestTask(input: CreateBacktestTaskInput!): BacktestTask!
   cancelBacktestTask(taskId: String!): BacktestTask!
   retryBacktestTask(taskId: String!): BacktestTask!
+}
+
+input EdgeReleaseArtifactInput {
+  version: String
+  platform: String!
+  arch: String!
+  installType: String!
+  url: String!
+  checksum: String!
+  signature: String!
+  signatureAlgorithm: String
+  signingKeyId: String
+  sizeBytes: Int
 }
 
 input UpdateProfileInput {

@@ -9,8 +9,8 @@ Labels: `type:feature`, `priority:deferred`, `area:architecture`, `area:api-gate
 Related:
 
 - `apps/web/content/architecture/decisions/2026-06-05-defer-edge-websocket-sessions.mdx`
-- `docs/temp/2026-05-27-edge-architecture-phase-1-identity-session.md`
-- `docs/temp/2026-05-27-edge-architecture-phase-2-tasks-leases.md`
+- `docs/issues/edge-upg-013-decide-whether-websocket-sessions-are-needed.md`
+- `docs/issues/edge-upg-001-current-state-audit.md`
 
 ## Motivation
 

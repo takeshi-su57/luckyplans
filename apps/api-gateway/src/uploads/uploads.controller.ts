@@ -31,12 +31,12 @@ export class UploadsController {
   async upload(@UploadedFile() file: Express.Multer.File, @Query('prefix') prefix?: string) {
     if (!file) throw new BadRequestException('No file uploaded');
 
-    const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     const videoTypes = ['video/mp4', 'video/webm'];
     const allowedTypes = [...imageTypes, ...videoTypes];
     if (!allowedTypes.includes(file.mimetype)) {
       throw new BadRequestException(
-        'Only image (JPEG, PNG, GIF, WebP, SVG) and video (MP4, WebM) files are allowed',
+        'Only image (JPEG, PNG, GIF, WebP) and video (MP4, WebM) files are allowed',
       );
     }
 

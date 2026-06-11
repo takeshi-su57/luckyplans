@@ -418,13 +418,14 @@ EDGE_RELEASE_SIGNING_PRIVATE_KEY="$(cat ./edge-release-private-key.pem)" \
    - `version`: manifest `version`
    - `windowsUrl`: `win32` artifact `url`
    - `linuxUrl`: `linux` artifact `url`
-   - `checksum`: checksum for the primary registered artifact
-   - `signature`: signature for that checksum
+   - `checksum`: `win32` artifact checksum for legacy top-level release compatibility
+   - `signature`: signature for that legacy checksum
+   - `artifacts`: manifest `artifacts` array, preserving each platform-specific `checksum`, `signature`, `signatureAlgorithm`, `signingKeyId`, and `sizeBytes`
    - `notes`: optional operator notes
 4. Confirm `edgeReleases` returns artifact records for `linux/x64/service` and `win32/x64/service`.
 5. Set `targetVersion` for selected workers or start an upgrade campaign.
 
-The current gateway mutation preserves the legacy top-level `windowsUrl`, `linuxUrl`, `checksum`, and `signature` fields while backfilling platform-specific artifact rows. Keep the manifest with the release record so operators can compare the registered metadata against the CI-produced artifact set.
+The current gateway mutation preserves the legacy top-level `windowsUrl`, `linuxUrl`, `checksum`, and `signature` fields while accepting platform-specific artifact rows from the manifest. Edge upgrade metadata resolution uses the artifact rows, so each platform must keep the checksum and signature for the exact package bytes it installs.
 
 ### Edge rollout behavior
 
@@ -432,6 +433,7 @@ The current gateway mutation preserves the legacy top-level `windowsUrl`, `linux
 2. Gateway returns upgrade intent when `targetVersion` differs from `version`.
 3. Edge upgrades only when idle (no active task).
 4. Edge reports upgrade statuses (`DOWNLOADING`, `VERIFYING`, `RESTARTING`, `SUCCEEDED`, `FAILED`).
+5. Gateway upgrade campaigns advance or pause from edge heartbeat-reported terminal statuses without requiring a separate operator status mutation.
 
 ### Registration token requirement
 

@@ -31,7 +31,7 @@ Document the concrete task-data requirements and decide whether to keep REST JSO
 - Current payload/result sizes and expected growth are documented.
 - Decision records whether artifact transfer is required for the next milestone.
 - If required, follow-up issues define upload URL, download URL, authorization, retention, and result references.
-- If not required, temp artifact specs are marked deferred.
+- If not required, the historical task artifact proposal is superseded by a deferral ADR.
 
 ## Definition of Done
 

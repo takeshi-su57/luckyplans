@@ -76,6 +76,12 @@ export class EdgesConnectivityController {
         lastError: body.lastError,
       })) ?? worker;
 
+    await this.releasesService.syncWorkerUpgradeStatusFromHeartbeat(
+      body.workerId,
+      body.upgradeStatus,
+      body.reason,
+    );
+
     const targetVersion = worker.targetVersion ?? null;
     const releaseResult = targetVersion
       ? await this.releasesService.getUpgradeArtifactForWorker({

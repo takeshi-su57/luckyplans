@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -9,6 +10,7 @@ import {
   Subscription,
   registerEnumType,
 } from '@nestjs/graphql';
+import { SessionGuard } from '../auth/session.guard';
 import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { WorkersService } from './workers.service';
 
@@ -125,11 +127,13 @@ export class WorkersResolver {
   ) {}
 
   @Query(() => [Worker])
+  @UseGuards(SessionGuard)
   async workers(): Promise<Worker[]> {
     return this.workersService.getWorkers();
   }
 
   @Mutation(() => Worker)
+  @UseGuards(SessionGuard)
   async createWorker(
     @Args('name') name: string,
     @Args('deviceNumber', { nullable: true }) deviceNumber?: string,
@@ -154,6 +158,7 @@ export class WorkersResolver {
   }
 
   @Mutation(() => Worker, { nullable: true })
+  @UseGuards(SessionGuard)
   async disableWorker(@Args('id') id: string): Promise<Worker | null> {
     const updated = await this.workersService.disableWorker(id);
     if (updated) {

@@ -218,7 +218,7 @@ describe('main helpers', () => {
   });
 
   it('builds daemon options from interval environment variables', () => {
-    const shutdown = { requested: false, request: vi.fn() };
+    const shutdown = { requested: false, request: vi.fn(), onRequest: vi.fn() };
     const runOnce = vi.fn();
     const logger = {
       info: vi.fn(),

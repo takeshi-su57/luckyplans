@@ -36,6 +36,6 @@ Add CI/build support for versioned edge-agent artifacts, checksums, signatures, 
 
 ## Definition of Done
 
-- [ ] CI job or documented local release command exists.
-- [ ] Generated artifact naming matches gateway release metadata expectations.
-- [ ] Docs include release creation and registration steps.
+- [x] CI job or documented local release command exists.
+- [x] Generated artifact naming matches gateway release metadata expectations.
+- [x] Docs include release creation and registration steps.

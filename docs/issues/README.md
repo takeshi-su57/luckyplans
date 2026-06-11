@@ -30,6 +30,11 @@ WebSocket sessions, generic artifact transfer, and a separate microservice remai
 - [EDGE-UPG-012 - [Chore]: Decide whether artifact transfer is needed for task payloads/results](edge-upg-012-decide-whether-artifact-transfer-is-needed-for-task-payloads-results.md)
 - [EDGE-UPG-013 - [Chore]: Decide whether WebSocket sessions are needed](edge-upg-013-decide-whether-websocket-sessions-are-needed.md)
 - [EDGE-UPG-014 - [Chore]: Global verification and documentation sync](edge-upg-014-global-verification-and-documentation-sync.md)
+- [EDGE-UPG-015 - [Bug]: Fix post-milestone edge upgrade correctness gaps](edge-upg-015-post-milestone-edge-upgrade-correctness-hardening.md)
+
+## Supporting Audit Docs
+
+- [Current edge lifecycle state audit](edge-upg-001-current-state-audit.md) supports `EDGE-UPG-001`; it is not a separate importable issue.
 
 ## Deferred Follow-Up Issues
 

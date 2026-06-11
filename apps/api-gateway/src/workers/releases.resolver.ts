@@ -1,4 +1,16 @@
-import { Args, Field, ID, Int, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import {
+  Args,
+  Field,
+  ID,
+  InputType,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from '@nestjs/graphql';
+import { SessionGuard } from '../auth/session.guard';
 import { RealtimeEventsService } from '../graphql/realtime-events.service';
 import { ReleasesService } from './releases.service';
 
@@ -24,6 +36,39 @@ class EdgeReleaseArtifact {
 
   @Field()
   signatureAlgorithm!: string;
+
+  @Field({ nullable: true })
+  signingKeyId?: string;
+
+  @Field(() => Int, { nullable: true })
+  sizeBytes?: number;
+}
+
+@InputType()
+class EdgeReleaseArtifactInput {
+  @Field({ nullable: true })
+  version?: string;
+
+  @Field()
+  platform!: string;
+
+  @Field()
+  arch!: string;
+
+  @Field()
+  installType!: string;
+
+  @Field()
+  url!: string;
+
+  @Field()
+  checksum!: string;
+
+  @Field()
+  signature!: string;
+
+  @Field({ nullable: true })
+  signatureAlgorithm?: string;
 
   @Field({ nullable: true })
   signingKeyId?: string;
@@ -103,12 +148,15 @@ export class ReleasesResolver {
   ) {}
 
   @Mutation(() => EdgeRelease)
+  @UseGuards(SessionGuard)
   async createEdgeRelease(
     @Args('version') version: string,
     @Args('windowsUrl') windowsUrl: string,
     @Args('linuxUrl') linuxUrl: string,
     @Args('checksum') checksum: string,
     @Args('signature') signature: string,
+    @Args('artifacts', { type: () => [EdgeReleaseArtifactInput], nullable: true })
+    artifacts?: EdgeReleaseArtifactInput[],
     @Args('notes', { nullable: true }) notes?: string,
   ): Promise<EdgeRelease> {
     const created = await this.releasesService.createRelease({
@@ -117,6 +165,7 @@ export class ReleasesResolver {
       linuxUrl,
       checksum,
       signature,
+      artifacts,
       notes,
     });
     return {
@@ -131,6 +180,7 @@ export class ReleasesResolver {
   }
 
   @Query(() => [EdgeRelease])
+  @UseGuards(SessionGuard)
   async edgeReleases(): Promise<EdgeRelease[]> {
     const releases = await this.releasesService.listReleases();
     return releases.map((release) => ({
@@ -145,6 +195,7 @@ export class ReleasesResolver {
   }
 
   @Mutation(() => Int)
+  @UseGuards(SessionGuard)
   async setWorkerTargetVersion(
     @Args('workerIds', { type: () => [String] }) workerIds: string[],
     @Args('targetVersion') targetVersion: string,
@@ -153,6 +204,7 @@ export class ReleasesResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(SessionGuard)
   async reportWorkerUpgradeStatus(
     @Args('workerId') workerId: string,
     @Args('status') status: string,
@@ -176,6 +228,7 @@ export class ReleasesResolver {
   }
 
   @Mutation(() => UpgradeCampaign)
+  @UseGuards(SessionGuard)
   async startUpgradeCampaign(
     @Args('workerIds', { type: () => [String] }) workerIds: string[],
     @Args('targetVersion') targetVersion: string,
@@ -195,11 +248,13 @@ export class ReleasesResolver {
   }
 
   @Mutation(() => UpgradeCampaign)
+  @UseGuards(SessionGuard)
   async advanceUpgradeCampaign(@Args('campaignId') campaignId: string): Promise<UpgradeCampaign> {
     return this.releasesService.advanceUpgradeCampaign(campaignId);
   }
 
   @Mutation(() => UpgradeCampaign)
+  @UseGuards(SessionGuard)
   async rollbackUpgradeCampaign(@Args('campaignId') campaignId: string): Promise<UpgradeCampaign> {
     return this.releasesService.rollbackUpgradeCampaign(campaignId);
   }

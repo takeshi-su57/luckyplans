@@ -10,7 +10,7 @@ Related:
 
 - `apps/api-gateway/src/edges-internal`
 - `apps/edge-agent/src/client.ts`
-- `docs/temp/2026-05-27-edge-architecture-phase-1-identity-session.md`
+- `apps/web/content/architecture/decisions/2026-06-05-defer-edge-websocket-sessions.mdx`
 
 ## Motivation
 
@@ -31,7 +31,7 @@ Evaluate polling after daemon stabilization and decide whether WebSocket session
 - Polling latency, gateway load, and operator needs are reviewed.
 - Decision records whether WebSocket is needed now, later, or not at all.
 - If needed, follow-up issues define protocol, auth, reconnection, session persistence, and rollout plan.
-- If not needed, temp session specs are marked deferred.
+- If not needed, the historical session proposal is superseded by a deferral ADR.
 
 ## Definition of Done
 

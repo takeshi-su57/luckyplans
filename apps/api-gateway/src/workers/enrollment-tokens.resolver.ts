@@ -1,4 +1,6 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Field, ID, Int, Mutation, ObjectType, Query, Resolver } from '@nestjs/graphql';
+import { SessionGuard } from '../auth/session.guard';
 import { EnrollmentTokensService } from './enrollment-tokens.service';
 
 @ObjectType()
@@ -48,11 +50,13 @@ export class EnrollmentTokensResolver {
   constructor(private readonly enrollmentTokensService: EnrollmentTokensService) {}
 
   @Query(() => [EdgeEnrollmentToken])
+  @UseGuards(SessionGuard)
   async edgeEnrollmentTokens(): Promise<EdgeEnrollmentToken[]> {
     return this.enrollmentTokensService.listTokens();
   }
 
   @Mutation(() => CreatedEdgeEnrollmentToken)
+  @UseGuards(SessionGuard)
   async createEdgeEnrollmentToken(
     @Args('label', { nullable: true }) label?: string,
     @Args('expiresAt', { nullable: true }) expiresAt?: Date,
@@ -62,6 +66,7 @@ export class EnrollmentTokensResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(SessionGuard)
   async revokeEdgeEnrollmentToken(@Args('id') id: string): Promise<boolean> {
     return this.enrollmentTokensService.revokeToken(id);
   }

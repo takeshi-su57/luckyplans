@@ -9,14 +9,15 @@ LuckyPlans includes a full observability stack covering **metrics**, **logs**, a
 
 ## Quick Reference
 
-| Tool | Local URL | K8s Access | Purpose |
-|------|-----------|------------|---------|
-| Grafana | http://localhost:3002 | `kubectl -n monitoring port-forward svc/grafana 3002:3000` | Dashboards, log/trace exploration |
-| Prometheus | http://localhost:9090 | `kubectl -n monitoring port-forward svc/prometheus 9090:9090` | Metrics queries, target health |
-| Loki | http://localhost:3100 | (via Grafana) | Log aggregation |
-| Tempo | http://localhost:3200 | (via Grafana) | Distributed traces |
+| Tool       | Local URL             | K8s Access                                                    | Purpose                           |
+| ---------- | --------------------- | ------------------------------------------------------------- | --------------------------------- |
+| Grafana    | http://localhost:3002 | `kubectl -n monitoring port-forward svc/grafana 3002:3000`    | Dashboards, log/trace exploration |
+| Prometheus | http://localhost:9090 | `kubectl -n monitoring port-forward svc/prometheus 9090:9090` | Metrics queries, target health    |
+| Loki       | http://localhost:3100 | (via Grafana)                                                 | Log aggregation                   |
+| Tempo      | http://localhost:3200 | (via Grafana)                                                 | Distributed traces                |
 
 Production host routing:
+
 - Grafana is exposed at `https://admin.luckyplans.xyz/grafana`
 - App/API traffic is split across `app.luckyplans.xyz` and `api.luckyplans.xyz`
 - Legacy API remains available at `https://v0.api.luckyplans.xyz` through the `legacy-v0-api` in-cluster proxy
@@ -59,13 +60,13 @@ Open Grafana → **LuckyPlans** folder → **RED Metrics**.
 
 This dashboard shows the [RED method](https://grafana.com/blog/2018/08/02/the-red-method-how-to-instrument-your-services/) for each service:
 
-| Panel | What it shows | What to look for |
-|-------|--------------|------------------|
-| Request Rate by Service | Requests per second per service | Sudden drops = service may be down |
-| Error Rate by Service (5xx) | Percentage of 5xx responses | Yellow > 1%, Red > 5% — investigate immediately |
-| Request Duration (p50/p95/p99) | Latency percentiles | p95 > 2s triggers an alert |
-| Request Rate by Route (Top 10) | Busiest endpoints | Identify hot paths for optimization |
-| Slowest Endpoints (p95) | Table of slowest routes | Find performance bottlenecks |
+| Panel                          | What it shows                   | What to look for                                |
+| ------------------------------ | ------------------------------- | ----------------------------------------------- |
+| Request Rate by Service        | Requests per second per service | Sudden drops = service may be down              |
+| Error Rate by Service (5xx)    | Percentage of 5xx responses     | Yellow > 1%, Red > 5% — investigate immediately |
+| Request Duration (p50/p95/p99) | Latency percentiles             | p95 > 2s triggers an alert                      |
+| Request Rate by Route (Top 10) | Busiest endpoints               | Identify hot paths for optimization             |
+| Slowest Endpoints (p95)        | Table of slowest routes         | Find performance bottlenecks                    |
 
 Use the **service** dropdown at the top to filter by `api-gateway` or `service-core`.
 
@@ -73,11 +74,11 @@ Use the **service** dropdown at the top to filter by `api-gateway` or `service-c
 
 Open Grafana → **LuckyPlans** folder → **Infrastructure**.
 
-| Panel | What it shows |
-|-------|--------------|
-| Service Targets Up/Down | Whether Prometheus can reach each scrape target |
-| OTel Collector — Exported Spans/Metrics/Logs | Throughput of the telemetry pipeline |
-| OTel Collector — Dropped Telemetry | If the collector is dropping data (memory pressure) |
+| Panel                                        | What it shows                                       |
+| -------------------------------------------- | --------------------------------------------------- |
+| Service Targets Up/Down                      | Whether Prometheus can reach each scrape target     |
+| OTel Collector — Exported Spans/Metrics/Logs | Throughput of the telemetry pipeline                |
+| OTel Collector — Dropped Telemetry           | If the collector is dropping data (memory pressure) |
 
 ## Viewing Traces
 
@@ -145,17 +146,17 @@ count_over_time({service_name="api-gateway"} | json | level="error" [1m])
 
 Every log line is structured JSON with these fields:
 
-| Field | Description |
-|-------|-------------|
-| `level` | Log level (`debug`, `info`, `warn`, `error`) |
-| `msg` | Log message |
-| `traceId` | OpenTelemetry trace ID (for correlation) |
-| `spanId` | OpenTelemetry span ID |
-| `req.method` | HTTP method (api-gateway only) |
-| `req.url` | Request URL (api-gateway only) |
-| `res.statusCode` | Response status code (api-gateway only) |
-| `responseTime` | Request duration in ms (api-gateway only) |
-| `context` | NestJS context (class name) |
+| Field            | Description                                  |
+| ---------------- | -------------------------------------------- |
+| `level`          | Log level (`debug`, `info`, `warn`, `error`) |
+| `msg`            | Log message                                  |
+| `traceId`        | OpenTelemetry trace ID (for correlation)     |
+| `spanId`         | OpenTelemetry span ID                        |
+| `req.method`     | HTTP method (api-gateway only)               |
+| `req.url`        | Request URL (api-gateway only)               |
+| `res.statusCode` | Response status code (api-gateway only)      |
+| `responseTime`   | Request duration in ms (api-gateway only)    |
+| `context`        | NestJS context (class name)                  |
 
 ### Log-to-trace correlation
 
@@ -206,6 +207,7 @@ Edge fleet operations are visible through worker state and upgrade status transi
 2. **`targetVersion` set but status never leaves `UPGRADE_PENDING`**: worker is likely busy (idle-only upgrade policy) or connectivity is unstable.
 3. **Frequent `FAILED` upgrades**: verify release URLs, checksum/signature metadata, and edge host permissions.
 4. **`ROLLED_BACK` status**: check the recovery state path, failed target marker, and service restart logs.
+5. **`QUARANTINED` worker**: inspect the last three task failures. A successful task completion resets the worker failure counter; three consecutive failures quarantine the worker.
 
 For step-by-step operator procedures, see [Edge Lifecycle Operator Runbooks](/docs/guides/developer#edge-lifecycle-operator-runbooks).
 
@@ -250,27 +252,27 @@ rate(otelcol_exporter_sent_spans_total[5m])
 
 Open http://localhost:9090/targets to verify all targets are UP:
 
-| Target | Expected |
-|--------|----------|
-| `otel-collector` | UP — app metrics from NestJS services |
-| `prometheus` | UP — self-monitoring |
-| `redis` | UP — Redis metrics (K8s only, via redis-exporter) |
-| `keycloak` | UP — Keycloak Micrometer metrics (K8s only) |
+| Target           | Expected                                          |
+| ---------------- | ------------------------------------------------- |
+| `otel-collector` | UP — app metrics from NestJS services             |
+| `prometheus`     | UP — self-monitoring                              |
+| `redis`          | UP — Redis metrics (K8s only, via redis-exporter) |
+| `keycloak`       | UP — Keycloak Micrometer metrics (K8s only)       |
 
 ## Alerts
 
 Prometheus evaluates these alert rules (defined in the Prometheus configmap):
 
-| Alert | Condition | Severity | What to do |
-|-------|-----------|----------|------------|
-| `HighErrorRate` | >5% of requests return 5xx for 5 min | warning | Check api-gateway logs for errors, look at traces for failing requests |
-| `HighLatency` | p95 latency >2s for 5 min | warning | Find slow traces in Tempo, check for Redis connection issues |
-| `RedisDown` | Redis exporter unreachable for 1 min | critical | Check Redis pod status, restart if needed |
-| `ServiceTargetDown` | Any scrape target down for 2 min | critical | Check if the OTel Collector or exporters are running |
+| Alert               | Condition                            | Severity | What to do                                                             |
+| ------------------- | ------------------------------------ | -------- | ---------------------------------------------------------------------- |
+| `HighErrorRate`     | >5% of requests return 5xx for 5 min | warning  | Check api-gateway logs for errors, look at traces for failing requests |
+| `HighLatency`       | p95 latency >2s for 5 min            | warning  | Find slow traces in Tempo, check for Redis connection issues           |
+| `RedisDown`         | Redis exporter unreachable for 1 min | critical | Check Redis pod status, restart if needed                              |
+| `ServiceTargetDown` | Any scrape target down for 2 min     | critical | Check if the OTel Collector or exporters are running                   |
 
 View active alerts: http://localhost:9090/alerts
 
-> **Note:** Alert *notifications* (email, Slack, PagerDuty) are not yet configured. Alerts currently only show in the Prometheus UI.
+> **Note:** Alert _notifications_ (email, Slack, PagerDuty) are not yet configured. Alerts currently only show in the Prometheus UI.
 
 ## Debugging Common Issues
 

@@ -9,6 +9,7 @@ describe('EdgesConnectivityController', () => {
   };
   const releasesService = {
     getUpgradeArtifactForWorker: vi.fn(),
+    syncWorkerUpgradeStatusFromHeartbeat: vi.fn(),
   };
   const controller = new EdgesConnectivityController(
     workersService as never,
@@ -130,6 +131,11 @@ describe('EdgesConnectivityController', () => {
       upgradeStatus: 'DOWNLOADING',
       upgradeMessage: 'download started',
     });
+    expect(releasesService.syncWorkerUpgradeStatusFromHeartbeat).toHaveBeenCalledWith(
+      'worker_1',
+      'DOWNLOADING',
+      'download started',
+    );
     expect(result.upgradeStatus).toBe('DOWNLOADING');
     expect(result.upgradeMessage).toBe('download started');
   });

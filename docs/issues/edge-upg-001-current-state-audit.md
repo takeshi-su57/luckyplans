@@ -1,21 +1,17 @@
-# EDGE-UPG-001 Current-State Audit
+# Supporting Audit: Current Edge Lifecycle State
 
 Date: 2026-06-01
 Status: Draft audit
 
 ## Purpose
 
-This audit compares the `docs/temp/*` edge architecture drafts against the current LuckyPlans implementation. The goal is to keep the valid product direction while preventing the temp specs from bypassing existing API gateway, worker, release, task lease, and edge-agent work.
+This audit compares the historical temporary edge architecture drafts against the current LuckyPlans implementation. The goal is to keep the valid product direction while preventing the temp specs from bypassing existing API gateway, worker, release, task lease, and edge-agent work.
 
 No implementation changes are included in this audit.
 
 ## Reviewed Inputs
 
-- `docs/temp/new.md`
-- `docs/temp/2026-05-27-edge-architecture-phase-1-identity-session.md`
-- `docs/temp/2026-05-27-edge-architecture-phase-2-tasks-leases.md`
-- `docs/temp/2026-05-27-edge-architecture-phase-3-artifacts.md`
-- `docs/temp/2026-05-27-edge-architecture-phase-4-updates-security-observability.md`
+- Historical temporary edge architecture drafts for identity/session, task leases, artifacts, updates, security, observability, and the combined edge architecture proposal. These drafts were superseded by the `EDGE-UPG-*` issue chain and later removed because they were temporary planning material.
 - `docs/superpowers/specs/2026-05-21-edge-lifecycle-design.md`
 - `docs/superpowers/plans/2026-05-21-edge-lifecycle-mvp-implementation-plan.md`
 - `apps/edge-agent/src/*`
@@ -34,28 +30,28 @@ The next implementation path should remain the ordered `EDGE-UPG-*` issue chain 
 
 ## Capability Map
 
-| Capability | Current support | Evidence | Audit decision | Follow-up |
-| --- | --- | --- | --- | --- |
-| Edge registration | Supported | `EdgesRegistrationController` exposes `POST /internal/edges/register`; `WorkersService.upsertWorkerByDeviceNumber`; `CredentialsService.issueCredential`; `EdgeEnrollmentToken` model | Keep | Harden only if audit follow-up finds token lifecycle gaps |
-| Durable edge credentials | Supported | `WorkerCredential` model stores hash/prefix/status/expiry; `WorkerAuthGuard` protects internal task/connectivity endpoints | Keep | Continue using gateway-owned credential lifecycle |
-| Local edge config | Supported | `apps/edge-agent/src/config.ts` persists `serverUrl`, `workerId`, `deviceNumber`, `credential`, `currentVersion` | Keep | Review secret handling during OS service work |
-| Connectivity heartbeat | Partially supported | `EdgesConnectivityController` updates worker presence and returns release intent; `EdgeApiClient.sendConnectivityHeartbeat` exists | Keep, fix mismatch | `EDGE-UPG-002` |
-| Runtime health snapshot | Minimal | Worker has `lastSeenAt`, `version`, `upgradeStatus`, `upgradeMessage`; no explicit runtime state or uptime | Keep, extend | `EDGE-UPG-004` |
-| Task leasing and task heartbeat | Supported via REST polling | `EdgesTasksController`; `BacktestService.leaseNextTask`; `BacktestService.heartbeat`; `leaseExpiresAt`; `BacktestLeaseRecoveryService` | Keep | Avoid WebSocket task offers for now |
-| Result ingestion | Supported for current backtest result shape | `EdgesTasksController.results`; `BacktestService.ingestResults`; edge runner sends results as JSON | Keep | Revisit artifacts only if payload size requires it |
-| Generic artifact transfer | Not implemented | No `/v1/artifacts/upload-url` or `/v1/artifacts/download-url` in current gateway; current result flow is JSON | Defer | `EDGE-UPG-012` |
-| Release registry | Supported | `EdgeRelease` model; `ReleasesService.createRelease`; `ReleasesResolver` | Keep | `EDGE-UPG-006`, `EDGE-UPG-010` |
-| Target version orchestration | Supported | `Worker.targetVersion`; `ReleasesService.setWorkerTargetVersion`; upgrade campaign models | Keep | `EDGE-UPG-006` |
-| Release signature check on server metadata | Supported | `ReleasesService.createRelease` verifies checksum/signature metadata using `EDGE_RELEASE_SIGNING_PUBLIC_KEY` | Keep | Edge-side verification still needed in `EDGE-UPG-007` |
-| Edge upgrade state machine | Partially supported | `apps/edge-agent/src/upgrade.ts` models status transitions and handler injection | Keep, extend | `EDGE-UPG-007`, `EDGE-UPG-008` |
-| Real download/checksum/signature verification on edge | Not implemented | `maybeUpgrade` accepts injected `download`, `verify`, and `install` handlers; no production handlers are wired | Keep, implement later | `EDGE-UPG-007` |
-| External updater and OS service restart | Not implemented | No systemd/Windows Service installer or updater boundary in edge-agent | Keep, implement later | `EDGE-UPG-005`, `EDGE-UPG-008` |
-| Rollback/failed boot recovery | Partially represented server-side, not implemented edge-side | `WorkerUpgradeStatus.ROLLED_BACK`; `ReleasesService.rollbackUpgradeCampaign`; no local failed-boot recovery | Keep, implement later | `EDGE-UPG-009` |
-| Observability/runbooks | Partially documented | Existing docs mention edge lifecycle states; no dedicated operator runbook from this issue chain | Keep, extend | `EDGE-UPG-011` |
-| WebSocket sessions | Not implemented | No WebSocket gateway or `edge_sessions` model; approved lifecycle design explicitly chose polling-driven orchestration and excluded realtime push | Defer | `EDGE-UPG-013` |
-| `/v1/*` public edge endpoints | Not current architecture | Existing endpoints are internal gateway routes under `/internal/edges/*` | Drop for this milestone | Keep gateway internal routes unless API versioning is separately required |
-| New edge microservice | Not justified | AGENTS guidance defaults to extending gateway unless independent scaling/lifecycle is required | Drop | Keep edge control plane in API gateway |
-| macOS launchd service | Not in approved lifecycle scope | Existing design targets Windows/Linux | Defer | Add a separate platform issue if macOS becomes required |
+| Capability                                            | Current support                                              | Evidence                                                                                                                                                                              | Audit decision          | Follow-up                                                                 |
+| ----------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------- |
+| Edge registration                                     | Supported                                                    | `EdgesRegistrationController` exposes `POST /internal/edges/register`; `WorkersService.upsertWorkerByDeviceNumber`; `CredentialsService.issueCredential`; `EdgeEnrollmentToken` model | Keep                    | Harden only if audit follow-up finds token lifecycle gaps                 |
+| Durable edge credentials                              | Supported                                                    | `WorkerCredential` model stores hash/prefix/status/expiry; `WorkerAuthGuard` protects internal task/connectivity endpoints                                                            | Keep                    | Continue using gateway-owned credential lifecycle                         |
+| Local edge config                                     | Supported                                                    | `apps/edge-agent/src/config.ts` persists `serverUrl`, `workerId`, `deviceNumber`, `credential`, `currentVersion`                                                                      | Keep                    | Review secret handling during OS service work                             |
+| Connectivity heartbeat                                | Partially supported                                          | `EdgesConnectivityController` updates worker presence and returns release intent; `EdgeApiClient.sendConnectivityHeartbeat` exists                                                    | Keep, fix mismatch      | `EDGE-UPG-002`                                                            |
+| Runtime health snapshot                               | Minimal                                                      | Worker has `lastSeenAt`, `version`, `upgradeStatus`, `upgradeMessage`; no explicit runtime state or uptime                                                                            | Keep, extend            | `EDGE-UPG-004`                                                            |
+| Task leasing and task heartbeat                       | Supported via REST polling                                   | `EdgesTasksController`; `BacktestService.leaseNextTask`; `BacktestService.heartbeat`; `leaseExpiresAt`; `BacktestLeaseRecoveryService`                                                | Keep                    | Avoid WebSocket task offers for now                                       |
+| Result ingestion                                      | Supported for current backtest result shape                  | `EdgesTasksController.results`; `BacktestService.ingestResults`; edge runner sends results as JSON                                                                                    | Keep                    | Revisit artifacts only if payload size requires it                        |
+| Generic artifact transfer                             | Not implemented                                              | No `/v1/artifacts/upload-url` or `/v1/artifacts/download-url` in current gateway; current result flow is JSON                                                                         | Defer                   | `EDGE-UPG-012`                                                            |
+| Release registry                                      | Supported                                                    | `EdgeRelease` model; `ReleasesService.createRelease`; `ReleasesResolver`                                                                                                              | Keep                    | `EDGE-UPG-006`, `EDGE-UPG-010`                                            |
+| Target version orchestration                          | Supported                                                    | `Worker.targetVersion`; `ReleasesService.setWorkerTargetVersion`; upgrade campaign models                                                                                             | Keep                    | `EDGE-UPG-006`                                                            |
+| Release signature check on server metadata            | Supported                                                    | `ReleasesService.createRelease` verifies checksum/signature metadata using `EDGE_RELEASE_SIGNING_PUBLIC_KEY`                                                                          | Keep                    | Edge-side verification still needed in `EDGE-UPG-007`                     |
+| Edge upgrade state machine                            | Partially supported                                          | `apps/edge-agent/src/upgrade.ts` models status transitions and handler injection                                                                                                      | Keep, extend            | `EDGE-UPG-007`, `EDGE-UPG-008`                                            |
+| Real download/checksum/signature verification on edge | Not implemented                                              | `maybeUpgrade` accepts injected `download`, `verify`, and `install` handlers; no production handlers are wired                                                                        | Keep, implement later   | `EDGE-UPG-007`                                                            |
+| External updater and OS service restart               | Not implemented                                              | No systemd/Windows Service installer or updater boundary in edge-agent                                                                                                                | Keep, implement later   | `EDGE-UPG-005`, `EDGE-UPG-008`                                            |
+| Rollback/failed boot recovery                         | Partially represented server-side, not implemented edge-side | `WorkerUpgradeStatus.ROLLED_BACK`; `ReleasesService.rollbackUpgradeCampaign`; no local failed-boot recovery                                                                           | Keep, implement later   | `EDGE-UPG-009`                                                            |
+| Observability/runbooks                                | Partially documented                                         | Existing docs mention edge lifecycle states; no dedicated operator runbook from this issue chain                                                                                      | Keep, extend            | `EDGE-UPG-011`                                                            |
+| WebSocket sessions                                    | Not implemented                                              | No WebSocket gateway or `edge_sessions` model; approved lifecycle design explicitly chose polling-driven orchestration and excluded realtime push                                     | Defer                   | `EDGE-UPG-013`                                                            |
+| `/v1/*` public edge endpoints                         | Not current architecture                                     | Existing endpoints are internal gateway routes under `/internal/edges/*`                                                                                                              | Drop for this milestone | Keep gateway internal routes unless API versioning is separately required |
+| New edge microservice                                 | Not justified                                                | AGENTS guidance defaults to extending gateway unless independent scaling/lifecycle is required                                                                                        | Drop                    | Keep edge control plane in API gateway                                    |
+| macOS launchd service                                 | Not in approved lifecycle scope                              | Existing design targets Windows/Linux                                                                                                                                                 | Defer                   | Add a separate platform issue if macOS becomes required                   |
 
 ## Current Implementation Notes
 

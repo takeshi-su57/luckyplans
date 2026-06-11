@@ -12,6 +12,17 @@ type CreateReleaseInput = {
   signatureAlgorithm?: string;
   signingKeyId?: string;
   notes?: string;
+  artifacts?: Array<{
+    platform: string;
+    arch: string;
+    installType: string;
+    url: string;
+    checksum: string;
+    signature: string;
+    signatureAlgorithm?: string;
+    signingKeyId?: string;
+    sizeBytes?: number;
+  }>;
 };
 
 type WorkerUpgradeStatus =
@@ -116,7 +127,7 @@ export class ReleasesService {
           findMany: (
             args: unknown,
           ) => Promise<
-            Array<{ workerId: string; phase: number; status: string; campaignId: string }>
+            Array<{ workerId?: string; phase?: number; status?: string; campaignId: string }>
           >;
           updateMany: (args: unknown) => Promise<{ count: number }>;
         };
@@ -158,7 +169,7 @@ export class ReleasesService {
           findMany: (
             args: unknown,
           ) => Promise<
-            Array<{ workerId: string; phase: number; status: string; campaignId: string }>
+            Array<{ workerId?: string; phase?: number; status?: string; campaignId: string }>
           >;
           updateMany: (args: unknown) => Promise<{ count: number }>;
         };
@@ -196,34 +207,14 @@ export class ReleasesService {
     this.verifyReleaseSignature(input);
     const signatureAlgorithm = input.signatureAlgorithm ?? 'ed25519';
     const signingKeyId = input.signingKeyId ?? null;
+    const artifacts = this.buildReleaseArtifacts(input, signatureAlgorithm, signingKeyId);
     return this.releases.create({
       data: {
         ...input,
         signatureAlgorithm,
         signingKeyId,
         artifacts: {
-          create: [
-            {
-              platform: 'win32',
-              arch: 'x64',
-              installType: 'service',
-              url: input.windowsUrl,
-              checksum: input.checksum,
-              signature: input.signature,
-              signatureAlgorithm,
-              signingKeyId,
-            },
-            {
-              platform: 'linux',
-              arch: 'x64',
-              installType: 'service',
-              url: input.linuxUrl,
-              checksum: input.checksum,
-              signature: input.signature,
-              signatureAlgorithm,
-              signingKeyId,
-            },
-          ],
+          create: artifacts,
         },
       },
     });
@@ -401,7 +392,8 @@ export class ReleasesService {
     const successRatio =
       phaseWorkers.filter((worker) => worker.status === 'SUCCEEDED').length / phaseWorkers.length;
     const failureRatio =
-      phaseWorkers.filter((worker) => worker.status === 'FAILED').length / phaseWorkers.length;
+      phaseWorkers.filter((worker) => worker.status === 'FAILED' || worker.status === 'ROLLED_BACK')
+        .length / phaseWorkers.length;
 
     if (failureRatio >= campaign.failureThreshold) {
       return this.campaigns.update({
@@ -471,14 +463,47 @@ export class ReleasesService {
     this.logger.log(
       `edge.upgrade.status_transition workerId=${workerId} status=${status} hasMessage=${Boolean(message)} messageLength=${message?.length ?? 0}`,
     );
+    await this.updateActiveCampaignWorkerStatus(workerId, status);
+    return updated;
+  }
+
+  async syncWorkerUpgradeStatusFromHeartbeat(
+    workerId: string,
+    status?: WorkerUpgradeStatus,
+    message?: string,
+  ) {
+    if (!status) return;
+    this.logger.log(
+      `edge.upgrade.heartbeat_status workerId=${workerId} status=${status} hasMessage=${Boolean(message)} messageLength=${message?.length ?? 0}`,
+    );
+    await this.updateActiveCampaignWorkerStatus(workerId, status);
+  }
+
+  private async updateActiveCampaignWorkerStatus(workerId: string, status: WorkerUpgradeStatus) {
+    const campaignStatus = this.toCampaignWorkerStatus(status);
+    const activeCampaignWorkers =
+      campaignStatus === 'IN_PROGRESS'
+        ? []
+        : await this.campaignWorkers.findMany({
+            where: { workerId, status: 'IN_PROGRESS' },
+            select: { campaignId: true },
+          });
+
     await this.campaignWorkers.updateMany({
       where: { workerId, status: 'IN_PROGRESS' },
-      data: {
-        status:
-          status === 'SUCCEEDED' ? 'SUCCEEDED' : status === 'FAILED' ? 'FAILED' : 'IN_PROGRESS',
-      },
+      data: { status: campaignStatus },
     });
-    return updated;
+
+    for (const campaignId of new Set(activeCampaignWorkers.map((worker) => worker.campaignId))) {
+      await this.advanceUpgradeCampaign(campaignId);
+    }
+  }
+
+  private toCampaignWorkerStatus(status: WorkerUpgradeStatus) {
+    if (status === 'SUCCEEDED') return 'SUCCEEDED';
+    if (status === 'FAILED') return 'FAILED';
+    if (status === 'ROLLED_BACK') return 'ROLLED_BACK';
+    return 'IN_PROGRESS';
   }
 
   private validateReleaseInput(input: CreateReleaseInput) {
@@ -507,6 +532,96 @@ export class ReleasesService {
     }
   }
 
+  private buildReleaseArtifacts(
+    input: CreateReleaseInput,
+    signatureAlgorithm: string,
+    signingKeyId: string | null,
+  ) {
+    const artifacts = input.artifacts?.map((artifact) => ({
+      platform: this.normalizeRequiredPlatform(artifact.platform),
+      arch: this.normalizeRequiredArch(artifact.arch),
+      installType: this.normalizeInstallType(artifact.installType),
+      url: artifact.url,
+      checksum: artifact.checksum,
+      signature: artifact.signature,
+      signatureAlgorithm: artifact.signatureAlgorithm ?? signatureAlgorithm,
+      signingKeyId: artifact.signingKeyId ?? signingKeyId,
+      sizeBytes: artifact.sizeBytes,
+    })) ?? [
+      {
+        platform: 'win32',
+        arch: 'x64',
+        installType: 'service',
+        url: input.windowsUrl,
+        checksum: input.checksum,
+        signature: input.signature,
+        signatureAlgorithm,
+        signingKeyId,
+      },
+      {
+        platform: 'linux',
+        arch: 'x64',
+        installType: 'service',
+        url: input.linuxUrl,
+        checksum: input.checksum,
+        signature: input.signature,
+        signatureAlgorithm,
+        signingKeyId,
+      },
+    ];
+
+    const seenArtifactTargets = new Set<string>();
+    for (const artifact of artifacts) {
+      const key = `${artifact.platform}/${artifact.arch}/${artifact.installType}`;
+      if (seenArtifactTargets.has(key)) {
+        throw new BadRequestException(`Duplicate edge release artifact target: ${key}`);
+      }
+      seenArtifactTargets.add(key);
+      this.validateReleaseArtifactInput(artifact);
+      this.verifyReleaseArtifactSignature(artifact);
+    }
+
+    return artifacts;
+  }
+
+  private validateReleaseArtifactInput(input: {
+    url: string;
+    checksum: string;
+    signature: string;
+    signatureAlgorithm: string;
+    sizeBytes?: number;
+  }) {
+    if (!/^https:\/\//.test(input.url)) {
+      throw new BadRequestException('Release artifact URLs must use HTTPS');
+    }
+    if (!/^[a-f0-9]{64}$/i.test(input.checksum)) {
+      throw new BadRequestException('Invalid release artifact checksum format');
+    }
+    if (!input.signature.trim()) {
+      throw new BadRequestException('Release artifact signature is required');
+    }
+    if (input.signatureAlgorithm.toLowerCase() !== 'ed25519') {
+      throw new BadRequestException('Unsupported release artifact signature algorithm');
+    }
+    if (
+      input.sizeBytes !== undefined &&
+      (!Number.isInteger(input.sizeBytes) || input.sizeBytes < 0)
+    ) {
+      throw new BadRequestException('Release artifact sizeBytes must be a non-negative integer');
+    }
+  }
+
+  private verifyReleaseArtifactSignature(input: { checksum: string; signature: string }) {
+    const publicKeyPem = getEnvVar('EDGE_RELEASE_SIGNING_PUBLIC_KEY');
+    const key = createPublicKey(publicKeyPem);
+    const payload = Buffer.from(input.checksum, 'utf8');
+    const signature = Buffer.from(input.signature, 'base64');
+    const ok = verifySignature(null, payload, key, signature);
+    if (!ok) {
+      throw new BadRequestException('Release artifact signature verification failed');
+    }
+  }
+
   private normalizePlatform(platform: string | null | undefined): string | null {
     if (!platform) return null;
     const normalized = platform.toLowerCase();
@@ -516,6 +631,10 @@ export class ReleasesService {
     return normalized;
   }
 
+  private normalizeRequiredPlatform(platform: string): string {
+    return this.normalizePlatform(platform) ?? platform;
+  }
+
   private normalizeArch(arch: string | null | undefined): string | null {
     if (!arch) return null;
     const normalized = arch.toLowerCase();
@@ -523,6 +642,10 @@ export class ReleasesService {
     if (normalized === 'x86_64') return 'x64';
     if (normalized === 'arm64' || normalized === 'aarch64') return 'arm64';
     return normalized;
+  }
+
+  private normalizeRequiredArch(arch: string): string {
+    return this.normalizeArch(arch) ?? arch;
   }
 
   private normalizeInstallType(installType: string | null | undefined): string {

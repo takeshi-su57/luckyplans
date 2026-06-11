@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createShutdownSignal, runEdgeDaemon } from './daemon';
+import { createShutdownSignal, runEdgeDaemon, sleepWithTimeout } from './daemon';
 
 describe('runEdgeDaemon', () => {
   it('runs one iteration and sleeps with the poll interval before shutdown', async () => {
@@ -103,5 +103,27 @@ describe('runEdgeDaemon', () => {
     });
 
     expect(sleep.mock.calls.map((call) => call[0])).toEqual([5000, 15000, 5000]);
+  });
+
+  it('interrupts timeout sleep when shutdown is requested', async () => {
+    vi.useFakeTimers();
+    const shutdown = createShutdownSignal();
+
+    try {
+      const sleepPromise = sleepWithTimeout(60000, shutdown);
+      let interrupted = false;
+      sleepPromise.then(() => {
+        interrupted = true;
+      });
+
+      shutdown.request('signal');
+      await Promise.resolve();
+      await Promise.resolve();
+
+      expect(interrupted).toBe(true);
+    } finally {
+      vi.clearAllTimers();
+      vi.useRealTimers();
+    }
   });
 });
