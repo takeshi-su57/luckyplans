@@ -103,6 +103,13 @@ type UpgradeCampaignRecord = {
   status: 'RUNNING' | 'PAUSED' | 'SUCCEEDED' | 'FAILED' | 'ROLLED_BACK';
 };
 
+type UpgradeCampaignWorkerRecord = {
+  workerId: string;
+  phase?: number;
+  status?: string;
+  campaignId: string;
+};
+
 @Injectable()
 export class ReleasesService {
   private readonly logger = new Logger(ReleasesService.name);
@@ -124,11 +131,7 @@ export class ReleasesService {
         };
         upgradeCampaignWorker: {
           createMany: (args: unknown) => Promise<{ count: number }>;
-          findMany: (
-            args: unknown,
-          ) => Promise<
-            Array<{ workerId?: string; phase?: number; status?: string; campaignId: string }>
-          >;
+          findMany: (args: unknown) => Promise<UpgradeCampaignWorkerRecord[]>;
           updateMany: (args: unknown) => Promise<{ count: number }>;
         };
         worker: {
@@ -166,11 +169,7 @@ export class ReleasesService {
       this.prisma as unknown as {
         upgradeCampaignWorker: {
           createMany: (args: unknown) => Promise<{ count: number }>;
-          findMany: (
-            args: unknown,
-          ) => Promise<
-            Array<{ workerId?: string; phase?: number; status?: string; campaignId: string }>
-          >;
+          findMany: (args: unknown) => Promise<UpgradeCampaignWorkerRecord[]>;
           updateMany: (args: unknown) => Promise<{ count: number }>;
         };
       }

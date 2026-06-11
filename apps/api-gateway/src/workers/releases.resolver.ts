@@ -140,12 +140,23 @@ class UpgradeCampaign {
   status!: string;
 }
 
+type UpgradeCampaignServiceResult = Omit<UpgradeCampaign, 'previousVersion'> & {
+  previousVersion?: string | null;
+};
+
 @Resolver()
 export class ReleasesResolver {
   constructor(
     private readonly releasesService: ReleasesService,
     private readonly realtimeEvents: RealtimeEventsService,
   ) {}
+
+  private toUpgradeCampaign(campaign: UpgradeCampaignServiceResult): UpgradeCampaign {
+    return {
+      ...campaign,
+      previousVersion: campaign.previousVersion ?? undefined,
+    };
+  }
 
   @Mutation(() => EdgeRelease)
   @UseGuards(SessionGuard)
@@ -237,25 +248,27 @@ export class ReleasesResolver {
     @Args('successThreshold', { nullable: true }) successThreshold?: number,
     @Args('failureThreshold', { nullable: true }) failureThreshold?: number,
   ): Promise<UpgradeCampaign> {
-    return this.releasesService.startUpgradeCampaign({
-      workerIds,
-      targetVersion,
-      forceMode,
-      phaseSize,
-      successThreshold,
-      failureThreshold,
-    });
+    return this.toUpgradeCampaign(
+      await this.releasesService.startUpgradeCampaign({
+        workerIds,
+        targetVersion,
+        forceMode,
+        phaseSize,
+        successThreshold,
+        failureThreshold,
+      }),
+    );
   }
 
   @Mutation(() => UpgradeCampaign)
   @UseGuards(SessionGuard)
   async advanceUpgradeCampaign(@Args('campaignId') campaignId: string): Promise<UpgradeCampaign> {
-    return this.releasesService.advanceUpgradeCampaign(campaignId);
+    return this.toUpgradeCampaign(await this.releasesService.advanceUpgradeCampaign(campaignId));
   }
 
   @Mutation(() => UpgradeCampaign)
   @UseGuards(SessionGuard)
   async rollbackUpgradeCampaign(@Args('campaignId') campaignId: string): Promise<UpgradeCampaign> {
-    return this.releasesService.rollbackUpgradeCampaign(campaignId);
+    return this.toUpgradeCampaign(await this.releasesService.rollbackUpgradeCampaign(campaignId));
   }
 }

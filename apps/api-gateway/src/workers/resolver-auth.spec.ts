@@ -50,9 +50,8 @@ describe('GraphQL resolver authorization', () => {
     'protects %s control-plane methods with SessionGuard',
     (ResolverClass, methods) => {
       for (const method of methods) {
-        const guards = Reflect.getMetadata(GUARDS_METADATA, ResolverClass.prototype[method]) as
-          | unknown[]
-          | undefined;
+        const handler = (ResolverClass.prototype as unknown as Record<string, object>)[method];
+        const guards = Reflect.getMetadata(GUARDS_METADATA, handler) as unknown[] | undefined;
 
         expect(guards, `${ResolverClass.name}.${method}`).toContain(SessionGuard);
       }
