@@ -1,12 +1,15 @@
 import 'reflect-metadata';
-import { GUARDS_METADATA } from '@nestjs/common/constants';
+import { GUARDS_METADATA, MODULE_METADATA } from '@nestjs/common/constants';
 import { describe, expect, it } from 'vitest';
+import { AuthModule } from '../auth/auth.module';
 import { SessionGuard } from '../auth/session.guard';
+import { BacktestModule } from '../backtest/backtest.module';
 import { BacktestResolver } from '../backtest/backtest.resolver';
 import { CredentialsResolver } from './credentials.resolver';
 import { EnrollmentTokensResolver } from './enrollment-tokens.resolver';
 import { ReleasesResolver } from './releases.resolver';
 import { WorkersResolver } from './workers.resolver';
+import { WorkersModule } from './workers.module';
 
 const guardedMethods = [
   [
@@ -55,6 +58,15 @@ describe('GraphQL resolver authorization', () => {
 
         expect(guards, `${ResolverClass.name}.${method}`).toContain(SessionGuard);
       }
+    },
+  );
+
+  it.each([WorkersModule, BacktestModule])(
+    'imports AuthModule where %s providers use SessionGuard',
+    (ModuleClass) => {
+      const imports = Reflect.getMetadata(MODULE_METADATA.IMPORTS, ModuleClass) as unknown[];
+
+      expect(imports).toContain(AuthModule);
     },
   );
 });
