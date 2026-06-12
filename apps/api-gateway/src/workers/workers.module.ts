@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
 import { CredentialsResolver } from './credentials.resolver';
 import { CredentialsService } from './credentials.service';
@@ -10,7 +11,7 @@ import { WorkersResolver } from './workers.resolver';
 import { WorkersService } from './workers.service';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [AuthModule, DatabaseModule],
   providers: [
     WorkersService,
     WorkersResolver,
