@@ -1,669 +1,89 @@
 /* eslint-disable */
-import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = T | null | undefined;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+/** Internal type. DO NOT USE DIRECTLY. */
+type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+/** Internal type. DO NOT USE DIRECTLY. */
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-/** All built-in and custom scalars, mapped to their actual values */
-export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
-  DateTime: { input: string; output: string; }
-};
-
-export type Award = {
-  __typename?: 'Award';
-  createdAt: Scalars['DateTime']['output'];
-  date?: Maybe<Scalars['DateTime']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  issuer?: Maybe<Scalars['String']['output']>;
-  sortOrder: Scalars['Int']['output'];
-  title: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type BacktestResult = {
-  __typename?: 'BacktestResult';
-  configId: Scalars['String']['output'];
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['ID']['output'];
-  metrics: Scalars['String']['output'];
-};
-
-export type BacktestResultsOptionsInput = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<Scalars['String']['input']>;
-  sort?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type BacktestTask = {
-  __typename?: 'BacktestTask';
-  assignedWorkerId?: Maybe<Scalars['String']['output']>;
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['ID']['output'];
-  interval: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  processedConfigs?: Maybe<Scalars['Int']['output']>;
-  status: Scalars['String']['output'];
-  symbol: Scalars['String']['output'];
-  totalConfigs?: Maybe<Scalars['Int']['output']>;
-};
-
-export type Certification = {
-  __typename?: 'Certification';
-  createdAt: Scalars['DateTime']['output'];
-  expiryDate?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['ID']['output'];
-  issueDate?: Maybe<Scalars['DateTime']['output']>;
-  issuer: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  sortOrder: Scalars['Int']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-  url?: Maybe<Scalars['String']['output']>;
-};
-
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type CreateAwardInput = {
-  date?: InputMaybe<Scalars['DateTime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  issuer?: InputMaybe<Scalars['String']['input']>;
-  title: Scalars['String']['input'];
+  date?: string | null | undefined;
+  description?: string | null | undefined;
+  issuer?: string | null | undefined;
+  title: string;
 };
 
 export type CreateBacktestTaskInput = {
-  assignedWorkerId: Scalars['String']['input'];
-  interval: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  searchStrategy: Scalars['String']['input'];
-  strategyTemplateId?: InputMaybe<Scalars['ID']['input']>;
-  symbol: Scalars['String']['input'];
+  assignedWorkerId: string;
+  interval: string;
+  name: string;
+  searchStrategy: string;
+  strategyTemplateId?: string | number | null | undefined;
+  symbol: string;
 };
 
 export type CreateCertificationInput = {
-  expiryDate?: InputMaybe<Scalars['DateTime']['input']>;
-  issueDate?: InputMaybe<Scalars['DateTime']['input']>;
-  issuer: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  url?: InputMaybe<Scalars['String']['input']>;
+  expiryDate?: string | null | undefined;
+  issueDate?: string | null | undefined;
+  issuer: string;
+  name: string;
+  url?: string | null | undefined;
 };
 
 export type CreateEducationInput = {
-  degree?: InputMaybe<Scalars['String']['input']>;
-  description?: InputMaybe<Array<Scalars['String']['input']>>;
-  endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  field?: InputMaybe<Scalars['String']['input']>;
-  school: Scalars['String']['input'];
-  startDate: Scalars['DateTime']['input'];
+  degree?: string | null | undefined;
+  description?: Array<string> | null | undefined;
+  endDate?: string | null | undefined;
+  field?: string | null | undefined;
+  school: string;
+  startDate: string;
 };
 
 export type CreateExperienceInput = {
-  company: Scalars['String']['input'];
-  description?: InputMaybe<Array<Scalars['String']['input']>>;
-  endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  role: Scalars['String']['input'];
-  startDate: Scalars['DateTime']['input'];
+  company: string;
+  description?: Array<string> | null | undefined;
+  endDate?: string | null | undefined;
+  role: string;
+  startDate: string;
 };
 
 export type CreateHobbyInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
+  description?: string | null | undefined;
+  name: string;
 };
 
 export type CreateLanguageInput = {
-  name: Scalars['String']['input'];
-  proficiency?: InputMaybe<Scalars['String']['input']>;
+  name: string;
+  proficiency?: string | null | undefined;
 };
 
 export type CreateProjectInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  images?: InputMaybe<Array<Scalars['String']['input']>>;
-  liveUrl?: InputMaybe<Scalars['String']['input']>;
-  repoUrl?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
-  title: Scalars['String']['input'];
+  description?: string | null | undefined;
+  images?: Array<string> | null | undefined;
+  liveUrl?: string | null | undefined;
+  repoUrl?: string | null | undefined;
+  tags?: Array<string> | null | undefined;
+  title: string;
 };
 
 export type CreateSkillCategoryInput = {
-  name: Scalars['String']['input'];
+  name: string;
 };
 
 export type CreateSkillInput = {
-  categoryId?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  proficiency?: InputMaybe<Proficiency>;
+  categoryId?: string | null | undefined;
+  name: string;
+  proficiency?: Proficiency | null | undefined;
 };
 
 export type CreateSocialLinkInput = {
-  label?: InputMaybe<Scalars['String']['input']>;
-  platform: Scalars['String']['input'];
-  url: Scalars['String']['input'];
+  label?: string | null | undefined;
+  platform: string;
+  url: string;
 };
 
 export type CreateStrategyTemplateInput = {
-  category?: InputMaybe<Scalars['String']['input']>;
-  factoryConfig: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-};
-
-export type CreatedEdgeEnrollmentToken = {
-  __typename?: 'CreatedEdgeEnrollmentToken';
-  createdAt: Scalars['DateTime']['output'];
-  expiresAt?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['ID']['output'];
-  label?: Maybe<Scalars['String']['output']>;
-  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
-  maxUses?: Maybe<Scalars['Int']['output']>;
-  revokedAt?: Maybe<Scalars['DateTime']['output']>;
-  status: Scalars['String']['output'];
-  token: Scalars['String']['output'];
-  tokenPrefix: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-  usedCount: Scalars['Int']['output'];
-};
-
-export type DeleteResult = {
-  __typename?: 'DeleteResult';
-  success: Scalars['Boolean']['output'];
-};
-
-export type EdgeEnrollmentToken = {
-  __typename?: 'EdgeEnrollmentToken';
-  createdAt: Scalars['DateTime']['output'];
-  expiresAt?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['ID']['output'];
-  label?: Maybe<Scalars['String']['output']>;
-  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
-  maxUses?: Maybe<Scalars['Int']['output']>;
-  revokedAt?: Maybe<Scalars['DateTime']['output']>;
-  status: Scalars['String']['output'];
-  tokenPrefix: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-  usedCount: Scalars['Int']['output'];
-};
-
-export type EdgeRelease = {
-  __typename?: 'EdgeRelease';
-  artifacts: Array<EdgeReleaseArtifact>;
-  checksum: Scalars['String']['output'];
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['ID']['output'];
-  linuxUrl: Scalars['String']['output'];
-  notes?: Maybe<Scalars['String']['output']>;
-  signature: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-  version: Scalars['String']['output'];
-  windowsUrl: Scalars['String']['output'];
-};
-
-export type EdgeReleaseArtifact = {
-  __typename?: 'EdgeReleaseArtifact';
-  arch: Scalars['String']['output'];
-  checksum: Scalars['String']['output'];
-  installType: Scalars['String']['output'];
-  platform: Scalars['String']['output'];
-  signature: Scalars['String']['output'];
-  signatureAlgorithm: Scalars['String']['output'];
-  signingKeyId?: Maybe<Scalars['String']['output']>;
-  sizeBytes?: Maybe<Scalars['Int']['output']>;
-  url: Scalars['String']['output'];
-};
-
-export type EdgeReleaseArtifactInput = {
-  arch: Scalars['String']['input'];
-  checksum: Scalars['String']['input'];
-  installType: Scalars['String']['input'];
-  platform: Scalars['String']['input'];
-  signature: Scalars['String']['input'];
-  signatureAlgorithm?: InputMaybe<Scalars['String']['input']>;
-  signingKeyId?: InputMaybe<Scalars['String']['input']>;
-  sizeBytes?: InputMaybe<Scalars['Int']['input']>;
-  url: Scalars['String']['input'];
-  version?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type Education = {
-  __typename?: 'Education';
-  createdAt: Scalars['DateTime']['output'];
-  degree?: Maybe<Scalars['String']['output']>;
-  description: Array<Scalars['String']['output']>;
-  endDate?: Maybe<Scalars['DateTime']['output']>;
-  field?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  school: Scalars['String']['output'];
-  sortOrder: Scalars['Int']['output'];
-  startDate: Scalars['DateTime']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type Experience = {
-  __typename?: 'Experience';
-  company: Scalars['String']['output'];
-  createdAt: Scalars['DateTime']['output'];
-  description: Array<Scalars['String']['output']>;
-  endDate?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['ID']['output'];
-  role: Scalars['String']['output'];
-  sortOrder: Scalars['Int']['output'];
-  startDate: Scalars['DateTime']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type Hobby = {
-  __typename?: 'Hobby';
-  createdAt: Scalars['DateTime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  sortOrder: Scalars['Int']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type IssuedWorkerCredential = {
-  __typename?: 'IssuedWorkerCredential';
-  credential: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  keyPrefix: Scalars['String']['output'];
-  workerId: Scalars['String']['output'];
-};
-
-export type Language = {
-  __typename?: 'Language';
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  proficiency: Scalars['String']['output'];
-  sortOrder: Scalars['Int']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  advanceUpgradeCampaign: UpgradeCampaign;
-  cancelBacktestTask: BacktestTask;
-  createAward: Award;
-  createBacktestTask: BacktestTask;
-  createCertification: Certification;
-  createEdgeEnrollmentToken: CreatedEdgeEnrollmentToken;
-  createEdgeRelease: EdgeRelease;
-  createEducation: Education;
-  createExperience: Experience;
-  createHobby: Hobby;
-  createLanguage: Language;
-  createProject: Project;
-  createSkill: Skill;
-  createSkillCategory: SkillCategory;
-  createSocialLink: SocialLink;
-  createStrategyTemplate: StrategyTemplate;
-  createWorker: Worker;
-  deleteAward: DeleteResult;
-  deleteCertification: DeleteResult;
-  deleteEducation: DeleteResult;
-  deleteExperience: DeleteResult;
-  deleteHobby: DeleteResult;
-  deleteLanguage: DeleteResult;
-  deleteProject: DeleteResult;
-  deleteSkill: DeleteResult;
-  deleteSkillCategory: DeleteResult;
-  deleteSocialLink: DeleteResult;
-  disableWorker?: Maybe<Worker>;
-  issueWorkerCredential: IssuedWorkerCredential;
-  reorderAwards: DeleteResult;
-  reorderCertifications: DeleteResult;
-  reorderEducation: DeleteResult;
-  reorderExperiences: DeleteResult;
-  reorderHobbies: DeleteResult;
-  reorderLanguages: DeleteResult;
-  reorderProjects: DeleteResult;
-  reorderSkills: DeleteResult;
-  reorderSocialLinks: DeleteResult;
-  reportWorkerUpgradeStatus: Scalars['Boolean']['output'];
-  retryBacktestTask: BacktestTask;
-  revokeEdgeEnrollmentToken: Scalars['Boolean']['output'];
-  revokeWorkerCredential: Scalars['Boolean']['output'];
-  rollbackUpgradeCampaign: UpgradeCampaign;
-  rotateWorkerCredential: IssuedWorkerCredential;
-  setWorkerTargetVersion: Scalars['Int']['output'];
-  startUpgradeCampaign: UpgradeCampaign;
-  updateAward?: Maybe<Award>;
-  updateCertification?: Maybe<Certification>;
-  updateEducation?: Maybe<Education>;
-  updateExperience?: Maybe<Experience>;
-  updateHobby?: Maybe<Hobby>;
-  updateLanguage?: Maybe<Language>;
-  updateProfile: UserProfile;
-  updateProject?: Maybe<Project>;
-  updateSkill?: Maybe<Skill>;
-  updateSkillCategory?: Maybe<SkillCategory>;
-  updateSocialLink?: Maybe<SocialLink>;
-  updateStrategyTemplate: StrategyTemplate;
-};
-
-
-export type MutationAdvanceUpgradeCampaignArgs = {
-  campaignId: Scalars['String']['input'];
-};
-
-
-export type MutationCancelBacktestTaskArgs = {
-  taskId: Scalars['String']['input'];
-};
-
-
-export type MutationCreateAwardArgs = {
-  input: CreateAwardInput;
-};
-
-
-export type MutationCreateBacktestTaskArgs = {
-  input: CreateBacktestTaskInput;
-};
-
-
-export type MutationCreateCertificationArgs = {
-  input: CreateCertificationInput;
-};
-
-
-export type MutationCreateEdgeEnrollmentTokenArgs = {
-  expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
-  label?: InputMaybe<Scalars['String']['input']>;
-  maxUses?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type MutationCreateEdgeReleaseArgs = {
-  artifacts?: InputMaybe<Array<EdgeReleaseArtifactInput>>;
-  checksum: Scalars['String']['input'];
-  linuxUrl: Scalars['String']['input'];
-  notes?: InputMaybe<Scalars['String']['input']>;
-  signature: Scalars['String']['input'];
-  version: Scalars['String']['input'];
-  windowsUrl: Scalars['String']['input'];
-};
-
-
-export type MutationCreateEducationArgs = {
-  input: CreateEducationInput;
-};
-
-
-export type MutationCreateExperienceArgs = {
-  input: CreateExperienceInput;
-};
-
-
-export type MutationCreateHobbyArgs = {
-  input: CreateHobbyInput;
-};
-
-
-export type MutationCreateLanguageArgs = {
-  input: CreateLanguageInput;
-};
-
-
-export type MutationCreateProjectArgs = {
-  input: CreateProjectInput;
-};
-
-
-export type MutationCreateSkillArgs = {
-  input: CreateSkillInput;
-};
-
-
-export type MutationCreateSkillCategoryArgs = {
-  input: CreateSkillCategoryInput;
-};
-
-
-export type MutationCreateSocialLinkArgs = {
-  input: CreateSocialLinkInput;
-};
-
-
-export type MutationCreateStrategyTemplateArgs = {
-  input: CreateStrategyTemplateInput;
-};
-
-
-export type MutationCreateWorkerArgs = {
-  arch?: InputMaybe<Scalars['String']['input']>;
-  deviceNumber?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  platform?: InputMaybe<Scalars['String']['input']>;
-  version?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type MutationDeleteAwardArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteCertificationArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteEducationArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteExperienceArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteHobbyArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteLanguageArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteProjectArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteSkillArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteSkillCategoryArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDeleteSocialLinkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationDisableWorkerArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationIssueWorkerCredentialArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationReorderAwardsArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReorderCertificationsArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReorderEducationArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReorderExperiencesArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReorderHobbiesArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReorderLanguagesArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReorderProjectsArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReorderSkillsArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReorderSocialLinksArgs = {
-  input: ReorderInput;
-};
-
-
-export type MutationReportWorkerUpgradeStatusArgs = {
-  message?: InputMaybe<Scalars['String']['input']>;
-  status: Scalars['String']['input'];
-  workerId: Scalars['String']['input'];
-};
-
-
-export type MutationRetryBacktestTaskArgs = {
-  taskId: Scalars['String']['input'];
-};
-
-
-export type MutationRevokeEdgeEnrollmentTokenArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationRevokeWorkerCredentialArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationRollbackUpgradeCampaignArgs = {
-  campaignId: Scalars['String']['input'];
-};
-
-
-export type MutationRotateWorkerCredentialArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type MutationSetWorkerTargetVersionArgs = {
-  targetVersion: Scalars['String']['input'];
-  workerIds: Array<Scalars['String']['input']>;
-};
-
-
-export type MutationStartUpgradeCampaignArgs = {
-  failureThreshold?: InputMaybe<Scalars['Float']['input']>;
-  forceMode?: InputMaybe<Scalars['Boolean']['input']>;
-  phaseSize?: InputMaybe<Scalars['Float']['input']>;
-  successThreshold?: InputMaybe<Scalars['Float']['input']>;
-  targetVersion: Scalars['String']['input'];
-  workerIds: Array<Scalars['String']['input']>;
-};
-
-
-export type MutationUpdateAwardArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateAwardInput;
-};
-
-
-export type MutationUpdateCertificationArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateCertificationInput;
-};
-
-
-export type MutationUpdateEducationArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateEducationInput;
-};
-
-
-export type MutationUpdateExperienceArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateExperienceInput;
-};
-
-
-export type MutationUpdateHobbyArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateHobbyInput;
-};
-
-
-export type MutationUpdateLanguageArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateLanguageInput;
-};
-
-
-export type MutationUpdateProfileArgs = {
-  input: UpdateProfileInput;
-};
-
-
-export type MutationUpdateProjectArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateProjectInput;
-};
-
-
-export type MutationUpdateSkillArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateSkillInput;
-};
-
-
-export type MutationUpdateSkillCategoryArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateSkillCategoryInput;
-};
-
-
-export type MutationUpdateSocialLinkArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateSocialLinkInput;
-};
-
-
-export type MutationUpdateStrategyTemplateArgs = {
-  input: UpdateStrategyTemplateInput;
+  category?: string | null | undefined;
+  factoryConfig: string;
+  name: string;
 };
 
 export type Proficiency =
@@ -672,257 +92,80 @@ export type Proficiency =
   | 'EXPERT'
   | 'INTERMEDIATE';
 
-export type Project = {
-  __typename?: 'Project';
-  createdAt: Scalars['DateTime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  images: Array<Scalars['String']['output']>;
-  liveUrl?: Maybe<Scalars['String']['output']>;
-  repoUrl?: Maybe<Scalars['String']['output']>;
-  sortOrder: Scalars['Int']['output'];
-  tags: Array<Scalars['String']['output']>;
-  title: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type PublicProfile = {
-  __typename?: 'PublicProfile';
-  avatarUrl?: Maybe<Scalars['String']['output']>;
-  awards: Array<Award>;
-  bio?: Maybe<Scalars['String']['output']>;
-  certifications: Array<Certification>;
-  education: Array<Education>;
-  email: Scalars['String']['output'];
-  experiences: Array<Experience>;
-  firstName?: Maybe<Scalars['String']['output']>;
-  headline?: Maybe<Scalars['String']['output']>;
-  hobbies: Array<Hobby>;
-  languages: Array<Language>;
-  lastName?: Maybe<Scalars['String']['output']>;
-  location?: Maybe<Scalars['String']['output']>;
-  projects: Array<Project>;
-  skillCategories: Array<SkillCategory>;
-  skills: Array<Skill>;
-  socialLinks: Array<SocialLink>;
-  userId: Scalars['String']['output'];
-};
-
-export type Query = {
-  __typename?: 'Query';
-  backtestResults: Array<BacktestResult>;
-  backtestTask?: Maybe<BacktestTask>;
-  backtestTasks: Array<BacktestTask>;
-  edgeEnrollmentTokens: Array<EdgeEnrollmentToken>;
-  edgeReleases: Array<EdgeRelease>;
-  getPublicProfile?: Maybe<PublicProfile>;
-  getSkillCategories: Array<SkillCategory>;
-  health: Scalars['String']['output'];
-  me: UserProfile;
-  workers: Array<Worker>;
-};
-
-
-export type QueryBacktestResultsArgs = {
-  options?: InputMaybe<BacktestResultsOptionsInput>;
-  taskId: Scalars['String']['input'];
-};
-
-
-export type QueryBacktestTaskArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryGetPublicProfileArgs = {
-  userId: Scalars['String']['input'];
-};
-
 export type ReorderInput = {
-  orderedIds: Array<Scalars['String']['input']>;
-};
-
-export type Skill = {
-  __typename?: 'Skill';
-  category?: Maybe<SkillCategory>;
-  categoryId?: Maybe<Scalars['String']['output']>;
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  proficiency: Proficiency;
-  sortOrder: Scalars['Int']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type SkillCategory = {
-  __typename?: 'SkillCategory';
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  sortOrder: Scalars['Int']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-};
-
-export type SocialLink = {
-  __typename?: 'SocialLink';
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['ID']['output'];
-  label?: Maybe<Scalars['String']['output']>;
-  platform: Scalars['String']['output'];
-  sortOrder: Scalars['Int']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-  url: Scalars['String']['output'];
-};
-
-export type StrategyTemplate = {
-  __typename?: 'StrategyTemplate';
-  category?: Maybe<Scalars['String']['output']>;
-  factoryConfig: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  isActive: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
-};
-
-export type Subscription = {
-  __typename?: 'Subscription';
-  backtestResultCreated: BacktestResult;
-  backtestTaskUpdated: BacktestTask;
-  workerStatusUpdated: Worker;
-  workerUpgradeStatusUpdated: Worker;
+  orderedIds: Array<string>;
 };
 
 export type UpdateAwardInput = {
-  date?: InputMaybe<Scalars['DateTime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  issuer?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
+  date?: string | null | undefined;
+  description?: string | null | undefined;
+  issuer?: string | null | undefined;
+  title?: string | null | undefined;
 };
 
 export type UpdateCertificationInput = {
-  expiryDate?: InputMaybe<Scalars['DateTime']['input']>;
-  issueDate?: InputMaybe<Scalars['DateTime']['input']>;
-  issuer?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
+  expiryDate?: string | null | undefined;
+  issueDate?: string | null | undefined;
+  issuer?: string | null | undefined;
+  name?: string | null | undefined;
+  url?: string | null | undefined;
 };
 
 export type UpdateEducationInput = {
-  degree?: InputMaybe<Scalars['String']['input']>;
-  description?: InputMaybe<Array<Scalars['String']['input']>>;
-  endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  field?: InputMaybe<Scalars['String']['input']>;
-  school?: InputMaybe<Scalars['String']['input']>;
-  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  degree?: string | null | undefined;
+  description?: Array<string> | null | undefined;
+  endDate?: string | null | undefined;
+  field?: string | null | undefined;
+  school?: string | null | undefined;
+  startDate?: string | null | undefined;
 };
 
 export type UpdateExperienceInput = {
-  company?: InputMaybe<Scalars['String']['input']>;
-  description?: InputMaybe<Array<Scalars['String']['input']>>;
-  endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  role?: InputMaybe<Scalars['String']['input']>;
-  startDate?: InputMaybe<Scalars['DateTime']['input']>;
+  company?: string | null | undefined;
+  description?: Array<string> | null | undefined;
+  endDate?: string | null | undefined;
+  role?: string | null | undefined;
+  startDate?: string | null | undefined;
 };
 
 export type UpdateHobbyInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+  description?: string | null | undefined;
+  name?: string | null | undefined;
 };
 
 export type UpdateLanguageInput = {
-  name?: InputMaybe<Scalars['String']['input']>;
-  proficiency?: InputMaybe<Scalars['String']['input']>;
+  name?: string | null | undefined;
+  proficiency?: string | null | undefined;
 };
 
 export type UpdateProfileInput = {
-  avatarUrl?: InputMaybe<Scalars['String']['input']>;
-  bio?: InputMaybe<Scalars['String']['input']>;
-  firstName?: InputMaybe<Scalars['String']['input']>;
-  headline?: InputMaybe<Scalars['String']['input']>;
-  lastName?: InputMaybe<Scalars['String']['input']>;
-  location?: InputMaybe<Scalars['String']['input']>;
+  avatarUrl?: string | null | undefined;
+  bio?: string | null | undefined;
+  firstName?: string | null | undefined;
+  headline?: string | null | undefined;
+  lastName?: string | null | undefined;
+  location?: string | null | undefined;
 };
 
 export type UpdateProjectInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  images?: InputMaybe<Array<Scalars['String']['input']>>;
-  liveUrl?: InputMaybe<Scalars['String']['input']>;
-  repoUrl?: InputMaybe<Scalars['String']['input']>;
-  tags?: InputMaybe<Array<Scalars['String']['input']>>;
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type UpdateSkillCategoryInput = {
-  name?: InputMaybe<Scalars['String']['input']>;
+  description?: string | null | undefined;
+  images?: Array<string> | null | undefined;
+  liveUrl?: string | null | undefined;
+  repoUrl?: string | null | undefined;
+  tags?: Array<string> | null | undefined;
+  title?: string | null | undefined;
 };
 
 export type UpdateSkillInput = {
-  categoryId?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  proficiency?: InputMaybe<Proficiency>;
+  categoryId?: string | null | undefined;
+  name?: string | null | undefined;
+  proficiency?: Proficiency | null | undefined;
 };
 
 export type UpdateSocialLinkInput = {
-  label?: InputMaybe<Scalars['String']['input']>;
-  platform?: InputMaybe<Scalars['String']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type UpdateStrategyTemplateInput = {
-  category?: InputMaybe<Scalars['String']['input']>;
-  factoryConfig?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['ID']['input'];
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type UpgradeCampaign = {
-  __typename?: 'UpgradeCampaign';
-  currentPhase: Scalars['Float']['output'];
-  failureThreshold: Scalars['Float']['output'];
-  forceMode: Scalars['Boolean']['output'];
-  id: Scalars['ID']['output'];
-  phaseSize: Scalars['Float']['output'];
-  previousVersion?: Maybe<Scalars['String']['output']>;
-  status: Scalars['String']['output'];
-  successThreshold: Scalars['Float']['output'];
-  targetVersion: Scalars['String']['output'];
-};
-
-export type UserProfile = {
-  __typename?: 'UserProfile';
-  avatarUrl?: Maybe<Scalars['String']['output']>;
-  bio?: Maybe<Scalars['String']['output']>;
-  email: Scalars['String']['output'];
-  firstName?: Maybe<Scalars['String']['output']>;
-  headline?: Maybe<Scalars['String']['output']>;
-  lastName?: Maybe<Scalars['String']['output']>;
-  location?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  roles: Array<Scalars['String']['output']>;
-  userId: Scalars['String']['output'];
-};
-
-export type Worker = {
-  __typename?: 'Worker';
-  activeTaskId?: Maybe<Scalars['String']['output']>;
-  arch?: Maybe<Scalars['String']['output']>;
-  connectivityStatus: WorkerConnectivityStatus;
-  createdAt: Scalars['DateTime']['output'];
-  deviceNumber?: Maybe<Scalars['String']['output']>;
-  hasActiveCredential: Scalars['Boolean']['output'];
-  id: Scalars['ID']['output'];
-  lastError?: Maybe<Scalars['String']['output']>;
-  lastSeenAt?: Maybe<Scalars['DateTime']['output']>;
-  name: Scalars['String']['output'];
-  platform?: Maybe<Scalars['String']['output']>;
-  runtimeState: WorkerRuntimeState;
-  status: WorkerStatus;
-  targetVersion?: Maybe<Scalars['String']['output']>;
-  updatedAt: Scalars['DateTime']['output'];
-  upgradeMessage?: Maybe<Scalars['String']['output']>;
-  upgradeStatus: WorkerUpgradeStatus;
-  uptimeSeconds?: Maybe<Scalars['Float']['output']>;
-  version?: Maybe<Scalars['String']['output']>;
+  label?: string | null | undefined;
+  platform?: string | null | undefined;
+  url?: string | null | undefined;
 };
 
 export type WorkerConnectivityStatus =
@@ -954,412 +197,412 @@ export type WorkerUpgradeStatus =
 export type WorkersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WorkersQuery = { __typename?: 'Query', workers: Array<{ __typename?: 'Worker', id: string, name: string, deviceNumber?: string | null, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, hasActiveCredential: boolean, connectivityStatus: WorkerConnectivityStatus, runtimeState: WorkerRuntimeState, activeTaskId?: string | null, uptimeSeconds?: number | null, lastError?: string | null, targetVersion?: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage?: string | null, createdAt: string, updatedAt: string }>, edgeEnrollmentTokens: Array<{ __typename?: 'EdgeEnrollmentToken', id: string, label?: string | null, tokenPrefix: string, status: string, expiresAt?: string | null, maxUses?: number | null, usedCount: number, lastUsedAt?: string | null, revokedAt?: string | null, createdAt: string, updatedAt: string }> };
+export type WorkersQuery = { workers: Array<{ id: string, name: string, deviceNumber: string | null, platform: string | null, version: string | null, status: WorkerStatus, lastSeenAt: string | null, hasActiveCredential: boolean, connectivityStatus: WorkerConnectivityStatus, runtimeState: WorkerRuntimeState, activeTaskId: string | null, uptimeSeconds: number | null, lastError: string | null, targetVersion: string | null, upgradeStatus: WorkerUpgradeStatus, upgradeMessage: string | null, createdAt: string, updatedAt: string }>, edgeEnrollmentTokens: Array<{ id: string, label: string | null, tokenPrefix: string, status: string, expiresAt: string | null, maxUses: number | null, usedCount: number, lastUsedAt: string | null, revokedAt: string | null, createdAt: string, updatedAt: string }> };
 
 export type CreateWorkerMutationVariables = Exact<{
-  name: Scalars['String']['input'];
-  platform?: InputMaybe<Scalars['String']['input']>;
-  version?: InputMaybe<Scalars['String']['input']>;
+  name: string;
+  platform?: string | null | undefined;
+  version?: string | null | undefined;
 }>;
 
 
-export type CreateWorkerMutation = { __typename?: 'Mutation', createWorker: { __typename?: 'Worker', id: string, name: string, platform?: string | null, version?: string | null, status: WorkerStatus, lastSeenAt?: string | null, createdAt: string, updatedAt: string } };
+export type CreateWorkerMutation = { createWorker: { id: string, name: string, platform: string | null, version: string | null, status: WorkerStatus, lastSeenAt: string | null, createdAt: string, updatedAt: string } };
 
 export type DisableWorkerMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DisableWorkerMutation = { __typename?: 'Mutation', disableWorker?: { __typename?: 'Worker', id: string, status: WorkerStatus } | null };
+export type DisableWorkerMutation = { disableWorker: { id: string, status: WorkerStatus } | null };
 
 export type SetWorkerTargetVersionMutationVariables = Exact<{
-  workerIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
-  targetVersion: Scalars['String']['input'];
+  workerIds: Array<string> | string;
+  targetVersion: string;
 }>;
 
 
-export type SetWorkerTargetVersionMutation = { __typename?: 'Mutation', setWorkerTargetVersion: number };
+export type SetWorkerTargetVersionMutation = { setWorkerTargetVersion: number };
 
 export type IssueWorkerCredentialMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type IssueWorkerCredentialMutation = { __typename?: 'Mutation', issueWorkerCredential: { __typename?: 'IssuedWorkerCredential', id: string, workerId: string, keyPrefix: string, credential: string } };
+export type IssueWorkerCredentialMutation = { issueWorkerCredential: { id: string, workerId: string, keyPrefix: string, credential: string } };
 
 export type RotateWorkerCredentialMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type RotateWorkerCredentialMutation = { __typename?: 'Mutation', rotateWorkerCredential: { __typename?: 'IssuedWorkerCredential', id: string, workerId: string, keyPrefix: string, credential: string } };
+export type RotateWorkerCredentialMutation = { rotateWorkerCredential: { id: string, workerId: string, keyPrefix: string, credential: string } };
 
 export type RevokeWorkerCredentialMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type RevokeWorkerCredentialMutation = { __typename?: 'Mutation', revokeWorkerCredential: boolean };
+export type RevokeWorkerCredentialMutation = { revokeWorkerCredential: boolean };
 
 export type CreateEdgeEnrollmentTokenMutationVariables = Exact<{
-  label?: InputMaybe<Scalars['String']['input']>;
-  maxUses?: InputMaybe<Scalars['Int']['input']>;
-  expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
+  label?: string | null | undefined;
+  maxUses?: number | null | undefined;
+  expiresAt?: string | null | undefined;
 }>;
 
 
-export type CreateEdgeEnrollmentTokenMutation = { __typename?: 'Mutation', createEdgeEnrollmentToken: { __typename?: 'CreatedEdgeEnrollmentToken', id: string, label?: string | null, tokenPrefix: string, status: string, maxUses?: number | null, usedCount: number, expiresAt?: string | null, token: string, createdAt: string, updatedAt: string } };
+export type CreateEdgeEnrollmentTokenMutation = { createEdgeEnrollmentToken: { id: string, label: string | null, tokenPrefix: string, status: string, maxUses: number | null, usedCount: number, expiresAt: string | null, token: string, createdAt: string, updatedAt: string } };
 
 export type RevokeEdgeEnrollmentTokenMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type RevokeEdgeEnrollmentTokenMutation = { __typename?: 'Mutation', revokeEdgeEnrollmentToken: boolean };
+export type RevokeEdgeEnrollmentTokenMutation = { revokeEdgeEnrollmentToken: boolean };
 
 export type BacktestTasksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BacktestTasksQuery = { __typename?: 'Query', backtestTasks: Array<{ __typename?: 'BacktestTask', id: string, name: string, symbol: string, interval: string, status: string, assignedWorkerId?: string | null, processedConfigs?: number | null, totalConfigs?: number | null, createdAt: string }> };
+export type BacktestTasksQuery = { backtestTasks: Array<{ id: string, name: string, symbol: string, interval: string, status: string, assignedWorkerId: string | null, processedConfigs: number | null, totalConfigs: number | null, createdAt: string }> };
 
 export type BacktestResultsQueryVariables = Exact<{
-  taskId: Scalars['String']['input'];
+  taskId: string;
 }>;
 
 
-export type BacktestResultsQuery = { __typename?: 'Query', backtestResults: Array<{ __typename?: 'BacktestResult', id: string, configId: string, metrics: string, createdAt: string }> };
+export type BacktestResultsQuery = { backtestResults: Array<{ id: string, configId: string, metrics: string, createdAt: string }> };
 
 export type CreateStrategyTemplateMutationVariables = Exact<{
   input: CreateStrategyTemplateInput;
 }>;
 
 
-export type CreateStrategyTemplateMutation = { __typename?: 'Mutation', createStrategyTemplate: { __typename?: 'StrategyTemplate', id: string, name: string, category?: string | null, isActive: boolean } };
+export type CreateStrategyTemplateMutation = { createStrategyTemplate: { id: string, name: string, category: string | null, isActive: boolean } };
 
 export type CreateBacktestTaskMutationVariables = Exact<{
   input: CreateBacktestTaskInput;
 }>;
 
 
-export type CreateBacktestTaskMutation = { __typename?: 'Mutation', createBacktestTask: { __typename?: 'BacktestTask', id: string, name: string, status: string } };
+export type CreateBacktestTaskMutation = { createBacktestTask: { id: string, name: string, status: string } };
 
 export type CancelBacktestTaskMutationVariables = Exact<{
-  taskId: Scalars['String']['input'];
+  taskId: string;
 }>;
 
 
-export type CancelBacktestTaskMutation = { __typename?: 'Mutation', cancelBacktestTask: { __typename?: 'BacktestTask', id: string, status: string } };
+export type CancelBacktestTaskMutation = { cancelBacktestTask: { id: string, status: string } };
 
 export type RetryBacktestTaskMutationVariables = Exact<{
-  taskId: Scalars['String']['input'];
+  taskId: string;
 }>;
 
 
-export type RetryBacktestTaskMutation = { __typename?: 'Mutation', retryBacktestTask: { __typename?: 'BacktestTask', id: string, status: string } };
+export type RetryBacktestTaskMutation = { retryBacktestTask: { id: string, status: string } };
 
 export type CreateAwardMutationVariables = Exact<{
   input: CreateAwardInput;
 }>;
 
 
-export type CreateAwardMutation = { __typename?: 'Mutation', createAward: { __typename?: 'Award', id: string, title: string, issuer?: string | null, date?: string | null, description?: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateAwardMutation = { createAward: { id: string, title: string, issuer: string | null, date: string | null, description: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type CreateCertificationMutationVariables = Exact<{
   input: CreateCertificationInput;
 }>;
 
 
-export type CreateCertificationMutation = { __typename?: 'Mutation', createCertification: { __typename?: 'Certification', id: string, name: string, issuer: string, issueDate?: string | null, expiryDate?: string | null, url?: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateCertificationMutation = { createCertification: { id: string, name: string, issuer: string, issueDate: string | null, expiryDate: string | null, url: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type CreateEducationMutationVariables = Exact<{
   input: CreateEducationInput;
 }>;
 
 
-export type CreateEducationMutation = { __typename?: 'Mutation', createEducation: { __typename?: 'Education', id: string, school: string, degree?: string | null, field?: string | null, startDate: string, endDate?: string | null, description: Array<string>, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateEducationMutation = { createEducation: { id: string, school: string, degree: string | null, field: string | null, startDate: string, endDate: string | null, description: Array<string>, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type CreateExperienceMutationVariables = Exact<{
   input: CreateExperienceInput;
 }>;
 
 
-export type CreateExperienceMutation = { __typename?: 'Mutation', createExperience: { __typename?: 'Experience', id: string, company: string, role: string, description: Array<string>, startDate: string, endDate?: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateExperienceMutation = { createExperience: { id: string, company: string, role: string, description: Array<string>, startDate: string, endDate: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type CreateHobbyMutationVariables = Exact<{
   input: CreateHobbyInput;
 }>;
 
 
-export type CreateHobbyMutation = { __typename?: 'Mutation', createHobby: { __typename?: 'Hobby', id: string, name: string, description?: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateHobbyMutation = { createHobby: { id: string, name: string, description: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type CreateLanguageMutationVariables = Exact<{
   input: CreateLanguageInput;
 }>;
 
 
-export type CreateLanguageMutation = { __typename?: 'Mutation', createLanguage: { __typename?: 'Language', id: string, name: string, proficiency: string, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateLanguageMutation = { createLanguage: { id: string, name: string, proficiency: string, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', id: string, title: string, description?: string | null, images: Array<string>, liveUrl?: string | null, repoUrl?: string | null, tags: Array<string>, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateProjectMutation = { createProject: { id: string, title: string, description: string | null, images: Array<string>, liveUrl: string | null, repoUrl: string | null, tags: Array<string>, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type CreateSkillCategoryMutationVariables = Exact<{
   input: CreateSkillCategoryInput;
 }>;
 
 
-export type CreateSkillCategoryMutation = { __typename?: 'Mutation', createSkillCategory: { __typename?: 'SkillCategory', id: string, name: string, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateSkillCategoryMutation = { createSkillCategory: { id: string, name: string, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type CreateSkillMutationVariables = Exact<{
   input: CreateSkillInput;
 }>;
 
 
-export type CreateSkillMutation = { __typename?: 'Mutation', createSkill: { __typename?: 'Skill', id: string, name: string, categoryId?: string | null, proficiency: Proficiency, sortOrder: number, createdAt: string, updatedAt: string, category?: { __typename?: 'SkillCategory', id: string, name: string } | null } };
+export type CreateSkillMutation = { createSkill: { id: string, name: string, categoryId: string | null, proficiency: Proficiency, sortOrder: number, createdAt: string, updatedAt: string, category: { id: string, name: string } | null } };
 
 export type CreateSocialLinkMutationVariables = Exact<{
   input: CreateSocialLinkInput;
 }>;
 
 
-export type CreateSocialLinkMutation = { __typename?: 'Mutation', createSocialLink: { __typename?: 'SocialLink', id: string, platform: string, url: string, label?: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
+export type CreateSocialLinkMutation = { createSocialLink: { id: string, platform: string, url: string, label: string | null, sortOrder: number, createdAt: string, updatedAt: string } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'UserProfile', userId: string, email: string, name?: string | null, roles: Array<string>, firstName?: string | null, lastName?: string | null, avatarUrl?: string | null, bio?: string | null, headline?: string | null, location?: string | null } };
+export type MeQuery = { me: { userId: string, email: string, name: string | null, roles: Array<string>, firstName: string | null, lastName: string | null, avatarUrl: string | null, bio: string | null, headline: string | null, location: string | null } };
 
 export type DeleteAwardMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteAwardMutation = { __typename?: 'Mutation', deleteAward: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteAwardMutation = { deleteAward: { success: boolean } };
 
 export type DeleteCertificationMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteCertificationMutation = { __typename?: 'Mutation', deleteCertification: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteCertificationMutation = { deleteCertification: { success: boolean } };
 
 export type DeleteEducationMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteEducationMutation = { __typename?: 'Mutation', deleteEducation: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteEducationMutation = { deleteEducation: { success: boolean } };
 
 export type DeleteExperienceMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteExperienceMutation = { __typename?: 'Mutation', deleteExperience: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteExperienceMutation = { deleteExperience: { success: boolean } };
 
 export type DeleteHobbyMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteHobbyMutation = { __typename?: 'Mutation', deleteHobby: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteHobbyMutation = { deleteHobby: { success: boolean } };
 
 export type DeleteLanguageMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteLanguageMutation = { __typename?: 'Mutation', deleteLanguage: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteLanguageMutation = { deleteLanguage: { success: boolean } };
 
 export type DeleteProjectMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteProjectMutation = { deleteProject: { success: boolean } };
 
 export type DeleteSkillCategoryMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteSkillCategoryMutation = { __typename?: 'Mutation', deleteSkillCategory: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteSkillCategoryMutation = { deleteSkillCategory: { success: boolean } };
 
 export type DeleteSkillMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteSkillMutation = { __typename?: 'Mutation', deleteSkill: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteSkillMutation = { deleteSkill: { success: boolean } };
 
 export type DeleteSocialLinkMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
 }>;
 
 
-export type DeleteSocialLinkMutation = { __typename?: 'Mutation', deleteSocialLink: { __typename?: 'DeleteResult', success: boolean } };
+export type DeleteSocialLinkMutation = { deleteSocialLink: { success: boolean } };
 
 export type HealthQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HealthQuery = { __typename?: 'Query', health: string };
+export type HealthQuery = { health: string };
 
 export type GetPublicProfileQueryVariables = Exact<{
-  userId: Scalars['String']['input'];
+  userId: string;
 }>;
 
 
-export type GetPublicProfileQuery = { __typename?: 'Query', getPublicProfile?: { __typename?: 'PublicProfile', userId: string, email: string, firstName?: string | null, lastName?: string | null, avatarUrl?: string | null, bio?: string | null, headline?: string | null, location?: string | null, socialLinks: Array<{ __typename?: 'SocialLink', id: string, platform: string, url: string, label?: string | null, sortOrder: number, createdAt: string, updatedAt: string }>, projects: Array<{ __typename?: 'Project', id: string, title: string, description?: string | null, images: Array<string>, liveUrl?: string | null, repoUrl?: string | null, tags: Array<string>, sortOrder: number, createdAt: string, updatedAt: string }>, skillCategories: Array<{ __typename?: 'SkillCategory', id: string, name: string, sortOrder: number, createdAt: string, updatedAt: string }>, skills: Array<{ __typename?: 'Skill', id: string, name: string, categoryId?: string | null, proficiency: Proficiency, sortOrder: number, createdAt: string, updatedAt: string, category?: { __typename?: 'SkillCategory', id: string, name: string } | null }>, experiences: Array<{ __typename?: 'Experience', id: string, company: string, role: string, description: Array<string>, startDate: string, endDate?: string | null, sortOrder: number, createdAt: string, updatedAt: string }>, education: Array<{ __typename?: 'Education', id: string, school: string, degree?: string | null, field?: string | null, startDate: string, endDate?: string | null, description: Array<string>, sortOrder: number, createdAt: string, updatedAt: string }>, certifications: Array<{ __typename?: 'Certification', id: string, name: string, issuer: string, issueDate?: string | null, expiryDate?: string | null, url?: string | null, sortOrder: number, createdAt: string, updatedAt: string }>, languages: Array<{ __typename?: 'Language', id: string, name: string, proficiency: string, sortOrder: number, createdAt: string, updatedAt: string }>, awards: Array<{ __typename?: 'Award', id: string, title: string, issuer?: string | null, date?: string | null, description?: string | null, sortOrder: number, createdAt: string, updatedAt: string }>, hobbies: Array<{ __typename?: 'Hobby', id: string, name: string, description?: string | null, sortOrder: number, createdAt: string, updatedAt: string }> } | null };
+export type GetPublicProfileQuery = { getPublicProfile: { userId: string, email: string, firstName: string | null, lastName: string | null, avatarUrl: string | null, bio: string | null, headline: string | null, location: string | null, socialLinks: Array<{ id: string, platform: string, url: string, label: string | null, sortOrder: number, createdAt: string, updatedAt: string }>, projects: Array<{ id: string, title: string, description: string | null, images: Array<string>, liveUrl: string | null, repoUrl: string | null, tags: Array<string>, sortOrder: number, createdAt: string, updatedAt: string }>, skillCategories: Array<{ id: string, name: string, sortOrder: number, createdAt: string, updatedAt: string }>, skills: Array<{ id: string, name: string, categoryId: string | null, proficiency: Proficiency, sortOrder: number, createdAt: string, updatedAt: string, category: { id: string, name: string } | null }>, experiences: Array<{ id: string, company: string, role: string, description: Array<string>, startDate: string, endDate: string | null, sortOrder: number, createdAt: string, updatedAt: string }>, education: Array<{ id: string, school: string, degree: string | null, field: string | null, startDate: string, endDate: string | null, description: Array<string>, sortOrder: number, createdAt: string, updatedAt: string }>, certifications: Array<{ id: string, name: string, issuer: string, issueDate: string | null, expiryDate: string | null, url: string | null, sortOrder: number, createdAt: string, updatedAt: string }>, languages: Array<{ id: string, name: string, proficiency: string, sortOrder: number, createdAt: string, updatedAt: string }>, awards: Array<{ id: string, title: string, issuer: string | null, date: string | null, description: string | null, sortOrder: number, createdAt: string, updatedAt: string }>, hobbies: Array<{ id: string, name: string, description: string | null, sortOrder: number, createdAt: string, updatedAt: string }> } | null };
 
 export type ReorderAwardsMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderAwardsMutation = { __typename?: 'Mutation', reorderAwards: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderAwardsMutation = { reorderAwards: { success: boolean } };
 
 export type ReorderCertificationsMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderCertificationsMutation = { __typename?: 'Mutation', reorderCertifications: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderCertificationsMutation = { reorderCertifications: { success: boolean } };
 
 export type ReorderEducationMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderEducationMutation = { __typename?: 'Mutation', reorderEducation: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderEducationMutation = { reorderEducation: { success: boolean } };
 
 export type ReorderExperiencesMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderExperiencesMutation = { __typename?: 'Mutation', reorderExperiences: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderExperiencesMutation = { reorderExperiences: { success: boolean } };
 
 export type ReorderHobbiesMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderHobbiesMutation = { __typename?: 'Mutation', reorderHobbies: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderHobbiesMutation = { reorderHobbies: { success: boolean } };
 
 export type ReorderLanguagesMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderLanguagesMutation = { __typename?: 'Mutation', reorderLanguages: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderLanguagesMutation = { reorderLanguages: { success: boolean } };
 
 export type ReorderProjectsMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderProjectsMutation = { __typename?: 'Mutation', reorderProjects: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderProjectsMutation = { reorderProjects: { success: boolean } };
 
 export type ReorderSkillsMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderSkillsMutation = { __typename?: 'Mutation', reorderSkills: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderSkillsMutation = { reorderSkills: { success: boolean } };
 
 export type ReorderSocialLinksMutationVariables = Exact<{
   input: ReorderInput;
 }>;
 
 
-export type ReorderSocialLinksMutation = { __typename?: 'Mutation', reorderSocialLinks: { __typename?: 'DeleteResult', success: boolean } };
+export type ReorderSocialLinksMutation = { reorderSocialLinks: { success: boolean } };
 
 export type GetSkillCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSkillCategoriesQuery = { __typename?: 'Query', getSkillCategories: Array<{ __typename?: 'SkillCategory', id: string, name: string, sortOrder: number, createdAt: string, updatedAt: string }> };
+export type GetSkillCategoriesQuery = { getSkillCategories: Array<{ id: string, name: string, sortOrder: number, createdAt: string, updatedAt: string }> };
 
 export type UpdateAwardMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateAwardInput;
 }>;
 
 
-export type UpdateAwardMutation = { __typename?: 'Mutation', updateAward?: { __typename?: 'Award', id: string, title: string, issuer?: string | null, date?: string | null, description?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
+export type UpdateAwardMutation = { updateAward: { id: string, title: string, issuer: string | null, date: string | null, description: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 export type UpdateCertificationMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateCertificationInput;
 }>;
 
 
-export type UpdateCertificationMutation = { __typename?: 'Mutation', updateCertification?: { __typename?: 'Certification', id: string, name: string, issuer: string, issueDate?: string | null, expiryDate?: string | null, url?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
+export type UpdateCertificationMutation = { updateCertification: { id: string, name: string, issuer: string, issueDate: string | null, expiryDate: string | null, url: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 export type UpdateEducationMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateEducationInput;
 }>;
 
 
-export type UpdateEducationMutation = { __typename?: 'Mutation', updateEducation?: { __typename?: 'Education', id: string, school: string, degree?: string | null, field?: string | null, startDate: string, endDate?: string | null, description: Array<string>, sortOrder: number, createdAt: string, updatedAt: string } | null };
+export type UpdateEducationMutation = { updateEducation: { id: string, school: string, degree: string | null, field: string | null, startDate: string, endDate: string | null, description: Array<string>, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 export type UpdateExperienceMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateExperienceInput;
 }>;
 
 
-export type UpdateExperienceMutation = { __typename?: 'Mutation', updateExperience?: { __typename?: 'Experience', id: string, company: string, role: string, description: Array<string>, startDate: string, endDate?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
+export type UpdateExperienceMutation = { updateExperience: { id: string, company: string, role: string, description: Array<string>, startDate: string, endDate: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 export type UpdateHobbyMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateHobbyInput;
 }>;
 
 
-export type UpdateHobbyMutation = { __typename?: 'Mutation', updateHobby?: { __typename?: 'Hobby', id: string, name: string, description?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
+export type UpdateHobbyMutation = { updateHobby: { id: string, name: string, description: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 export type UpdateLanguageMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateLanguageInput;
 }>;
 
 
-export type UpdateLanguageMutation = { __typename?: 'Mutation', updateLanguage?: { __typename?: 'Language', id: string, name: string, proficiency: string, sortOrder: number, createdAt: string, updatedAt: string } | null };
+export type UpdateLanguageMutation = { updateLanguage: { id: string, name: string, proficiency: string, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 export type UpdateProfileMutationVariables = Exact<{
   input: UpdateProfileInput;
 }>;
 
 
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile: { __typename?: 'UserProfile', userId: string, email: string, name?: string | null, roles: Array<string>, firstName?: string | null, lastName?: string | null, avatarUrl?: string | null, bio?: string | null, headline?: string | null, location?: string | null } };
+export type UpdateProfileMutation = { updateProfile: { userId: string, email: string, name: string | null, roles: Array<string>, firstName: string | null, lastName: string | null, avatarUrl: string | null, bio: string | null, headline: string | null, location: string | null } };
 
 export type UpdateProjectMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateProjectInput;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'Project', id: string, title: string, description?: string | null, images: Array<string>, liveUrl?: string | null, repoUrl?: string | null, tags: Array<string>, sortOrder: number, createdAt: string, updatedAt: string } | null };
+export type UpdateProjectMutation = { updateProject: { id: string, title: string, description: string | null, images: Array<string>, liveUrl: string | null, repoUrl: string | null, tags: Array<string>, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 export type UpdateSkillMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateSkillInput;
 }>;
 
 
-export type UpdateSkillMutation = { __typename?: 'Mutation', updateSkill?: { __typename?: 'Skill', id: string, name: string, categoryId?: string | null, proficiency: Proficiency, sortOrder: number, createdAt: string, updatedAt: string, category?: { __typename?: 'SkillCategory', id: string, name: string } | null } | null };
+export type UpdateSkillMutation = { updateSkill: { id: string, name: string, categoryId: string | null, proficiency: Proficiency, sortOrder: number, createdAt: string, updatedAt: string, category: { id: string, name: string } | null } | null };
 
 export type UpdateSocialLinkMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  id: string;
   input: UpdateSocialLinkInput;
 }>;
 
 
-export type UpdateSocialLinkMutation = { __typename?: 'Mutation', updateSocialLink?: { __typename?: 'SocialLink', id: string, platform: string, url: string, label?: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
+export type UpdateSocialLinkMutation = { updateSocialLink: { id: string, platform: string, url: string, label: string | null, sortOrder: number, createdAt: string, updatedAt: string } | null };
 
 
 export const WorkersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"workers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceNumber"}},{"kind":"Field","name":{"kind":"Name","value":"platform"}},{"kind":"Field","name":{"kind":"Name","value":"version"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastSeenAt"}},{"kind":"Field","name":{"kind":"Name","value":"hasActiveCredential"}},{"kind":"Field","name":{"kind":"Name","value":"connectivityStatus"}},{"kind":"Field","name":{"kind":"Name","value":"runtimeState"}},{"kind":"Field","name":{"kind":"Name","value":"activeTaskId"}},{"kind":"Field","name":{"kind":"Name","value":"uptimeSeconds"}},{"kind":"Field","name":{"kind":"Name","value":"lastError"}},{"kind":"Field","name":{"kind":"Name","value":"targetVersion"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeStatus"}},{"kind":"Field","name":{"kind":"Name","value":"upgradeMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edgeEnrollmentTokens"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"maxUses"}},{"kind":"Field","name":{"kind":"Name","value":"usedCount"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"revokedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<WorkersQuery, WorkersQueryVariables>;

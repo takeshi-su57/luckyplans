@@ -20,16 +20,16 @@ class StrategyTemplate {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   category?: string;
 
   @Field(() => String)
   factoryConfig!: unknown;
 
-  @Field()
+  @Field(() => Boolean)
   isActive!: boolean;
 }
 
@@ -38,19 +38,19 @@ class BacktestTask {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field()
+  @Field(() => String)
   symbol!: string;
 
-  @Field()
+  @Field(() => String)
   interval!: string;
 
-  @Field()
+  @Field(() => String)
   status!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   assignedWorkerId?: string;
 
   @Field(() => Int, { nullable: true })
@@ -59,7 +59,7 @@ class BacktestTask {
   @Field(() => Int, { nullable: true })
   totalConfigs?: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 }
 
@@ -68,22 +68,22 @@ class BacktestResult {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   configId!: string;
 
   @Field(() => String)
   metrics!: unknown;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 }
 
 @InputType()
 class CreateStrategyTemplateInput {
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   category?: string;
 
   @Field(() => String)
@@ -95,34 +95,34 @@ class UpdateStrategyTemplateInput {
   @Field(() => ID)
   id!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   name?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   category?: string;
 
   @Field(() => String, { nullable: true })
   factoryConfig?: unknown;
 
-  @Field({ nullable: true })
+  @Field(() => Boolean, { nullable: true })
   isActive?: boolean;
 }
 
 @InputType()
 class CreateBacktestTaskInput {
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field()
+  @Field(() => String)
   symbol!: string;
 
-  @Field()
+  @Field(() => String)
   interval!: string;
 
-  @Field()
+  @Field(() => String)
   assignedWorkerId!: string;
 
-  @Field()
+  @Field(() => String)
   searchStrategy!: string;
 
   @Field(() => ID, { nullable: true })
@@ -131,10 +131,10 @@ class CreateBacktestTaskInput {
 
 @InputType()
 class BacktestResultsOptionsInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   sort?: 'createdAt' | 'totalPnlPercent';
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   order?: 'asc' | 'desc';
 
   @Field(() => Int, { nullable: true })

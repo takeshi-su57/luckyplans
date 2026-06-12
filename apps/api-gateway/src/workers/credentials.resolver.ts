@@ -8,13 +8,13 @@ class IssuedWorkerCredential {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   workerId!: string;
 
-  @Field()
+  @Field(() => String)
   keyPrefix!: string;
 
-  @Field()
+  @Field(() => String)
   credential!: string;
 }
 
