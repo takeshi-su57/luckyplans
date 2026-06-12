@@ -27,9 +27,25 @@ spec:
       jsonPointers:
         - /data
         - /metadata
+    # Existing VPS PVCs use local-path storage, which cannot be resized by
+    # ArgoCD patch operations. Keep Git managing the PVCs, but do not reconcile
+    # the storage request field after the volume is bound.
+    - group: ''
+      kind: PersistentVolumeClaim
+      name: postgresql-data
+      namespace: luckyplans
+      jsonPointers:
+        - /spec/resources/requests/storage
+    - group: ''
+      kind: PersistentVolumeClaim
+      name: minio-data
+      namespace: luckyplans
+      jsonPointers:
+        - /spec/resources/requests/storage
   syncPolicy:
     automated:
       prune: true # remove resources no longer in Git
       selfHeal: true # revert manual cluster changes back to Git state
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
