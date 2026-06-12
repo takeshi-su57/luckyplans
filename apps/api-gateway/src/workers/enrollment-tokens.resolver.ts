@@ -8,16 +8,16 @@ class EdgeEnrollmentToken {
   @Field(() => ID)
   id!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   label?: string | null;
 
-  @Field()
+  @Field(() => String)
   tokenPrefix!: string;
 
-  @Field()
+  @Field(() => String)
   status!: 'ACTIVE' | 'REVOKED';
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   expiresAt?: Date | null;
 
   @Field(() => Int, { nullable: true })
@@ -26,22 +26,22 @@ class EdgeEnrollmentToken {
   @Field(() => Int)
   usedCount!: number;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   lastUsedAt?: Date | null;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   revokedAt?: Date | null;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
 @ObjectType()
 class CreatedEdgeEnrollmentToken extends EdgeEnrollmentToken {
-  @Field()
+  @Field(() => String)
   token!: string;
 }
 

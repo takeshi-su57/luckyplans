@@ -196,6 +196,18 @@ type CreatedEdgeEnrollmentToken {
   token: String!
 }
 
+type EdgeReleaseArtifact {
+  platform: String!
+  arch: String!
+  installType: String!
+  url: String!
+  checksum: String!
+  signature: String!
+  signatureAlgorithm: String!
+  signingKeyId: String
+  sizeBytes: Int
+}
+
 type EdgeRelease {
   id: ID!
   version: String!
@@ -209,27 +221,15 @@ type EdgeRelease {
   artifacts: [EdgeReleaseArtifact!]!
 }
 
-type EdgeReleaseArtifact {
-  platform: String!
-  arch: String!
-  installType: String!
-  url: String!
-  checksum: String!
-  signature: String!
-  signatureAlgorithm: String!
-  signingKeyId: String
-  sizeBytes: Int
-}
-
 type UpgradeCampaign {
   id: ID!
   targetVersion: String!
   previousVersion: String
   forceMode: Boolean!
-  phaseSize: Float!
-  currentPhase: Float!
-  successThreshold: Float!
-  failureThreshold: Float!
+  phaseSize: Int!
+  currentPhase: Int!
+  successThreshold: Int!
+  failureThreshold: Int!
   status: String!
 }
 
@@ -248,7 +248,7 @@ type Worker {
   upgradeMessage: String
   runtimeState: WorkerRuntimeState!
   activeTaskId: String
-  uptimeSeconds: Float
+  uptimeSeconds: Int
   lastError: String
   connectivityStatus: WorkerConnectivityStatus!
   createdAt: DateTime!
@@ -405,9 +405,9 @@ type Mutation {
     workerIds: [String!]!
     targetVersion: String!
     forceMode: Boolean
-    phaseSize: Float
-    successThreshold: Float
-    failureThreshold: Float
+    phaseSize: Int
+    successThreshold: Int
+    failureThreshold: Int
   ): UpgradeCampaign!
   advanceUpgradeCampaign(campaignId: String!): UpgradeCampaign!
   rollbackUpgradeCampaign(campaignId: String!): UpgradeCampaign!
@@ -416,19 +416,6 @@ type Mutation {
   createBacktestTask(input: CreateBacktestTaskInput!): BacktestTask!
   cancelBacktestTask(taskId: String!): BacktestTask!
   retryBacktestTask(taskId: String!): BacktestTask!
-}
-
-input EdgeReleaseArtifactInput {
-  version: String
-  platform: String!
-  arch: String!
-  installType: String!
-  url: String!
-  checksum: String!
-  signature: String!
-  signatureAlgorithm: String
-  signingKeyId: String
-  sizeBytes: Int
 }
 
 input UpdateProfileInput {
@@ -576,6 +563,19 @@ input CreateHobbyInput {
 input UpdateHobbyInput {
   name: String
   description: String
+}
+
+input EdgeReleaseArtifactInput {
+  version: String
+  platform: String!
+  arch: String!
+  installType: String!
+  url: String!
+  checksum: String!
+  signature: String!
+  signatureAlgorithm: String
+  signingKeyId: String
+  sizeBytes: Int
 }
 
 input CreateStrategyTemplateInput {

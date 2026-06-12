@@ -3,6 +3,7 @@ import {
   Args,
   Field,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -64,58 +65,58 @@ class Worker {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   deviceNumber?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   platform?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   arch?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   version?: string | null;
 
-  @Field()
+  @Field(() => Boolean)
   hasActiveCredential!: boolean;
 
   @Field(() => WorkerStatus)
   status!: WorkerStatus;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   lastSeenAt?: Date | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   targetVersion?: string | null;
 
   @Field(() => WorkerUpgradeStatus)
   upgradeStatus!: WorkerUpgradeStatus;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   upgradeMessage?: string | null;
 
   @Field(() => WorkerRuntimeState)
   runtimeState!: WorkerRuntimeState;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   activeTaskId?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   uptimeSeconds?: number | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   lastError?: string | null;
 
   @Field(() => WorkerConnectivityStatus)
   connectivityStatus!: WorkerConnectivityStatus;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 

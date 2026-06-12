@@ -7,34 +7,34 @@ import { ProfileService } from '../profile/profile.service';
 
 @ObjectType()
 export class UserProfile {
-  @Field()
+  @Field(() => String)
   userId!: string;
 
-  @Field()
+  @Field(() => String)
   email!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   name?: string;
 
   @Field(() => [String])
   roles!: string[];
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   firstName?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   lastName?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   avatarUrl?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   bio?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   headline?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   location?: string;
 }
 

@@ -8,22 +8,22 @@ import { ProfileService } from './profile.service';
 
 @InputType()
 export class UpdateProfileInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   firstName?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   lastName?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   avatarUrl?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   bio?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   headline?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   location?: string;
 }
 

@@ -17,19 +17,19 @@ export class Project {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   title!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string | null;
 
   @Field(() => [String])
   images!: string[];
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   liveUrl?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   repoUrl?: string | null;
 
   @Field(() => [String])
@@ -38,10 +38,10 @@ export class Project {
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -50,16 +50,16 @@ export class SkillCategory {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   name!: string;
 
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -68,10 +68,10 @@ export class Skill {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   categoryId?: string | null;
 
   @Field(() => SkillCategory, { nullable: true })
@@ -83,10 +83,10 @@ export class Skill {
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -95,28 +95,28 @@ export class Experience {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   company!: string;
 
-  @Field()
+  @Field(() => String)
   role!: string;
 
   @Field(() => [String])
   description!: string[];
 
-  @Field()
+  @Field(() => Date)
   startDate!: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   endDate?: Date | null;
 
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -125,19 +125,19 @@ export class Education {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   school!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   degree?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   field?: string | null;
 
-  @Field()
+  @Field(() => Date)
   startDate!: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   endDate?: Date | null;
 
   @Field(() => [String])
@@ -146,10 +146,10 @@ export class Education {
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -158,28 +158,28 @@ export class Certification {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field()
+  @Field(() => String)
   issuer!: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   issueDate?: Date | null;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   expiryDate?: Date | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   url?: string | null;
 
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -188,19 +188,19 @@ export class Language {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field()
+  @Field(() => String)
   proficiency!: string;
 
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -209,25 +209,25 @@ export class Award {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   title!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   issuer?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   date?: Date | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string | null;
 
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -236,19 +236,19 @@ export class Hobby {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string | null;
 
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
@@ -257,49 +257,49 @@ export class SocialLink {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   platform!: string;
 
-  @Field()
+  @Field(() => String)
   url!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   label?: string | null;
 
   @Field(() => Int)
   sortOrder!: number;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 }
 
 @ObjectType()
 export class PublicProfile {
-  @Field()
+  @Field(() => String)
   userId!: string;
 
-  @Field()
+  @Field(() => String)
   email!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   firstName?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   lastName?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   bio?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   headline?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   location?: string | null;
 
   @Field(() => [Project])
@@ -335,7 +335,7 @@ export class PublicProfile {
 
 @ObjectType()
 export class DeleteResult {
-  @Field()
+  @Field(() => Boolean)
   success!: boolean;
 }
 
@@ -343,19 +343,19 @@ export class DeleteResult {
 
 @InputType()
 export class CreateProjectInput {
-  @Field()
+  @Field(() => String)
   title!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @Field(() => [String], { nullable: true })
   images?: string[];
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   liveUrl?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   repoUrl?: string;
 
   @Field(() => [String], { nullable: true })
@@ -364,19 +364,19 @@ export class CreateProjectInput {
 
 @InputType()
 export class UpdateProjectInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   title?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
   @Field(() => [String], { nullable: true })
   images?: string[];
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   liveUrl?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   repoUrl?: string;
 
   @Field(() => [String], { nullable: true })
@@ -385,10 +385,10 @@ export class UpdateProjectInput {
 
 @InputType()
 export class CreateSkillInput {
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   categoryId?: string;
 
   @Field(() => Proficiency, { nullable: true })
@@ -397,10 +397,10 @@ export class CreateSkillInput {
 
 @InputType()
 export class UpdateSkillInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   name?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   categoryId?: string;
 
   @Field(() => Proficiency, { nullable: true })
@@ -409,91 +409,91 @@ export class UpdateSkillInput {
 
 @InputType()
 export class CreateExperienceInput {
-  @Field()
+  @Field(() => String)
   company!: string;
 
-  @Field()
+  @Field(() => String)
   role!: string;
 
   @Field(() => [String], { nullable: true })
   description?: string[];
 
-  @Field()
+  @Field(() => Date)
   startDate!: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   endDate?: Date;
 }
 
 @InputType()
 export class UpdateExperienceInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   company?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   role?: string;
 
   @Field(() => [String], { nullable: true })
   description?: string[];
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   startDate?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   endDate?: Date;
 }
 
 @InputType()
 export class CreateSocialLinkInput {
-  @Field()
+  @Field(() => String)
   platform!: string;
 
-  @Field()
+  @Field(() => String)
   url!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   label?: string;
 }
 
 @InputType()
 export class UpdateSocialLinkInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   platform?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   url?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   label?: string;
 }
 
 @InputType()
 export class CreateSkillCategoryInput {
-  @Field()
+  @Field(() => String)
   name!: string;
 }
 
 @InputType()
 export class UpdateSkillCategoryInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   name?: string;
 }
 
 @InputType()
 export class CreateEducationInput {
-  @Field()
+  @Field(() => String)
   school!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   degree?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   field?: string;
 
-  @Field()
+  @Field(() => Date)
   startDate!: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   endDate?: Date;
 
   @Field(() => [String], { nullable: true })
@@ -502,19 +502,19 @@ export class CreateEducationInput {
 
 @InputType()
 export class UpdateEducationInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   school?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   degree?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   field?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   startDate?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   endDate?: Date;
 
   @Field(() => [String], { nullable: true })
@@ -523,103 +523,103 @@ export class UpdateEducationInput {
 
 @InputType()
 export class CreateCertificationInput {
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field()
+  @Field(() => String)
   issuer!: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   issueDate?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   expiryDate?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   url?: string;
 }
 
 @InputType()
 export class UpdateCertificationInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   name?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   issuer?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   issueDate?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   expiryDate?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   url?: string;
 }
 
 @InputType()
 export class CreateLanguageInput {
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   proficiency?: string;
 }
 
 @InputType()
 export class UpdateLanguageInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   name?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   proficiency?: string;
 }
 
 @InputType()
 export class CreateAwardInput {
-  @Field()
+  @Field(() => String)
   title!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   issuer?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   date?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 }
 
 @InputType()
 export class UpdateAwardInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   title?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   issuer?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   date?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 }
 
 @InputType()
 export class CreateHobbyInput {
-  @Field()
+  @Field(() => String)
   name!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 }
 
 @InputType()
 export class UpdateHobbyInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   name?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 }
 

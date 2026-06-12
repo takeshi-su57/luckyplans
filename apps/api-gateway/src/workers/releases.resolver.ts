@@ -16,28 +16,28 @@ import { ReleasesService } from './releases.service';
 
 @ObjectType()
 class EdgeReleaseArtifact {
-  @Field()
+  @Field(() => String)
   platform!: string;
 
-  @Field()
+  @Field(() => String)
   arch!: string;
 
-  @Field()
+  @Field(() => String)
   installType!: string;
 
-  @Field()
+  @Field(() => String)
   url!: string;
 
-  @Field()
+  @Field(() => String)
   checksum!: string;
 
-  @Field()
+  @Field(() => String)
   signature!: string;
 
-  @Field()
+  @Field(() => String)
   signatureAlgorithm!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   signingKeyId?: string;
 
   @Field(() => Int, { nullable: true })
@@ -46,31 +46,31 @@ class EdgeReleaseArtifact {
 
 @InputType()
 class EdgeReleaseArtifactInput {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   version?: string;
 
-  @Field()
+  @Field(() => String)
   platform!: string;
 
-  @Field()
+  @Field(() => String)
   arch!: string;
 
-  @Field()
+  @Field(() => String)
   installType!: string;
 
-  @Field()
+  @Field(() => String)
   url!: string;
 
-  @Field()
+  @Field(() => String)
   checksum!: string;
 
-  @Field()
+  @Field(() => String)
   signature!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   signatureAlgorithm?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   signingKeyId?: string;
 
   @Field(() => Int, { nullable: true })
@@ -82,28 +82,28 @@ class EdgeRelease {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   version!: string;
 
-  @Field()
+  @Field(() => String)
   windowsUrl!: string;
 
-  @Field()
+  @Field(() => String)
   linuxUrl!: string;
 
-  @Field()
+  @Field(() => String)
   checksum!: string;
 
-  @Field()
+  @Field(() => String)
   signature!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   notes?: string;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt!: Date;
 
   @Field(() => [EdgeReleaseArtifact])
@@ -115,28 +115,28 @@ class UpgradeCampaign {
   @Field(() => ID)
   id!: string;
 
-  @Field()
+  @Field(() => String)
   targetVersion!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   previousVersion?: string;
 
-  @Field()
+  @Field(() => Boolean)
   forceMode!: boolean;
 
-  @Field()
+  @Field(() => Int)
   phaseSize!: number;
 
-  @Field()
+  @Field(() => Int)
   currentPhase!: number;
 
-  @Field()
+  @Field(() => Int)
   successThreshold!: number;
 
-  @Field()
+  @Field(() => Int)
   failureThreshold!: number;
 
-  @Field()
+  @Field(() => String)
   status!: string;
 }
 
@@ -244,9 +244,9 @@ export class ReleasesResolver {
     @Args('workerIds', { type: () => [String] }) workerIds: string[],
     @Args('targetVersion') targetVersion: string,
     @Args('forceMode', { nullable: true }) forceMode?: boolean,
-    @Args('phaseSize', { nullable: true }) phaseSize?: number,
-    @Args('successThreshold', { nullable: true }) successThreshold?: number,
-    @Args('failureThreshold', { nullable: true }) failureThreshold?: number,
+    @Args('phaseSize', { nullable: true, type: () => Int }) phaseSize?: number,
+    @Args('successThreshold', { nullable: true, type: () => Int }) successThreshold?: number,
+    @Args('failureThreshold', { nullable: true, type: () => Int }) failureThreshold?: number,
   ): Promise<UpgradeCampaign> {
     return this.toUpgradeCampaign(
       await this.releasesService.startUpgradeCampaign({
