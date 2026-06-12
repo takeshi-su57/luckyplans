@@ -36,7 +36,8 @@ RUN pnpm --filter=@luckyplans/prisma deploy /deploy
 
 # --- Migration runner ---
 FROM node:25-alpine AS runner
-RUN apk upgrade --no-cache && \
+RUN echo "Refreshing Alpine security packages" && \
+    apk upgrade --no-cache && \
     rm -rf /usr/local/lib/node_modules/npm /opt/yarn-v*
 WORKDIR /app
 
