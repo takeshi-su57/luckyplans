@@ -102,7 +102,9 @@ This handles everything: cluster creation, image builds (app + observability), k
 
 After completion:
 
-- **Frontend**: http://localhost
+- **Landing**: http://localhost
+- **Product app**: http://localhost/login
+- **Docs**: http://localhost/docs
 - **GraphQL Playground**: http://localhost/graphql
 - **Grafana**: `kubectl -n monitoring port-forward svc/grafana 3002:3000` → http://localhost:3002
 - **Prometheus**: `kubectl -n monitoring port-forward svc/prometheus 9090:9090` → http://localhost:9090
@@ -110,6 +112,9 @@ After completion:
 ### Targeted deploy (rebuild one or more services)
 
 ```bash
+# Rebuild and redeploy only the landing SPA:
+./infrastructure/scripts/deploy-local.sh landing
+
 # Rebuild and redeploy only the web frontend:
 ./infrastructure/scripts/deploy-local.sh web
 

@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Smoke tests for LuckyPlans deployments.
-# Usage: smoke-test.sh <deploy-host> [image-tag]
+# Usage: smoke-test.sh <landing-host> <app-host> <api-host> [image-tag]
 #
-# Runs checks against the target host:
+# Runs checks against the target hosts:
+#   1. Landing page HTTP 200
 #   1. API Gateway health endpoint
-#   2. Web frontend HTTP 200
+#   2. Product app login page HTTP 200
 #   3. GraphQL endpoint connectivity
 #   4. (optional) Deployed image tag verification via kubectl
 #
@@ -12,20 +13,22 @@
 
 set -euo pipefail
 
-DEPLOY_HOST="${1:?Usage: smoke-test.sh <deploy-host> [image-tag]}"
-IMAGE_TAG="${2:-}"
+LANDING_HOST="${1:?Usage: smoke-test.sh <landing-host> <app-host> <api-host> [image-tag]}"
+APP_HOST="${2:?Usage: smoke-test.sh <landing-host> <app-host> <api-host> [image-tag]}"
+API_HOST="${3:?Usage: smoke-test.sh <landing-host> <app-host> <api-host> [image-tag]}"
+IMAGE_TAG="${4:-}"
 MAX_RETRIES=5
 RETRY_DELAY=10
 
 fail() { echo "FAIL: $1"; exit 1; }
 
 # Wait for TLS to be ready (cert-manager may need 1-2 min on first deploy)
-echo "==> Pre-check: TLS readiness (https://$DEPLOY_HOST)"
+echo "==> Pre-check: TLS readiness (https://$LANDING_HOST)"
 TLS_TIMEOUT=120
 TLS_INTERVAL=10
 TLS_ELAPSED=0
 while [ "$TLS_ELAPSED" -lt "$TLS_TIMEOUT" ]; do
-  HTTP_CODE=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" "https://$DEPLOY_HOST/health" 2>/dev/null || echo "000")
+  HTTP_CODE=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" "https://$LANDING_HOST/" 2>/dev/null || echo "000")
   # Accept 2xx/3xx as TLS-ready (connection succeeded); reject 4xx/5xx as potential errors
   if echo "$HTTP_CODE" | grep -qE '^[23]'; then
     echo "    TLS is ready (HTTP $HTTP_CODE)"
@@ -39,9 +42,21 @@ if [ "$TLS_ELAPSED" -ge "$TLS_TIMEOUT" ]; then
   fail "TLS not ready after ${TLS_TIMEOUT}s — certificate may not be provisioned yet. Re-run the workflow once cert-manager finishes."
 fi
 
-echo "==> Smoke test: API Gateway health (https://$DEPLOY_HOST/health)"
+echo "==> Smoke test: Landing page (https://$LANDING_HOST/)"
 for i in $(seq 1 "$MAX_RETRIES"); do
-  BODY=$(curl -sf "https://$DEPLOY_HOST/health" 2>/dev/null || true)
+  STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "https://$LANDING_HOST/" || true)
+  if [ "$STATUS" = "200" ]; then
+    echo "    PASS: HTTP 200"
+    break
+  fi
+  echo "    Attempt $i: HTTP $STATUS — retrying in ${RETRY_DELAY}s..."
+  sleep "$RETRY_DELAY"
+  [ "$i" -eq "$MAX_RETRIES" ] && fail "Landing page check failed after $MAX_RETRIES attempts"
+done
+
+echo "==> Smoke test: API Gateway health (https://$API_HOST/health)"
+for i in $(seq 1 "$MAX_RETRIES"); do
+  BODY=$(curl -sf "https://$API_HOST/health" 2>/dev/null || true)
   if echo "$BODY" | grep -q '"status":"ok"'; then
     echo "    PASS: $BODY"
     break
@@ -51,21 +66,21 @@ for i in $(seq 1 "$MAX_RETRIES"); do
   [ "$i" -eq "$MAX_RETRIES" ] && fail "API Gateway health check failed after $MAX_RETRIES attempts"
 done
 
-echo "==> Smoke test: Web frontend (https://$DEPLOY_HOST/)"
+echo "==> Smoke test: Product app login page (https://$APP_HOST/login)"
 for i in $(seq 1 "$MAX_RETRIES"); do
-  STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "https://$DEPLOY_HOST/" || true)
+  STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "https://$APP_HOST/login" || true)
   if [ "$STATUS" = "200" ]; then
     echo "    PASS: HTTP 200"
     break
   fi
   echo "    Attempt $i: HTTP $STATUS — retrying in ${RETRY_DELAY}s..."
   sleep "$RETRY_DELAY"
-  [ "$i" -eq "$MAX_RETRIES" ] && fail "Web frontend health check failed after $MAX_RETRIES attempts"
+  [ "$i" -eq "$MAX_RETRIES" ] && fail "Product app login page check failed after $MAX_RETRIES attempts"
 done
 
-echo "==> Smoke test: GraphQL endpoint (POST https://$DEPLOY_HOST/graphql)"
+echo "==> Smoke test: GraphQL endpoint (POST https://$API_HOST/graphql)"
 for i in $(seq 1 "$MAX_RETRIES"); do
-  BODY=$(curl -sf -X POST "https://$DEPLOY_HOST/graphql" \
+  BODY=$(curl -sf -X POST "https://$API_HOST/graphql" \
     -H 'Content-Type: application/json' \
     -d '{"query":"{ health }"}' 2>/dev/null || true)
   if echo "$BODY" | grep -q '"API Gateway is running"'; then
@@ -80,7 +95,7 @@ done
 # Verify deployed pods are running the expected image tag (requires kubectl access)
 if [ -n "$IMAGE_TAG" ] && command -v kubectl &>/dev/null; then
   echo "==> Smoke test: Image tag verification (expected: $IMAGE_TAG)"
-  DEPLOYMENTS="api-gateway web"
+  DEPLOYMENTS="landing api-gateway web"
   ALL_MATCH=true
   for DEPLOY in $DEPLOYMENTS; do
     ACTUAL=$(kubectl -n luckyplans get deployment "$DEPLOY" \

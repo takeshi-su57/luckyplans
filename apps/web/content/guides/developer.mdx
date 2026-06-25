@@ -118,7 +118,8 @@ Turborepo starts everything in parallel with hot reload:
 
 | Service      | Internal Port | Access URL                    | Description                             |
 | ------------ | ------------- | ----------------------------- | --------------------------------------- |
-| Frontend     | 3000          | http://localhost:3000         | Next.js app (rewrites proxy to gateway) |
+| Landing SPA  | 3000          | http://localhost:3000         | Vite marketing site                     |
+| Frontend     | 3000          | http://localhost:3000/login   | Next.js product app (same ingress host locally) |
 | API Gateway  | 3001          | http://localhost:3000/graphql | GraphQL (via Next.js rewrite)           |
 | service-core | —             | — (Redis transport)           | Core domain microservice                |
 
@@ -128,10 +129,10 @@ Turborepo starts everything in parallel with hot reload:
 
 1. Open http://localhost:3000 — you should see the landing page
 2. Navigate to any protected route (e.g., `/dashboard`) — you should be redirected to `/login`
-3. Register a new account or log in with the test user:
+4. Register a new account or log in with the test user:
    - **Email:** `testuser@luckyplans.xyz`
    - **Password:** `password`
-4. After login, you should be redirected back to the app with a valid session
+5. After login, you should be redirected back to the app with a valid session
 
 You can also verify the GraphQL endpoint directly:
 
@@ -678,7 +679,8 @@ pnpm dev
 | `pnpm format:check`           | Check formatting without modifying                       |
 | `pnpm clean`                  | Remove all build artifacts                               |
 | `pnpm deploy:local`           | Full deploy to local k3d cluster (build all + Helm)      |
-| `deploy-local.sh web`         | Rebuild and redeploy a single service                    |
+| deploy-local.sh landing     | Rebuild and redeploy the landing SPA                     |
+| deploy-local.sh web         | Rebuild and redeploy the product web app                 |
 | `deploy-local.sh --helm-only` | Helm upgrade only (config/secret changes, no builds)     |
 | `pnpm deploy:teardown`        | Destroy the local k3d cluster                            |
 | `pnpm deploy:status`          | Show cluster, Helm release, and pod status               |

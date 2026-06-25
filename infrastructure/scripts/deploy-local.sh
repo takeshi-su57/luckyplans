@@ -25,14 +25,16 @@ Options:
 
 Services:
   No arguments      Full deploy — build all images, import infra, Helm install
+  landing           Rebuild and redeploy the landing SPA only
   web               Rebuild and redeploy the web frontend only
   api-gateway       Rebuild and redeploy the API gateway only
   prisma-migrate    Rebuild the Prisma migration image only
 
-Multiple services can be specified: deploy-local.sh web api-gateway
+Multiple services can be specified: deploy-local.sh landing web api-gateway
 
 Examples:
   ./deploy-local.sh                    # Full deploy (first time or all services)
+  ./deploy-local.sh landing            # Redeploy landing only
   ./deploy-local.sh web                # Redeploy web only
   ./deploy-local.sh api-gateway web    # Redeploy gateway and web
   ./deploy-local.sh --helm-only        # Helm upgrade only (config/secret changes)
@@ -66,6 +68,7 @@ fi
 
 # Map service names to their Dockerfile paths and image names
 declare -A SERVICE_MAP=(
+  [landing]="apps/landing/Dockerfile|luckyplans/landing:latest"
   [web]="apps/web/Dockerfile|luckyplans/web:latest"
   [api-gateway]="apps/api-gateway/Dockerfile|luckyplans/api-gateway:latest"
   [prisma-migrate]="packages/prisma/Dockerfile|luckyplans/prisma-migrate:latest"
@@ -75,7 +78,7 @@ declare -A SERVICE_MAP=(
 for svc in "${SERVICES[@]}"; do
   if [[ -z "${SERVICE_MAP[$svc]:-}" ]]; then
     echo "Error: Unknown service '$svc'"
-    echo "Valid services: web, api-gateway, prisma-migrate"
+    echo "Valid services: landing, web, api-gateway, prisma-migrate"
     exit 1
   fi
 done
@@ -121,6 +124,14 @@ WEB_GRAPHQL_URL=$(grep 'graphqlUrl:' "$HELM_CHART/values.yaml" \
   | head -1 | sed 's/.*graphqlUrl:[[:space:]]*//' | tr -d "\"'")
 WEB_GRAPHQL_URL="${WEB_GRAPHQL_URL:-/graphql}"
 
+LANDING_APP_URL=$(grep 'appUrl:' "$HELM_CHART/values.yaml" \
+  | head -1 | sed 's/.*appUrl:[[:space:]]*//' | tr -d "\"'")
+LANDING_APP_URL="${LANDING_APP_URL:-/login}"
+
+LANDING_DOCS_URL=$(grep 'docsUrl:' "$HELM_CHART/values.yaml" \
+  | head -1 | sed 's/.*docsUrl:[[:space:]]*//' | tr -d "\"'")
+LANDING_DOCS_URL="${LANDING_DOCS_URL:-/docs}"
+
 # ---------------------------------------------------------------------------
 # Helper: pull image only if not already present locally
 # ---------------------------------------------------------------------------
@@ -164,7 +175,14 @@ build_image() {
   echo "--- Building $svc ---"
   cd "$ROOT_DIR"
 
-  if [[ "$svc" == "web" ]]; then
+  if [[ "$svc" == "landing" ]]; then
+    echo "VITE_APP_URL (baked into landing image): $LANDING_APP_URL"
+    echo "VITE_DOCS_URL (baked into landing image): $LANDING_DOCS_URL"
+    MSYS_NO_PATHCONV=1 docker build \
+      --build-arg "VITE_APP_URL=$LANDING_APP_URL" \
+      --build-arg "VITE_DOCS_URL=$LANDING_DOCS_URL" \
+      -t "$image" -f "$dockerfile" .
+  elif [[ "$svc" == "web" ]]; then
     echo "NEXT_PUBLIC_GRAPHQL_URL (baked into web image): $WEB_GRAPHQL_URL"
     # MSYS_NO_PATHCONV prevents Git Bash from mangling the build arg on Windows
     MSYS_NO_PATHCONV=1 docker build \
@@ -187,7 +205,7 @@ if ! $HELM_ONLY; then
 
   if $FULL_DEPLOY; then
     # Build app images
-    for svc in web api-gateway prisma-migrate; do
+    for svc in landing web api-gateway prisma-migrate; do
       build_image "$svc"
       local_image="${SERVICE_MAP[$svc]##*|}"
       IMAGES_TO_IMPORT+=("$local_image")
@@ -304,7 +322,9 @@ fi
 echo ""
 echo "=== Deployment complete ==="
 echo ""
-echo "Frontend:           http://localhost"
+echo "Landing:            http://localhost"
+echo "App:                http://localhost/login"
+echo "Docs:               http://localhost/docs"
 echo "GraphQL Playground: http://localhost/graphql"
 if ! $SKIP_OBS; then
   echo ""

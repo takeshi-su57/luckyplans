@@ -80,6 +80,7 @@ ingress:
   host: ''
   # Preferred multi-host model.
   hosts:
+    landing: ''
     app: ''
     api: ''
     admin: ''
@@ -89,6 +90,7 @@ ingress:
     secretName: ''
     # Preferred per-host TLS secrets.
     secrets:
+      landing: ''
       app: ''
       api: ''
       admin: ''
@@ -191,7 +193,41 @@ prismaMigrate:
     tag: latest
 
 # ============================================================
-# Web (Next.js)
+# Landing SPA (Vite)
+# ============================================================
+landing:
+  image:
+    repository: luckyplans/landing
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      memory: '64Mi'
+      cpu: '50m'
+    limits:
+      memory: '128Mi'
+      cpu: '100m'
+  probes:
+    readiness:
+      path: /healthz
+      port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      failureThreshold: 6
+    liveness:
+      path: /healthz
+      port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 15
+      failureThreshold: 3
+  # IMPORTANT: appUrl and docsUrl are Docker BUILD ARGs baked into the static bundle.
+  # Changing them here takes effect only after rebuilding the landing image.
+  buildArgs:
+    appUrl: '/login'
+    docsUrl: '/docs'
+
+# ============================================================
+# Web (Next.js product app)
 # ============================================================
 web:
   image:

@@ -5,9 +5,9 @@ description: Current system architecture, service map, data flow, and infrastruc
 
 # System Architecture Overview
 
-Last updated: 2026-05-21
+Last updated: 2026-06-25
 
-Production domains: `app.luckyplans.xyz` (web), `api.luckyplans.xyz` (gateway), `admin.luckyplans.xyz` (admin surfaces), `v0.api.luckyplans.xyz` (legacy API through an in-cluster proxy to host port 9000).
+Production domains: `luckyplans.xyz` (landing SPA), `app.luckyplans.xyz` (product web), `api.luckyplans.xyz` (gateway), `admin.luckyplans.xyz` (admin surfaces), `v0.api.luckyplans.xyz` (legacy API through an in-cluster proxy to host port 9000).
 
 ## Architecture Diagram
 
@@ -114,6 +114,7 @@ Registration: custom `/register` page → `POST /auth/register` → gateway crea
 - **Build:** Turborepo for monorepo orchestration, pnpm workspaces
 - **Local dev:** `docker compose up -d` (Redis, PostgreSQL, Keycloak), then `pnpm dev`
 - **Containers:** Multi-stage Docker builds (Alpine, non-root, turbo prune)
+- **Public edge surface:** pps/landing is a static Vite deployment isolated from the authenticated product app
 - **CI/CD:** GitHub Actions → Docker build → ArgoCD sync
 - **Deployment:** Helm charts on Kubernetes (k3s locally, any K8s in production)
 - **Auth:** Keycloak (self-hosted, PostgreSQL-backed), gateway-managed sessions with Redis store

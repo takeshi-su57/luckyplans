@@ -63,7 +63,7 @@ description: All environment variables, Helm values, and production overrides.
 
 Environment variables are accessed via `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. This throws on missing required variables. See `.env.example` for the full template.
 
-> **Note:** The frontend no longer requires any auth-related environment variables. In local development Apollo Client uses a relative `/graphql` URL. In production the web image build arg points at `https://api.luckyplans.xyz/graphql`.
+> **Note:** The product web app no longer requires any auth-related environment variables. In local development Apollo Client uses a relative `/graphql` URL. In production the web image build arg points at `https://api.luckyplans.xyz/graphql`. The landing SPA has its own build-time URLs for app/docs navigation.
 
 ## Helm Values
 
@@ -77,12 +77,13 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 | `secrets`         | Plain-text dev secrets rendered into K8s Secret (local dev only)              |
 | `sealedSecrets.*` | Encrypted production secrets rendered as SealedSecret CRD (prod only)         |
 | `image.*`         | Container registry and pull policy                                            |
-| `ingress.*`       | Traefik ingress configuration (host routing for `app`, `api`, `admin`, `v0.api`) |
+| `ingress.*`       | Traefik ingress configuration (host routing for `landing`, `app`, `api`, `admin`, `v0.api`) |
 | `certManager.*`   | Let's Encrypt TLS automation                                                  |
 | `redis.*`         | Redis deployment config                                                       |
 | `postgresql.*`    | PostgreSQL deployment config (Keycloak database)                              |
 | `keycloak.*`      | Keycloak deployment config (enabled by default)                               |
 | `apiGateway.*`    | API gateway deployment config                                                 |
+| `landing.*`       | Landing SPA deployment config and baked `appUrl`/`docsUrl` build args |
 | `serviceCore.*`   | Core service deployment config                                                |
 | `web.*`           | Frontend deployment config                                                    |
 
@@ -107,6 +108,9 @@ apiGateway:
     limits:
       memory: '1Gi'
       cpu: '1000m'
+
+landing:
+  replicas: 2
 
 web:
   replicas: 2

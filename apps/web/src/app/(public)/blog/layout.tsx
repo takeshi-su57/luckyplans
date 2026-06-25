@@ -1,12 +1,12 @@
-import { Navbar } from '@/components/landing/Navbar';
-import { Footer } from '@/components/landing/Footer';
+import { BlogFooter } from '@/components/blog/BlogFooter';
+import { BlogNavbar } from '@/components/blog/BlogNavbar';
 
 export default function BlogLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white text-[#37352f]">
-      <Navbar />
+      <BlogNavbar />
       <main>{children}</main>
-      <Footer />
+      <BlogFooter />
     </div>
   );
 }

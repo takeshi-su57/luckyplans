@@ -1,0 +1,55 @@
+{{- $component := "landing" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $component }}
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+  annotations:
+    luckyplans/baked-app-url: {{ .Values.landing.buildArgs.appUrl | quote }}
+    luckyplans/baked-docs-url: {{ .Values.landing.buildArgs.docsUrl | quote }}
+spec:
+  replicas: {{ .Values.landing.replicas }}
+  selector:
+    matchLabels:
+      {{- include "luckyplans.selectorLabels" (dict "component" $component "ctx" .) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+      containers:
+        - name: {{ $component }}
+          image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.landing.image.repository "tag" .Values.landing.image.tag) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          ports:
+            - containerPort: 8080
+          resources:
+            {{- toYaml .Values.landing.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.landing.probes.readiness.path }}
+              port: {{ .Values.landing.probes.readiness.port }}
+            initialDelaySeconds: {{ .Values.landing.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.landing.probes.readiness.periodSeconds }}
+            failureThreshold: {{ .Values.landing.probes.readiness.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.landing.probes.liveness.path }}
+              port: {{ .Values.landing.probes.liveness.port }}
+            initialDelaySeconds: {{ .Values.landing.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.landing.probes.liveness.periodSeconds }}
+            failureThreshold: {{ .Values.landing.probes.liveness.failureThreshold }}
