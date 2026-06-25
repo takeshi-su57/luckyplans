@@ -7,121 +7,102 @@ description: Current system architecture, service map, data flow, and infrastruc
 
 Last updated: 2026-06-25
 
-Production domains: `luckyplans.xyz` (landing SPA), `app.luckyplans.xyz` (product web), `api.luckyplans.xyz` (gateway), `admin.luckyplans.xyz` (admin surfaces), `v0.api.luckyplans.xyz` (legacy API through an in-cluster proxy to host port 9000).
+Production domains:
+
+- `luckyplans.xyz` for the landing SPA
+- `app.luckyplans.xyz` for the product web app
+- `api.luckyplans.xyz` for the gateway
+- `admin.luckyplans.xyz` for admin surfaces
+- `v0.api.luckyplans.xyz` for the legacy API proxy
 
 ## Architecture Diagram
 
-```
-Keycloak (IdP — self-hosted, Helm subchart)
-  ▲   │
-  │   │ ROPC grant (login) + Admin REST API (registration)
-  │   ▼
-API Gateway (apps/api-gateway)          ← Handles auth server-side
-  │  POST /auth/login    → ROPC grant, create Redis session, set cookie
-  │  POST /auth/register → Admin API user creation, auto-login via ROPC
-  │  POST /auth/logout   → clear Redis session + cookie
-  │
-  │  session_id cookie (HttpOnly, Secure, SameSite=Lax)
-  │
-Browser ─── cookie sent automatically on every request ─────────┐
-  │                                                               │
-  │ GraphQL (Apollo Client, credentials: 'include')               │
-  ▼                                                               │
-Next.js Frontend (apps/web)  ◄────────────────────────────────────┘
-  │  Custom /login and /register pages (fetch POST to gateway)
-  │  middleware.ts: cookie presence check only
-  │
-  │ Next.js rewrites (locally), K8s ingress (prod)
-  │ routes /auth/* + /graphql → Gateway
-  │
-  ▼
-API Gateway
-  │  SessionGuard: looks up session in Redis, extracts { userId, roles }
-  │  Refreshes access token server-side if near expiry
-  │  NestJS + Apollo Server (code-first GraphQL)
-  │
-  │ Redis pub/sub — payload carries { userId, roles }, never the raw token
-  │
-  ▼
-Worker Edges (`apps/edge-agent`, external runtime)
-  ▲  Internal edge APIs (`/internal/edges/*`)
-  │  - register + credential issuance
-  │  - connectivity heartbeat (`lastSeenAt`, version, targetVersion)
-  │  - task polling/results/complete/fail
-  │  - upgrade status reporting
-  ▼
-API Gateway + PostgreSQL/Prisma
+```text
+Browser
+  -> landing SPA (public)
+  -> web app (authenticated)
+  -> GraphQL and auth routes
+
+web app
+  -> api-gateway
+
+api-gateway
+  -> Keycloak
+  -> Redis
+  -> PostgreSQL via Prisma
+  -> MinIO
+  -> edge internal APIs
+
+edge-agent
+  <-> api-gateway
 ```
 
 ## Service Map
 
 | Service | Purpose | Communication |
-|---------|---------|---------------|
-| Keycloak | Identity Provider — user management, roles (PostgreSQL-backed) | ROPC + Admin API (gateway ↔ Keycloak server-side) |
-| `apps/web` | Next.js frontend, App Router, Apollo Client, custom auth pages, blog | GraphQL → API gateway (via Next.js rewrites / K8s ingress) |
-| `apps/api-gateway` | GraphQL API, REST auth endpoints, edge control plane (worker registry, release metadata, upgrade campaigns), Redis session management | GraphQL + internal REST APIs |
-| `apps/edge-agent` | External edge runtime: onboarding, registration, connectivity heartbeat, task execution, idle-only upgrade loop | Internal REST APIs ↔ gateway |
+| --- | --- | --- |
+| Keycloak | Identity provider and user management | Gateway to Keycloak server-side |
+| `apps/landing` | Public landing SPA | Static assets through ingress |
+| `apps/web` | Product web app and docs | GraphQL to api-gateway |
+| `apps/api-gateway` | GraphQL API, auth endpoints, edge control plane, session management | GraphQL and internal REST |
+| `apps/edge-agent` | External edge runtime for onboarding, heartbeats, task execution, and upgrade flow | Internal REST to gateway |
 
 ## Architectural Decisions
 
-Services are split by **functionality**, not by domain:
-- `api-gateway` currently owns client-facing domain operations and orchestration logic
-- edge runtimes (`apps/edge-agent`) execute distributed workloads and report state to gateway
-- new microservices are created only when workload/operations justify isolation (CPU-heavy, cron/background, independent scaling/SLO)
-- domain types live in `packages/shared`, not in individual services
+Services are split by functionality, not by domain:
+
+- `api-gateway` owns client-facing orchestration and shared domain operations
+- edge runtimes execute distributed workloads and report state back to the gateway
+- new microservices are added only when workload or operational isolation is justified
+- shared contracts and utilities belong in `packages/shared`
 
 ## Auth Flow
 
-1. User hits a protected `(app)` route → Next.js middleware checks for `session_id` cookie
-2. If no cookie → redirect to `/login` (custom Next.js page)
-3. User enters credentials → form submits `POST /auth/login` with `{ email, password }`
-4. Gateway authenticates with Keycloak via ROPC grant (`grant_type=password`)
-5. Gateway creates Redis session, sets opaque `session_id` cookie (HttpOnly, Secure, SameSite=Lax)
-6. Frontend redirects to the original protected route
-7. All subsequent GraphQL requests include the cookie automatically (browser handles this)
-8. Gateway `SessionGuard` looks up session in Redis, refreshes token if near expiry
-9. Extracts `{ userId, email, name, roles }` into GQL context
-10. Redis microservice messages carry this identity payload — never the raw token
+1. A user requests a protected route.
+2. Next.js middleware checks for the `session_id` cookie.
+3. If missing, the user is redirected to `/login`.
+4. The login form posts to `POST /auth/login`.
+5. The gateway authenticates against Keycloak with ROPC, creates a Redis session, and sets an HttpOnly cookie.
+6. Future GraphQL requests include the cookie automatically.
+7. `SessionGuard` loads the session, refreshes server-side credentials when needed, and injects user context.
 
-Registration: custom `/register` page → `POST /auth/register` → gateway creates user via Keycloak Admin REST API (service account with `manage-users` role), then auto-logs in via ROPC.
+Registration follows the same pattern through `POST /auth/register`, with user creation handled through the Keycloak Admin API.
 
-## Data Flow (Request Lifecycle)
+## Request Lifecycle
 
-1. **Frontend** sends GraphQL query/mutation via Apollo Client (cookie sent automatically)
-2. **API Gateway** `SessionGuard` looks up session in Redis, validates, and populates `req.user`
-3. Resolver executes gateway service logic (and edge orchestration when needed)
-4. Gateway persists/reads domain state via Prisma/PostgreSQL
-5. Gateway returns GraphQL response to frontend
+1. The frontend sends a GraphQL operation through Apollo Client.
+2. The gateway validates the session and populates request user context.
+3. Resolver and service logic run in the gateway.
+4. Domain data is read from or written to PostgreSQL through Prisma.
+5. The gateway returns the GraphQL response to the frontend.
 
-### Edge Runtime Lifecycle (Current)
+## Edge Runtime Lifecycle
 
-1. Edge starts and loads local config; if missing and interactive, runs onboarding wizard.
-2. Wizard collects display name, server URL, registration token; edge generates `edge-<human-name>-<shortid>`.
-3. Gateway registers/upserts worker by `deviceNumber` and issues credential.
-4. Edge sends connectivity heartbeat; gateway updates `lastSeenAt`, `version`, `targetVersion`, `upgradeStatus`.
-5. Edge polls tasks and reports heartbeat/results/terminal states.
-6. If `targetVersion` differs and edge is idle, upgrade flow runs and status transitions are reported.
+1. The edge starts and loads local config.
+2. If config is missing and the runtime is interactive, onboarding collects display name, server URL, and registration token.
+3. The gateway registers or updates the worker and issues credentials.
+4. The edge sends connectivity heartbeats and reports version state.
+5. The edge polls tasks and reports results.
+6. Upgrades run only when the edge is idle.
 
 ## Shared Packages
 
 | Package | Purpose |
-|---------|---------|
-| `packages/shared` | Entity interfaces (`User`, `AuthUser`), DTOs, message pattern enums, `ServiceResponse<T>`, utility functions (`getEnvVar`, `getRedisConfig`, `generateId`) |
-| `packages/config` | Shared ESLint preset, TypeScript configs for NestJS and Next.js |
+| --- | --- |
+| `packages/shared` | Entity interfaces, DTOs, message pattern enums, and utility functions such as `getEnvVar`, `getRedisConfig`, and `generateId` |
+| `packages/config` | Shared ESLint and TypeScript configuration |
 
 ## Infrastructure
 
-- **Build:** Turborepo for monorepo orchestration, pnpm workspaces
-- **Local dev:** `docker compose up -d` (Redis, PostgreSQL, Keycloak), then `pnpm dev`
-- **Containers:** Multi-stage Docker builds (Alpine, non-root, turbo prune)
-- **Public edge surface:** pps/landing is a static Vite deployment isolated from the authenticated product app
-- **CI/CD:** GitHub Actions → Docker build → ArgoCD sync
-- **Deployment:** Helm charts on Kubernetes (k3s locally, any K8s in production)
-- **Auth:** Keycloak (self-hosted, PostgreSQL-backed), gateway-managed sessions with Redis store
-- **Docs:** Nextra v4 integrated at `/docs` within `apps/web`
-- **Inter-service/runtime:** Redis session/cache + internal edge HTTP APIs for distributed worker orchestration
+- Build: Turborepo with pnpm workspaces
+- Local development: Docker Compose for Redis, PostgreSQL, Keycloak, and MinIO
+- Public surface: `apps/landing` is a static Vite deployment isolated from the authenticated product app
+- Deployment: Helm on Kubernetes, with ArgoCD for production sync
+- Auth: Keycloak plus gateway-managed Redis-backed sessions
+- Docs: Nextra integrated at `/docs` within `apps/web`
 
-See deep dives:
+See also:
+
 - [CI/CD Pipeline](/docs/architecture/ci-cd-pipeline)
 - [ArgoCD](/docs/architecture/argocd)
 - [Helm Deployment](/docs/architecture/helm-deployment)
@@ -129,10 +110,10 @@ See deep dives:
 
 ## Current State and Known Limitations
 
-- **Worker upgrade execution is policy-driven** — edge upgrades are idle-only and rely on release metadata integrity (URL/checksum/signature).
-- **Connectivity is heartbeat-based** — stale `lastSeenAt` reflects liveness issues but not root cause.
-- **Keycloak + PostgreSQL required** — local development needs `docker compose up -d` before `pnpm dev`.
-- **Gateway stateful** — session store depends on Redis; Redis data loss invalidates all sessions.
-- **Blog pages are static placeholders** — no CMS backend yet
-- **Portfolio image uploads not supported** — `imageUrl` fields accept external URLs only, no file upload
-- **No portfolio search/discovery** — public profiles are accessed directly via `/u/[userId]`, no directory or search
+- Worker upgrades are policy-driven and run only when idle.
+- Connectivity is heartbeat-based and does not explain root cause by itself.
+- Local development still depends on Docker Compose infrastructure before `pnpm dev`.
+- The gateway is stateful because sessions live in Redis.
+- Blog pages are static placeholders.
+- Portfolio image uploads still rely on external URLs rather than managed uploads.
+- Public profile discovery is direct-link based and has no search or directory yet.

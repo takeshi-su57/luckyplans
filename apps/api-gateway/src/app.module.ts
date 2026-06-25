@@ -2,8 +2,6 @@ import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { LoggerModule } from 'nestjs-pino';
-import { trace } from '@opentelemetry/api';
 import { getEnvVar } from '@luckyplans/shared';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
@@ -29,21 +27,6 @@ export function createGraphqlOptions(
 
 @Module({
   imports: [
-    LoggerModule.forRoot({
-      pinoHttp: {
-        level: process.env.LOG_LEVEL || 'info',
-        transport:
-          process.env.NODE_ENV !== 'production'
-            ? { target: 'pino-pretty', options: { colorize: true } }
-            : undefined,
-        mixin: () => {
-          const span = trace.getActiveSpan();
-          if (!span) return {};
-          const ctx = span.spanContext();
-          return { traceId: ctx.traceId, spanId: ctx.spanId };
-        },
-      },
-    }),
     GraphQLModule.forRoot<ApolloDriverConfig>(createGraphqlOptions()),
     HealthModule,
     GraphqlSharedModule,

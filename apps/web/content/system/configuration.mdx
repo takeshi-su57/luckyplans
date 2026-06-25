@@ -1,6 +1,6 @@
 ---
 title: Configuration Reference
-description: All environment variables, Helm values, and production overrides.
+description: Environment variables, Helm values, and production overrides.
 ---
 
 # Configuration Reference
@@ -9,61 +9,54 @@ description: All environment variables, Helm values, and production overrides.
 
 ### Core
 
-| Variable           | Default                 | Description                                                            |
-| ------------------ | ----------------------- | ---------------------------------------------------------------------- |
-| `REDIS_HOST`       | `localhost`             | Redis hostname                                                         |
-| `REDIS_PORT`       | `6379`                  | Redis port                                                             |
-| `API_GATEWAY_PORT` | `3001`                  | API Gateway listen port                                                |
-| `CORS_ORIGIN`      | `http://localhost:3000` | Allowed CORS origin                                                    |
-| `NODE_ENV`         | `development`           | Node environment                                                       |
-| `WEB_PORT`         | `3000`                  | Next.js dev server port                                                |
-| `API_GATEWAY_URL`  | `http://localhost:3001` | Gateway URL used by Next.js rewrites to proxy `/auth/*` and `/graphql` |
+| Variable | Default | Description |
+| --- | --- | --- |
+| `REDIS_HOST` | `localhost` | Redis hostname |
+| `REDIS_PORT` | `6379` | Redis port |
+| `API_GATEWAY_PORT` | `3001` | API Gateway listen port |
+| `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
+| `NODE_ENV` | `development` | Node environment |
+| `WEB_PORT` | `3000` | Next.js dev server port |
+| `API_GATEWAY_URL` | `http://localhost:3001` | Gateway URL used by rewrites for `/auth/*` and `/graphql` |
 
 ### Keycloak (api-gateway)
 
-| Variable                 | Default                 | Description                                                                                                                                                                                                                               |
-| ------------------------ | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `KEYCLOAK_ISSUER`        | —                       | Keycloak realm issuer URL. Must match the `iss` claim in tokens. e.g. `http://localhost:8080/realms/luckyplans`                                                                                                                           |
-| `KEYCLOAK_JWKS_URI`      | —                       | Keycloak JWKS endpoint for verifying id_tokens. e.g. `http://localhost:8080/realms/luckyplans/protocol/openid-connect/certs`                                                                                                              |
-| `KEYCLOAK_CLIENT_ID`     | `luckyplans-frontend`   | Keycloak client ID (confidential, ROPC + service account enabled)                                                                                                                                                                         |
-| `KEYCLOAK_CLIENT_SECRET` | —                       | Client secret from Keycloak Admin → Clients → `luckyplans-frontend` → Credentials. Local dev uses `dev-client-secret` (pre-configured in realm export). See [Deployment Guide](/docs/guides/deployment#obtaining-keycloak_client_secret). |
-| `KEYCLOAK_ADMIN_URL`     | `http://localhost:8080` | Keycloak base URL for Admin REST API (user registration)                                                                                                                                                                                  |
+| Variable | Default | Description |
+| --- | --- | --- |
+| `KEYCLOAK_ISSUER` | - | Keycloak realm issuer URL |
+| `KEYCLOAK_JWKS_URI` | - | Keycloak JWKS endpoint |
+| `KEYCLOAK_CLIENT_ID` | `luckyplans-frontend` | Keycloak client ID |
+| `KEYCLOAK_CLIENT_SECRET` | - | Client secret from Keycloak |
+| `KEYCLOAK_ADMIN_URL` | `http://localhost:8080` | Base URL for Keycloak Admin API |
 
 ### Session Management (api-gateway)
 
-| Variable                   | Default | Description                                                                                                                                                                                                        |
-| -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `SESSION_SECRET`           | —       | Secret for signing session cookies. Generate with `openssl rand -base64 32`                                                                                                                                        |
-| `WORKER_CREDENTIAL_PEPPER` | —       | Secret pepper used by the gateway when hashing/verifying worker (edge) credential material. Generate with `openssl rand -base64 48`. Treat as high-sensitivity secret and manage via Sealed Secrets in production. |
-| `SESSION_TTL_SECONDS`      | `36000` | Session time-to-live in seconds (default: 10 hours)                                                                                                                                                                |
+| Variable | Default | Description |
+| --- | --- | --- |
+| `SESSION_SECRET` | - | Secret for signing session cookies |
+| `WORKER_CREDENTIAL_PEPPER` | - | Secret pepper used when hashing and verifying worker credentials |
+| `SESSION_TTL_SECONDS` | `36000` | Session TTL in seconds |
 
-### Database (service-core)
+### Database
 
-| Variable       | Default | Description                                                                                                                                                                     |
-| -------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL` | —       | PostgreSQL connection string for Prisma ORM. Format: `postgresql://user:password@host:port/database`. Local dev: `postgresql://luckyplans:luckyplans@localhost:5433/luckyplans` |
+| Variable | Default | Description |
+| --- | --- | --- |
+| `DATABASE_URL` | - | PostgreSQL connection string for Prisma |
 
-### MinIO (File Uploads)
+### MinIO
 
-| Variable           | Default              | Description                                                                                |
-| ------------------ | -------------------- | ------------------------------------------------------------------------------------------ |
-| `MINIO_ENDPOINT`   | `localhost`          | MinIO server hostname                                                                      |
-| `MINIO_PORT`       | `9000`               | MinIO API port                                                                             |
-| `MINIO_ACCESS_KEY` | `minioadmin`         | MinIO root user (S3 access key). **Secret** — managed via Sealed Secrets in production     |
-| `MINIO_SECRET_KEY` | `minioadmin`         | MinIO root password (S3 secret key). **Secret** — managed via Sealed Secrets in production |
-| `MINIO_BUCKET`     | `luckyplans-uploads` | MinIO bucket name                                                                          |
-| `MINIO_USE_SSL`    | `false`              | Use SSL for MinIO connection                                                               |
+| Variable | Default | Description |
+| --- | --- | --- |
+| `MINIO_ENDPOINT` | `localhost` | MinIO hostname |
+| `MINIO_PORT` | `9000` | MinIO API port |
+| `MINIO_ACCESS_KEY` | `minioadmin` | MinIO access key |
+| `MINIO_SECRET_KEY` | `minioadmin` | MinIO secret key |
+| `MINIO_BUCKET` | `luckyplans-uploads` | Bucket name |
+| `MINIO_USE_SSL` | `false` | Enable SSL for MinIO |
 
-### Observability
+Environment variables are accessed through `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. Required variables throw when missing.
 
-| Variable                      | Default                       | Description                                                         |
-| ----------------------------- | ----------------------------- | ------------------------------------------------------------------- |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:4317`       | OpenTelemetry Collector gRPC endpoint for traces, metrics, and logs |
-| `LOG_LEVEL`                   | `info` (prod) / `debug` (dev) | Pino log level (`debug`, `info`, `warn`, `error`)                   |
-
-Environment variables are accessed via `getEnvVar(key, defaultValue?)` from `@luckyplans/shared`. This throws on missing required variables. See `.env.example` for the full template.
-
-> **Note:** The product web app no longer requires any auth-related environment variables. In local development Apollo Client uses a relative `/graphql` URL. In production the web image build arg points at `https://api.luckyplans.xyz/graphql`. The landing SPA has its own build-time URLs for app/docs navigation.
+> The product web app uses a relative `/graphql` URL in local development. The landing SPA has separate build-time URLs for app and docs navigation.
 
 ## Helm Values
 
@@ -71,43 +64,35 @@ Helm values are defined in `infrastructure/helm/luckyplans/values.yaml`.
 
 ### Key Sections
 
-| Section           | Purpose                                                                       |
-| ----------------- | ----------------------------------------------------------------------------- |
-| `config.*`        | Application config rendered into ConfigMap (incl. Keycloak vars, session TTL) |
-| `secrets`         | Plain-text dev secrets rendered into K8s Secret (local dev only)              |
-| `sealedSecrets.*` | Encrypted production secrets rendered as SealedSecret CRD (prod only)         |
-| `image.*`         | Container registry and pull policy                                            |
-| `ingress.*`       | Traefik ingress configuration (host routing for `landing`, `app`, `api`, `admin`, `v0.api`) |
-| `certManager.*`   | Let's Encrypt TLS automation                                                  |
-| `redis.*`         | Redis deployment config                                                       |
-| `postgresql.*`    | PostgreSQL deployment config (Keycloak database)                              |
-| `keycloak.*`      | Keycloak deployment config (enabled by default)                               |
-| `apiGateway.*`    | API gateway deployment config                                                 |
-| `landing.*`       | Landing SPA deployment config and baked `appUrl`/`docsUrl` build args |
-| `serviceCore.*`   | Core service deployment config                                                |
-| `web.*`           | Frontend deployment config                                                    |
+| Section | Purpose |
+| --- | --- |
+| `config.*` | Application config rendered into the ConfigMap |
+| `secrets` | Plain-text dev secrets rendered into a Kubernetes Secret |
+| `sealedSecrets.*` | Encrypted prod secrets rendered as a SealedSecret |
+| `image.*` | Container registry and pull policy |
+| `ingress.*` | Traefik ingress configuration |
+| `certManager.*` | Let's Encrypt TLS automation |
+| `redis.*` | Redis deployment config |
+| `postgresql.*` | PostgreSQL deployment config |
+| `keycloak.*` | Keycloak deployment config |
+| `apiGateway.*` | API gateway deployment config |
+| `landing.*` | Landing SPA deployment config and baked build args |
+| `serviceCore.*` | Core service deployment config |
+| `web.*` | Product web deployment config |
 
 ### Production Overrides
 
-Production-specific values are in `infrastructure/helm/luckyplans/values.prod.yaml`. Image tags are automatically updated by the CI/CD pipeline via `.github/workflows/update-tags.yml`.
+Production-specific values live in `infrastructure/helm/luckyplans/values.prod.yaml`.
 
-### Production Secrets (Sealed Secrets)
+### Production Secrets
 
-Production secrets are encrypted via Bitnami Sealed Secrets and stored in `values.prod.yaml` under `sealedSecrets.encryptedData`. The `sealed-secrets-controller` in the cluster decrypts them at runtime. See [Deployment Guide](/docs/guides/deployment#secrets-management-sealed-secrets) for setup and rotation.
+Production secrets are encrypted in `values.prod.yaml` under `sealedSecrets.encryptedData`. The Sealed Secrets controller decrypts them at runtime.
 
-### Example: scaling in production
+### Example scaling
 
 ```yaml
-# values.prod.yaml
 apiGateway:
   replicas: 3
-  resources:
-    requests:
-      memory: '512Mi'
-      cpu: '500m'
-    limits:
-      memory: '1Gi'
-      cpu: '1000m'
 
 landing:
   replicas: 2
@@ -115,5 +100,3 @@ landing:
 web:
   replicas: 2
 ```
-
-Commit and push — ArgoCD auto-syncs the change.

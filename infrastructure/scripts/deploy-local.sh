@@ -4,9 +4,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 HELM_CHART="$SCRIPT_DIR/../helm/luckyplans"
-HELM_CHART_OBS="$SCRIPT_DIR/../helm/observability"
 RELEASE_NAME="luckyplans"
-RELEASE_NAME_OBS="luckyplans-observability"
 CLUSTER_NAME="luckyplans-local"
 HELM_TIMEOUT="${HELM_TIMEOUT:-15m}"
 
@@ -21,7 +19,6 @@ Deploy LuckyPlans to a local k3d cluster.
 
 Options:
   --helm-only         Run Helm upgrade only (no image build/import)
-  --no-observability  Skip observability stack deployment
 
 Services:
   No arguments      Full deploy — build all images, import infra, Helm install
@@ -43,13 +40,11 @@ EOF
 }
 
 HELM_ONLY=false
-SKIP_OBS=false
 SERVICES=()
 for arg in "$@"; do
   case "$arg" in
     -h|--help) usage ;;
     --helm-only) HELM_ONLY=true ;;
-    --no-observability) SKIP_OBS=true ;;
     *) SERVICES+=("$arg") ;;
   esac
 done
@@ -225,25 +220,6 @@ if ! $HELM_ONLY; then
     done
     IMAGES_TO_IMPORT+=("${INFRA_IMAGES[@]}")
 
-    # Pull observability images (skip if already cached)
-    if ! $SKIP_OBS; then
-      echo ""
-      echo "--- Pulling observability images (skipping cached) ---"
-      OBS_IMAGES=(
-        "otel/opentelemetry-collector-contrib:0.96.0"
-        "prom/prometheus:v2.51.0"
-        "grafana/grafana:10.4.0"
-        "grafana/loki:2.9.4"
-        "grafana/tempo:2.4.0"
-        "grafana/promtail:2.9.4"
-        "oliver006/redis_exporter:v1.58.0"
-      )
-      for img in "${OBS_IMAGES[@]}"; do
-        pull_if_missing "$img"
-      done
-      IMAGES_TO_IMPORT+=("${OBS_IMAGES[@]}")
-    fi
-
     # Batch import ALL images in a single k3d command (much faster than one-by-one)
     echo ""
     echo "--- Importing ${#IMAGES_TO_IMPORT[@]} images into k3d (single batch) ---"
@@ -284,22 +260,6 @@ if $HELM_ONLY || $FULL_DEPLOY; then
     exit 1
   fi
 
-  # Deploy observability stack (full deploy or helm-only, unless skipped)
-  if ! $SKIP_OBS; then
-    echo ""
-    echo "--- Deploying observability stack with Helm ---"
-    if ! helm upgrade --install "$RELEASE_NAME_OBS" "$HELM_CHART_OBS" \
-      --namespace monitoring \
-      --create-namespace \
-      -f "$HELM_CHART_OBS/values.yaml" \
-      --wait \
-      --timeout "$HELM_TIMEOUT"; then
-      echo ""
-      echo "Observability Helm deploy failed."
-      print_app_diagnostics "monitoring"
-      exit 1
-    fi
-  fi
 else
   # Targeted deploy: restart only the affected deployments to pick up new images
   echo ""
@@ -326,16 +286,8 @@ echo "Landing:            http://localhost"
 echo "App:                http://localhost/login"
 echo "Docs:               http://localhost/docs"
 echo "GraphQL Playground: http://localhost/graphql"
-if ! $SKIP_OBS; then
-  echo ""
-  echo "Observability (monitoring namespace):"
-  echo "  Grafana:          kubectl -n monitoring port-forward svc/grafana 3002:3000"
-  echo "  Prometheus:       kubectl -n monitoring port-forward svc/prometheus 9090:9090"
-fi
 echo ""
 echo "Useful commands:"
 echo "  kubectl -n luckyplans get pods"
-echo "  kubectl -n monitoring get pods"
 echo "  kubectl -n luckyplans logs -f deployment/<service>"
 echo "  helm -n luckyplans history $RELEASE_NAME"
-echo "  helm -n monitoring history $RELEASE_NAME_OBS"

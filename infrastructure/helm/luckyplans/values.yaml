@@ -38,9 +38,6 @@ config:
   minioPort: '9000'
   minioUseSSL: 'false'
   minioBucket: 'luckyplans-uploads'
-  # OpenTelemetry — OTel Collector in monitoring namespace
-  otelExporterEndpoint: 'http://otel-collector.monitoring.svc:4317'
-  logLevel: 'info'
 
 # ============================================================
 # Sealed Secrets (Bitnami)
