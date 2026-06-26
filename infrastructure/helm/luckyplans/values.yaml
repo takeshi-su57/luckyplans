@@ -78,6 +78,7 @@ ingress:
   # Preferred multi-host model.
   hosts:
     landing: ''
+    docs: ''
     app: ''
     api: ''
     admin: ''
@@ -88,6 +89,7 @@ ingress:
     # Preferred per-host TLS secrets.
     secrets:
       landing: ''
+      docs: ''
       app: ''
       api: ''
       admin: ''
@@ -224,6 +226,37 @@ landing:
     docsUrl: '/docs'
 
 # ============================================================
+# Docs (Docusaurus static SPA)
+# ============================================================
+docs:
+  image:
+    repository: luckyplans/docs
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      memory: '128Mi'
+      cpu: '100m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
+  probes:
+    readiness:
+      path: /
+      port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      failureThreshold: 6
+    liveness:
+      path: /
+      port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+  buildArgs:
+    appUrl: '/login'
+
+# ============================================================
 # Web (Next.js product app)
 # ============================================================
 web:
@@ -257,6 +290,7 @@ web:
   # Changing this value here only takes effect after rebuilding the web image.
   buildArgs:
     graphqlUrl: '/graphql'
+    docsUrl: '/docs'
 
 # ============================================================
 # Smoke tests (ArgoCD post-sync hook)

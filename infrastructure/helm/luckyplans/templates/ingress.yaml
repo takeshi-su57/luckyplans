@@ -1,11 +1,12 @@
 {{- if .Values.ingress.enabled }}
 {{- $landingHost := .Values.ingress.hosts.landing | default "" -}}
+{{- $docsHost := .Values.ingress.hosts.docs | default "" -}}
 {{- $appHost := .Values.ingress.hosts.app | default "" -}}
 {{- $apiHost := .Values.ingress.hosts.api | default "" -}}
 {{- $adminHost := .Values.ingress.hosts.admin | default "" -}}
 {{- $legacyHost := .Values.ingress.host | default "" -}}
 {{- $legacyV0Host := .Values.legacyV0.host | default "" -}}
-{{- $useMultiHost := and $landingHost (and $appHost (and $apiHost $adminHost)) -}}
+{{- $useMultiHost := and $landingHost (and $docsHost (and $appHost (and $apiHost $adminHost))) -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -27,6 +28,9 @@ spec:
     - hosts:
         - {{ $landingHost | quote }}
       secretName: {{ .Values.ingress.tls.secrets.landing | quote }}
+    - hosts:
+        - {{ $docsHost | quote }}
+      secretName: {{ .Values.ingress.tls.secrets.docs | quote }}
     - hosts:
         - {{ $appHost | quote }}
       secretName: {{ .Values.ingress.tls.secrets.app | quote }}
@@ -59,6 +63,16 @@ spec:
                 name: landing
                 port:
                   number: 3000
+    - host: {{ $docsHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: docs
+                port:
+                  number: 8080
     - host: {{ $appHost | quote }}
       http:
         paths:
@@ -237,20 +251,13 @@ spec:
                 name: web
                 port:
                   number: 3000
-          - path: /docs
-            pathType: Prefix
-            backend:
-              service:
-                name: web
-                port:
-                  number: 3000
           - path: /blog
             pathType: Prefix
             backend:
               service:
-                name: web
+                name: docs
                 port:
-                  number: 3000
+                  number: 8080
           - path: /u
             pathType: Prefix
             backend:

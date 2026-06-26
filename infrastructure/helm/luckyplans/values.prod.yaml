@@ -28,6 +28,7 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
     landing: 'luckyplans.xyz'
+    docs: 'docs.luckyplans.xyz'
     app: 'app.luckyplans.xyz'
     api: 'api.luckyplans.xyz'
     admin: 'admin.luckyplans.xyz'
@@ -35,6 +36,7 @@ ingress:
     enabled: true
     secrets:
       landing: luckyplans-xyz-tls
+      docs: docs-luckyplans-tls
       app: app-luckyplans-tls
       api: api-luckyplans-tls
       admin: admin-luckyplans-tls
@@ -92,7 +94,13 @@ landing:
       cpu: '150m'
   buildArgs:
     appUrl: 'https://app.luckyplans.xyz/login'
-    docsUrl: 'https://app.luckyplans.xyz/docs'
+    docsUrl: 'https://docs.luckyplans.xyz'
+docs:
+  image:
+    repository: takeshi-su57/docs
+    tag: 'sha-e20117f'
+  buildArgs:
+    appUrl: 'https://app.luckyplans.xyz/login'
 web:
   image:
     repository: takeshi-su57/web
@@ -107,6 +115,7 @@ web:
       cpu: '500m'
   buildArgs:
     graphqlUrl: 'https://api.luckyplans.xyz/graphql'
+    docsUrl: 'https://docs.luckyplans.xyz'
 postgresql:
   storage: 3Gi
   resources:

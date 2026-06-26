@@ -1,0 +1,38 @@
+---
+title: Standalone Docs App on docs.luckyplans.xyz
+description: Split the public docs and blog out of apps/web into a dedicated Docusaurus deployment.
+---
+
+# Standalone Docs App on docs.luckyplans.xyz
+
+**Date:** 2026-06-25
+**Status:** accepted
+
+## Context
+
+LuckyPlans now has enough public technical content that coupling docs to the authenticated product app creates unnecessary deployment and navigation overlap.
+
+The existing `/docs` route inside `apps/web` also meant:
+
+1. docs releases were tied to product-app image changes
+2. public docs and blog traffic shared the product app deployment surface
+3. docs links needed special handling inside a session-oriented Next.js app
+
+## Decision
+
+Create a dedicated `apps/docs` Docusaurus app and publish it at `docs.luckyplans.xyz`.
+
+The new docs app owns:
+
+- Markdown and MDX content under `apps/docs/docs/`
+- the public docs navigation
+- the lightweight `/blog` public surface
+
+The product app no longer serves docs pages directly. Instead, `apps/web` redirects `/docs/*` and `/blog/*` to the standalone docs domain for backward compatibility.
+
+## Consequences
+
+- **Easier:** Docs and blog now deploy independently from the authenticated product app.
+- **Easier:** Production routing is clearer: landing, docs, app, and API each have a dedicated host.
+- **Easier:** Public technical content can evolve without carrying product-app middleware or GraphQL concerns.
+- **Harder:** Helm, local deploy scripts, and image management now include one more frontend workload.

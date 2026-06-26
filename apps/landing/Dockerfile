@@ -30,7 +30,6 @@ ENV VITE_DOCS_URL=${VITE_DOCS_URL}
 RUN pnpm turbo run build --filter=@luckyplans/landing
 
 FROM nginxinc/nginx-unprivileged:1.27-alpine AS runner
-COPY apps/landing/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/apps/landing/dist /usr/share/nginx/html
 
 EXPOSE 8080

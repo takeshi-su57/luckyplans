@@ -76,7 +76,22 @@ spec:
               done
 
               # ----------------------------------------------------------
-              # Test 3: GraphQL endpoint
+              # Test 3: Docs frontend
+              # ----------------------------------------------------------
+              echo "==> Testing docs frontend"
+              for i in $(seq 1 $RETRIES); do
+                STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "http://docs.${NS}.svc:8080/" || true)
+                if [ "$STATUS" = "200" ]; then
+                  echo "    PASS: HTTP 200"
+                  break
+                fi
+                echo "    Attempt $i: HTTP $STATUS, retrying in ${DELAY}s..."
+                sleep $DELAY
+                [ "$i" -eq "$RETRIES" ] && { echo "FAIL: docs check"; exit 1; }
+              done
+
+              # ----------------------------------------------------------
+              # Test 4: GraphQL endpoint
               # ----------------------------------------------------------
               echo "==> Testing GraphQL endpoint"
               for i in $(seq 1 $RETRIES); do

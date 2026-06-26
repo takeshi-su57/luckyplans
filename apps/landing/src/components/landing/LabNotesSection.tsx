@@ -1,6 +1,6 @@
 import { SectionContainer } from './SectionContainer';
 
-const docsUrl = import.meta.env.VITE_DOCS_URL || 'https://app.luckyplans.xyz/docs';
+const docsUrl = import.meta.env.VITE_DOCS_URL || '/docs';
 const blogUrl = `${docsUrl.replace(/\/docs\/?$/, '')}/blog`;
 
 export function LabNotesSection() {

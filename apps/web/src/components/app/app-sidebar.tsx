@@ -16,12 +16,12 @@ import {
   User,
 } from 'lucide-react';
 import { useCurrentUser } from '@/hooks/use-current-user';
+import { resolveDocsUrl } from '@/config/public-site-urls';
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Profile', href: '/profile', icon: User },
   { label: 'Edges', href: '/edges', icon: Cpu },
-  { label: 'Docs', href: '/docs', icon: BookOpen },
 ];
 
 interface AppSidebarProps {
@@ -33,6 +33,7 @@ interface AppSidebarProps {
 export function AppSidebar({ collapsed, onToggle, onNavigate }: AppSidebarProps) {
   const { user, isLoading } = useCurrentUser();
   const pathname = usePathname();
+  const docsUrl = resolveDocsUrl(process.env);
 
   const handleLogout = useCallback(async () => {
     await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
@@ -92,6 +93,15 @@ export function AppSidebar({ collapsed, onToggle, onNavigate }: AppSidebarProps)
             </Link>
           );
         })}
+        <a
+          href={docsUrl}
+          onClick={onNavigate}
+          title={collapsed ? 'Docs' : undefined}
+          className={`flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-[#787774] transition-colors hover:bg-[#f1f1ef] hover:text-[#37352f] ${collapsed ? 'justify-center' : ''}`}
+        >
+          <BookOpen className="size-4 flex-shrink-0" />
+          {!collapsed && <span>Docs</span>}
+        </a>
       </nav>
 
       {/* User section */}

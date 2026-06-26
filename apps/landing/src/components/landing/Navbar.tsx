@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { GitHubIcon } from '@/components/icons/GitHubIcon';
 
-const appUrl = import.meta.env.VITE_APP_URL || 'https://app.luckyplans.xyz/login';
-const docsUrl = import.meta.env.VITE_DOCS_URL || 'https://app.luckyplans.xyz/docs';
+const appUrl = import.meta.env.VITE_APP_URL || '/login';
+const docsUrl = import.meta.env.VITE_DOCS_URL || '/docs';
 const blogUrl = `${docsUrl.replace(/\/docs\/?$/, '')}/blog`;
 
 const navItems = [

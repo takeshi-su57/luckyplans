@@ -28,7 +28,9 @@ COPY --from=deps /app/ .
 COPY --from=pruner /app/out/full/ .
 COPY --from=pruner /app/tsconfig.base.json ./tsconfig.base.json
 ARG NEXT_PUBLIC_GRAPHQL_URL=http://localhost:3001/graphql
+ARG NEXT_PUBLIC_DOCS_URL=/docs
 ENV NEXT_PUBLIC_GRAPHQL_URL=${NEXT_PUBLIC_GRAPHQL_URL}
+ENV NEXT_PUBLIC_DOCS_URL=${NEXT_PUBLIC_DOCS_URL}
 ENV STANDALONE=true
 RUN pnpm turbo run build --filter=@luckyplans/web
 

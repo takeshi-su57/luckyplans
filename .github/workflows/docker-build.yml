@@ -41,6 +41,8 @@ jobs:
         include:
           - service: landing
             dockerfile: apps/landing/Dockerfile
+          - service: docs
+            dockerfile: apps/docs/Dockerfile
           - service: web
             dockerfile: apps/web/Dockerfile
           - service: api-gateway
@@ -88,7 +90,13 @@ jobs:
         id: landing-urls
         run: |
           echo "app_url=https://app.luckyplans.xyz/login" >> "$GITHUB_OUTPUT"
-          echo "docs_url=https://app.luckyplans.xyz/docs" >> "$GITHUB_OUTPUT"
+          echo "docs_url=https://docs.luckyplans.xyz" >> "$GITHUB_OUTPUT"
+
+      - name: Set docs app URL
+        if: matrix.service == 'docs'
+        id: docs-app-url
+        run: |
+          echo "app_url=https://app.luckyplans.xyz/login" >> "$GITHUB_OUTPUT"
 
       - name: Build and push image
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
@@ -106,7 +114,9 @@ jobs:
           build-args: |
             ${{ matrix.service == 'landing' && format('VITE_APP_URL={0}', steps.landing-urls.outputs.app_url) || '' }}
             ${{ matrix.service == 'landing' && format('VITE_DOCS_URL={0}', steps.landing-urls.outputs.docs_url) || '' }}
+            ${{ matrix.service == 'docs' && format('DOCS_APP_URL={0}', steps.docs-app-url.outputs.app_url) || '' }}
             ${{ matrix.service == 'web' && format('NEXT_PUBLIC_GRAPHQL_URL={0}', steps.graphql-url.outputs.url) || '' }}
+            ${{ matrix.service == 'web' && format('NEXT_PUBLIC_DOCS_URL={0}', 'https://docs.luckyplans.xyz') || '' }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@v0.36.0

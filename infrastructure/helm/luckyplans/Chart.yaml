@@ -1,6 +1,6 @@
 apiVersion: v2
 name: luckyplans
-description: LuckyPlans platform — landing, web, api-gateway, redis
+description: LuckyPlans platform — landing, docs, web, api-gateway, redis
 type: application
 version: 0.2.0
 appVersion: '0.2.0'

@@ -23,6 +23,7 @@ Options:
 Services:
   No arguments      Full deploy — build all images, import infra, Helm install
   landing           Rebuild and redeploy the landing SPA only
+  docs              Rebuild and redeploy the docs SPA only
   web               Rebuild and redeploy the web frontend only
   api-gateway       Rebuild and redeploy the API gateway only
   prisma-migrate    Rebuild the Prisma migration image only
@@ -34,6 +35,7 @@ Examples:
   ./deploy-local.sh landing            # Redeploy landing only
   ./deploy-local.sh web                # Redeploy web only
   ./deploy-local.sh api-gateway web    # Redeploy gateway and web
+  ./deploy-local.sh docs               # Redeploy docs only
   ./deploy-local.sh --helm-only        # Helm upgrade only (config/secret changes)
 EOF
   exit 0
@@ -64,6 +66,7 @@ fi
 # Map service names to their Dockerfile paths and image names
 declare -A SERVICE_MAP=(
   [landing]="apps/landing/Dockerfile|luckyplans/landing:latest"
+  [docs]="apps/docs/Dockerfile|luckyplans/docs:latest"
   [web]="apps/web/Dockerfile|luckyplans/web:latest"
   [api-gateway]="apps/api-gateway/Dockerfile|luckyplans/api-gateway:latest"
   [prisma-migrate]="packages/prisma/Dockerfile|luckyplans/prisma-migrate:latest"
@@ -73,7 +76,7 @@ declare -A SERVICE_MAP=(
 for svc in "${SERVICES[@]}"; do
   if [[ -z "${SERVICE_MAP[$svc]:-}" ]]; then
     echo "Error: Unknown service '$svc'"
-    echo "Valid services: landing, web, api-gateway, prisma-migrate"
+    echo "Valid services: landing, docs, web, api-gateway, prisma-migrate"
     exit 1
   fi
 done
@@ -127,6 +130,14 @@ LANDING_DOCS_URL=$(grep 'docsUrl:' "$HELM_CHART/values.yaml" \
   | head -1 | sed 's/.*docsUrl:[[:space:]]*//' | tr -d "\"'")
 LANDING_DOCS_URL="${LANDING_DOCS_URL:-/docs}"
 
+DOCS_APP_URL=$(grep 'appUrl:' "$HELM_CHART/values.yaml" \
+  | tail -1 | sed 's/.*appUrl:[[:space:]]*//' | tr -d "\"'")
+DOCS_APP_URL="${DOCS_APP_URL:-/login}"
+
+WEB_DOCS_URL=$(grep 'docsUrl:' "$HELM_CHART/values.yaml" \
+  | tail -1 | sed 's/.*docsUrl:[[:space:]]*//' | tr -d "\"'")
+WEB_DOCS_URL="${WEB_DOCS_URL:-/docs}"
+
 # ---------------------------------------------------------------------------
 # Helper: pull image only if not already present locally
 # ---------------------------------------------------------------------------
@@ -177,11 +188,18 @@ build_image() {
       --build-arg "VITE_APP_URL=$LANDING_APP_URL" \
       --build-arg "VITE_DOCS_URL=$LANDING_DOCS_URL" \
       -t "$image" -f "$dockerfile" .
+  elif [[ "$svc" == "docs" ]]; then
+    echo "DOCS_APP_URL (baked into docs image): $DOCS_APP_URL"
+    MSYS_NO_PATHCONV=1 docker build \
+      --build-arg "DOCS_APP_URL=$DOCS_APP_URL" \
+      -t "$image" -f "$dockerfile" .
   elif [[ "$svc" == "web" ]]; then
     echo "NEXT_PUBLIC_GRAPHQL_URL (baked into web image): $WEB_GRAPHQL_URL"
+    echo "NEXT_PUBLIC_DOCS_URL (baked into web image): $WEB_DOCS_URL"
     # MSYS_NO_PATHCONV prevents Git Bash from mangling the build arg on Windows
     MSYS_NO_PATHCONV=1 docker build \
       --build-arg "NEXT_PUBLIC_GRAPHQL_URL=$WEB_GRAPHQL_URL" \
+      --build-arg "NEXT_PUBLIC_DOCS_URL=$WEB_DOCS_URL" \
       -t "$image" -f "$dockerfile" .
   else
     docker build -t "$image" -f "$dockerfile" .
@@ -200,7 +218,7 @@ if ! $HELM_ONLY; then
 
   if $FULL_DEPLOY; then
     # Build app images
-    for svc in landing web api-gateway prisma-migrate; do
+    for svc in landing docs web api-gateway prisma-migrate; do
       build_image "$svc"
       local_image="${SERVICE_MAP[$svc]##*|}"
       IMAGES_TO_IMPORT+=("$local_image")
@@ -285,6 +303,7 @@ echo ""
 echo "Landing:            http://localhost"
 echo "App:                http://localhost/login"
 echo "Docs:               http://localhost/docs"
+echo "Direct docs dev:    http://localhost:3002"
 echo "GraphQL Playground: http://localhost/graphql"
 echo ""
 echo "Useful commands:"

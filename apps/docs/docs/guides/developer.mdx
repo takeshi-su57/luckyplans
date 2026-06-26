@@ -1,0 +1,531 @@
+---
+title: Developer Guide
+description: How to set up and run LuckyPlans locally for development.
+---
+
+# How to Develop Locally
+
+## Prerequisites
+
+| Tool | Version | Install |
+| --- | --- | --- |
+| Node.js | >= 20.0.0 | [nodejs.org](https://nodejs.org) |
+| pnpm | >= 11.2.2 | `npm install -g pnpm@11.2.2` |
+| Docker Compose | Latest | [docker.com](https://www.docker.com) |
+
+## Quick Start
+
+```bash
+# First time - installs deps, sets up .env, builds shared packages:
+pnpm setup
+
+# Start infrastructure (Redis, PostgreSQL, Keycloak, MinIO):
+docker compose up -d
+
+# Start all services with hot reload:
+pnpm dev
+```
+
+Open http://localhost:3000. The local host serves the public landing page and routes product app traffic through the web app and gateway.
+
+Production domains:
+
+- `luckyplans.xyz` -> landing SPA
+- `docs.luckyplans.xyz` -> docs SPA
+- `app.luckyplans.xyz` -> web
+- `api.luckyplans.xyz` -> api-gateway
+- `admin.luckyplans.xyz` -> Keycloak and ArgoCD
+- `v0.api.luckyplans.xyz` -> legacy API through the `legacy-v0-api` in-cluster proxy to `host.k3d.internal:9000`
+
+## Step-by-Step Setup
+
+### 1. Install dependencies
+
+```bash
+pnpm install
+```
+
+### 2. Set up environment variables
+
+```bash
+cp .env.example .env
+```
+
+Default values work for local development, including MinIO credentials (`MINIO_ACCESS_KEY=minioadmin`, `MINIO_SECRET_KEY=minioadmin`). You must fill in `SESSION_SECRET` and `WORKER_CREDENTIAL_PEPPER`:
+
+```bash
+openssl rand -base64 32
+openssl rand -base64 48
+```
+
+Paste the outputs into `SESSION_SECRET=` and `WORKER_CREDENTIAL_PEPPER=` in `.env`.
+
+### 3. Start infrastructure
+
+Docker Compose provides the local dependencies:
+
+```bash
+docker compose up -d
+```
+
+| Container | Port | Purpose |
+| --- | --- | --- |
+| redis | 6379 | Inter-service communication and sessions |
+| postgresql-keycloak | 5433 | Keycloak database |
+| postgresql-app | 5434 | Application database |
+| keycloak | 8080 | Identity provider |
+| minio | 9000 (API), 9001 (Console) | Object storage for uploads |
+
+Verify everything is healthy:
+
+```bash
+docker compose ps
+```
+
+Wait for Keycloak to show `healthy` status on first startup.
+
+To stop infrastructure:
+
+```bash
+docker compose down
+docker compose down -v
+```
+
+### 4. Build shared packages and run database migrations
+
+```bash
+pnpm --filter @luckyplans/shared build
+pnpm --filter @luckyplans/prisma build
+pnpm --filter @luckyplans/prisma db:migrate:deploy
+```
+
+### 5. Start all services
+
+```bash
+pnpm dev
+```
+
+Common local entry points:
+
+| Surface | URL | Description |
+| --- | --- | --- |
+| Landing SPA | http://localhost:3000 | Public marketing site |
+| Product app | http://localhost:3000/login | Authenticated web app |
+| GraphQL | http://localhost:3000/graphql | Gateway endpoint via rewrite |
+| Docs | http://localhost:3002 | Standalone docs SPA during `pnpm dev` |
+
+### 6. Verify everything works
+
+1. Open http://localhost:3000 and confirm the landing page loads.
+2. Navigate to a protected route such as `/dashboard`.
+3. Confirm you are redirected to `/login`.
+4. Register a user or sign in with the test account:
+   - Email: `testuser@luckyplans.xyz`
+   - Password: `password`
+5. Confirm you are redirected back into the app with a valid session.
+
+You can also verify the GraphQL endpoint directly:
+
+```bash
+curl http://localhost:3001/graphql -H 'Content-Type: application/json' \
+  -d '{"query":"{ health }"}'
+```
+
+### 7. MinIO console
+
+Open http://localhost:9001:
+
+- Username: `minioadmin`
+- Password: `minioadmin`
+
+### 8. Keycloak admin console
+
+Open http://localhost:8080:
+
+- Admin user: `admin`
+- Admin password: `admin`
+- Realm: `luckyplans`
+
+The realm is imported from `infrastructure/keycloak/realm-export.json` on first start.
+
+## How Authentication Works Locally
+
+The auth flow uses gateway-managed sessions and keeps tokens out of the browser:
+
+1. The browser requests a protected route.
+2. Next.js middleware checks for a `session_id` cookie and redirects to `/login` when absent.
+3. The login page posts credentials to `/auth/login`.
+4. The gateway authenticates against Keycloak, creates a Redis session, and sets an HttpOnly `session_id` cookie.
+5. Subsequent GraphQL requests include that cookie automatically.
+6. `SessionGuard` validates the session and injects the user into request context.
+
+Registration follows the same pattern through `/auth/register`, with user creation handled server-side through the Keycloak Admin API.
+
+## Logging
+
+Use the NestJS `Logger` from `@nestjs/common` for application logging:
+
+```typescript
+import { Injectable, Logger } from '@nestjs/common';
+
+@Injectable()
+export class MyService {
+  private readonly logger = new Logger(MyService.name);
+
+  doSomething() {
+    this.logger.log('Processing request');
+    this.logger.warn('Cache miss, falling back');
+    this.logger.error('Failed to connect', error);
+    this.logger.debug('Detailed debug info');
+  }
+}
+```
+
+Avoid `console.log()` for service-level application logs so logging stays consistent across the codebase.
+
+## Working on Specific Services
+
+Run an individual surface when you do not need the full stack:
+
+```bash
+pnpm --filter @luckyplans/web dev
+pnpm --filter @luckyplans/docs dev
+pnpm --filter @luckyplans/api-gateway dev
+pnpm --filter @luckyplans/service-core dev
+pnpm --filter @luckyplans/edge-agent build
+node apps/edge-agent/dist/main.js
+```
+
+Infrastructure still needs to be running through Docker Compose.
+
+## Running the Edge Agent Locally
+
+### First run
+
+```bash
+pnpm --filter @luckyplans/edge-agent build
+node apps/edge-agent/dist/main.js
+```
+
+On first run the edge asks for:
+
+1. Edge display name
+2. Server URL
+3. Registration token
+
+It generates a device number in this format:
+
+`edge-<human-name>-<shortid>`
+
+### Non-interactive behavior
+
+In headless environments, onboarding is blocked by default. Either provide valid runtime config ahead of time or opt in with `EDGE_AGENT_ENABLE_ONBOARDING=1`.
+
+### Runtime contract
+
+The edge runtime:
+
+1. Registers with the gateway
+2. Sends connectivity heartbeats
+3. Polls and executes tasks
+4. Defers upgrades while work is active
+5. Runs upgrades only when idle
+
+### Running as an OS service
+
+Build the edge agent before installing it as a service:
+
+```bash
+pnpm --filter @luckyplans/edge-agent build
+```
+
+Linux:
+
+```bash
+sudo pnpm --filter @luckyplans/edge-agent service:install
+sudo pnpm --filter @luckyplans/edge-agent service:status
+sudo pnpm --filter @luckyplans/edge-agent service:restart
+sudo pnpm --filter @luckyplans/edge-agent service:uninstall
+```
+
+Windows:
+
+```powershell
+pnpm --filter @luckyplans/edge-agent service:install
+pnpm --filter @luckyplans/edge-agent service:status
+pnpm --filter @luckyplans/edge-agent service:restart
+pnpm --filter @luckyplans/edge-agent service:uninstall
+```
+
+### Edge Lifecycle Operator Runbooks
+
+Use these checks with gateway state and host service logs.
+
+#### Stale worker
+
+Symptoms:
+
+- Worker `connectivityStatus` is `STALE` or `OFFLINE`
+- `lastSeenAt` is not advancing
+- Edge host logs show no recent lifecycle activity
+
+Checks:
+
+1. Confirm the host service is running.
+2. Check for `edge.daemon.started`, `edge.heartbeat.failed`, and `edge.daemon.iteration_failed`.
+3. Confirm `API_GATEWAY_URL`, `EDGE_WORKER_ID`, and `EDGE_WORKER_CREDENTIAL`.
+4. Confirm the gateway is reachable from the edge host.
+5. If the host recently upgraded, inspect the recovery state paths.
+
+#### Target version stuck
+
+Symptoms:
+
+- `targetVersion` is set but `upgradeStatus` remains `UPGRADE_PENDING`
+- The worker keeps reporting `BUSY`
+
+Checks:
+
+1. Confirm the worker is idle.
+2. Check gateway logs for `edge.upgrade.target_assigned`.
+3. Check edge logs for `edge.upgrade.status_reported`.
+4. Confirm trusted upgrade environment variables are present.
+5. Inspect `EDGE_AGENT_UPGRADE_FAILED_TARGET_PATH` if the same target failed before.
+
+#### Verification failure
+
+Symptoms:
+
+- `upgradeStatus` becomes `FAILED`
+- Edge logs include `edge.upgrade.status_reported status=FAILED`
+
+Checks:
+
+1. Confirm the release artifact URL is reachable.
+2. Confirm metadata matches platform, arch, and install type.
+3. Confirm checksum and signature match the artifact.
+4. Confirm `EDGE_AGENT_UPGRADE_TRUSTED_PUBLIC_KEY_PEM` matches the signing key.
+5. Do not paste private keys, worker credentials, or registration tokens into logs or issues.
+
+#### Service restart failure
+
+Symptoms:
+
+- `upgradeStatus` reaches `RESTARTING` but the service does not recover
+- Service manager logs show permission or startup errors
+
+Checks:
+
+1. Confirm the service account can restart `luckyplans-edge-agent`.
+2. Inspect `systemctl status` on Linux or `sc.exe query` on Windows.
+3. Confirm the active version marker points at the target version.
+4. Follow rollback procedures before retrying the same target if startup failed after the marker switched.
+
+#### Rollback
+
+Symptoms:
+
+- `upgradeStatus` is `ROLLED_BACK`
+- The failed target marker suppresses repeated installs for the same target version
+
+Checks:
+
+1. Confirm the recovery state includes the previous version and attempt metadata.
+2. Confirm the active version marker was restored.
+3. Confirm the failed target marker records the rejected version.
+4. Check gateway logs for `edge.upgrade.status_transition`.
+5. Publish a corrected release or assign a different target version before retrying.
+
+## Working with GraphQL
+
+### Regenerate frontend types
+
+After modifying a `graphql()` call in a hook or changing the schema:
+
+```bash
+pnpm --filter @luckyplans/web codegen
+```
+
+### Schema location
+
+Frontend codegen reads the schema from `apps/api-gateway/schema.graphql`.
+
+When the gateway schema changes:
+
+1. Start the gateway or run `pnpm dev` so it regenerates `schema.graphql`.
+2. Run `pnpm --filter @luckyplans/web codegen`.
+3. Commit the updated schema and generated types.
+
+## Working with Prisma Migrations
+
+Prisma schema lives at `packages/prisma/prisma/schema.prisma`.
+
+### Creating a migration
+
+```bash
+pnpm --filter @luckyplans/prisma db:migrate:dev -- --name describe_the_change
+```
+
+### Migration safety rules
+
+Prisma generates DDL but never backfills data. Do not add a required column to a populated table without a default or backfill strategy.
+
+Safe pattern:
+
+1. Add the column as nullable or with a default.
+2. Backfill existing rows.
+3. Tighten the constraint in a follow-up migration.
+
+### Production migrations
+
+Migrations run automatically via a Helm pre-upgrade Job using `prisma migrate deploy`, so validate migration SQL before merging.
+
+## Working with Shared Packages
+
+Shared packages live in `packages/` and are used as workspace dependencies.
+
+### `@luckyplans/shared`
+
+Exports:
+
+- Types such as `User`, `ServiceResponse`, `PaginatedResponse`, and profile entities
+- Enums such as `CoreMessagePattern` and `Proficiency`
+- Utilities such as `generateId()`, `getRedisConfig()`, and `getEnvVar()`
+
+```typescript
+import { CoreMessagePattern, ServiceResponse, getRedisConfig } from '@luckyplans/shared';
+```
+
+### `@luckyplans/config`
+
+Shared presets include:
+
+- `tsconfig.nextjs.json`
+- `tsconfig.nestjs.json`
+- `tsconfig.base.json`
+- `eslint-preset.js`
+
+## Adding a New Microservice
+
+### 1. Create the service directory
+
+```bash
+mkdir -p apps/service-<name>/src
+```
+
+### 2. Copy boilerplate from an existing service
+
+Use `service-core` as the template.
+
+### 3. Update `package.json`
+
+Set the package name to `@luckyplans/service-<name>`.
+
+### 4. Define message patterns
+
+Add patterns in shared types:
+
+```typescript
+export enum NewServiceMessagePattern {
+  GET_SOMETHING = 'new-service.getSomething',
+  CREATE_SOMETHING = 'new-service.createSomething',
+}
+```
+
+### 5. Create the service files
+
+- `src/main.ts`
+- `src/app.module.ts`
+- `src/<name>.controller.ts`
+- `src/<name>.service.ts`
+
+### 6. Register it in the API Gateway
+
+Create `apps/api-gateway/src/<name>/` with:
+
+- `<name>.module.ts`
+- `<name>.resolver.ts`
+
+Then import the module into `apps/api-gateway/src/app.module.ts`.
+
+### 7. Add a Helm template
+
+Add a Deployment template under `infrastructure/helm/luckyplans/templates/service-<name>/deployment.yaml`.
+
+### 8. Install dependencies and test
+
+```bash
+pnpm install
+pnpm build
+pnpm dev
+```
+
+## All Commands
+
+| Command | Description |
+| --- | --- |
+| `pnpm setup` | First-time project setup |
+| `pnpm dev` | Start all services with hot reload |
+| `pnpm build` | Build all packages and apps |
+| `pnpm lint` | Lint all packages |
+| `pnpm type-check` | Type-check all packages |
+| `pnpm format` | Format all files |
+| `pnpm format:check` | Check formatting |
+| `pnpm clean` | Remove build artifacts |
+| `pnpm deploy:local` | Full deploy to local k3d |
+| `./infrastructure/scripts/deploy-local.sh landing` | Rebuild and redeploy the landing SPA |
+| `./infrastructure/scripts/deploy-local.sh web` | Rebuild and redeploy the product web app |
+| `./infrastructure/scripts/deploy-local.sh --helm-only` | Helm upgrade only |
+| `pnpm deploy:teardown` | Destroy the local k3d cluster |
+| `pnpm deploy:status` | Show cluster, Helm release, and pod status |
+
+## Troubleshooting
+
+### Infrastructure not starting
+
+```bash
+docker compose ps
+docker compose logs keycloak
+```
+
+### Redis connection refused
+
+```bash
+docker compose up -d
+docker compose exec redis redis-cli ping
+```
+
+### Keycloak not ready
+
+```bash
+docker compose ps keycloak
+curl -sf http://localhost:8080/realms/luckyplans
+```
+
+### Login redirect loop
+
+- Ensure the gateway is running.
+- Ensure `SESSION_SECRET` is set in `.env`.
+- Check browser cookies for `session_id`.
+
+### Port already in use
+
+```bash
+# Windows
+netstat -ano | findstr :3000
+```
+
+### Turborepo cache issues
+
+```bash
+pnpm clean
+pnpm install
+pnpm build
+```
+
+### Shared package changes not reflected
+
+```bash
+pnpm --filter @luckyplans/shared build
+pnpm dev
+```
