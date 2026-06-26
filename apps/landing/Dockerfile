@@ -32,4 +32,6 @@ RUN pnpm turbo run build --filter=@luckyplans/landing
 FROM nginxinc/nginx-unprivileged:1.27-alpine AS runner
 COPY --from=builder /app/apps/landing/dist /usr/share/nginx/html
 
+USER 101
+
 EXPOSE 8080
