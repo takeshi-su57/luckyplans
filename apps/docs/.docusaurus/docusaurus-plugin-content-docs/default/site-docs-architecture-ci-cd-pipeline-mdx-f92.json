@@ -1,0 +1,27 @@
+{
+  "id": "architecture/ci-cd-pipeline",
+  "title": "CI/CD Pipeline",
+  "description": "Automated pipeline using GitHub Actions and ArgoCD for the LuckyPlans monorepo.",
+  "source": "@site/docs/architecture/ci-cd-pipeline.mdx",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/ci-cd-pipeline",
+  "permalink": "/architecture/ci-cd-pipeline",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/ci-cd-pipeline.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "CI/CD Pipeline",
+    "description": "Automated pipeline using GitHub Actions and ArgoCD for the LuckyPlans monorepo."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "ArgoCD — GitOps Continuous Delivery",
+    "permalink": "/architecture/argocd"
+  },
+  "next": {
+    "title": "Helm Deployment Architecture",
+    "permalink": "/architecture/helm-deployment"
+  }
+}

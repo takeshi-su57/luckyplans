@@ -1,0 +1,9 @@
+{
+  "extends": "../../packages/config/tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["node", "@docusaurus/module-type-aliases", "vitest/globals"]
+  },
+  "include": ["*.ts", "*.tsx", "src/**/*", "docs/**/*", "blog/**/*"],
+  "exclude": ["build", ".docusaurus", "node_modules"]
+}

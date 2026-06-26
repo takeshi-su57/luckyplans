@@ -1,0 +1,27 @@
+{
+  "id": "architecture/decisions/2026-03-11-nextra-docs-route",
+  "title": "Nextra v4 Integrated at /docs Route",
+  "description": "Integrated Nextra v4 (without nextra-theme-docs) at the /docs route inside apps/web.",
+  "source": "@site/docs/architecture/decisions/2026-03-11-nextra-docs-route.mdx",
+  "sourceDirName": "architecture/decisions",
+  "slug": "/architecture/decisions/2026-03-11-nextra-docs-route",
+  "permalink": "/architecture/decisions/2026-03-11-nextra-docs-route",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/decisions/2026-03-11-nextra-docs-route.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Nextra v4 Integrated at /docs Route",
+    "description": "Integrated Nextra v4 (without nextra-theme-docs) at the /docs route inside apps/web."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Keycloak OIDC + next-auth v5 for Authentication",
+    "permalink": "/architecture/decisions/2026-03-11-keycloak-oidc-nextauth"
+  },
+  "next": {
+    "title": "Custom Login/Register Pages with ROPC + Keycloak Admin API",
+    "permalink": "/architecture/decisions/2026-03-12-custom-auth-pages-ropc"
+  }
+}

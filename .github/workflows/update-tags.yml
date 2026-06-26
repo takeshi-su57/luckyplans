@@ -70,6 +70,8 @@ jobs:
 
           VALUES_FILE="infrastructure/helm/luckyplans/values.prod.yaml"
           echo "    Updating $VALUES_FILE"
+          yq -i ".landing.image.tag = \"$TAG\"" "$VALUES_FILE"
+          yq -i ".docs.image.tag = \"$TAG\"" "$VALUES_FILE"
           yq -i ".apiGateway.image.tag = \"$TAG\"" "$VALUES_FILE"
           yq -i ".web.image.tag = \"$TAG\"" "$VALUES_FILE"
           yq -i ".prismaMigrate.image.tag = \"$TAG\"" "$VALUES_FILE"

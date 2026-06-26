@@ -1,0 +1,27 @@
+{
+  "id": "architecture/helm-deployment",
+  "title": "Helm Deployment Architecture",
+  "description": "Single Helm chart design, service configuration, and deployment commands.",
+  "source": "@site/docs/architecture/helm-deployment.mdx",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/helm-deployment",
+  "permalink": "/architecture/helm-deployment",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/helm-deployment.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Helm Deployment Architecture",
+    "description": "Single Helm chart design, service configuration, and deployment commands."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "CI/CD Pipeline",
+    "permalink": "/architecture/ci-cd-pipeline"
+  },
+  "next": {
+    "title": "System Architecture Overview",
+    "permalink": "/architecture/overview"
+  }
+}

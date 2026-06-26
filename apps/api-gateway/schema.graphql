@@ -373,42 +373,17 @@ type Mutation {
   updateHobby(id: String!, input: UpdateHobbyInput!): Hobby
   deleteHobby(id: String!): DeleteResult!
   reorderHobbies(input: ReorderInput!): DeleteResult!
-  createWorker(
-    name: String!
-    deviceNumber: String
-    platform: String
-    arch: String
-    version: String
-  ): Worker!
+  createWorker(name: String!, deviceNumber: String, platform: String, arch: String, version: String): Worker!
   disableWorker(id: String!): Worker
   issueWorkerCredential(id: String!): IssuedWorkerCredential!
   revokeWorkerCredential(id: String!): Boolean!
   rotateWorkerCredential(id: String!): IssuedWorkerCredential!
-  createEdgeEnrollmentToken(
-    label: String
-    expiresAt: DateTime
-    maxUses: Int
-  ): CreatedEdgeEnrollmentToken!
+  createEdgeEnrollmentToken(label: String, expiresAt: DateTime, maxUses: Int): CreatedEdgeEnrollmentToken!
   revokeEdgeEnrollmentToken(id: String!): Boolean!
-  createEdgeRelease(
-    version: String!
-    windowsUrl: String!
-    linuxUrl: String!
-    checksum: String!
-    signature: String!
-    artifacts: [EdgeReleaseArtifactInput!]
-    notes: String
-  ): EdgeRelease!
+  createEdgeRelease(version: String!, windowsUrl: String!, linuxUrl: String!, checksum: String!, signature: String!, artifacts: [EdgeReleaseArtifactInput!], notes: String): EdgeRelease!
   setWorkerTargetVersion(workerIds: [String!]!, targetVersion: String!): Int!
   reportWorkerUpgradeStatus(workerId: String!, status: String!, message: String): Boolean!
-  startUpgradeCampaign(
-    workerIds: [String!]!
-    targetVersion: String!
-    forceMode: Boolean
-    phaseSize: Int
-    successThreshold: Int
-    failureThreshold: Int
-  ): UpgradeCampaign!
+  startUpgradeCampaign(workerIds: [String!]!, targetVersion: String!, forceMode: Boolean, phaseSize: Int, successThreshold: Int, failureThreshold: Int): UpgradeCampaign!
   advanceUpgradeCampaign(campaignId: String!): UpgradeCampaign!
   rollbackUpgradeCampaign(campaignId: String!): UpgradeCampaign!
   createStrategyTemplate(input: CreateStrategyTemplateInput!): StrategyTemplate!

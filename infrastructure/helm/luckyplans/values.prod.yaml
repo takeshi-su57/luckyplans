@@ -14,7 +14,7 @@ image:
   pullPolicy: Always
 config:
   nodeEnv: production
-  corsOrigin: 'https://app.luckyplans.xyz'
+  corsOrigin: 'https://beta.luckyplans.xyz'
   # Keycloak issuer must match the `iss` claim in tokens. When KC_HOSTNAME is set
   # to the public URL, Keycloak stamps tokens with the public issuer — so the
   # gateway must verify against the public URL, not the internal cluster URL.
@@ -27,13 +27,17 @@ ingress:
     traefik.ingress.kubernetes.io/router.middlewares: luckyplans-redirect-https@kubernetescrd,luckyplans-hsts-header@kubernetescrd
     cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
-    app: 'app.luckyplans.xyz'
+    landing: 'luckyplans.xyz'
+    docs: 'docs.luckyplans.xyz'
+    app: 'beta.luckyplans.xyz'
     api: 'api.luckyplans.xyz'
     admin: 'admin.luckyplans.xyz'
   tls:
     enabled: true
     secrets:
-      app: app-luckyplans-tls
+      landing: luckyplans-xyz-tls
+      docs: docs-luckyplans-tls
+      app: beta-luckyplans-tls
       api: api-luckyplans-tls
       admin: admin-luckyplans-tls
       v0api: v0-api-luckyplans-tls
@@ -76,6 +80,27 @@ prismaMigrate:
   image:
     repository: takeshi-su57/prisma-migrate
     tag: 'sha-e20117f'
+landing:
+  image:
+    repository: takeshi-su57/landing
+    tag: 'sha-e20117f'
+  replicas: 1
+  resources:
+    requests:
+      memory: '96Mi'
+      cpu: '50m'
+    limits:
+      memory: '192Mi'
+      cpu: '150m'
+  buildArgs:
+    appUrl: 'https://beta.luckyplans.xyz/login'
+    docsUrl: 'https://docs.luckyplans.xyz'
+docs:
+  image:
+    repository: takeshi-su57/docs
+    tag: 'sha-e20117f'
+  buildArgs:
+    appUrl: 'https://beta.luckyplans.xyz/login'
 web:
   image:
     repository: takeshi-su57/web
@@ -90,6 +115,7 @@ web:
       cpu: '500m'
   buildArgs:
     graphqlUrl: 'https://api.luckyplans.xyz/graphql'
+    docsUrl: 'https://docs.luckyplans.xyz'
 postgresql:
   storage: 3Gi
   resources:

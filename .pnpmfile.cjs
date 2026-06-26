@@ -9,6 +9,24 @@ function readPackage(pkg) {
   if (pkg.dependencies?.tar) {
     pkg.dependencies.tar = '>=7.5.11';
   }
+  if (pkg.dependencies?.multer) {
+    pkg.dependencies.multer = '>=2.2.0';
+  }
+  if (pkg.dependencies?.['serialize-javascript']) {
+    pkg.dependencies['serialize-javascript'] = '>=7.0.3';
+  }
+  if (pkg.dependencies?.ws && ['@nestjs/graphql', 'graphql-ws'].includes(pkg.name)) {
+    pkg.dependencies.ws = '>=8.21.0';
+  }
+  if (pkg.dependencies?.['js-yaml'] && pkg.name === 'gray-matter') {
+    pkg.dependencies['js-yaml'] = '>=4.2.0';
+  }
+  if (pkg.dependencies?.postcss && pkg.name === 'next') {
+    pkg.dependencies.postcss = '>=8.5.10';
+  }
+  if (pkg.dependencies?.uuid && pkg.name === 'sockjs') {
+    pkg.dependencies.uuid = '>=11.1.1';
+  }
   return pkg;
 }
 

@@ -1,0 +1,148 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/",
+          "mainDocId": "index",
+          "docs": [
+            {
+              "id": "architecture/argocd",
+              "path": "/architecture/argocd",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/ci-cd-pipeline",
+              "path": "/architecture/ci-cd-pipeline",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-10-functional-decomposition",
+              "path": "/architecture/decisions/2026-03-10-functional-decomposition",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-10-graphql-code-first",
+              "path": "/architecture/decisions/2026-03-10-graphql-code-first",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-10-redis-pub-sub-transport",
+              "path": "/architecture/decisions/2026-03-10-redis-pub-sub-transport",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-11-graphql-codegen-client-preset",
+              "path": "/architecture/decisions/2026-03-11-graphql-codegen-client-preset",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-11-keycloak-oidc-nextauth",
+              "path": "/architecture/decisions/2026-03-11-keycloak-oidc-nextauth",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-11-nextra-docs-route",
+              "path": "/architecture/decisions/2026-03-11-nextra-docs-route",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-12-custom-auth-pages-ropc",
+              "path": "/architecture/decisions/2026-03-12-custom-auth-pages-ropc",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-12-gateway-managed-sessions",
+              "path": "/architecture/decisions/2026-03-12-gateway-managed-sessions",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-13-bitnami-sealed-secrets",
+              "path": "/architecture/decisions/2026-03-13-bitnami-sealed-secrets",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-03-16-prisma-postgresql-persistence",
+              "path": "/architecture/decisions/2026-03-16-prisma-postgresql-persistence",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-05-21-gateway-edge-orchestration",
+              "path": "/architecture/decisions/2026-05-21-gateway-edge-orchestration",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-06-05-defer-edge-websocket-sessions",
+              "path": "/architecture/decisions/2026-06-05-defer-edge-websocket-sessions",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-06-05-defer-task-artifact-transfer",
+              "path": "/architecture/decisions/2026-06-05-defer-task-artifact-transfer",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/decisions/2026-06-25-standalone-docs-app",
+              "path": "/architecture/decisions/2026-06-25-standalone-docs-app",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/helm-deployment",
+              "path": "/architecture/helm-deployment",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/overview",
+              "path": "/architecture/overview",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/tls-certificates",
+              "path": "/architecture/tls-certificates",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/deployment",
+              "path": "/guides/deployment",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/developer",
+              "path": "/guides/developer",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "index",
+              "path": "/",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "system/api",
+              "path": "/system/api",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "system/configuration",
+              "path": "/system/configuration",
+              "sidebar": "docsSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "docsSidebar": {
+              "link": {
+                "path": "/architecture/decisions/2026-03-10-functional-decomposition",
+                "label": "architecture/decisions/2026-03-10-functional-decomposition"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

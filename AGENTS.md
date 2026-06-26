@@ -37,7 +37,8 @@ Required behavior:
 
 ## Repository Layout
 
-- `apps/web/`: Next.js frontend and public docs content
+- `apps/web/`: Next.js frontend product app
+- `apps/docs/`: standalone Docusaurus documentation SPA
 - `apps/api-gateway/`: GraphQL gateway plus core domain logic modules
 - `packages/shared/`: shared types, enums, utils, telemetry helpers
 - `packages/prisma/`: schema, migrations, generated client
@@ -242,4 +243,4 @@ pnpm format:check
 
 - Treat `AGENTS.md` as the primary AI context file for Codex.
 - Keep `.agents/rules/*` and `.agents/skills/*` in sync with real architecture decisions.
-- If you update standards/workflows, update docs in `apps/web/content/` and related rules.
+- If you update standards/workflows, update docs in `apps/docs/docs/` and related rules.

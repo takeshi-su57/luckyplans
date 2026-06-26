@@ -1,0 +1,27 @@
+{
+  "id": "architecture/decisions/2026-03-12-custom-auth-pages-ropc",
+  "title": "Custom Login/Register Pages with ROPC + Keycloak Admin API",
+  "description": "Replace Keycloak UI redirects and nginx proxy with custom Next.js auth pages, gateway ROPC login, Admin API registration, and Next.js rewrites.",
+  "source": "@site/docs/architecture/decisions/2026-03-12-custom-auth-pages-ropc.mdx",
+  "sourceDirName": "architecture/decisions",
+  "slug": "/architecture/decisions/2026-03-12-custom-auth-pages-ropc",
+  "permalink": "/architecture/decisions/2026-03-12-custom-auth-pages-ropc",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/decisions/2026-03-12-custom-auth-pages-ropc.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Custom Login/Register Pages with ROPC + Keycloak Admin API",
+    "description": "Replace Keycloak UI redirects and nginx proxy with custom Next.js auth pages, gateway ROPC login, Admin API registration, and Next.js rewrites."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Nextra v4 Integrated at /docs Route",
+    "permalink": "/architecture/decisions/2026-03-11-nextra-docs-route"
+  },
+  "next": {
+    "title": "Gateway-Managed Sessions (replacing next-auth)",
+    "permalink": "/architecture/decisions/2026-03-12-gateway-managed-sessions"
+  }
+}

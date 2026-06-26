@@ -1,0 +1,27 @@
+{
+  "id": "guides/developer",
+  "title": "Developer Guide",
+  "description": "How to set up and run LuckyPlans locally for development.",
+  "source": "@site/docs/guides/developer.mdx",
+  "sourceDirName": "guides",
+  "slug": "/guides/developer",
+  "permalink": "/guides/developer",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/developer.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Developer Guide",
+    "description": "How to set up and run LuckyPlans locally for development."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Deployment Guide",
+    "permalink": "/guides/deployment"
+  },
+  "next": {
+    "title": "API Reference",
+    "permalink": "/system/api"
+  }
+}

@@ -4,9 +4,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 HELM_CHART="$SCRIPT_DIR/../helm/luckyplans"
-HELM_CHART_OBS="$SCRIPT_DIR/../helm/observability"
 RELEASE_NAME="luckyplans"
-RELEASE_NAME_OBS="luckyplans-observability"
 CLUSTER_NAME="luckyplans-local"
 HELM_TIMEOUT="${HELM_TIMEOUT:-15m}"
 
@@ -21,33 +19,34 @@ Deploy LuckyPlans to a local k3d cluster.
 
 Options:
   --helm-only         Run Helm upgrade only (no image build/import)
-  --no-observability  Skip observability stack deployment
 
 Services:
   No arguments      Full deploy — build all images, import infra, Helm install
+  landing           Rebuild and redeploy the landing SPA only
+  docs              Rebuild and redeploy the docs SPA only
   web               Rebuild and redeploy the web frontend only
   api-gateway       Rebuild and redeploy the API gateway only
   prisma-migrate    Rebuild the Prisma migration image only
 
-Multiple services can be specified: deploy-local.sh web api-gateway
+Multiple services can be specified: deploy-local.sh landing web api-gateway
 
 Examples:
   ./deploy-local.sh                    # Full deploy (first time or all services)
+  ./deploy-local.sh landing            # Redeploy landing only
   ./deploy-local.sh web                # Redeploy web only
   ./deploy-local.sh api-gateway web    # Redeploy gateway and web
+  ./deploy-local.sh docs               # Redeploy docs only
   ./deploy-local.sh --helm-only        # Helm upgrade only (config/secret changes)
 EOF
   exit 0
 }
 
 HELM_ONLY=false
-SKIP_OBS=false
 SERVICES=()
 for arg in "$@"; do
   case "$arg" in
     -h|--help) usage ;;
     --helm-only) HELM_ONLY=true ;;
-    --no-observability) SKIP_OBS=true ;;
     *) SERVICES+=("$arg") ;;
   esac
 done
@@ -64,8 +63,20 @@ if ! $HELM_ONLY && [[ ${#SERVICES[@]} -eq 0 ]]; then
   FULL_DEPLOY=true
 fi
 
+TARGETED_HELM_UPGRADE=false
+if ! $HELM_ONLY && ! $FULL_DEPLOY; then
+  for svc in "${SERVICES[@]}"; do
+    if [[ "$svc" == "prisma-migrate" ]]; then
+      TARGETED_HELM_UPGRADE=true
+      break
+    fi
+  done
+fi
+
 # Map service names to their Dockerfile paths and image names
 declare -A SERVICE_MAP=(
+  [landing]="apps/landing/Dockerfile|luckyplans/landing:latest"
+  [docs]="apps/docs/Dockerfile|luckyplans/docs:latest"
   [web]="apps/web/Dockerfile|luckyplans/web:latest"
   [api-gateway]="apps/api-gateway/Dockerfile|luckyplans/api-gateway:latest"
   [prisma-migrate]="packages/prisma/Dockerfile|luckyplans/prisma-migrate:latest"
@@ -75,7 +86,7 @@ declare -A SERVICE_MAP=(
 for svc in "${SERVICES[@]}"; do
   if [[ -z "${SERVICE_MAP[$svc]:-}" ]]; then
     echo "Error: Unknown service '$svc'"
-    echo "Valid services: web, api-gateway, prisma-migrate"
+    echo "Valid services: landing, docs, web, api-gateway, prisma-migrate"
     exit 1
   fi
 done
@@ -85,6 +96,8 @@ if $HELM_ONLY; then
   echo "Mode: Helm upgrade only (no image builds)"
 elif $FULL_DEPLOY; then
   echo "Mode: full deploy (all services)"
+elif $TARGETED_HELM_UPGRADE; then
+  echo "Mode: targeted deploy (${SERVICES[*]}) with Helm upgrade"
 else
   echo "Mode: targeted deploy (${SERVICES[*]})"
 fi
@@ -120,6 +133,22 @@ done
 WEB_GRAPHQL_URL=$(grep 'graphqlUrl:' "$HELM_CHART/values.yaml" \
   | head -1 | sed 's/.*graphqlUrl:[[:space:]]*//' | tr -d "\"'")
 WEB_GRAPHQL_URL="${WEB_GRAPHQL_URL:-/graphql}"
+
+LANDING_APP_URL=$(grep 'appUrl:' "$HELM_CHART/values.yaml" \
+  | head -1 | sed 's/.*appUrl:[[:space:]]*//' | tr -d "\"'")
+LANDING_APP_URL="${LANDING_APP_URL:-/login}"
+
+LANDING_DOCS_URL=$(grep 'docsUrl:' "$HELM_CHART/values.yaml" \
+  | head -1 | sed 's/.*docsUrl:[[:space:]]*//' | tr -d "\"'")
+LANDING_DOCS_URL="${LANDING_DOCS_URL:-/docs}"
+
+DOCS_APP_URL=$(grep 'appUrl:' "$HELM_CHART/values.yaml" \
+  | tail -1 | sed 's/.*appUrl:[[:space:]]*//' | tr -d "\"'")
+DOCS_APP_URL="${DOCS_APP_URL:-/login}"
+
+WEB_DOCS_URL=$(grep 'docsUrl:' "$HELM_CHART/values.yaml" \
+  | tail -1 | sed 's/.*docsUrl:[[:space:]]*//' | tr -d "\"'")
+WEB_DOCS_URL="${WEB_DOCS_URL:-/docs}"
 
 # ---------------------------------------------------------------------------
 # Helper: pull image only if not already present locally
@@ -164,11 +193,25 @@ build_image() {
   echo "--- Building $svc ---"
   cd "$ROOT_DIR"
 
-  if [[ "$svc" == "web" ]]; then
+  if [[ "$svc" == "landing" ]]; then
+    echo "VITE_APP_URL (baked into landing image): $LANDING_APP_URL"
+    echo "VITE_DOCS_URL (baked into landing image): $LANDING_DOCS_URL"
+    MSYS_NO_PATHCONV=1 docker build \
+      --build-arg "VITE_APP_URL=$LANDING_APP_URL" \
+      --build-arg "VITE_DOCS_URL=$LANDING_DOCS_URL" \
+      -t "$image" -f "$dockerfile" .
+  elif [[ "$svc" == "docs" ]]; then
+    echo "DOCS_APP_URL (baked into docs image): $DOCS_APP_URL"
+    MSYS_NO_PATHCONV=1 docker build \
+      --build-arg "DOCS_APP_URL=$DOCS_APP_URL" \
+      -t "$image" -f "$dockerfile" .
+  elif [[ "$svc" == "web" ]]; then
     echo "NEXT_PUBLIC_GRAPHQL_URL (baked into web image): $WEB_GRAPHQL_URL"
+    echo "NEXT_PUBLIC_DOCS_URL (baked into web image): $WEB_DOCS_URL"
     # MSYS_NO_PATHCONV prevents Git Bash from mangling the build arg on Windows
     MSYS_NO_PATHCONV=1 docker build \
       --build-arg "NEXT_PUBLIC_GRAPHQL_URL=$WEB_GRAPHQL_URL" \
+      --build-arg "NEXT_PUBLIC_DOCS_URL=$WEB_DOCS_URL" \
       -t "$image" -f "$dockerfile" .
   else
     docker build -t "$image" -f "$dockerfile" .
@@ -187,7 +230,7 @@ if ! $HELM_ONLY; then
 
   if $FULL_DEPLOY; then
     # Build app images
-    for svc in web api-gateway prisma-migrate; do
+    for svc in landing docs web api-gateway prisma-migrate; do
       build_image "$svc"
       local_image="${SERVICE_MAP[$svc]##*|}"
       IMAGES_TO_IMPORT+=("$local_image")
@@ -206,25 +249,6 @@ if ! $HELM_ONLY; then
       pull_if_missing "$img"
     done
     IMAGES_TO_IMPORT+=("${INFRA_IMAGES[@]}")
-
-    # Pull observability images (skip if already cached)
-    if ! $SKIP_OBS; then
-      echo ""
-      echo "--- Pulling observability images (skipping cached) ---"
-      OBS_IMAGES=(
-        "otel/opentelemetry-collector-contrib:0.96.0"
-        "prom/prometheus:v2.51.0"
-        "grafana/grafana:10.4.0"
-        "grafana/loki:2.9.4"
-        "grafana/tempo:2.4.0"
-        "grafana/promtail:2.9.4"
-        "oliver006/redis_exporter:v1.58.0"
-      )
-      for img in "${OBS_IMAGES[@]}"; do
-        pull_if_missing "$img"
-      done
-      IMAGES_TO_IMPORT+=("${OBS_IMAGES[@]}")
-    fi
 
     # Batch import ALL images in a single k3d command (much faster than one-by-one)
     echo ""
@@ -251,7 +275,7 @@ fi
 # ---------------------------------------------------------------------------
 # Deploy with Helm
 # ---------------------------------------------------------------------------
-if $HELM_ONLY || $FULL_DEPLOY; then
+if $HELM_ONLY || $FULL_DEPLOY || $TARGETED_HELM_UPGRADE; then
   echo ""
   echo "--- Deploying app with Helm ---"
   if ! helm upgrade --install "$RELEASE_NAME" "$HELM_CHART" \
@@ -266,22 +290,30 @@ if $HELM_ONLY || $FULL_DEPLOY; then
     exit 1
   fi
 
-  # Deploy observability stack (full deploy or helm-only, unless skipped)
-  if ! $SKIP_OBS; then
-    echo ""
-    echo "--- Deploying observability stack with Helm ---"
-    if ! helm upgrade --install "$RELEASE_NAME_OBS" "$HELM_CHART_OBS" \
-      --namespace monitoring \
-      --create-namespace \
-      -f "$HELM_CHART_OBS/values.yaml" \
-      --wait \
-      --timeout "$HELM_TIMEOUT"; then
+  if $TARGETED_HELM_UPGRADE; then
+    RESTART_SERVICES=()
+    for svc in "${SERVICES[@]}"; do
+      if [[ "$svc" != "prisma-migrate" ]]; then
+        RESTART_SERVICES+=("$svc")
+      fi
+    done
+
+    if [[ ${#RESTART_SERVICES[@]} -gt 0 ]]; then
       echo ""
-      echo "Observability Helm deploy failed."
-      print_app_diagnostics "monitoring"
-      exit 1
+      echo "--- Restarting deployments ---"
+      for svc in "${RESTART_SERVICES[@]}"; do
+        echo "Restarting $svc..."
+        kubectl -n luckyplans rollout restart deployment/"$svc"
+      done
+
+      echo ""
+      echo "--- Waiting for rollout ---"
+      for svc in "${RESTART_SERVICES[@]}"; do
+        kubectl -n luckyplans rollout status deployment/"$svc" --timeout=120s
+      done
     fi
   fi
+
 else
   # Targeted deploy: restart only the affected deployments to pick up new images
   echo ""
@@ -304,18 +336,13 @@ fi
 echo ""
 echo "=== Deployment complete ==="
 echo ""
-echo "Frontend:           http://localhost"
+echo "Landing:            http://localhost"
+echo "App:                http://localhost/login"
+echo "Docs:               http://localhost/docs"
+echo "Direct docs dev:    http://localhost:3002"
 echo "GraphQL Playground: http://localhost/graphql"
-if ! $SKIP_OBS; then
-  echo ""
-  echo "Observability (monitoring namespace):"
-  echo "  Grafana:          kubectl -n monitoring port-forward svc/grafana 3002:3000"
-  echo "  Prometheus:       kubectl -n monitoring port-forward svc/prometheus 9090:9090"
-fi
 echo ""
 echo "Useful commands:"
 echo "  kubectl -n luckyplans get pods"
-echo "  kubectl -n monitoring get pods"
 echo "  kubectl -n luckyplans logs -f deployment/<service>"
 echo "  helm -n luckyplans history $RELEASE_NAME"
-echo "  helm -n monitoring history $RELEASE_NAME_OBS"

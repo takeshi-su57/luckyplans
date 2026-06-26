@@ -1,10 +1,12 @@
 {{- if .Values.ingress.enabled }}
+{{- $landingHost := .Values.ingress.hosts.landing | default "" -}}
+{{- $docsHost := .Values.ingress.hosts.docs | default "" -}}
 {{- $appHost := .Values.ingress.hosts.app | default "" -}}
 {{- $apiHost := .Values.ingress.hosts.api | default "" -}}
 {{- $adminHost := .Values.ingress.hosts.admin | default "" -}}
 {{- $legacyHost := .Values.ingress.host | default "" -}}
 {{- $legacyV0Host := .Values.legacyV0.host | default "" -}}
-{{- $useMultiHost := and $appHost (and $apiHost $adminHost) -}}
+{{- $useMultiHost := and $landingHost (and $docsHost (and $appHost (and $apiHost $adminHost))) -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -23,6 +25,12 @@ spec:
   {{- if .Values.ingress.tls.enabled }}
   tls:
     {{- if $useMultiHost }}
+    - hosts:
+        - {{ $landingHost | quote }}
+      secretName: {{ .Values.ingress.tls.secrets.landing | quote }}
+    - hosts:
+        - {{ $docsHost | quote }}
+      secretName: {{ .Values.ingress.tls.secrets.docs | quote }}
     - hosts:
         - {{ $appHost | quote }}
       secretName: {{ .Values.ingress.tls.secrets.app | quote }}
@@ -45,6 +53,26 @@ spec:
   {{- end }}
   rules:
     {{- if $useMultiHost }}
+    - host: {{ $landingHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: landing
+                port:
+                  number: 3000
+    - host: {{ $docsHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: docs
+                port:
+                  number: 8080
     - host: {{ $appHost | quote }}
       http:
         paths:
@@ -174,11 +202,74 @@ spec:
                 name: api-gateway
                 port:
                   number: 3001
-          - path: /
+          - path: /_next
             pathType: Prefix
             backend:
               service:
                 name: web
+                port:
+                  number: 3000
+          - path: /login
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+          - path: /register
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+          - path: /dashboard
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+          - path: /profile
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+          - path: /edges
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+          - path: /backtests
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+          - path: /blog
+            pathType: Prefix
+            backend:
+              service:
+                name: docs
+                port:
+                  number: 8080
+          - path: /u
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: landing
                 port:
                   number: 3000
     {{- end }}

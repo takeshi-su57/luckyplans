@@ -1,0 +1,32 @@
+{
+  "name": "@luckyplans/docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "docusaurus start --port 3002",
+    "build": "docusaurus build",
+    "start": "docusaurus serve --host 0.0.0.0 --port 3002",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit",
+    "clean": "node -e \"const fs=require('fs');['.docusaurus','build','.turbo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.10.1",
+    "@docusaurus/plugin-client-redirects": "^3.10.1",
+    "@docusaurus/preset-classic": "^3.10.1",
+    "clsx": "^2.1.1",
+    "prism-react-renderer": "^2.4.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "^3.10.1",
+    "@luckyplans/config": "workspace:*",
+    "@types/node": "^25.9.3",
+    "eslint": "^10.4.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
+  }
+}

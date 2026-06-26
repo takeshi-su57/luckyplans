@@ -1,0 +1,27 @@
+{
+  "id": "guides/deployment",
+  "title": "Deployment Guide",
+  "description": "Deploy LuckyPlans to local k3d or production Kubernetes with ArgoCD GitOps.",
+  "source": "@site/docs/guides/deployment.mdx",
+  "sourceDirName": "guides",
+  "slug": "/guides/deployment",
+  "permalink": "/guides/deployment",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/deployment.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Deployment Guide",
+    "description": "Deploy LuckyPlans to local k3d or production Kubernetes with ArgoCD GitOps."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "TLS Certificates — cert-manager + Let's Encrypt",
+    "permalink": "/architecture/tls-certificates"
+  },
+  "next": {
+    "title": "Developer Guide",
+    "permalink": "/guides/developer"
+  }
+}

@@ -27,3 +27,15 @@ spec:
     stsIncludeSubdomains: true
     stsPreload: false
 {{- end }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: docs-compat-rewrite
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.labels" . | nindent 4 }}
+spec:
+  replacePathRegex:
+    regex: "^/docs(?:/(.*))?$"
+    replacement: "/$1"

@@ -1,0 +1,27 @@
+{
+  "id": "architecture/overview",
+  "title": "System Architecture Overview",
+  "description": "Current system architecture, service map, data flow, and infrastructure overview.",
+  "source": "@site/docs/architecture/overview.mdx",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/overview",
+  "permalink": "/architecture/overview",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/overview.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "System Architecture Overview",
+    "description": "Current system architecture, service map, data flow, and infrastructure overview."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Helm Deployment Architecture",
+    "permalink": "/architecture/helm-deployment"
+  },
+  "next": {
+    "title": "TLS Certificates — cert-manager + Let's Encrypt",
+    "permalink": "/architecture/tls-certificates"
+  }
+}

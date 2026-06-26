@@ -38,9 +38,6 @@ config:
   minioPort: '9000'
   minioUseSSL: 'false'
   minioBucket: 'luckyplans-uploads'
-  # OpenTelemetry — OTel Collector in monitoring namespace
-  otelExporterEndpoint: 'http://otel-collector.monitoring.svc:4317'
-  logLevel: 'info'
 
 # ============================================================
 # Sealed Secrets (Bitnami)
@@ -80,6 +77,8 @@ ingress:
   host: ''
   # Preferred multi-host model.
   hosts:
+    landing: ''
+    docs: ''
     app: ''
     api: ''
     admin: ''
@@ -89,6 +88,8 @@ ingress:
     secretName: ''
     # Preferred per-host TLS secrets.
     secrets:
+      landing: ''
+      docs: ''
       app: ''
       api: ''
       admin: ''
@@ -191,7 +192,72 @@ prismaMigrate:
     tag: latest
 
 # ============================================================
-# Web (Next.js)
+# Landing SPA (Vite)
+# ============================================================
+landing:
+  image:
+    repository: luckyplans/landing
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      memory: '64Mi'
+      cpu: '50m'
+    limits:
+      memory: '128Mi'
+      cpu: '100m'
+  probes:
+    readiness:
+      path: /healthz
+      port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      failureThreshold: 6
+    liveness:
+      path: /healthz
+      port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 15
+      failureThreshold: 3
+  # IMPORTANT: appUrl and docsUrl are Docker BUILD ARGs baked into the static bundle.
+  # Changing them here takes effect only after rebuilding the landing image.
+  buildArgs:
+    appUrl: '/login'
+    docsUrl: '/docs'
+
+# ============================================================
+# Docs (Docusaurus static SPA)
+# ============================================================
+docs:
+  image:
+    repository: luckyplans/docs
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      memory: '128Mi'
+      cpu: '100m'
+    limits:
+      memory: '256Mi'
+      cpu: '200m'
+  probes:
+    readiness:
+      path: /
+      port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      failureThreshold: 6
+    liveness:
+      path: /
+      port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      failureThreshold: 3
+  buildArgs:
+    appUrl: '/login'
+
+# ============================================================
+# Web (Next.js product app)
 # ============================================================
 web:
   image:
@@ -224,6 +290,7 @@ web:
   # Changing this value here only takes effect after rebuilding the web image.
   buildArgs:
     graphqlUrl: '/graphql'
+    docsUrl: '/docs'
 
 # ============================================================
 # Smoke tests (ArgoCD post-sync hook)

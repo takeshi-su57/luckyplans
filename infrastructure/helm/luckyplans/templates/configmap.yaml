@@ -22,5 +22,3 @@ data:
   MINIO_PORT: {{ .Values.config.minioPort | quote }}
   MINIO_USE_SSL: {{ .Values.config.minioUseSSL | quote }}
   MINIO_BUCKET: {{ .Values.config.minioBucket | quote }}
-  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.config.otelExporterEndpoint | quote }}
-  LOG_LEVEL: {{ .Values.config.logLevel | quote }}

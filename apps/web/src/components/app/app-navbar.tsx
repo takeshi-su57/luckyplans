@@ -5,16 +5,17 @@ import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { Button, Skeleton } from '@heroui/react';
+import { resolveDocsUrl } from '@/config/public-site-urls';
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard' },
   { label: 'Profile', href: '/profile' },
-  { label: 'Docs', href: '/docs' },
 ];
 
 export function AppNavbar() {
   const { user, isLoading } = useCurrentUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const docsUrl = resolveDocsUrl(process.env);
 
   const handleLogout = useCallback(async () => {
     await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
@@ -44,6 +45,12 @@ export function AppNavbar() {
                 {item.label}
               </Link>
             ))}
+            <a
+              href={docsUrl}
+              className="text-sm font-medium text-[#787774] transition-colors hover:text-[#37352f]"
+            >
+              Docs
+            </a>
           </div>
         </div>
 
@@ -109,6 +116,13 @@ export function AppNavbar() {
                 {item.label}
               </Link>
             ))}
+            <a
+              href={docsUrl}
+              className="text-lg text-[#37352f] transition-colors hover:text-[#37352f]"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Docs
+            </a>
             {user && (
               <div className="mt-2 flex flex-col gap-3 border-t border-[#e8e7e4] pt-4">
                 <span className="text-sm text-[#787774]">{displayName}</span>

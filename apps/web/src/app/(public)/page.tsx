@@ -1,33 +1,9 @@
-import { Navbar } from '@/components/landing/Navbar';
-import { HeroSection } from '@/components/landing/HeroSection';
-import { StatsSection } from '@/components/landing/StatsSection';
-import { ProblemSection } from '@/components/landing/ProblemSection';
-import { InfrastructureSection } from '@/components/landing/InfrastructureSection';
-import { ChainsSection } from '@/components/landing/ChainsSection';
-import { PrinciplesSection } from '@/components/landing/PrinciplesSection';
-import { BuildersSection } from '@/components/landing/BuildersSection';
-import { ProofSection } from '@/components/landing/ProofSection';
-import { TeamSection } from '@/components/landing/TeamSection';
-import { LabNotesSection } from '@/components/landing/LabNotesSection';
-import { Footer } from '@/components/landing/Footer';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-export default function LandingPage() {
-  return (
-    <div className="min-h-screen bg-white text-[#37352f]">
-      <Navbar />
-      <main>
-        <HeroSection />
-        <StatsSection />
-        <ProblemSection />
-        <InfrastructureSection />
-        <ChainsSection />
-        <PrinciplesSection />
-        <BuildersSection />
-        <ProofSection />
-        <TeamSection />
-        <LabNotesSection />
-      </main>
-      <Footer />
-    </div>
-  );
+export default async function PublicHomePage() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get('session_id');
+
+  redirect(sessionCookie ? '/dashboard' : '/login');
 }

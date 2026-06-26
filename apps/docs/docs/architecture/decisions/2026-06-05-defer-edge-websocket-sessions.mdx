@@ -1,0 +1,40 @@
+---
+title: Defer Edge WebSocket Sessions
+description: Current edge orchestration remains on authenticated internal REST polling and connectivity heartbeats; persistent WebSocket sessions are deferred until low-latency command needs justify them.
+---
+
+# Context
+
+The edge architecture temp specs proposed persistent WebSocket sessions with `edge.hello`, `edge.heartbeat`, reconnect handling, and an `edge_sessions` persistence model. The current implementation has stabilized around authenticated internal REST endpoints instead:
+
+1. The edge daemon runs continuously and defaults to a `15s` poll interval.
+2. `POST /internal/edges/connectivity` updates `lastSeenAt`, version, runtime state, active task ID, upgrade status, uptime, and recent error data.
+3. `POST /internal/edges/tasks/next` leases work when assigned.
+4. Task heartbeats, result ingestion, completion, and failure reports use task-scoped REST endpoints.
+5. Gateway operator views derive liveness from `lastSeenAt`, with workers becoming `STALE` after `60s` and `OFFLINE` after `5m`.
+
+This current path covers the next milestone's needs: edge registration, liveness, task execution, progress reporting, upgrade decisions, and operator runbooks. There is no current requirement for immediate server-pushed commands or durable online session records.
+
+# Decision
+
+Do not add persistent edge WebSocket sessions for the next milestone.
+
+Keep edge orchestration on authenticated internal REST polling and connectivity heartbeats. Treat WebSocket sessions as a deferred capability that should be revisited when one of these conditions becomes true:
+
+1. Operators need low-latency server-pushed commands such as cancel, pause, resume, or update-now.
+2. Polling load becomes material at the expected number of always-online edge workers.
+3. The product needs live log streaming or interactive task control.
+4. Gateway operators need durable connect/disconnect session records beyond heartbeat-derived liveness.
+
+If those conditions appear, create follow-up issues for WebSocket protocol design, worker credential authentication, reconnect/backoff behavior, `edge_sessions` persistence, rollout/backward compatibility, and operational visibility.
+
+# Consequences
+
+- **Lower operational complexity:** no WebSocket gateway, sticky-session concern, connection fanout, reconnect storm handling, or session persistence is introduced now.
+- **Clear current contract:** edge workers continue to use internal REST for registration, connectivity, task polling, task progress, results, completion, failure, and upgrade status.
+- **Acceptable latency tradeoff:** task and upgrade decisions can wait for the daemon's polling cadence in the current milestone.
+- **Known future boundary:** server-pushed command workflows must not be added piecemeal through ad hoc REST polling fields without re-evaluating the WebSocket decision.
+
+# Deferred Temp Specs
+
+The temp identity/session WebSocket draft is not active architecture for the next milestone. It remains useful as a future design reference, but its `wss://<api>/v1/edge/connect` endpoint, `edge.hello`/`edge.heartbeat` protocol, reconnect loop, and `edge_sessions` table are deferred by this decision.

@@ -1,0 +1,27 @@
+{
+  "id": "architecture/argocd",
+  "title": "ArgoCD — GitOps Continuous Delivery",
+  "description": "Pull-based GitOps continuous delivery using ArgoCD for LuckyPlans.",
+  "source": "@site/docs/architecture/argocd.mdx",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/argocd",
+  "permalink": "/architecture/argocd",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/argocd.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "ArgoCD — GitOps Continuous Delivery",
+    "description": "Pull-based GitOps continuous delivery using ArgoCD for LuckyPlans."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Standalone Docs App on docs.luckyplans.xyz",
+    "permalink": "/architecture/decisions/2026-06-25-standalone-docs-app"
+  },
+  "next": {
+    "title": "CI/CD Pipeline",
+    "permalink": "/architecture/ci-cd-pipeline"
+  }
+}

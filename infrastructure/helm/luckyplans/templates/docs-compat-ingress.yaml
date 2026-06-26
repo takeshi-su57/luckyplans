@@ -1,0 +1,37 @@
+{{- if .Values.ingress.enabled }}
+{{- $landingHost := .Values.ingress.hosts.landing | default "" -}}
+{{- $docsHost := .Values.ingress.hosts.docs | default "" -}}
+{{- $appHost := .Values.ingress.hosts.app | default "" -}}
+{{- $apiHost := .Values.ingress.hosts.api | default "" -}}
+{{- $adminHost := .Values.ingress.hosts.admin | default "" -}}
+{{- $legacyHost := .Values.ingress.host | default "" -}}
+{{- $useMultiHost := and $landingHost (and $docsHost (and $appHost (and $apiHost $adminHost))) -}}
+{{- if not $useMultiHost }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: luckyplans-docs-compat-ingress
+  namespace: {{ include "luckyplans.namespace" . }}
+  labels:
+    {{- include "luckyplans.labels" . | nindent 4 }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: luckyplans-docs-compat-rewrite@kubernetescrd
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className | quote }}
+  {{- end }}
+  rules:
+    - {{- if $legacyHost }}
+      host: {{ $legacyHost | quote }}
+      {{- end }}
+      http:
+        paths:
+          - path: /docs
+            pathType: Prefix
+            backend:
+              service:
+                name: docs
+                port:
+                  number: 8080
+{{- end }}
+{{- end }}

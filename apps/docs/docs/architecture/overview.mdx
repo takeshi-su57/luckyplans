@@ -1,0 +1,122 @@
+---
+title: System Architecture Overview
+description: Current system architecture, service map, data flow, and infrastructure overview.
+---
+
+# System Architecture Overview
+
+Last updated: 2026-06-25
+
+Production domains:
+
+- `luckyplans.xyz` for the landing SPA
+- `docs.luckyplans.xyz` for the documentation SPA
+- `beta.luckyplans.xyz` for the product web app
+- `api.luckyplans.xyz` for the gateway
+- `admin.luckyplans.xyz` for admin surfaces
+- `v0.api.luckyplans.xyz` for the legacy API proxy
+
+## Architecture Diagram
+
+```text
+Browser
+  -> landing SPA (public)
+  -> docs SPA (public)
+  -> web app (authenticated)
+  -> GraphQL and auth routes
+
+web app
+  -> api-gateway
+
+api-gateway
+  -> Keycloak
+  -> Redis
+  -> PostgreSQL via Prisma
+  -> MinIO
+  -> edge internal APIs
+
+edge-agent
+  <-> api-gateway
+```
+
+## Service Map
+
+| Service | Purpose | Communication |
+| --- | --- | --- |
+| Keycloak | Identity provider and user management | Gateway to Keycloak server-side |
+| `apps/landing` | Public landing SPA | Static assets through ingress |
+| `apps/docs` | Public documentation and blog SPA | Static assets through ingress |
+| `apps/web` | Product web app | GraphQL to api-gateway |
+| `apps/api-gateway` | GraphQL API, auth endpoints, edge control plane, session management | GraphQL and internal REST |
+| `apps/edge-agent` | External edge runtime for onboarding, heartbeats, task execution, and upgrade flow | Internal REST to gateway |
+
+## Architectural Decisions
+
+Services are split by functionality, not by domain:
+
+- `api-gateway` owns client-facing orchestration and shared domain operations
+- edge runtimes execute distributed workloads and report state back to the gateway
+- new microservices are added only when workload or operational isolation is justified
+- shared contracts and utilities belong in `packages/shared`
+
+## Auth Flow
+
+1. A user requests a protected route.
+2. Next.js middleware checks for the `session_id` cookie.
+3. If missing, the user is redirected to `/login`.
+4. The login form posts to `POST /auth/login`.
+5. The gateway authenticates against Keycloak with ROPC, creates a Redis session, and sets an HttpOnly cookie.
+6. Future GraphQL requests include the cookie automatically.
+7. `SessionGuard` loads the session, refreshes server-side credentials when needed, and injects user context.
+
+Registration follows the same pattern through `POST /auth/register`, with user creation handled through the Keycloak Admin API.
+
+## Request Lifecycle
+
+1. The frontend sends a GraphQL operation through Apollo Client.
+2. The gateway validates the session and populates request user context.
+3. Resolver and service logic run in the gateway.
+4. Domain data is read from or written to PostgreSQL through Prisma.
+5. The gateway returns the GraphQL response to the frontend.
+
+## Edge Runtime Lifecycle
+
+1. The edge starts and loads local config.
+2. If config is missing and the runtime is interactive, onboarding collects display name, server URL, and registration token.
+3. The gateway registers or updates the worker and issues credentials.
+4. The edge sends connectivity heartbeats and reports version state.
+5. The edge polls tasks and reports results.
+6. Upgrades run only when the edge is idle.
+
+## Shared Packages
+
+| Package | Purpose |
+| --- | --- |
+| `packages/shared` | Entity interfaces, DTOs, message pattern enums, and utility functions such as `getEnvVar`, `getRedisConfig`, and `generateId` |
+| `packages/config` | Shared ESLint and TypeScript configuration |
+
+## Infrastructure
+
+- Build: Turborepo with pnpm workspaces
+- Local development: Docker Compose for Redis, PostgreSQL, Keycloak, and MinIO
+- Public surface: `apps/landing` and `apps/docs` are isolated from the authenticated product app
+- Deployment: Helm on Kubernetes, with ArgoCD for production sync
+- Auth: Keycloak plus gateway-managed Redis-backed sessions
+- Docs: standalone `apps/docs` Docusaurus static deployment on `docs.luckyplans.xyz`
+
+See also:
+
+- [CI/CD Pipeline](/architecture/ci-cd-pipeline)
+- [ArgoCD](/architecture/argocd)
+- [Helm Deployment](/architecture/helm-deployment)
+- [TLS Certificates](/architecture/tls-certificates)
+
+## Current State and Known Limitations
+
+- Worker upgrades are policy-driven and run only when idle.
+- Connectivity is heartbeat-based and does not explain root cause by itself.
+- Local development still depends on Docker Compose infrastructure before `pnpm dev`.
+- The gateway is stateful because sessions live in Redis.
+- Blog pages are static placeholders.
+- Portfolio image uploads still rely on external URLs rather than managed uploads.
+- Public profile discovery is direct-link based and has no search or directory yet.

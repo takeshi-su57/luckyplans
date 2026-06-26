@@ -3,19 +3,9 @@ set -e
 
 CLUSTER_NAME="luckyplans-local"
 RELEASE_NAME="luckyplans"
-RELEASE_NAME_OBS="luckyplans-observability"
 
 echo "=== Tearing down LuckyPlans Local Environment ==="
 echo ""
-
-# Uninstall observability Helm release
-if helm list -n monitoring 2>/dev/null | grep -q "$RELEASE_NAME_OBS"; then
-  echo "--- Uninstalling Helm release: $RELEASE_NAME_OBS ---"
-  helm uninstall "$RELEASE_NAME_OBS" -n monitoring
-  echo "Observability release uninstalled."
-else
-  echo "Helm release $RELEASE_NAME_OBS not found (already uninstalled or never deployed)."
-fi
 
 # Uninstall app Helm release (removes Deployments, Services, ConfigMap, etc.)
 # The namespace is annotated with helm.sh/resource-policy: keep, so it survives.

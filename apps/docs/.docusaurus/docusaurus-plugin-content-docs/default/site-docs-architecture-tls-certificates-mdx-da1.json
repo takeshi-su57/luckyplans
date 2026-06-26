@@ -1,0 +1,27 @@
+{
+  "id": "architecture/tls-certificates",
+  "title": "TLS Certificates — cert-manager + Let's Encrypt",
+  "description": "Automatic TLS provisioning and renewal using cert-manager with Let's Encrypt ACME HTTP-01.",
+  "source": "@site/docs/architecture/tls-certificates.mdx",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/tls-certificates",
+  "permalink": "/architecture/tls-certificates",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/tls-certificates.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "TLS Certificates — cert-manager + Let's Encrypt",
+    "description": "Automatic TLS provisioning and renewal using cert-manager with Let's Encrypt ACME HTTP-01."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "System Architecture Overview",
+    "permalink": "/architecture/overview"
+  },
+  "next": {
+    "title": "Deployment Guide",
+    "permalink": "/guides/deployment"
+  }
+}
