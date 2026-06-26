@@ -13,17 +13,17 @@ import { TeamSection } from './components/landing/TeamSection';
 
 export function App() {
   return (
-    <div className="min-h-screen bg-white text-[#37352f]">
+    <div className="min-h-screen bg-default-50 text-foreground">
       <Navbar />
       <main>
         <HeroSection />
         <StatsSection />
         <ProblemSection />
         <InfrastructureSection />
+        <ProofSection />
+        <BuildersSection />
         <ChainsSection />
         <PrinciplesSection />
-        <BuildersSection />
-        <ProofSection />
         <TeamSection />
         <LabNotesSection />
       </main>

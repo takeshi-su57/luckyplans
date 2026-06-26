@@ -1,111 +1,82 @@
-import { GitHubIcon } from '@/components/icons/GitHubIcon';
-import {
-  ArbitrumIcon,
-  BaseIcon,
-  EthereumIcon,
-  MegaEthIcon,
-  PolygonIcon,
-} from '@/components/icons/chains';
-import { AvntIcon, GmxIcon, GnsIcon } from '@/components/icons/protocols';
-import { AGGREGATE_VOLUME, CHAIN_COUNT } from './data/protocols';
+import { BarChart3, ShieldCheck, Sparkles, Waypoints } from 'lucide-react';
+import { HeroProductVisual } from './ProductVisuals';
 
-const appUrl = import.meta.env.VITE_APP_URL || 'https://app.luckyplans.xyz/login';
-
-const chainPills = [
-  { name: 'Arbitrum', Icon: ArbitrumIcon },
-  { name: 'Base', Icon: BaseIcon },
-  { name: 'Polygon', Icon: PolygonIcon },
-  { name: 'MegaETH', Icon: MegaEthIcon },
-  { name: 'Ethereum', Icon: EthereumIcon },
+const productAreas = [
+  { label: 'Simulation-first workflow', Icon: Waypoints },
+  { label: 'Risk-aware review', Icon: ShieldCheck },
+  { label: 'Performance evidence', Icon: BarChart3 },
 ];
+const docsUrl = 'https://docs.luckyplans.xyz';
+const appUrl = 'https://app.luckyplans.xyz';
 
 export function HeroSection() {
   return (
-    <section className="relative flex flex-col items-center overflow-hidden px-6 pb-20 pt-32 text-center md:pb-28 md:pt-40">
-      <img
-        src="/brand.png"
-        alt=""
-        width={600}
-        height={600}
-        className="pointer-events-none absolute -right-32 -top-16 opacity-[0.04] md:-right-16 md:-top-8 md:opacity-[0.06]"
-        aria-hidden="true"
-      />
-      <img
-        src="/brand.png"
-        alt=""
-        width={400}
-        height={400}
-        className="pointer-events-none absolute -bottom-24 -left-32 opacity-[0.03] md:-left-16 md:opacity-[0.05]"
-        aria-hidden="true"
-      />
+    <section className="relative overflow-hidden bg-[radial-gradient(circle_at_bottom_left,rgba(112,64,255,0.22),transparent_20%),radial-gradient(circle_at_top_right,rgba(45,99,226,0.26),transparent_26%),linear-gradient(135deg,#0d1328_0%,#121938_52%,#182142_100%)] text-white">
+      <div className="lp-drift absolute -left-20 bottom-10 h-64 w-64 rounded-full bg-[#6b4dff]/20 blur-3xl" />
+      <div className="lp-drift absolute right-0 top-0 h-80 w-80 rounded-full bg-[#2d63e2]/18 blur-3xl" />
+      <div className="mx-auto grid max-w-7xl gap-14 px-6 pb-24 pt-18 md:px-8 md:pb-28 md:pt-22 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-sm font-medium text-[#d6def7] backdrop-blur-sm">
+            <Sparkles size={14} className="text-[#78a2ff]" />
+            Live product workflows, not marketing abstractions
+          </div>
 
-      <div className="mb-8 flex items-center justify-center">
-        <div className="relative">
-          <div className="absolute inset-0 rounded-full bg-green-400/20 blur-2xl" />
-          <img
-            src="/brand.png"
-            alt="LuckyPlans"
-            width={96}
-            height={96}
-            className="relative drop-shadow-lg"
-          />
+          <div className="mt-8 font-mono text-sm tracking-[0.22em] text-[#cfd8f7] uppercase">
+            Trade Console
+          </div>
+
+          <h1 className="mt-8 max-w-4xl text-5xl font-bold leading-[0.94] tracking-tight md:text-7xl">
+            Simulate copy-trading plans before risking capital.
+          </h1>
+
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-[#c4d0ef] md:text-[20px] md:leading-9">
+            Turn trader histories into structured simulation plans, review follower risk, and make
+            execution decisions with real metrics instead of blind copy.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-4">
+            <a
+              href={appUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-[#2d63e2] px-7 py-4 text-base font-semibold text-white shadow-[0_12px_34px_rgba(45,99,226,0.32)] transition-transform hover:-translate-y-0.5"
+            >
+              Open App
+            </a>
+            <a
+              href={docsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-white/20 bg-white/10 px-7 py-4 text-base font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/16"
+            >
+              Docs
+            </a>
+          </div>
+
+          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            {productAreas.map(({ label, Icon }) => (
+              <div
+                key={label}
+                className="lp-glass rounded-[22px] border border-white/10 px-4 py-4 text-[#e8eeff] lp-surface"
+              >
+                <Icon size={18} className="text-[#78a2ff]" />
+                <div className="mt-3 text-sm font-semibold leading-6">{label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-6 text-sm text-[#aebcde]">
+            <span>Auto Simulations</span>
+            <span>Leaderboard Analysis</span>
+            <span>Follower PnL Metrics</span>
+          </div>
         </div>
-      </div>
 
-      <span className="inline-flex items-center gap-2 rounded-full border border-[#e8e7e4] bg-[#fbfbfa] px-3 py-1 text-xs font-medium text-[#787774]">
-        v0.1.0 · Open Source ·
-        <span className="inline-flex items-center gap-1.5">
-          <GnsIcon size={14} /> GNS
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <GmxIcon size={14} /> GMX
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <AvntIcon size={14} /> AVNT
-        </span>
-      </span>
-
-      <h1 className="mt-8 max-w-3xl text-4xl font-bold tracking-tight text-[#37352f] md:text-5xl lg:text-6xl">
-        The analytics layer for perpetual DEX trading
-      </h1>
-
-      <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#787774] md:text-lg">
-        Full leaderboard analytics and deterministic backtesting for algorithmic strategies across
-        gTrade, GMX, and Avantis. Multi-chain. Verifiable. Open source.
-      </p>
-
-      <p className="mt-4 font-mono text-sm text-[#0f7b6c]">
-        Tracking {AGGREGATE_VOLUME} in perp volume across {CHAIN_COUNT} chains
-      </p>
-
-      <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
-        <a
-          href={appUrl}
-          className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
-        >
-          Get Started
-        </a>
-        <a
-          href="https://github.com/takeshi-su57/luckyplans"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg border border-[#e8e7e4] px-6 py-3 text-sm font-medium text-[#37352f] transition-colors hover:border-[#d9d8d4]"
-        >
-          <GitHubIcon size={18} />
-          View on GitHub
-        </a>
-      </div>
-
-      <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-        {chainPills.map(({ name, Icon }) => (
-          <span
-            key={name}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#e8e7e4] bg-white px-3 py-1 text-xs font-medium text-[#787774]"
-          >
-            <Icon size={14} />
-            {name}
-          </span>
-        ))}
+        <div className="relative">
+          <div className="lp-float absolute -left-4 top-8 h-24 w-24 rounded-full bg-[#7f35d8]/18 blur-2xl" />
+          <div className="lp-float-delayed absolute right-10 top-0 h-28 w-28 rounded-full bg-[#2d63e2]/20 blur-2xl" />
+          <HeroProductVisual />
+        </div>
       </div>
     </section>
   );

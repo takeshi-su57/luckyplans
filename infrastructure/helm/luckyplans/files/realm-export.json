@@ -56,10 +56,10 @@
       "surrogateAuthRequired": false,
       "frontchannelLogout": false,
       "attributes": {
-        "post.logout.redirect.uris": "http://localhost:3000/+https://app.luckyplans.xyz/"
+        "post.logout.redirect.uris": "http://localhost:3000/+https://beta.luckyplans.xyz/"
       },
-      "redirectUris": ["http://localhost:3000/*", "https://app.luckyplans.xyz/*"],
-      "webOrigins": ["http://localhost:3000", "https://app.luckyplans.xyz"],
+      "redirectUris": ["http://localhost:3000/*", "https://beta.luckyplans.xyz/*"],
+      "webOrigins": ["http://localhost:3000", "https://beta.luckyplans.xyz"],
       "protocol": "openid-connect",
       "fullScopeAllowed": true,
       "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "email"],

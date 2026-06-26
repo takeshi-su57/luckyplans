@@ -1,42 +1,45 @@
+import { FinalCtaVisual } from './ProductVisuals';
 import { SectionContainer } from './SectionContainer';
 
-const docsUrl = import.meta.env.VITE_DOCS_URL || '/docs';
-const blogUrl = `${docsUrl.replace(/\/docs\/?$/, '')}/blog`;
+const docsUrl = 'https://docs.luckyplans.xyz';
+const appUrl = 'https://app.luckyplans.xyz';
 
 export function LabNotesSection() {
   return (
-    <SectionContainer id="lab-notes">
-      <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">Lab Notes</h2>
-        <p className="max-w-2xl text-base text-[#787774]">
-          Weekly observations from building in the open.
-        </p>
-      </div>
+    <section className="overflow-hidden bg-[radial-gradient(circle_at_bottom_left,rgba(112,64,255,0.20),transparent_24%),radial-gradient(circle_at_top_right,rgba(45,99,226,0.24),transparent_26%),linear-gradient(135deg,#0f1630_0%,#121a38_56%,#1a234a_100%)] text-white">
+      <SectionContainer id="cta" className="max-w-7xl py-24 md:py-28">
+        <div className="grid gap-16 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
+          <div>
+            <h2 className="max-w-4xl text-5xl font-bold leading-[1.02] tracking-tight md:text-7xl">
+              Ready to make trading plans testable?
+            </h2>
+            <p className="mt-7 max-w-2xl text-xl leading-9 text-[#c4d0ef]">
+              Use real product visuals to invite early users into a simulation-first workflow for
+              copy-trading research, scoring, and execution review.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <a
+                href={appUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-[#2d63e2] px-8 py-4 text-[18px] font-semibold text-white shadow-[0_10px_30px_rgba(45,99,226,0.28)] transition-transform hover:-translate-y-0.5"
+              >
+                Open App
+              </a>
+              <a
+                href={docsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-white px-8 py-4 text-[18px] font-semibold text-[#121a38] transition-colors hover:bg-[#eef3ff]"
+              >
+                Docs
+              </a>
+            </div>
+          </div>
 
-      <div className="mt-12 rounded-xl border border-dashed border-[#e8e7e4] p-8 text-center md:p-12">
-        <p className="text-sm text-[#787774]">
-          First entry publishing soon. Follow the repository for updates.
-        </p>
-      </div>
-
-      <div className="mt-6 text-center">
-        <a
-          href={blogUrl}
-          className="inline-flex items-center gap-1 text-sm font-medium text-[#0f7b6c] transition-colors hover:text-[#0b6155]"
-        >
-          View all notes
-          <svg
-            width={16}
-            height={16}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </a>
-      </div>
-    </SectionContainer>
+          <FinalCtaVisual />
+        </div>
+      </SectionContainer>
+    </section>
   );
 }

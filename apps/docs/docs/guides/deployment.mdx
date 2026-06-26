@@ -13,7 +13,7 @@ All environments use the Helm chart at `infrastructure/helm/luckyplans/` with pe
 Traefik ingress (single public IP, host-based routing)
   luckyplans.xyz        -> landing:8080
   docs.luckyplans.xyz   -> docs:8080
-  app.luckyplans.xyz    -> web:3000
+  beta.luckyplans.xyz   -> web:3000
   api.luckyplans.xyz    -> api-gateway:3001
   admin.luckyplans.xyz  -> keycloak/argocd
 
@@ -52,7 +52,7 @@ App services run in the `luckyplans` namespace.
 
 - `luckyplans.xyz` -> landing SPA
 - `docs.luckyplans.xyz` -> docs SPA
-- `app.luckyplans.xyz` -> web frontend
+- `beta.luckyplans.xyz` -> web frontend
 - `api.luckyplans.xyz` -> api-gateway
 - `admin.luckyplans.xyz` -> Keycloak and ArgoCD
 - `v0.api.luckyplans.xyz` -> legacy API proxy
@@ -140,7 +140,7 @@ Push to main -> CI -> Docker Build & Push -> Update Image Tags -> ArgoCD auto-sy
 
 ### Prerequisites
 
-- DNS A records for `luckyplans.xyz`, `docs.luckyplans.xyz`, `app.luckyplans.xyz`, `api.luckyplans.xyz`, `admin.luckyplans.xyz`, and `v0.api.luckyplans.xyz`
+- DNS A records for `luckyplans.xyz`, `docs.luckyplans.xyz`, `beta.luckyplans.xyz`, `api.luckyplans.xyz`, `admin.luckyplans.xyz`, and `v0.api.luckyplans.xyz`
 - Firewall access for ports 22, 80, and 443
 - GitHub token with package read access
 - `CD_PUSH_TOKEN` for updating tags

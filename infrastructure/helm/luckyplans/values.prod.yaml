@@ -14,7 +14,7 @@ image:
   pullPolicy: Always
 config:
   nodeEnv: production
-  corsOrigin: 'https://app.luckyplans.xyz'
+  corsOrigin: 'https://beta.luckyplans.xyz'
   # Keycloak issuer must match the `iss` claim in tokens. When KC_HOSTNAME is set
   # to the public URL, Keycloak stamps tokens with the public issuer — so the
   # gateway must verify against the public URL, not the internal cluster URL.
@@ -29,7 +29,7 @@ ingress:
   hosts:
     landing: 'luckyplans.xyz'
     docs: 'docs.luckyplans.xyz'
-    app: 'app.luckyplans.xyz'
+    app: 'beta.luckyplans.xyz'
     api: 'api.luckyplans.xyz'
     admin: 'admin.luckyplans.xyz'
   tls:
@@ -37,7 +37,7 @@ ingress:
     secrets:
       landing: luckyplans-xyz-tls
       docs: docs-luckyplans-tls
-      app: app-luckyplans-tls
+      app: beta-luckyplans-tls
       api: api-luckyplans-tls
       admin: admin-luckyplans-tls
       v0api: v0-api-luckyplans-tls
@@ -93,14 +93,14 @@ landing:
       memory: '192Mi'
       cpu: '150m'
   buildArgs:
-    appUrl: 'https://app.luckyplans.xyz/login'
+    appUrl: 'https://beta.luckyplans.xyz/login'
     docsUrl: 'https://docs.luckyplans.xyz'
 docs:
   image:
     repository: takeshi-su57/docs
     tag: 'sha-e20117f'
   buildArgs:
-    appUrl: 'https://app.luckyplans.xyz/login'
+    appUrl: 'https://beta.luckyplans.xyz/login'
 web:
   image:
     repository: takeshi-su57/web

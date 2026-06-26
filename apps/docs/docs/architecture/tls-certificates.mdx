@@ -54,7 +54,7 @@ ingress:
   tls:
     enabled: true
     secrets:
-      app: app-luckyplans-tls
+      app: beta-luckyplans-tls
       api: api-luckyplans-tls
       admin: admin-luckyplans-tls
 
@@ -82,7 +82,7 @@ For HTTP-01 challenges to succeed, the domain must resolve to the cluster's publ
 
 | Record | Name    | Value              |
 | ------ | ------- | ------------------ |
-| A      | `app`   | `<your-server-ip>` |
+| A      | `beta`  | `<your-server-ip>` |
 | A      | `api`   | `<your-server-ip>` |
 | A      | `admin` | `<your-server-ip>` |
 
@@ -100,12 +100,12 @@ kubectl get clusterissuer letsencrypt-prod
 kubectl -n luckyplans get certificate
 
 # 3. Check certificate details (per host secret)
-kubectl -n luckyplans describe certificate app-luckyplans-tls
+kubectl -n luckyplans describe certificate beta-luckyplans-tls
 kubectl -n luckyplans describe certificate api-luckyplans-tls
 kubectl -n luckyplans describe certificate admin-luckyplans-tls
 
 # 4. Test HTTPS
-curl -v https://app.luckyplans.xyz
+curl -v https://beta.luckyplans.xyz
 curl -v https://api.luckyplans.xyz/health
 curl -v https://admin.luckyplans.xyz
 ```
@@ -146,7 +146,7 @@ If you destroy and recreate a cluster, cert-manager will re-request certificates
 kubectl -n cert-manager get secret letsencrypt-prod -o yaml > acme-account-key-backup.yaml
 
 # Back up the TLS secrets
-kubectl -n luckyplans get secret app-luckyplans-tls -o yaml > app-luckyplans-tls-backup.yaml
+kubectl -n luckyplans get secret beta-luckyplans-tls -o yaml > beta-luckyplans-tls-backup.yaml
 kubectl -n luckyplans get secret api-luckyplans-tls -o yaml > api-luckyplans-tls-backup.yaml
 kubectl -n luckyplans get secret admin-luckyplans-tls -o yaml > admin-luckyplans-tls-backup.yaml
 ```

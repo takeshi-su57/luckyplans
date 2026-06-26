@@ -1,56 +1,23 @@
 import { SectionContainer } from './SectionContainer';
-
-const principles = [
-  {
-    title: 'Deterministic execution',
-    description: 'No hidden randomness. Same inputs, same outputs, every time.',
-  },
-  {
-    title: 'Version-pinned datasets',
-    description:
-      'Historical data is versioned and immutable. Backtest results are tied to a specific data snapshot.',
-  },
-  {
-    title: 'Idempotent pipeline',
-    description:
-      'Re-run any stage of the pipeline and get identical results. No side effects, no drift.',
-  },
-  {
-    title: 'Explicit parameter hashing',
-    description:
-      'Every strategy config is hashed before execution. The hash is the identity of the run.',
-  },
-  {
-    title: 'Contract-verified anchoring',
-    description:
-      'Result hashes are written to EVM smart contracts. Verification requires only a transaction hash.',
-  },
-  {
-    title: 'Zero trust by default',
-    description:
-      'No results are trusted without proof. Every claim is backed by reproducible artifacts.',
-  },
-];
+import { TrustVisual } from './ProductVisuals';
 
 export function PrinciplesSection() {
   return (
-    <SectionContainer id="principles">
-      <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">
-          Engineering Principles
+    <SectionContainer id="security">
+      <div className="max-w-4xl">
+        <div className="text-lg font-semibold text-[#2d63e2]">Trust and official access</div>
+        <h2 className="mt-4 text-5xl font-bold tracking-tight text-[#202630] md:text-6xl">
+          Use clear official links, verified channels, and controlled environments for safer
+          onboarding.
         </h2>
-        <p className="max-w-2xl text-base text-[#787774]">
-          The constraints that shape every design decision in this system.
+        <p className="mt-5 text-xl leading-9 text-[#66728d]">
+          We should avoid pretending a full trust layer already exists, but we can still make the
+          onboarding message safer and clearer with an explicit checklist and environment framing.
         </p>
       </div>
 
-      <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {principles.map((principle) => (
-          <div key={principle.title} className="rounded-lg border border-[#e8e7e4] bg-white p-5">
-            <h3 className="text-sm font-semibold text-[#37352f]">{principle.title}</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-[#787774]">{principle.description}</p>
-          </div>
-        ))}
+      <div className="mt-10">
+        <TrustVisual />
       </div>
     </SectionContainer>
   );

@@ -1,137 +1,132 @@
-import { useState } from 'react';
-import { GitHubIcon } from '@/components/icons/GitHubIcon';
+import { useEffect, useState } from 'react';
 
-const appUrl = import.meta.env.VITE_APP_URL || '/login';
-const docsUrl = import.meta.env.VITE_DOCS_URL || '/docs';
-const blogUrl = `${docsUrl.replace(/\/docs\/?$/, '')}/blog`;
+const docsUrl = 'https://docs.luckyplans.xyz';
+const appUrl = 'https://app.luckyplans.xyz';
 
 const navItems = [
-  { label: 'Platform', href: '#infrastructure' },
-  { label: 'Chains', href: '#chains' },
-  { label: 'Developers', href: '#developers' },
-  { label: 'Artifacts', href: '#proof' },
-  { label: 'Team', href: '#team' },
-  { label: 'Lab Notes', href: blogUrl },
-  { label: 'Docs', href: docsUrl },
+  { label: 'Problem', href: '#problem' },
+  { label: 'Workflow', href: '#workflow' },
+  { label: 'Features', href: '#features' },
+  { label: 'Engine', href: '#engine' },
+  { label: 'Security', href: '#security' },
+  { label: 'Roadmap', href: '#roadmap' },
 ];
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const nextVisible = window.scrollY > 36;
+      setIsVisible(nextVisible);
+
+      if (!nextVisible) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-[#e8e7e4] bg-white/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4 md:px-8">
-        <a href="#" className="flex items-center gap-2">
-          <img src="/brand.png" alt="LuckyPlans" width={32} height={32} />
-          <span className="text-lg font-bold text-[#37352f]">
-            Lucky<span className="text-[#0f7b6c]">Plans</span>
+    <nav
+      className={[
+        'fixed inset-x-0 top-0 z-50 transition-all duration-300',
+        isVisible
+          ? 'translate-y-0 opacity-100'
+          : 'pointer-events-none -translate-y-4 opacity-0',
+      ].join(' ')}
+    >
+      <div className="mx-auto px-4 pt-3 md:px-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-[28px] border border-white/10 bg-[rgba(238,243,251,0.52)] px-6 py-4 shadow-[0_16px_40px_rgba(9,18,48,0.12)] backdrop-blur-2xl md:px-8">
+        <a href="#" aria-label="Back to top" className="flex items-center gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/45 bg-white/72 shadow-[0_10px_30px_rgba(29,56,128,0.08)]">
+            <img src="/brand.png" alt="LuckyPlans" width={28} height={28} className="rounded-lg" />
           </span>
+          <div className="min-w-0">
+            <div className="text-[15px] font-bold tracking-[-0.02em] text-foreground">
+              LuckyPlans
+            </div>
+            <div className="text-[10px] font-semibold tracking-[0.22em] text-default-500 uppercase">
+              Product preview
+            </div>
+          </div>
         </a>
 
-        <div className="hidden items-center gap-5 lg:flex">
+        <div className="hidden items-center gap-6 lg:flex">
           {navItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-[#787774] transition-colors hover:text-[#37352f]"
+              className="text-sm font-medium text-default-600 transition-colors hover:text-foreground"
             >
               {item.label}
             </a>
           ))}
           <a
-            href="https://github.com/takeshi-su57/luckyplans"
+            href={docsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#787774] transition-colors hover:text-[#37352f]"
+            className="text-sm font-medium text-default-600 transition-colors hover:text-foreground"
           >
-            <GitHubIcon size={20} />
+            Docs
           </a>
           <a
             href={appUrl}
-            className="text-sm font-medium text-[#37352f] transition-colors hover:text-[#37352f]"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center rounded-2xl border border-[#1f56da] bg-[#2d63e2] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(45,99,226,0.18)] transition-all hover:-translate-y-0.5 hover:bg-[#2457d3]"
           >
-            Log in
-          </a>
-          <a
-            href={appUrl}
-            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
-          >
-            Sign up
+            Open App
           </a>
         </div>
 
         <button
           type="button"
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          className="text-[#787774] lg:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="rounded-xl border border-white/35 bg-white/60 px-3 py-2 text-default-700 backdrop-blur-md lg:hidden"
+          onClick={() => setIsMenuOpen((current) => !current)}
         >
-          {isMenuOpen ? (
-            <svg
-              width={24}
-              height={24}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          ) : (
-            <svg
-              width={24}
-              height={24}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <line x1="4" y1="8" x2="20" y2="8" />
-              <line x1="4" y1="16" x2="20" y2="16" />
-            </svg>
-          )}
+          Menu
         </button>
+      </div>
       </div>
 
       {isMenuOpen && (
-        <div className="border-t border-[#e8e7e4] bg-white/95 px-6 pb-6 pt-4 backdrop-blur-md lg:hidden">
-          <div className="flex flex-col gap-4">
+        <div className="mx-auto mt-3 max-w-7xl rounded-[28px] border border-white/10 bg-[rgba(238,243,251,0.72)] px-6 pb-5 pt-4 shadow-[0_16px_40px_rgba(9,18,48,0.12)] backdrop-blur-2xl lg:hidden">
+          <div className="flex flex-col gap-3">
             {navItems.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="text-lg text-[#37352f] transition-colors hover:text-[#37352f]"
+                className="rounded-2xl border border-white/40 bg-white/70 px-4 py-3 text-sm font-medium text-foreground"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
             <a
-              href="https://github.com/takeshi-su57/luckyplans"
+              href={docsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-lg text-[#37352f] transition-colors hover:text-[#37352f]"
+              className="rounded-2xl border border-white/40 bg-white/70 px-4 py-3 text-sm font-medium text-foreground"
+              onClick={() => setIsMenuOpen(false)}
             >
-              <GitHubIcon size={20} />
-              GitHub
+              Docs
             </a>
-            <div className="mt-2 flex flex-col gap-3 border-t border-[#e8e7e4] pt-4">
-              <a
-                href={appUrl}
-                className="text-lg font-medium text-[#37352f] transition-colors hover:text-[#37352f]"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Log in
-              </a>
-              <a
-                href={appUrl}
-                className="rounded-lg bg-emerald-600 px-4 py-3 text-center text-lg font-medium text-white transition-colors hover:bg-emerald-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign up
-              </a>
-            </div>
+            <a
+              href={appUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-2xl bg-[#2d63e2] px-4 py-3 text-sm font-semibold text-white"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Open App
+            </a>
           </div>
         </div>
       )}

@@ -1,97 +1,51 @@
-import { ExternalLinkIcon } from '@/components/icons/ExternalLinkIcon';
-import { GitHubIcon } from '@/components/icons/GitHubIcon';
+import { IntelligenceVisual, LeaderboardVisual, SimulationEngineVisual } from './ProductVisuals';
 import { SectionContainer } from './SectionContainer';
-
-const resources = [
-  {
-    title: 'Leaderboard API',
-    description:
-      'GraphQL API for querying trader rankings, PnL history, and performance metrics across protocols.',
-    status: 'In progress',
-  },
-  {
-    title: 'Backtest SDK',
-    description:
-      'TypeScript SDK for submitting strategies and running deterministic backtests against historical perp data.',
-    status: 'Planned',
-  },
-  {
-    title: 'Data Model',
-    description:
-      'Canonical types for traders, positions, strategies, backtests, and attestations across GNS, GMX, and AVNT.',
-    status: 'In progress',
-  },
-  {
-    title: 'Hashing Schema',
-    description: 'SHA-256 input format for strategy configs, data versions, and execution outputs.',
-    status: 'In progress',
-  },
-  {
-    title: 'Contract Spec',
-    description:
-      'Attestation contract interface for anchoring backtest results and performance proofs on-chain.',
-    status: 'Planned',
-  },
-  {
-    title: 'Architecture Guide',
-    description:
-      'System design: data ingestion pipeline, indexer architecture, and multi-chain deployment topology.',
-    status: 'Planned',
-  },
-];
 
 export function BuildersSection() {
   return (
-    <SectionContainer id="developers">
-      <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold tracking-tight text-[#37352f] md:text-3xl">
-          For Builders
+    <SectionContainer id="engine">
+      <div className="max-w-4xl">
+        <div className="text-lg font-semibold text-[#2d63e2]">Simulation engine</div>
+        <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#202630] md:text-5xl">
+          Backtest follower behavior, accumulated PnL, and risk exposure before live copy
+          execution.
         </h2>
-        <p className="max-w-2xl text-base text-[#787774]">
-          Everything needed to query, integrate, or extend the platform.
+        <p className="mt-5 max-w-3xl text-lg leading-8 text-[#66728d]">
+          The engine is where accumulated PnL, in-and-out curves, opened positions, and per-trade
+          distributions become concrete enough to judge before capital is at risk.
         </p>
       </div>
 
-      <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {resources.map((resource) => (
-          <div
-            key={resource.title}
-            className="flex flex-col justify-between rounded-lg border border-[#e8e7e4] bg-white p-5"
-          >
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-[#37352f]">{resource.title}</h3>
-                <span className="rounded-full bg-[#f1f1ef] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[#787774]">
-                  {resource.status}
-                </span>
-              </div>
-              <p className="mt-1.5 text-sm leading-relaxed text-[#787774]">
-                {resource.description}
-              </p>
-            </div>
-          </div>
-        ))}
+      <div className="mt-10">
+        <SimulationEngineVisual />
       </div>
 
-      <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-        <a
-          href="https://github.com/takeshi-su57/luckyplans"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#37352f] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#2b2924]"
-        >
-          <GitHubIcon size={16} />
-          Browse the source
-        </a>
-        <a
-          href="https://github.com/takeshi-su57/luckyplans#readme"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0f7b6c] transition-colors hover:text-[#0b6155]"
-        >
-          Read the docs
-          <ExternalLinkIcon size={14} />
-        </a>
+      <div className="mt-16 grid gap-12 xl:grid-cols-[0.9fr_1.1fr] xl:items-start">
+        <div className="max-w-3xl">
+          <div className="text-lg font-semibold text-[#2d63e2]">Copy trading intelligence</div>
+          <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#202630] md:text-5xl">
+            Default copy is not always the best copy.
+          </h2>
+          <p className="mt-5 text-lg leading-8 text-[#66728d]">
+            Score leader behavior before choosing a strategy, compare alternative copy modes, and
+            use distribution-level evidence rather than narrative confidence.
+          </p>
+        </div>
+        <IntelligenceVisual />
+      </div>
+
+      <div className="mt-16 grid gap-12 xl:grid-cols-[0.92fr_1.08fr] xl:items-start">
+        <div className="max-w-3xl">
+          <div className="text-lg font-semibold text-[#2d63e2]">Leaderboard analysis</div>
+          <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#202630] md:text-5xl">
+            Find traders worth deeper simulation with platform filters and activity metrics.
+          </h2>
+          <p className="mt-5 text-lg leading-8 text-[#66728d]">
+            Filtering and analysis are part of the product truth already visible in alpha, so the
+            landing story should show those tools as a first-class research surface.
+          </p>
+        </div>
+        <LeaderboardVisual />
       </div>
     </SectionContainer>
   );
