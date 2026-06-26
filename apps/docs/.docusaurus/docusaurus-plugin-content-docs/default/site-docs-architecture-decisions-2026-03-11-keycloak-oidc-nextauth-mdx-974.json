@@ -1,0 +1,27 @@
+{
+  "id": "architecture/decisions/2026-03-11-keycloak-oidc-nextauth",
+  "title": "Keycloak OIDC + next-auth v5 for Authentication",
+  "description": "Adopt Keycloak as the IdP with Authorization Code Flow + PKCE via next-auth v5; validate tokens in the API Gateway using JWKS.",
+  "source": "@site/docs/architecture/decisions/2026-03-11-keycloak-oidc-nextauth.mdx",
+  "sourceDirName": "architecture/decisions",
+  "slug": "/architecture/decisions/2026-03-11-keycloak-oidc-nextauth",
+  "permalink": "/architecture/decisions/2026-03-11-keycloak-oidc-nextauth",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/decisions/2026-03-11-keycloak-oidc-nextauth.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Keycloak OIDC + next-auth v5 for Authentication",
+    "description": "Adopt Keycloak as the IdP with Authorization Code Flow + PKCE via next-auth v5; validate tokens in the API Gateway using JWKS."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Switch GraphQL Codegen to client-preset with Inline Operations",
+    "permalink": "/architecture/decisions/2026-03-11-graphql-codegen-client-preset"
+  },
+  "next": {
+    "title": "Nextra v4 Integrated at /docs Route",
+    "permalink": "/architecture/decisions/2026-03-11-nextra-docs-route"
+  }
+}

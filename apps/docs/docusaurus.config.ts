@@ -1,4 +1,5 @@
-const appUrl = process.env.DOCS_APP_URL || '/login';
+const appUrl =
+  process.env.DOCS_APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000/login';
 
 const config = {
   title: 'LuckyPlans Docs',
@@ -9,8 +10,12 @@ const config = {
   organizationName: 'takeshi-su57',
   projectName: 'luckyplans',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
   trailingSlash: false,
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
   presets: [
     [
       'classic',
@@ -111,7 +116,7 @@ const config = {
       {
         redirects: [
           {
-            from: ['/docs', '/docs/', '/docs/:path*'],
+            from: '/docs',
             to: '/',
           },
         ],

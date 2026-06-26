@@ -1,0 +1,27 @@
+{
+  "id": "architecture/decisions/2026-03-12-gateway-managed-sessions",
+  "title": "Gateway-Managed Sessions (replacing next-auth)",
+  "description": "Move OAuth token management from the Next.js frontend into the API Gateway with Redis-backed server-side sessions.",
+  "source": "@site/docs/architecture/decisions/2026-03-12-gateway-managed-sessions.mdx",
+  "sourceDirName": "architecture/decisions",
+  "slug": "/architecture/decisions/2026-03-12-gateway-managed-sessions",
+  "permalink": "/architecture/decisions/2026-03-12-gateway-managed-sessions",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/decisions/2026-03-12-gateway-managed-sessions.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Gateway-Managed Sessions (replacing next-auth)",
+    "description": "Move OAuth token management from the Next.js frontend into the API Gateway with Redis-backed server-side sessions."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Custom Login/Register Pages with ROPC + Keycloak Admin API",
+    "permalink": "/architecture/decisions/2026-03-12-custom-auth-pages-ropc"
+  },
+  "next": {
+    "title": "Bitnami Sealed Secrets for Production",
+    "permalink": "/architecture/decisions/2026-03-13-bitnami-sealed-secrets"
+  }
+}

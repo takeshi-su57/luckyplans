@@ -1,0 +1,27 @@
+{
+  "id": "architecture/decisions/2026-05-21-gateway-edge-orchestration",
+  "title": "Gateway-Owned Domain Logic with External Edge Orchestration",
+  "description": "Current architecture keeps client-facing domain logic in api-gateway and uses external edge runtimes for distributed execution.",
+  "source": "@site/docs/architecture/decisions/2026-05-21-gateway-edge-orchestration.mdx",
+  "sourceDirName": "architecture/decisions",
+  "slug": "/architecture/decisions/2026-05-21-gateway-edge-orchestration",
+  "permalink": "/architecture/decisions/2026-05-21-gateway-edge-orchestration",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/decisions/2026-05-21-gateway-edge-orchestration.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Gateway-Owned Domain Logic with External Edge Orchestration",
+    "description": "Current architecture keeps client-facing domain logic in api-gateway and uses external edge runtimes for distributed execution."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "PostgreSQL Persistence with Prisma ORM",
+    "permalink": "/architecture/decisions/2026-03-16-prisma-postgresql-persistence"
+  },
+  "next": {
+    "title": "Defer Edge WebSocket Sessions",
+    "permalink": "/architecture/decisions/2026-06-05-defer-edge-websocket-sessions"
+  }
+}

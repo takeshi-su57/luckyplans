@@ -31,7 +31,7 @@ Automated pipeline using GitHub Actions + ArgoCD for the LuckyPlans monorepo.
 
 ### 1. CI (`.github/workflows/ci.yml`)
 
-**Triggers:** Push to `main` (excluding values file changes), pull requests to `main`.
+**Triggers:** Push to `main`, pull requests to `main`.
 
 Runs lint, type-check, test, and build using Turborepo. On PRs, only affected
 packages are checked via `--filter=...[origin/main]`.
@@ -53,10 +53,12 @@ through `kubeconform` for all environment variants.
 
 **Triggers:** After CI passes on `main`, or manual dispatch.
 
-Builds Docker images for all three deployable artifacts in parallel via a matrix strategy:
+Builds Docker images for all deployable artifacts in parallel via a matrix strategy:
 
 | Service        | Dockerfile                    | Image                            |
 | -------------- | ----------------------------- | -------------------------------- |
+| landing        | `apps/landing/Dockerfile`     | `ghcr.io/<owner>/landing`        |
+| docs           | `apps/docs/Dockerfile`        | `ghcr.io/<owner>/docs`           |
 | web            | `apps/web/Dockerfile`         | `ghcr.io/<owner>/web`            |
 | api-gateway    | `apps/api-gateway/Dockerfile` | `ghcr.io/<owner>/api-gateway`    |
 | prisma-migrate | `packages/prisma/Dockerfile`  | `ghcr.io/<owner>/prisma-migrate` |
@@ -75,11 +77,11 @@ Images are pushed with **SBOM** and **provenance** attestations enabled, providi
 The workflow:
 
 1. Computes the image tag (`sha-<7char>` from the triggering commit)
-2. Uses `yq` to update image tags in `values.prod.yaml` for `web`, `api-gateway`, and `prisma-migrate`
+2. Uses `yq` to update image tags in `values.prod.yaml` for `landing`, `docs`, `web`, `api-gateway`, and `prisma-migrate`
 3. Commits with `[skip ci]` to prevent re-triggering CI
 4. Pushes to `main`
 
-ArgoCD then detects the change and auto-syncs the new image tags.
+ArgoCD then detects the commit to `values.prod.yaml` and auto-syncs the new image tags.
 
 ### 4. ArgoCD Sync & Post-Sync Hooks
 

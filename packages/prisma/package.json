@@ -5,8 +5,9 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "prisma generate && tsc --build",
+    "build": "tsc --build --force",
     "clean": "node -e \"const fs=require('fs');['dist','tsconfig.tsbuildinfo'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}))\"",
+    "generate": "prisma generate",
     "type-check": "tsc --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
     "db:migrate:dev": "dotenv -e ../../.env -- prisma migrate dev",

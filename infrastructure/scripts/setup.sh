@@ -21,9 +21,19 @@ fi
 echo "[OK] Node.js $(node -v)"
 
 # Check pnpm
-if ! command -v pnpm >/dev/null 2>&1; then
-  echo "pnpm not found. Installing..."
-  npm install -g pnpm@11.2.2
+PACKAGE_MANAGER=$(node -p "require('$ROOT_DIR/package.json').packageManager")
+PNPM_VERSION="${PACKAGE_MANAGER#pnpm@}"
+
+if command -v corepack >/dev/null 2>&1; then
+  echo "Activating pnpm $PNPM_VERSION via Corepack..."
+  corepack enable
+  corepack prepare "pnpm@$PNPM_VERSION" --activate >/dev/null
+elif ! command -v pnpm >/dev/null 2>&1; then
+  echo "pnpm not found. Installing pnpm $PNPM_VERSION globally..."
+  npm install -g "pnpm@$PNPM_VERSION"
+elif [ "$(pnpm -v)" != "$PNPM_VERSION" ]; then
+  echo "[WARN] pnpm $(pnpm -v) detected, but this repo expects pnpm $PNPM_VERSION."
+  echo "       Install the expected version or enable Corepack for best results."
 fi
 echo "[OK] pnpm $(pnpm -v)"
 

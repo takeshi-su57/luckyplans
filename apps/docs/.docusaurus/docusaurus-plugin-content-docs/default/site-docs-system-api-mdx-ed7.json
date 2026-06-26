@@ -1,0 +1,27 @@
+{
+  "id": "system/api",
+  "title": "API Reference",
+  "description": "GraphQL endpoint, authentication, REST auth endpoints, message patterns, and response formats.",
+  "source": "@site/docs/system/api.mdx",
+  "sourceDirName": "system",
+  "slug": "/system/api",
+  "permalink": "/system/api",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/system/api.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "API Reference",
+    "description": "GraphQL endpoint, authentication, REST auth endpoints, message patterns, and response formats."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Developer Guide",
+    "permalink": "/guides/developer"
+  },
+  "next": {
+    "title": "Configuration Reference",
+    "permalink": "/system/configuration"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "index",
+  "title": "LuckyPlans Documentation",
+  "description": "Architecture, guides, and reference documentation for the LuckyPlans platform.",
+  "source": "@site/docs/index.mdx",
+  "sourceDirName": ".",
+  "slug": "/",
+  "permalink": "/",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/index.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "LuckyPlans Documentation",
+    "description": "Architecture, guides, and reference documentation for the LuckyPlans platform."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Configuration Reference",
+    "permalink": "/system/configuration"
+  }
+}

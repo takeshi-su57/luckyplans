@@ -10,7 +10,7 @@ description: How to set up and run LuckyPlans locally for development.
 | Tool | Version | Install |
 | --- | --- | --- |
 | Node.js | >= 20.0.0 | [nodejs.org](https://nodejs.org) |
-| pnpm | >= 11.2.2 | `npm install -g pnpm@11.2.2` |
+| pnpm | repo-managed via Corepack | `corepack enable && corepack prepare pnpm@11.5.3 --activate` |
 | Docker Compose | Latest | [docker.com](https://www.docker.com) |
 
 ## Quick Start
@@ -62,7 +62,7 @@ Paste the outputs into `SESSION_SECRET=` and `WORKER_CREDENTIAL_PEPPER=` in `.en
 
 ### 3. Start infrastructure
 
-Docker Compose provides the local dependencies:
+Docker Compose provides only the local backing services needed for `pnpm dev`:
 
 ```bash
 docker compose up -d
@@ -83,6 +83,8 @@ docker compose ps
 ```
 
 Wait for Keycloak to show `healthy` status on first startup.
+
+This compose file intentionally does not start the observability stack or any Kubernetes-only components. Those live under `infrastructure/` and are exercised through the local Helm/k3d workflow instead.
 
 To stop infrastructure:
 

@@ -1,0 +1,27 @@
+{
+  "id": "system/configuration",
+  "title": "Configuration Reference",
+  "description": "Environment variables, Helm values, and production overrides.",
+  "source": "@site/docs/system/configuration.mdx",
+  "sourceDirName": "system",
+  "slug": "/system/configuration",
+  "permalink": "/system/configuration",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/system/configuration.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Configuration Reference",
+    "description": "Environment variables, Helm values, and production overrides."
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "API Reference",
+    "permalink": "/system/api"
+  },
+  "next": {
+    "title": "LuckyPlans Documentation",
+    "permalink": "/"
+  }
+}

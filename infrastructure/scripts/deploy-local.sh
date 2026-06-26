@@ -63,6 +63,16 @@ if ! $HELM_ONLY && [[ ${#SERVICES[@]} -eq 0 ]]; then
   FULL_DEPLOY=true
 fi
 
+TARGETED_HELM_UPGRADE=false
+if ! $HELM_ONLY && ! $FULL_DEPLOY; then
+  for svc in "${SERVICES[@]}"; do
+    if [[ "$svc" == "prisma-migrate" ]]; then
+      TARGETED_HELM_UPGRADE=true
+      break
+    fi
+  done
+fi
+
 # Map service names to their Dockerfile paths and image names
 declare -A SERVICE_MAP=(
   [landing]="apps/landing/Dockerfile|luckyplans/landing:latest"
@@ -86,6 +96,8 @@ if $HELM_ONLY; then
   echo "Mode: Helm upgrade only (no image builds)"
 elif $FULL_DEPLOY; then
   echo "Mode: full deploy (all services)"
+elif $TARGETED_HELM_UPGRADE; then
+  echo "Mode: targeted deploy (${SERVICES[*]}) with Helm upgrade"
 else
   echo "Mode: targeted deploy (${SERVICES[*]})"
 fi
@@ -263,7 +275,7 @@ fi
 # ---------------------------------------------------------------------------
 # Deploy with Helm
 # ---------------------------------------------------------------------------
-if $HELM_ONLY || $FULL_DEPLOY; then
+if $HELM_ONLY || $FULL_DEPLOY || $TARGETED_HELM_UPGRADE; then
   echo ""
   echo "--- Deploying app with Helm ---"
   if ! helm upgrade --install "$RELEASE_NAME" "$HELM_CHART" \
@@ -276,6 +288,30 @@ if $HELM_ONLY || $FULL_DEPLOY; then
     echo "App Helm deploy failed."
     print_app_diagnostics "luckyplans"
     exit 1
+  fi
+
+  if $TARGETED_HELM_UPGRADE; then
+    RESTART_SERVICES=()
+    for svc in "${SERVICES[@]}"; do
+      if [[ "$svc" != "prisma-migrate" ]]; then
+        RESTART_SERVICES+=("$svc")
+      fi
+    done
+
+    if [[ ${#RESTART_SERVICES[@]} -gt 0 ]]; then
+      echo ""
+      echo "--- Restarting deployments ---"
+      for svc in "${RESTART_SERVICES[@]}"; do
+        echo "Restarting $svc..."
+        kubectl -n luckyplans rollout restart deployment/"$svc"
+      done
+
+      echo ""
+      echo "--- Waiting for rollout ---"
+      for svc in "${RESTART_SERVICES[@]}"; do
+        kubectl -n luckyplans rollout status deployment/"$svc" --timeout=120s
+      done
+    fi
   fi
 
 else

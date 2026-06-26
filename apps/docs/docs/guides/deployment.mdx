@@ -80,6 +80,7 @@ After completion:
 ./infrastructure/scripts/deploy-local.sh landing
 ./infrastructure/scripts/deploy-local.sh web
 ./infrastructure/scripts/deploy-local.sh api-gateway web
+./infrastructure/scripts/deploy-local.sh prisma-migrate
 ./infrastructure/scripts/deploy-local.sh --helm-only
 ```
 
@@ -109,7 +110,6 @@ docker build -t luckyplans/landing:latest -f apps/landing/Dockerfile .
 docker build --build-arg DOCS_APP_URL="/login" -t luckyplans/docs:latest -f apps/docs/Dockerfile .
 docker build --build-arg NEXT_PUBLIC_GRAPHQL_URL="/graphql" --build-arg NEXT_PUBLIC_DOCS_URL="/docs" -t luckyplans/web:latest -f apps/web/Dockerfile .
 docker build -t luckyplans/api-gateway:latest -f apps/api-gateway/Dockerfile .
-docker build -t luckyplans/service-core:latest -f apps/service-core/Dockerfile .
 docker build -t luckyplans/prisma-migrate:latest -f packages/prisma/Dockerfile .
 
 docker pull redis:7-alpine
@@ -120,7 +120,6 @@ k3d image import luckyplans/landing:latest -c luckyplans-local
 k3d image import luckyplans/docs:latest -c luckyplans-local
 k3d image import luckyplans/web:latest -c luckyplans-local
 k3d image import luckyplans/api-gateway:latest -c luckyplans-local
-k3d image import luckyplans/service-core:latest -c luckyplans-local
 k3d image import luckyplans/prisma-migrate:latest -c luckyplans-local
 
 helm upgrade --install luckyplans infrastructure/helm/luckyplans \
@@ -134,7 +133,7 @@ helm upgrade --install luckyplans infrastructure/helm/luckyplans \
 Production deployments follow:
 
 ```text
-Push to main -> CI build and push -> update image tags -> ArgoCD sync -> smoke tests
+Push to main -> CI -> Docker Build & Push -> Update Image Tags -> ArgoCD auto-sync -> smoke tests
 ```
 
 ## Production First-Time Setup

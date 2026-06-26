@@ -1,0 +1,27 @@
+{
+  "id": "architecture/decisions/2026-03-16-prisma-postgresql-persistence",
+  "title": "PostgreSQL Persistence with Prisma ORM",
+  "description": "Add PostgreSQL as the application database via Prisma ORM in a dedicated packages/prisma package",
+  "source": "@site/docs/architecture/decisions/2026-03-16-prisma-postgresql-persistence.mdx",
+  "sourceDirName": "architecture/decisions",
+  "slug": "/architecture/decisions/2026-03-16-prisma-postgresql-persistence",
+  "permalink": "/architecture/decisions/2026-03-16-prisma-postgresql-persistence",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/decisions/2026-03-16-prisma-postgresql-persistence.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "PostgreSQL Persistence with Prisma ORM",
+    "description": "Add PostgreSQL as the application database via Prisma ORM in a dedicated packages/prisma package"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Bitnami Sealed Secrets for Production",
+    "permalink": "/architecture/decisions/2026-03-13-bitnami-sealed-secrets"
+  },
+  "next": {
+    "title": "Gateway-Owned Domain Logic with External Edge Orchestration",
+    "permalink": "/architecture/decisions/2026-05-21-gateway-edge-orchestration"
+  }
+}
