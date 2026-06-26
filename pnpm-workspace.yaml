@@ -29,6 +29,8 @@ overrides:
   'gray-matter>js-yaml': '>=4.2.0'
   'next>postcss': '>=8.5.10'
   'sockjs>uuid': '>=11.1.1'
+patchedDependencies:
+  'gray-matter@4.0.3': patches/gray-matter@4.0.3.patch
 minimumReleaseAgeExclude:
   - '@turbo/darwin-64@2.9.18'
   - '@turbo/darwin-arm64@2.9.18'

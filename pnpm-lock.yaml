@@ -26,6 +26,9 @@ overrides:
 
 pnpmfileChecksum: sha256-0uFL+opVLewPKsfdRBE0rT+QnJ3Gcm4J4FVdT6qu5ZM=
 
+patchedDependencies:
+  gray-matter@4.0.3: 290fa332c5015bf8b1f452f69a91acf579a3073dc5344ab0a1d88ea12ced9b60
+
 importers:
 
   .:
@@ -11955,7 +11958,7 @@ snapshots:
       fs-extra: 11.3.5
       github-slugger: 1.5.0
       globby: 11.1.0
-      gray-matter: 4.0.3
+      gray-matter: 4.0.3(patch_hash=290fa332c5015bf8b1f452f69a91acf579a3073dc5344ab0a1d88ea12ced9b60)
       jiti: 1.21.7
       js-yaml: 4.2.0
       lodash: 4.18.1
@@ -16432,7 +16435,7 @@ snapshots:
 
   graphql@16.14.2: {}
 
-  gray-matter@4.0.3:
+  gray-matter@4.0.3(patch_hash=290fa332c5015bf8b1f452f69a91acf579a3073dc5344ab0a1d88ea12ced9b60):
     dependencies:
       js-yaml: 4.2.0
       kind-of: 6.0.3
