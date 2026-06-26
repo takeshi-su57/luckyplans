@@ -9,6 +9,15 @@ function readPackage(pkg) {
   if (pkg.dependencies?.tar) {
     pkg.dependencies.tar = '>=7.5.11';
   }
+  if (pkg.dependencies?.multer) {
+    pkg.dependencies.multer = '>=2.2.0';
+  }
+  if (pkg.dependencies?.['serialize-javascript']) {
+    pkg.dependencies['serialize-javascript'] = '>=7.0.3';
+  }
+  if (pkg.dependencies?.ws && ['@nestjs/graphql', 'graphql-ws'].includes(pkg.name)) {
+    pkg.dependencies.ws = '>=8.21.0';
+  }
   return pkg;
 }
 

@@ -22,6 +22,10 @@ overrides:
   'express@4.22.2>path-to-regexp': '~0.1.12'
   'react-router@5.3.4>path-to-regexp': '^1.7.0'
   'picomatch': '>=4.0.4'
+  'multer': '>=2.2.0'
+  'serialize-javascript': '>=7.0.3'
+  '@nestjs/graphql>ws': '>=8.21.0'
+  'graphql-ws>ws': '>=8.21.0'
 minimumReleaseAgeExclude:
   - '@turbo/darwin-64@2.9.18'
   - '@turbo/darwin-arm64@2.9.18'
