@@ -34,10 +34,14 @@ metadata:
 spec:
   secretName: {{ $cert.secret | quote }}
   issuerRef:
+    group: cert-manager.io
     name: {{ $.Values.certManager.issuer | quote }}
     kind: ClusterIssuer
   dnsNames:
     - {{ $cert.host | quote }}
+  usages:
+    - digital signature
+    - key encipherment
 {{- end }}
 {{- end }}
 {{- end }}

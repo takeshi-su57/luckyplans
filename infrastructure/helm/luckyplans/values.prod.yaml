@@ -25,7 +25,6 @@ ingress:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     traefik.ingress.kubernetes.io/router.tls: 'true'
     traefik.ingress.kubernetes.io/router.middlewares: luckyplans-redirect-https@kubernetescrd,luckyplans-hsts-header@kubernetescrd
-    cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
     landing: 'luckyplans.xyz'
     docs: 'docs.luckyplans.xyz'
