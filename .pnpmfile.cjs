@@ -10,7 +10,7 @@ function readPackage(pkg) {
     pkg.dependencies.tar = '>=7.5.11';
   }
   if (pkg.dependencies?.multer) {
-    pkg.dependencies.multer = '>=2.2.0';
+    pkg.dependencies.multer = '2.2.0';
   }
   if (pkg.dependencies?.['serialize-javascript']) {
     pkg.dependencies['serialize-javascript'] = '>=7.0.3';

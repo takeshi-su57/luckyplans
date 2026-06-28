@@ -17,6 +17,7 @@ COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=pruner /app/.pnpmfile.cjs ./.pnpmfile.cjs
+COPY --from=pruner /app/patches ./patches
 RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
@@ -28,6 +29,8 @@ ENV DOCS_APP_URL=${DOCS_APP_URL}
 RUN pnpm turbo run build --filter=@luckyplans/docs
 
 FROM nginxinc/nginx-unprivileged:1.27-alpine AS runner
+USER root
+RUN apk upgrade --no-cache
 COPY --from=builder /app/apps/docs/build /usr/share/nginx/html
 
 USER 101

@@ -16,7 +16,7 @@ overrides:
   express@4.22.2>path-to-regexp: ~0.1.12
   react-router@5.3.4>path-to-regexp: ^1.7.0
   picomatch: '>=4.0.4'
-  multer: '>=2.2.0'
+  multer: 2.2.0
   serialize-javascript: '>=7.0.3'
   '@nestjs/graphql>ws': '>=8.21.0'
   graphql-ws>ws: '>=8.21.0'
@@ -24,7 +24,7 @@ overrides:
   next>postcss: '>=8.5.10'
   sockjs>uuid: '>=11.1.1'
 
-pnpmfileChecksum: sha256-0uFL+opVLewPKsfdRBE0rT+QnJ3Gcm4J4FVdT6qu5ZM=
+pnpmfileChecksum: sha256-pO8ZxEaXCanwOXtg5PUoWB5SOmHOo22WscmPsqQj3p8=
 
 patchedDependencies:
   gray-matter@4.0.3: 290fa332c5015bf8b1f452f69a91acf579a3073dc5344ab0a1d88ea12ced9b60
@@ -100,7 +100,7 @@ importers:
         specifier: ^8.0.0
         version: 8.0.7
       multer:
-        specifier: '>=2.2.0'
+        specifier: 2.2.0
         version: 2.2.0
       reflect-metadata:
         specifier: ^0.2.2
@@ -151,6 +151,9 @@ importers:
       '@docusaurus/preset-classic':
         specifier: ^3.10.1
         version: 3.10.1(@algolia/client-search@5.55.1)(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(lightningcss@1.32.0)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(search-insights@2.17.3)(typescript@6.0.3)
+      '@mdx-js/react':
+        specifier: ^3.1.1
+        version: 3.1.1(@types/react@19.2.17)(react@19.2.7)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
