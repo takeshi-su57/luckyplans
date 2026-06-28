@@ -1,0 +1,43 @@
+{{- if and .Values.certManager.enabled .Values.ingress.tls.enabled }}
+{{- $certs := list }}
+{{- with .Values.ingress.hosts.landing }}
+{{- $certs = append $certs (dict "name" "landing" "host" . "secret" $.Values.ingress.tls.secrets.landing) }}
+{{- end }}
+{{- with .Values.ingress.hosts.docs }}
+{{- $certs = append $certs (dict "name" "docs" "host" . "secret" $.Values.ingress.tls.secrets.docs) }}
+{{- end }}
+{{- with .Values.ingress.hosts.app }}
+{{- $certs = append $certs (dict "name" "app" "host" . "secret" $.Values.ingress.tls.secrets.app) }}
+{{- end }}
+{{- with .Values.ingress.hosts.api }}
+{{- $certs = append $certs (dict "name" "api" "host" . "secret" $.Values.ingress.tls.secrets.api) }}
+{{- end }}
+{{- with .Values.ingress.hosts.admin }}
+{{- $certs = append $certs (dict "name" "admin" "host" . "secret" $.Values.ingress.tls.secrets.admin) }}
+{{- end }}
+{{- if and .Values.legacyV0.enabled .Values.legacyV0.host }}
+{{- $certs = append $certs (dict "name" "v0-api" "host" .Values.legacyV0.host "secret" .Values.ingress.tls.secrets.v0api) }}
+{{- end }}
+{{- range $index, $cert := $certs }}
+{{- if and $cert.host $cert.secret }}
+{{- if $index }}
+---
+{{- end }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $cert.secret | quote }}
+  namespace: {{ include "luckyplans.namespace" $ }}
+  labels:
+    {{- include "luckyplans.labels" $ | nindent 4 }}
+    app.kubernetes.io/name: {{ $cert.name | quote }}
+spec:
+  secretName: {{ $cert.secret | quote }}
+  issuerRef:
+    name: {{ $.Values.certManager.issuer | quote }}
+    kind: ClusterIssuer
+  dnsNames:
+    - {{ $cert.host | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
