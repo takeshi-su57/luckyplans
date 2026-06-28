@@ -26,9 +26,15 @@ spec:
         - name: nginx-config
           configMap:
             name: docs-nginx
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}
+        - name: nginx-tmp
+          emptyDir: {}
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1001
+        runAsUser: 101
       containers:
         - name: {{ $component }}
           image: {{ include "luckyplans.image" (dict "registry" .Values.image.registry "repository" .Values.docs.image.repository "tag" .Values.docs.image.tag) }}
@@ -45,6 +51,12 @@ spec:
               mountPath: /etc/nginx/conf.d/default.conf
               subPath: default.conf
               readOnly: true
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+            - name: nginx-tmp
+              mountPath: /tmp
           resources:
             {{- toYaml .Values.docs.resources | nindent 12 }}
           readinessProbe:
