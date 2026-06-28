@@ -65,7 +65,7 @@ spec:
               # ----------------------------------------------------------
               echo "==> Testing web frontend"
               for i in $(seq 1 $RETRIES); do
-                STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "http://web.${NS}.svc:3000/" || true)
+                STATUS=$(curl -sfL -o /dev/null -w "%{http_code}" "http://web.${NS}.svc:3000/" || true)
                 if [ "$STATUS" = "200" ]; then
                   echo "    PASS: HTTP 200"
                   break
