@@ -1,0 +1,27 @@
+{
+  "id": "guides/deployment-guide",
+  "title": "Deployment Guide",
+  "description": "This guide documents the deploy path that is actually present in the beta monorepo today.",
+  "source": "@site/docs/guides/deployment-guide.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/deployment-guide",
+  "permalink": "/guides/deployment-guide",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/deployment-guide.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Deployment Guide",
+    "sidebar_label": "Deployment Guide"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Run with Docker",
+    "permalink": "/guides/run-with-docker"
+  },
+  "next": {
+    "title": "Add New Platform",
+    "permalink": "/guides/add-new-platform"
+  }
+}

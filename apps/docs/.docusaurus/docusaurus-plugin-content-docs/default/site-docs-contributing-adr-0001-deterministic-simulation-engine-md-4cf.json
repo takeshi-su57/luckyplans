@@ -1,0 +1,28 @@
+{
+  "id": "contributing/adr/deterministic-simulation-engine",
+  "title": "ADR 0001 Deterministic Simulation Engine",
+  "description": "Status",
+  "source": "@site/docs/contributing/adr/0001-deterministic-simulation-engine.md",
+  "sourceDirName": "contributing/adr",
+  "slug": "/contributing/adr/deterministic-simulation-engine",
+  "permalink": "/contributing/adr/deterministic-simulation-engine",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/contributing/adr/0001-deterministic-simulation-engine.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "title": "ADR 0001 Deterministic Simulation Engine",
+    "sidebar_label": "ADR 0001 Deterministic Simulation Engine"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Architecture Decisions",
+    "permalink": "/contributing/architecture-decisions"
+  },
+  "next": {
+    "title": "ADR 0002 Contract Versioning by Block Range",
+    "permalink": "/contributing/adr/contract-versioning-by-block-range"
+  }
+}

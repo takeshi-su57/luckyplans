@@ -1,0 +1,27 @@
+{
+  "id": "contributing/pull-request-guide",
+  "title": "Pull Request Guide",
+  "description": "Before opening a PR",
+  "source": "@site/docs/contributing/pull-request-guide.md",
+  "sourceDirName": "contributing",
+  "slug": "/contributing/pull-request-guide",
+  "permalink": "/contributing/pull-request-guide",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/contributing/pull-request-guide.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Pull Request Guide",
+    "sidebar_label": "Pull Request Guide"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Coding Standards",
+    "permalink": "/contributing/coding-standards"
+  },
+  "next": {
+    "title": "Architecture Decisions",
+    "permalink": "/contributing/architecture-decisions"
+  }
+}

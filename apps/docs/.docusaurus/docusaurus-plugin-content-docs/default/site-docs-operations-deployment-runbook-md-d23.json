@@ -1,0 +1,27 @@
+{
+  "id": "operations/deployment-runbook",
+  "title": "Deployment Runbook",
+  "description": "Goal",
+  "source": "@site/docs/operations/deployment-runbook.md",
+  "sourceDirName": "operations",
+  "slug": "/operations/deployment-runbook",
+  "permalink": "/operations/deployment-runbook",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/operations/deployment-runbook.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Deployment Runbook",
+    "sidebar_label": "Deployment Runbook"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Error Codes",
+    "permalink": "/reference/error-codes"
+  },
+  "next": {
+    "title": "Rollback Runbook",
+    "permalink": "/operations/rollback-runbook"
+  }
+}

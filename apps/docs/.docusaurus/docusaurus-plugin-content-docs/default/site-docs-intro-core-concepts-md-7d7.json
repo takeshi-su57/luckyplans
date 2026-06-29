@@ -1,0 +1,27 @@
+{
+  "id": "intro/core-concepts",
+  "title": "Core Concepts",
+  "description": "Plan",
+  "source": "@site/docs/intro/core-concepts.md",
+  "sourceDirName": "intro",
+  "slug": "/intro/core-concepts",
+  "permalink": "/intro/core-concepts",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/intro/core-concepts.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Core Concepts",
+    "sidebar_label": "Core Concepts"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Current Status",
+    "permalink": "/intro/current-status"
+  },
+  "next": {
+    "title": "System Overview",
+    "permalink": "/architecture/overview"
+  }
+}

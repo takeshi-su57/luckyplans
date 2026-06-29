@@ -1,0 +1,23 @@
+{
+  "id": "intro/what-is-luckyplans",
+  "title": "What is LuckyPlans?",
+  "description": "LuckyPlans is a research and operations platform for perpetual DEX trading workflows.",
+  "source": "@site/docs/intro/what-is-luckyplans.md",
+  "sourceDirName": "intro",
+  "slug": "/intro/what-is-luckyplans",
+  "permalink": "/intro/what-is-luckyplans",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/intro/what-is-luckyplans.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "What is LuckyPlans?",
+    "sidebar_label": "What is LuckyPlans?"
+  },
+  "sidebar": "docsSidebar",
+  "next": {
+    "title": "Current Status",
+    "permalink": "/intro/current-status"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "architecture/simulation-engine",
+  "title": "Simulation Engine",
+  "description": "The current LuckyPlans backend treats simulation as a first-class product workflow.",
+  "source": "@site/docs/architecture/simulation-engine.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/simulation-engine",
+  "permalink": "/architecture/simulation-engine",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/simulation-engine.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Simulation Engine",
+    "sidebar_label": "Simulation Engine"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Data Flow",
+    "permalink": "/architecture/data-flow"
+  },
+  "next": {
+    "title": "Copy-Trading Engine",
+    "permalink": "/architecture/copy-trading-engine"
+  }
+}

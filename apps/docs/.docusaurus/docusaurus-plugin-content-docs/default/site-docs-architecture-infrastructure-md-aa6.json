@@ -1,0 +1,27 @@
+{
+  "id": "architecture/infrastructure",
+  "title": "Infrastructure",
+  "description": "LuckyPlans currently has two infrastructure stories that matter:",
+  "source": "@site/docs/architecture/infrastructure.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/infrastructure",
+  "permalink": "/architecture/infrastructure",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/infrastructure.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Infrastructure",
+    "sidebar_label": "Infrastructure"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Database Design",
+    "permalink": "/architecture/database-design"
+  },
+  "next": {
+    "title": "Security Model",
+    "permalink": "/architecture/security-model"
+  }
+}

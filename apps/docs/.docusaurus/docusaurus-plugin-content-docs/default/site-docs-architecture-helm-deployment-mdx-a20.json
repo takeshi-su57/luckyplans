@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Helm Deployment Architecture",
     "description": "Single Helm chart design, service configuration, and deployment commands."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "CI/CD Pipeline",
-    "permalink": "/architecture/ci-cd-pipeline"
-  },
-  "next": {
-    "title": "System Architecture Overview",
-    "permalink": "/architecture/overview"
   }
 }

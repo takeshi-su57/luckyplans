@@ -1,0 +1,27 @@
+{
+  "id": "architecture/indexing-pipeline",
+  "title": "Indexing Pipeline",
+  "description": "The indexing pipeline is what turns raw platform logs into researchable history.",
+  "source": "@site/docs/architecture/indexing-pipeline.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/indexing-pipeline",
+  "permalink": "/architecture/indexing-pipeline",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/indexing-pipeline.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Indexing Pipeline",
+    "sidebar_label": "Indexing Pipeline"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Copy-Trading Engine",
+    "permalink": "/architecture/copy-trading-engine"
+  },
+  "next": {
+    "title": "Database Design",
+    "permalink": "/architecture/database-design"
+  }
+}

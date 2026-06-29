@@ -1,0 +1,23 @@
+{
+  "id": "roadmap/changelog",
+  "title": "Changelog",
+  "description": "2026-06-28",
+  "source": "@site/docs/roadmap/changelog.md",
+  "sourceDirName": "roadmap",
+  "slug": "/roadmap/changelog",
+  "permalink": "/roadmap/changelog",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/roadmap/changelog.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Changelog",
+    "sidebar_label": "Changelog"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Roadmap",
+    "permalink": "/roadmap/"
+  }
+}

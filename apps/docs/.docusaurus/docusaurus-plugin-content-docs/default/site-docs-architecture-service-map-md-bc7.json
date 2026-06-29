@@ -1,0 +1,27 @@
+{
+  "id": "architecture/service-map",
+  "title": "Service Map",
+  "description": "This map reflects the real implementation in the current frontend and backend repositories, plus the current deployment assets in the beta monorepo.",
+  "source": "@site/docs/architecture/service-map.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/service-map",
+  "permalink": "/architecture/service-map",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/service-map.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Service Map",
+    "sidebar_label": "Service Map"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "System Overview",
+    "permalink": "/architecture/overview"
+  },
+  "next": {
+    "title": "Data Flow",
+    "permalink": "/architecture/data-flow"
+  }
+}

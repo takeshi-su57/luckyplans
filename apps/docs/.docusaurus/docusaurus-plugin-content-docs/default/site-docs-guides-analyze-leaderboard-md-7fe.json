@@ -1,0 +1,27 @@
+{
+  "id": "guides/analyze-leaderboard",
+  "title": "Analyze Leaderboard",
+  "description": "The current frontend exposes leaderboard flows at:",
+  "source": "@site/docs/guides/analyze-leaderboard.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/analyze-leaderboard",
+  "permalink": "/guides/analyze-leaderboard",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/analyze-leaderboard.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Analyze Leaderboard",
+    "sidebar_label": "Analyze Leaderboard"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Create a Simulation",
+    "permalink": "/guides/create-simulation"
+  },
+  "next": {
+    "title": "API Reference",
+    "permalink": "/reference/api-reference"
+  }
+}

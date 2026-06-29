@@ -120,10 +120,12 @@ jobs:
         run: |
           # -ignore-missing-schemas: Traefik Middleware and cert-manager
           # ClusterIssuer CRDs have no built-in kubeconform schemas
+          # Pin the Kubernetes schema version so validation does not rely on
+          # kubeconform's moving "master" alias.
           helm template luckyplans infrastructure/helm/luckyplans \
             -f infrastructure/helm/luckyplans/values.yaml \
-            | kubeconform -strict -ignore-missing-schemas -summary -output text
+            | kubeconform -strict -ignore-missing-schemas -kubernetes-version 1.32.0 -summary -output text
           helm template luckyplans infrastructure/helm/luckyplans \
             -f infrastructure/helm/luckyplans/values.yaml \
             -f infrastructure/helm/luckyplans/values.prod.yaml \
-            | kubeconform -strict -ignore-missing-schemas -summary -output text
+            | kubeconform -strict -ignore-missing-schemas -kubernetes-version 1.32.0 -summary -output text

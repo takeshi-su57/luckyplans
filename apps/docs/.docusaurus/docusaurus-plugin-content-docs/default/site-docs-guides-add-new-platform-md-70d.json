@@ -1,0 +1,27 @@
+{
+  "id": "guides/add-new-platform",
+  "title": "Add New Platform",
+  "description": "Use this workflow when adding support for a new perp venue to the current backend.",
+  "source": "@site/docs/guides/add-new-platform.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/add-new-platform",
+  "permalink": "/guides/add-new-platform",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/add-new-platform.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Add New Platform",
+    "sidebar_label": "Add New Platform"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Deployment Guide",
+    "permalink": "/guides/deployment-guide"
+  },
+  "next": {
+    "title": "Add New Chain",
+    "permalink": "/guides/add-new-chain"
+  }
+}

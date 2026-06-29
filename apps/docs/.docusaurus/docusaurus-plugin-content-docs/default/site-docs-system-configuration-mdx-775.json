@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Configuration Reference",
     "description": "Environment variables, Helm values, and production overrides."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "API Reference",
-    "permalink": "/system/api"
-  },
-  "next": {
-    "title": "LuckyPlans Documentation",
-    "permalink": "/"
   }
 }

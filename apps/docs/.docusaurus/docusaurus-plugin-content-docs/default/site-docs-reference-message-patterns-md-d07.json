@@ -1,0 +1,27 @@
+{
+  "id": "reference/message-patterns",
+  "title": "Message Patterns",
+  "description": "The current backend uses NestJS Redis microservice transport with explicit message and event pattern names.",
+  "source": "@site/docs/reference/message-patterns.md",
+  "sourceDirName": "reference",
+  "slug": "/reference/message-patterns",
+  "permalink": "/reference/message-patterns",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/reference/message-patterns.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Message Patterns",
+    "sidebar_label": "Message Patterns"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Environment Variables",
+    "permalink": "/reference/environment-variables"
+  },
+  "next": {
+    "title": "Database Models",
+    "permalink": "/reference/database-models"
+  }
+}

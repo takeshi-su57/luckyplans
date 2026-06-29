@@ -1,0 +1,27 @@
+{
+  "id": "intro/current-status",
+  "title": "Current Status",
+  "description": "LuckyPlans is in active development.",
+  "source": "@site/docs/intro/current-status.md",
+  "sourceDirName": "intro",
+  "slug": "/intro/current-status",
+  "permalink": "/intro/current-status",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/intro/current-status.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Current Status",
+    "sidebar_label": "Current Status"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "What is LuckyPlans?",
+    "permalink": "/intro/what-is-luckyplans"
+  },
+  "next": {
+    "title": "Core Concepts",
+    "permalink": "/intro/core-concepts"
+  }
+}

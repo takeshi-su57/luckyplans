@@ -1,0 +1,27 @@
+{
+  "id": "security/disclosure-policy",
+  "title": "Disclosure Policy",
+  "description": "Responsible reporting",
+  "source": "@site/docs/security/disclosure-policy.md",
+  "sourceDirName": "security",
+  "slug": "/security/disclosure-policy",
+  "permalink": "/security/disclosure-policy",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/security/disclosure-policy.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Disclosure Policy",
+    "sidebar_label": "Disclosure Policy"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Impersonation Warning",
+    "permalink": "/security/impersonation-warning"
+  },
+  "next": {
+    "title": "Contribution Guide",
+    "permalink": "/contributing/contribution-guide"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "reference/graphql-reference",
+  "title": "GraphQL Reference",
+  "description": "This page summarizes the current GraphQL surface from the real backend and frontend schema files.",
+  "source": "@site/docs/reference/graphql-reference.md",
+  "sourceDirName": "reference",
+  "slug": "/reference/graphql-reference",
+  "permalink": "/reference/graphql-reference",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/reference/graphql-reference.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "GraphQL Reference",
+    "sidebar_label": "GraphQL Reference"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "API Reference",
+    "permalink": "/reference/api-reference"
+  },
+  "next": {
+    "title": "Configuration Reference",
+    "permalink": "/reference/configuration-reference"
+  }
+}

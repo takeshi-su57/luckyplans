@@ -1,0 +1,27 @@
+{
+  "id": "operations/monitoring",
+  "title": "Monitoring",
+  "description": "Goal",
+  "source": "@site/docs/operations/monitoring.md",
+  "sourceDirName": "operations",
+  "slug": "/operations/monitoring",
+  "permalink": "/operations/monitoring",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/operations/monitoring.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Monitoring",
+    "sidebar_label": "Monitoring"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Reindexing Runbook",
+    "permalink": "/operations/reindexing-runbook"
+  },
+  "next": {
+    "title": "Incident Response",
+    "permalink": "/operations/incident-response"
+  }
+}

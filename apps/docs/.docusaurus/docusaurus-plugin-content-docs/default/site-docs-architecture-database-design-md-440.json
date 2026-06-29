@@ -1,0 +1,27 @@
+{
+  "id": "architecture/database-design",
+  "title": "Database Design",
+  "description": "LuckyPlans uses PostgreSQL through Prisma. The current implementation is broad, but the table below captures the main concepts without dumping the full schema.",
+  "source": "@site/docs/architecture/database-design.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/database-design",
+  "permalink": "/architecture/database-design",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/database-design.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Database Design",
+    "sidebar_label": "Database Design"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Indexing Pipeline",
+    "permalink": "/architecture/indexing-pipeline"
+  },
+  "next": {
+    "title": "Infrastructure",
+    "permalink": "/architecture/infrastructure"
+  }
+}

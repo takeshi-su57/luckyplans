@@ -1,7 +1,7 @@
 {
   "id": "index",
   "title": "LuckyPlans Documentation",
-  "description": "Architecture, guides, and reference documentation for the LuckyPlans platform.",
+  "description": "Product, architecture, and operations documentation for the current LuckyPlans implementation.",
   "source": "@site/docs/index.mdx",
   "sourceDirName": ".",
   "slug": "/",
@@ -13,11 +13,6 @@
   "version": "current",
   "frontMatter": {
     "title": "LuckyPlans Documentation",
-    "description": "Architecture, guides, and reference documentation for the LuckyPlans platform."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "Configuration Reference",
-    "permalink": "/system/configuration"
+    "description": "Product, architecture, and operations documentation for the current LuckyPlans implementation."
   }
 }

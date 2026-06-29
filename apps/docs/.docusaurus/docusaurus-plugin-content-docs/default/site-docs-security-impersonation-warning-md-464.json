@@ -1,0 +1,27 @@
+{
+  "id": "security/impersonation-warning",
+  "title": "Impersonation Warning",
+  "description": "Common attack patterns include:",
+  "source": "@site/docs/security/impersonation-warning.md",
+  "sourceDirName": "security",
+  "slug": "/security/impersonation-warning",
+  "permalink": "/security/impersonation-warning",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/security/impersonation-warning.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Impersonation Warning",
+    "sidebar_label": "Impersonation Warning"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Security Best Practices",
+    "permalink": "/security/security-best-practices"
+  },
+  "next": {
+    "title": "Disclosure Policy",
+    "permalink": "/security/disclosure-policy"
+  }
+}

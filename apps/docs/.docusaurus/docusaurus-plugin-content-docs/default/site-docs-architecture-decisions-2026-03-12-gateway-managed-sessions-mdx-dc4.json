@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Gateway-Managed Sessions (replacing next-auth)",
     "description": "Move OAuth token management from the Next.js frontend into the API Gateway with Redis-backed server-side sessions."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "Custom Login/Register Pages with ROPC + Keycloak Admin API",
-    "permalink": "/architecture/decisions/2026-03-12-custom-auth-pages-ropc"
-  },
-  "next": {
-    "title": "Bitnami Sealed Secrets for Production",
-    "permalink": "/architecture/decisions/2026-03-13-bitnami-sealed-secrets"
   }
 }

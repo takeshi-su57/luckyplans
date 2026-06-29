@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "TLS Certificates — cert-manager + Let's Encrypt",
     "description": "Automatic TLS provisioning and renewal using cert-manager with Let's Encrypt ACME HTTP-01."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "System Architecture Overview",
-    "permalink": "/architecture/overview"
-  },
-  "next": {
-    "title": "Deployment Guide",
-    "permalink": "/guides/deployment"
   }
 }

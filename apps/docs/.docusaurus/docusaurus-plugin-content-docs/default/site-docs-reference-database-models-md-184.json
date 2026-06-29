@@ -1,0 +1,27 @@
+{
+  "id": "reference/database-models",
+  "title": "Database Models",
+  "description": "Main workflow models",
+  "source": "@site/docs/reference/database-models.md",
+  "sourceDirName": "reference",
+  "slug": "/reference/database-models",
+  "permalink": "/reference/database-models",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/reference/database-models.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Database Models",
+    "sidebar_label": "Database Models"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Message Patterns",
+    "permalink": "/reference/message-patterns"
+  },
+  "next": {
+    "title": "Helm Values",
+    "permalink": "/reference/helm-values"
+  }
+}

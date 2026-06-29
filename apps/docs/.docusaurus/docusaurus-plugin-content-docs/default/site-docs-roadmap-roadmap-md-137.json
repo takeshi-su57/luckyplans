@@ -1,0 +1,27 @@
+{
+  "id": "roadmap/roadmap",
+  "title": "Roadmap",
+  "description": "The roadmap below is stage-based on purpose. It reflects direction without pretending exact dates are already locked.",
+  "source": "@site/docs/roadmap/roadmap.md",
+  "sourceDirName": "roadmap",
+  "slug": "/roadmap/",
+  "permalink": "/roadmap/",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/roadmap/roadmap.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Roadmap",
+    "sidebar_label": "Roadmap"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "ADR 0003 Platform Adapter Architecture",
+    "permalink": "/contributing/adr/platform-adapter-architecture"
+  },
+  "next": {
+    "title": "Changelog",
+    "permalink": "/roadmap/changelog"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "reference/api-reference",
+  "title": "API Reference",
+  "description": "The current product API is GraphQL-first and exposed by the backend API_SERVICE.",
+  "source": "@site/docs/reference/api-reference.md",
+  "sourceDirName": "reference",
+  "slug": "/reference/api-reference",
+  "permalink": "/reference/api-reference",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/reference/api-reference.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "API Reference",
+    "sidebar_label": "API Reference"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Analyze Leaderboard",
+    "permalink": "/guides/analyze-leaderboard"
+  },
+  "next": {
+    "title": "GraphQL Reference",
+    "permalink": "/reference/graphql-reference"
+  }
+}

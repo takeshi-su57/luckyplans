@@ -1,0 +1,27 @@
+{
+  "id": "operations/incident-response",
+  "title": "Incident Response",
+  "description": "Goal",
+  "source": "@site/docs/operations/incident-response.md",
+  "sourceDirName": "operations",
+  "slug": "/operations/incident-response",
+  "permalink": "/operations/incident-response",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/operations/incident-response.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Incident Response",
+    "sidebar_label": "Incident Response"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Monitoring",
+    "permalink": "/operations/monitoring"
+  },
+  "next": {
+    "title": "Official Links",
+    "permalink": "/security/official-links"
+  }
+}

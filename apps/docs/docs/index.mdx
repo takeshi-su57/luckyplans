@@ -1,28 +1,67 @@
 ---
 title: LuckyPlans Documentation
-description: Architecture, guides, and reference documentation for the LuckyPlans platform.
+description: Product, architecture, and operations documentation for the current LuckyPlans implementation.
 ---
 
 # LuckyPlans Documentation
 
-LuckyPlans is open-source infrastructure for perpetual DEX analytics and deterministic backtesting — built for web3 protocol teams, algo traders, and DeFi infrastructure builders.
+LuckyPlans is infrastructure for perpetual DEX analytics, copy-trading research, and deterministic backtesting.
 
-## What's in here
+It helps users analyze trader histories, generate simulation plans, compare follower outcomes, and review risk before execution.
 
-| Section                                     | What you'll find                                                      |
-| ------------------------------------------- | --------------------------------------------------------------------- |
-| [Architecture](/architecture/overview) | System design, service map, data flow, and infrastructure deep-dives  |
-| [Guides](/guides/developer)            | Local development setup, workflows, and deployment instructions       |
-| [Reference](/system/api)               | GraphQL API, message patterns, environment variables, and Helm values |
+This site is written from the real product implementation currently found in:
+
+- `takeshi-su57/lucky-plan-fe`
+- `takeshi-su57/lucky-plan-be`
+- the local mirror at `../alpha/fe` and `../alpha/be`
+
+The `beta` monorepo hosts this Docusaurus portal and the newer infrastructure work, while the current product behavior still lives in the split frontend and backend repositories above.
+
+## Start here
+
+- New to LuckyPlans? Read [What is LuckyPlans?](/intro/what-is-luckyplans)
+- Want to run it locally? Read [Quickstart](/guides/quickstart)
+- Want to understand the system? Read [System Overview](/architecture/overview)
+- Want to add a platform? Read [Add New Platform](/guides/add-new-platform)
+- Want to deploy it? Read [Deployment Guide](/guides/deployment-guide)
+- Want to understand safety? Read [Security Best Practices](/security/security-best-practices)
+
+## Documentation by role
+
+| Role              | Start here                                                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| New visitor       | [What is LuckyPlans?](/intro/what-is-luckyplans), [Core Concepts](/intro/core-concepts)                                        |
+| Developer         | [Quickstart](/guides/quickstart), [Local Development](/guides/local-development)                                               |
+| Contributor       | [Contribution Guide](/contributing/contribution-guide), [Coding Standards](/contributing/coding-standards)                     |
+| Protocol team     | [Architecture](/architecture/overview), [Add New Platform](/guides/add-new-platform)                                           |
+| Operator          | [Deployment Guide](/guides/deployment-guide), [Monitoring](/operations/monitoring), [Runbooks](/operations/deployment-runbook) |
+| Security reviewer | [Security Model](/architecture/security-model), [Official Links](/security/official-links)                                     |
+
+## Section overview
+
+| Section                                          | What it covers                                                                                          |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| [Introduction](/intro/what-is-luckyplans)        | Product framing, maturity, and shared language for plans, simulations, and research workflows           |
+| [Architecture](/architecture/overview)           | System layout, service ownership, data flow, simulation design, indexing pipeline, and trust boundaries |
+| [Guides](/guides/quickstart)                     | Local setup, extension workflows, and deployment paths                                                  |
+| [Reference](/reference/graphql-reference)        | GraphQL surface, configuration, env vars, Redis message patterns, database concepts, and Helm values    |
+| [Operations](/operations/deployment-runbook)     | Deployment, rollback, migrations, reindexing, monitoring, and incident handling                         |
+| [Security](/security/security-best-practices)    | Official links, impersonation warnings, disclosure expectations, and user safety posture                |
+| [Contributing](/contributing/contribution-guide) | Repo norms, coding expectations, pull request guidance, and ADRs                                        |
+| [Roadmap](/roadmap)                              | Stage-based direction and docs-site changelog                                                           |
 
 ## Quick links
 
-- [System Overview](/architecture/overview) — Architecture diagram and service map
-- [Developer Guide](/guides/developer) — Get the platform running locally in minutes
-- [Deployment Guide](/guides/deployment) — Deploy to local k3d or production Kubernetes
-- [API Reference](/system/api) — GraphQL endpoint and message patterns
-- [Configuration](/system/configuration) — All environment variables and Helm values
+- [System Overview](/architecture/overview)
+- [Service Map](/architecture/service-map)
+- [Quickstart](/guides/quickstart)
+- [Environment Variables](/reference/environment-variables)
+- [GraphQL Reference](/reference/graphql-reference)
+- [Deployment Runbook](/operations/deployment-runbook)
+- [Official Links](/security/official-links)
 
-## Source
+## Source / GitHub
 
-The platform is fully open source. View the repository on [GitHub](https://github.com/takeshi-su57/luckyplans).
+- GitHub: [luckyplans](https://github.com/luckyplans)
+- Current frontend product repo: [takeshi-su57/lucky-plan-fe](https://github.com/takeshi-su57/lucky-plan-fe)
+- Current backend product repo: [takeshi-su57/lucky-plan-be](https://github.com/takeshi-su57/lucky-plan-be)

@@ -1,0 +1,27 @@
+{
+  "id": "guides/environment-setup",
+  "title": "Environment Setup",
+  "description": "Backend environment",
+  "source": "@site/docs/guides/environment-setup.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/environment-setup",
+  "permalink": "/guides/environment-setup",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/environment-setup.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Environment Setup",
+    "sidebar_label": "Environment Setup"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Local Development",
+    "permalink": "/guides/local-development"
+  },
+  "next": {
+    "title": "Run with Docker",
+    "permalink": "/guides/run-with-docker"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "contributing/architecture-decisions",
+  "title": "Architecture Decisions",
+  "description": "LuckyPlans uses ADRs to document technical choices that shape product behavior, historical correctness, or operational cost.",
+  "source": "@site/docs/contributing/architecture-decisions.md",
+  "sourceDirName": "contributing",
+  "slug": "/contributing/architecture-decisions",
+  "permalink": "/contributing/architecture-decisions",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/contributing/architecture-decisions.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Architecture Decisions",
+    "sidebar_label": "Architecture Decisions"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Pull Request Guide",
+    "permalink": "/contributing/pull-request-guide"
+  },
+  "next": {
+    "title": "ADR 0001 Deterministic Simulation Engine",
+    "permalink": "/contributing/adr/deterministic-simulation-engine"
+  }
+}

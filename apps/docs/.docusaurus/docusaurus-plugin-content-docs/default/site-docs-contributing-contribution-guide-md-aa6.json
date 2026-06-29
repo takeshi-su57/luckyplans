@@ -1,0 +1,27 @@
+{
+  "id": "contributing/contribution-guide",
+  "title": "Contribution Guide",
+  "description": "Where to contribute",
+  "source": "@site/docs/contributing/contribution-guide.md",
+  "sourceDirName": "contributing",
+  "slug": "/contributing/contribution-guide",
+  "permalink": "/contributing/contribution-guide",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/contributing/contribution-guide.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Contribution Guide",
+    "sidebar_label": "Contribution Guide"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Disclosure Policy",
+    "permalink": "/security/disclosure-policy"
+  },
+  "next": {
+    "title": "Coding Standards",
+    "permalink": "/contributing/coding-standards"
+  }
+}

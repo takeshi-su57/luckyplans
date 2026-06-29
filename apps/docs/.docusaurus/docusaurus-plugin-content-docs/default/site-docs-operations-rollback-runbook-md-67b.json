@@ -1,0 +1,27 @@
+{
+  "id": "operations/rollback-runbook",
+  "title": "Rollback Runbook",
+  "description": "Goal",
+  "source": "@site/docs/operations/rollback-runbook.md",
+  "sourceDirName": "operations",
+  "slug": "/operations/rollback-runbook",
+  "permalink": "/operations/rollback-runbook",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/operations/rollback-runbook.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Rollback Runbook",
+    "sidebar_label": "Rollback Runbook"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Deployment Runbook",
+    "permalink": "/operations/deployment-runbook"
+  },
+  "next": {
+    "title": "Database Migration",
+    "permalink": "/operations/database-migration"
+  }
+}

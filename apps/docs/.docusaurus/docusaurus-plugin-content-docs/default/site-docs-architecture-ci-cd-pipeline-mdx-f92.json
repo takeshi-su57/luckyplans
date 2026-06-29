@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "CI/CD Pipeline",
     "description": "Automated pipeline using GitHub Actions and ArgoCD for the LuckyPlans monorepo."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "ArgoCD — GitOps Continuous Delivery",
-    "permalink": "/architecture/argocd"
-  },
-  "next": {
-    "title": "Helm Deployment Architecture",
-    "permalink": "/architecture/helm-deployment"
   }
 }

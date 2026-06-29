@@ -1,0 +1,28 @@
+{
+  "id": "contributing/adr/contract-versioning-by-block-range",
+  "title": "ADR 0002 Contract Versioning by Block Range",
+  "description": "Status",
+  "source": "@site/docs/contributing/adr/0002-contract-versioning-by-block-range.md",
+  "sourceDirName": "contributing/adr",
+  "slug": "/contributing/adr/contract-versioning-by-block-range",
+  "permalink": "/contributing/adr/contract-versioning-by-block-range",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/contributing/adr/0002-contract-versioning-by-block-range.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "title": "ADR 0002 Contract Versioning by Block Range",
+    "sidebar_label": "ADR 0002 Contract Versioning by Block Range"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "ADR 0001 Deterministic Simulation Engine",
+    "permalink": "/contributing/adr/deterministic-simulation-engine"
+  },
+  "next": {
+    "title": "ADR 0003 Platform Adapter Architecture",
+    "permalink": "/contributing/adr/platform-adapter-architecture"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "architecture/overview",
+  "title": "System Overview",
+  "description": "LuckyPlans currently spans three practical layers:",
+  "source": "@site/docs/architecture/overview.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/overview",
+  "permalink": "/architecture/overview",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/overview.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "System Overview",
+    "sidebar_label": "System Overview"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Core Concepts",
+    "permalink": "/intro/core-concepts"
+  },
+  "next": {
+    "title": "Service Map",
+    "permalink": "/architecture/service-map"
+  }
+}
