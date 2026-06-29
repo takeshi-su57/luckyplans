@@ -1,398 +1,355 @@
 {
-  "/__docusaurus/debug-5ff": {
-    "__comp": "__comp---theme-debug-config-23-a-2ff",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/config-5ba": {
-    "__comp": "__comp---theme-debug-config-23-a-2ff",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/content-a2b": {
-    "__comp": "__comp---theme-debug-contentba-8-ce7",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    },
-    "__props": "__props---docusaurus-debug-content-3-c-0-be2"
-  },
-  "/__docusaurus/debug/globalData-c3c": {
-    "__comp": "__comp---theme-debug-global-dataede-0fa",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/metadata-156": {
-    "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/registry-88c": {
-    "__comp": "__comp---theme-debug-registry-679-501",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/routes-000": {
-    "__comp": "__comp---theme-debug-routes-946-699",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
   "/blog-6ee": {
-    "__comp": "__comp---theme-blog-list-pagea-6-a-7ba",
+    "__comp": "a6aa9e1f",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
+    "sidebar": "814f3328",
     "items": [
       {
-        "content": "content---blog-68-a-c3b"
+        "content": "68a504a9"
       }
     ],
-    "__props": "__props---blogc-15-573"
+    "__props": "c15d9823"
   },
   "/blog/archive-182": {
-    "__comp": "__comp---theme-blog-archive-page-9-e-4-1d8",
+    "__comp": "9e4087bc",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "__props": "__props---blog-archivef-81-229"
+    "__props": "f81c1134"
   },
   "/blog/lab-notes-coming-soon-53f": {
-    "__comp": "__comp---theme-blog-post-pageccc-cab",
+    "__comp": "ccc49370",
     "__context": {
       "data": {
-        "blogMetadata": "blogMetadata---blog-lab-notes-coming-soonace-268"
+        "blogMetadata": "acecf23e"
       },
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
-    "content": "content---blog-lab-notes-coming-soon-16-f-26f"
+    "sidebar": "814f3328",
+    "content": "16fe3a9a"
   },
   "/blog/tags-287": {
-    "__comp": "__comp---theme-blog-tags-list-page-01-a-d0b",
+    "__comp": "01a85c17",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
-    "__props": "__props---blog-tags-3-a-2-fa2"
+    "sidebar": "814f3328",
+    "__props": "3a2db09e"
   },
   "/blog/tags/updates-106": {
-    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
+    "__comp": "6875c492",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
+    "sidebar": "814f3328",
     "items": [
       {
-        "content": "content---blog-68-a-c3b"
+        "content": "68a504a9"
       }
     ],
-    "__props": "__props---blog-tags-updates-71-f-39e"
+    "__props": "71f72e4c"
   },
   "/-210": {
-    "__comp": "__comp---theme-docs-root-5-e-9-0b6",
+    "__comp": "5e95c892",
     "__context": {
-      "plugin": "plugin---aba-d70"
+      "plugin": "aba21aa0"
     }
   },
   "/-da0": {
-    "__comp": "__comp---theme-doc-version-roota-7-b-5de",
-    "__props": "__props---22-d-307"
+    "__comp": "a7bd4aaa",
+    "__props": "22dd74f7"
   },
   "/-978": {
-    "__comp": "__comp---theme-doc-roota-94-67a"
+    "__comp": "a94703ab"
   },
   "/architecture/argocd-eb0": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-argocd-0-c-0-54d"
+    "__comp": "17896441",
+    "content": "0c0cbd1b"
   },
   "/architecture/ci-cd-pipeline-90f": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-ci-cd-pipelinef-92-aae"
+    "__comp": "17896441",
+    "content": "f928d88b"
   },
   "/architecture/copy-trading-engine-a75": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-copy-trading-engine-04-c-43f"
+    "__comp": "17896441",
+    "content": "04c9fe8b"
   },
   "/architecture/data-flow-f0d": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-data-flow-9-ba-46d"
+    "__comp": "17896441",
+    "content": "9ba7a03a"
   },
   "/architecture/database-design-581": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-database-design-440-6a1"
+    "__comp": "17896441",
+    "content": "4408eebb"
   },
   "/architecture/decisions/2026-03-10-functional-decomposition-575": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-10-functional-decompositionfe-5-66f"
+    "__comp": "17896441",
+    "content": "fe52df41"
   },
   "/architecture/decisions/2026-03-10-graphql-code-first-600": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-10-graphql-code-first-915-c60"
+    "__comp": "17896441",
+    "content": "915ea095"
   },
   "/architecture/decisions/2026-03-10-redis-pub-sub-transport-b88": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-10-redis-pub-sub-transporte-93-9fe"
+    "__comp": "17896441",
+    "content": "e93f6591"
   },
   "/architecture/decisions/2026-03-11-graphql-codegen-client-preset-95e": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-11-graphql-codegen-client-presetf-7-e-7ec"
+    "__comp": "17896441",
+    "content": "f7e1e2fc"
   },
   "/architecture/decisions/2026-03-11-keycloak-oidc-nextauth-17b": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-11-keycloak-oidc-nextauth-974-003"
+    "__comp": "17896441",
+    "content": "97414fab"
   },
   "/architecture/decisions/2026-03-11-nextra-docs-route-007": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-11-nextra-docs-route-1-ec-296"
+    "__comp": "17896441",
+    "content": "1eca32d3"
   },
   "/architecture/decisions/2026-03-12-custom-auth-pages-ropc-a91": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-12-custom-auth-pages-ropc-1-f-4-985"
+    "__comp": "17896441",
+    "content": "1f492d32"
   },
   "/architecture/decisions/2026-03-12-gateway-managed-sessions-c06": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-12-gateway-managed-sessionsdc-4-a4a"
+    "__comp": "17896441",
+    "content": "dc45b789"
   },
   "/architecture/decisions/2026-03-13-bitnami-sealed-secrets-0b0": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-13-bitnami-sealed-secrets-57-f-722"
+    "__comp": "17896441",
+    "content": "57f0043e"
   },
   "/architecture/decisions/2026-03-16-prisma-postgresql-persistence-871": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-03-16-prisma-postgresql-persistence-515-a0f"
+    "__comp": "17896441",
+    "content": "515245a6"
   },
   "/architecture/decisions/2026-05-21-gateway-edge-orchestration-cbe": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-05-21-gateway-edge-orchestrationeb-7-c15"
+    "__comp": "17896441",
+    "content": "eb75cd85"
   },
   "/architecture/decisions/2026-06-05-defer-edge-websocket-sessions-406": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-06-05-defer-edge-websocket-sessionsb-4-d-834"
+    "__comp": "17896441",
+    "content": "b4dcee84"
   },
   "/architecture/decisions/2026-06-05-defer-task-artifact-transfer-652": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-06-05-defer-task-artifact-transfer-419-77b"
+    "__comp": "17896441",
+    "content": "419fdd40"
   },
   "/architecture/decisions/2026-06-25-standalone-docs-app-fdd": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-decisions-2026-06-25-standalone-docs-app-04-e-101"
+    "__comp": "17896441",
+    "content": "04e80410"
   },
   "/architecture/helm-deployment-e8b": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-helm-deploymenta-20-d00"
+    "__comp": "17896441",
+    "content": "a20630f0"
   },
   "/architecture/indexing-pipeline-655": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-indexing-pipelined-93-c5c"
+    "__comp": "17896441",
+    "content": "d93eee91"
   },
   "/architecture/infrastructure-895": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-infrastructureaa-6-37e"
+    "__comp": "17896441",
+    "content": "aa63a0b5"
   },
   "/architecture/overview-67c": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-overview-0-b-1-d38"
+    "__comp": "17896441",
+    "content": "0b1ac180"
   },
   "/architecture/security-model-7b3": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-security-model-556-b6b"
+    "__comp": "17896441",
+    "content": "5561554d"
   },
   "/architecture/service-map-675": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-service-mapbc-7-304"
+    "__comp": "17896441",
+    "content": "bc7896aa"
   },
   "/architecture/simulation-engine-0f4": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-simulation-engined-37-e84"
+    "__comp": "17896441",
+    "content": "d37a9722"
   },
   "/architecture/tls-certificates-4ce": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---architecture-tls-certificatesda-1-e59"
+    "__comp": "17896441",
+    "content": "da167546"
   },
   "/contributing/adr/contract-versioning-by-block-range-a1f": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---contributing-adr-contract-versioning-by-block-range-6-ac-678"
+    "__comp": "17896441",
+    "content": "6ac94739"
   },
   "/contributing/adr/deterministic-simulation-engine-a05": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---contributing-adr-deterministic-simulation-engine-4-cf-0e1"
+    "__comp": "17896441",
+    "content": "4cf04706"
   },
   "/contributing/adr/platform-adapter-architecture-ba4": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---contributing-adr-platform-adapter-architecture-19-f-b2d"
+    "__comp": "17896441",
+    "content": "19f8c033"
   },
   "/contributing/architecture-decisions-0b6": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---contributing-architecture-decisions-24-c-8e9"
+    "__comp": "17896441",
+    "content": "24ccdb55"
   },
   "/contributing/coding-standards-801": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---contributing-coding-standardsfff-457"
+    "__comp": "17896441",
+    "content": "fffe19ca"
   },
   "/contributing/contribution-guide-cda": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---contributing-contribution-guideaa-6-be4"
+    "__comp": "17896441",
+    "content": "aa63599b"
   },
   "/contributing/pull-request-guide-f96": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---contributing-pull-request-guide-06-a-d33"
+    "__comp": "17896441",
+    "content": "06ac365c"
   },
   "/guides/add-new-chain-a7f": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-add-new-chain-8-f-2-a24"
+    "__comp": "17896441",
+    "content": "8f2fe0da"
   },
   "/guides/add-new-contract-version-f55": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-add-new-contract-version-23-a-326"
+    "__comp": "17896441",
+    "content": "23ab63fb"
   },
   "/guides/add-new-platform-0c3": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-add-new-platform-70-d-d62"
+    "__comp": "17896441",
+    "content": "70da9ecb"
   },
   "/guides/analyze-leaderboard-524": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-analyze-leaderboard-7-fe-5d9"
+    "__comp": "17896441",
+    "content": "7fe251a7"
   },
   "/guides/create-simulation-bbd": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-create-simulation-075-c23"
+    "__comp": "17896441",
+    "content": "0753eaee"
   },
   "/guides/deployment-f7c": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-deployment-4-d-9-32c"
+    "__comp": "17896441",
+    "content": "4d9af839"
   },
   "/guides/deployment-guide-e44": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-deployment-guidef-81-fb4"
+    "__comp": "17896441",
+    "content": "f819b9cb"
   },
   "/guides/developer-f70": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-developer-3-fd-384"
+    "__comp": "17896441",
+    "content": "3fd01764"
   },
   "/guides/environment-setup-8de": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-environment-setup-7-c-2-d05"
+    "__comp": "17896441",
+    "content": "7c223b18"
   },
   "/guides/local-development-3bb": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-local-development-2-eb-fb0"
+    "__comp": "17896441",
+    "content": "2ebbd6f0"
   },
   "/guides/quickstart-f45": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-quickstart-910-745"
+    "__comp": "17896441",
+    "content": "91039464"
   },
   "/guides/run-with-docker-199": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---guides-run-with-docker-605-b57"
+    "__comp": "17896441",
+    "content": "60599a55"
   },
   "/intro/core-concepts-516": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---intro-core-concepts-7-d-7-429"
+    "__comp": "17896441",
+    "content": "7d741405"
   },
   "/intro/current-status-7fb": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---intro-current-status-186-42f"
+    "__comp": "17896441",
+    "content": "186038a9"
   },
   "/intro/what-is-luckyplans-337": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---intro-what-is-luckyplanse-2-e-1d8"
+    "__comp": "17896441",
+    "content": "e2e736b8"
   },
   "/operations/database-migration-154": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---operations-database-migration-660-13f"
+    "__comp": "17896441",
+    "content": "660d6515"
   },
   "/operations/deployment-runbook-66b": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---operations-deployment-runbookd-23-8a8"
+    "__comp": "17896441",
+    "content": "d23c816c"
   },
   "/operations/incident-response-457": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---operations-incident-response-2-ca-dd1"
+    "__comp": "17896441",
+    "content": "2ca5603e"
   },
   "/operations/monitoring-a51": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---operations-monitoringb-01-c7a"
+    "__comp": "17896441",
+    "content": "b016db4a"
   },
   "/operations/reindexing-runbook-2cb": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---operations-reindexing-runbook-7-fb-4b9"
+    "__comp": "17896441",
+    "content": "7fb46def"
   },
   "/operations/rollback-runbook-4f4": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---operations-rollback-runbook-67-b-f08"
+    "__comp": "17896441",
+    "content": "67b03689"
   },
   "/reference/api-reference-b59": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---reference-api-referencea-18-3d8"
+    "__comp": "17896441",
+    "content": "a1872ea7"
   },
   "/reference/configuration-reference-0a9": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---reference-configuration-reference-70-f-63f"
+    "__comp": "17896441",
+    "content": "70f2d34d"
   },
   "/reference/database-models-085": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---reference-database-models-184-fc5"
+    "__comp": "17896441",
+    "content": "1843abdb"
   },
   "/reference/environment-variables-c4d": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---reference-environment-variables-7-e-8-7ac"
+    "__comp": "17896441",
+    "content": "7e8d16e1"
   },
   "/reference/error-codes-742": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---reference-error-codes-33-e-d8d"
+    "__comp": "17896441",
+    "content": "33e65611"
   },
   "/reference/graphql-reference-ffd": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---reference-graphql-reference-68-d-984"
+    "__comp": "17896441",
+    "content": "68db5560"
   },
   "/reference/helm-values-872": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---reference-helm-valuese-04-c47"
+    "__comp": "17896441",
+    "content": "e04dee38"
   },
   "/reference/message-patterns-ebe": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---reference-message-patternsd-07-761"
+    "__comp": "17896441",
+    "content": "d0721e45"
   },
   "/roadmap-571": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---roadmap-137-4ac"
+    "__comp": "17896441",
+    "content": "137aa317"
   },
   "/roadmap/changelog-b9d": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---roadmap-changelog-91-d-e46"
+    "__comp": "17896441",
+    "content": "91d9fca0"
   },
   "/security/disclosure-policy-55b": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---security-disclosure-policya-64-086"
+    "__comp": "17896441",
+    "content": "a64423cc"
   },
   "/security/impersonation-warning-feb": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---security-impersonation-warning-464-20b"
+    "__comp": "17896441",
+    "content": "464f8150"
   },
   "/security/official-links-f61": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---security-official-linksa-96-035"
+    "__comp": "17896441",
+    "content": "a969774d"
   },
   "/security/security-best-practices-3b2": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---security-security-best-practices-70-c-cc3"
+    "__comp": "17896441",
+    "content": "70c74310"
   },
   "/system/api-68f": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---system-apied-7-bbf"
+    "__comp": "17896441",
+    "content": "ed7f6e00"
   },
   "/system/configuration-3ac": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---system-configuration-775-3ec"
+    "__comp": "17896441",
+    "content": "7756cf52"
   },
   "/-697": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---4-ed-c51"
+    "__comp": "17896441",
+    "content": "4edc808e"
   }
 }
