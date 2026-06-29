@@ -1,5 +1,9 @@
-@import 'tailwindcss';
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
 @import '@heroui/styles/css';
+@import 'tailwindcss/utilities.css';
 
 @theme inline {
   --font-sans:
@@ -13,54 +17,56 @@
     monospace;
 }
 
-:root {
-  color: #18181b;
-  background:
-    radial-gradient(circle at top right, rgba(88, 126, 255, 0.09), transparent 24%),
-    radial-gradient(circle at bottom left, rgba(85, 54, 255, 0.08), transparent 22%), #eef3fb;
-  font-family: var(--font-sans);
-  line-height: 1.5;
-  font-weight: 400;
-}
+@layer base {
+  :root {
+    color: #18181b;
+    background:
+      radial-gradient(circle at top right, rgba(88, 126, 255, 0.09), transparent 24%),
+      radial-gradient(circle at bottom left, rgba(85, 54, 255, 0.08), transparent 22%), #eef3fb;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    font-weight: 400;
+  }
 
-html {
-  scroll-behavior: smooth;
-  background:
-    radial-gradient(circle at top right, rgba(88, 126, 255, 0.09), transparent 24%),
-    radial-gradient(circle at bottom left, rgba(85, 54, 255, 0.08), transparent 22%), #eef3fb;
-}
+  html {
+    scroll-behavior: smooth;
+    background:
+      radial-gradient(circle at top right, rgba(88, 126, 255, 0.09), transparent 24%),
+      radial-gradient(circle at bottom left, rgba(85, 54, 255, 0.08), transparent 22%), #eef3fb;
+  }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: transparent;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: transparent;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-a {
-  color: inherit;
-}
+  a {
+    color: inherit;
+  }
 
-button {
-  font: inherit;
-}
+  button {
+    font: inherit;
+  }
 
-img {
-  display: block;
-  max-width: 100%;
-}
+  img {
+    display: block;
+    max-width: 100%;
+  }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-display);
-  letter-spacing: -0.04em;
+  :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-display);
+    letter-spacing: -0.04em;
+  }
+
+  ::selection {
+    background: rgba(59, 130, 246, 0.18);
+    color: #18181b;
+  }
 }
 
 .lp-glass {
@@ -104,9 +110,4 @@ h6 {
   100% {
     transform: translate3d(18px, -12px, 0) scale(1.04);
   }
-}
-
-::selection {
-  background: rgba(59, 130, 246, 0.18);
-  color: #18181b;
 }
