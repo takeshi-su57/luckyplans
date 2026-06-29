@@ -66,7 +66,7 @@ redis:
 apiGateway:
   image:
     repository: takeshi-su57/api-gateway
-    tag: 'sha-a755699'
+    tag: 'sha-2f7a84f'
   replicas: 1
   resources:
     requests:
@@ -78,11 +78,11 @@ apiGateway:
 prismaMigrate:
   image:
     repository: takeshi-su57/prisma-migrate
-    tag: 'sha-a755699'
+    tag: 'sha-2f7a84f'
 landing:
   image:
     repository: takeshi-su57/landing
-    tag: 'sha-a755699'
+    tag: 'sha-2f7a84f'
   replicas: 1
   resources:
     requests:
@@ -97,13 +97,13 @@ landing:
 docs:
   image:
     repository: takeshi-su57/docs
-    tag: 'sha-a755699'
+    tag: 'sha-2f7a84f'
   buildArgs:
     appUrl: 'https://beta.luckyplans.xyz/login'
 web:
   image:
     repository: takeshi-su57/web
-    tag: 'sha-a755699'
+    tag: 'sha-2f7a84f'
   replicas: 1
   resources:
     requests:
