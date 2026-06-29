@@ -29,18 +29,30 @@ function WindowFrame({
   title,
   children,
   className = '',
+  chromeClassName = '',
+  bodyClassName = '',
+  titleClassName = '',
 }: {
   title: string;
   children: ReactNode;
   className?: string;
+  chromeClassName?: string;
+  bodyClassName?: string;
+  titleClassName?: string;
 }) {
   return (
     <Surface className={`overflow-hidden ${className}`}>
-      <div className="flex items-center gap-4 border-b border-[#edf1f8] bg-[#f9fbff] px-6 py-4">
+      <div
+        className={`flex items-center gap-4 border-b border-[#edf1f8] bg-[#f9fbff] px-6 py-4 ${chromeClassName}`}
+      >
         <WindowDots />
-        <div className="text-[15px] font-semibold text-[#444b59] md:text-[18px]">{title}</div>
+        <div
+          className={`text-[15px] font-semibold text-[#444b59] md:text-[18px] ${titleClassName}`}
+        >
+          {title}
+        </div>
       </div>
-      <div className="bg-white p-6">{children}</div>
+      <div className={`bg-white p-6 ${bodyClassName}`}>{children}</div>
     </Surface>
   );
 }
@@ -83,6 +95,25 @@ function StatMetric({
       <div
         className={`mt-2 text-[28px] font-medium tracking-tight ${valueClassName ?? 'text-[#2d63e2]'}`}
       >
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function HeroStatCard({
+  label,
+  value,
+  accentClassName,
+}: {
+  label: string;
+  value: string;
+  accentClassName: string;
+}) {
+  return (
+    <div className="min-w-[150px] rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,24,34,0.96)_0%,rgba(10,14,21,0.96)_100%)] px-4 py-3 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+      <div className="text-[12px] font-semibold text-[#8fa0b9]">{label}</div>
+      <div className={`mt-2 text-[30px] font-semibold tracking-tight ${accentClassName}`}>
         {value}
       </div>
     </div>
@@ -166,6 +197,14 @@ function SimulationListCard({ status }: { status: 'Running' | 'Completed' }) {
   );
 }
 
+function HeroFilterPill({ children }: { children: ReactNode }) {
+  return (
+    <span className="rounded-full border border-white/8 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold text-[#8fa0b9]">
+      {children}
+    </span>
+  );
+}
+
 function TinyAreaChart({ negative = false }: { negative?: boolean }) {
   return (
     <div className="relative h-28 overflow-hidden rounded-3xl border border-[#edf1f8] bg-white">
@@ -213,23 +252,176 @@ function SectionEyebrow({
   );
 }
 
+function HeroLineChart({
+  color,
+  fill,
+  negative = false,
+}: {
+  color: string;
+  fill: string;
+  negative?: boolean;
+}) {
+  const linePoints = negative
+    ? '0,28 18,28 34,46 52,26 82,54 118,22 156,62 194,104 230,120 272,12'
+    : '0,114 22,114 42,108 76,108 112,78 148,78 190,78 232,78 272,14';
+  const areaPoints = negative
+    ? '0,28 18,28 34,46 52,26 82,54 118,22 156,62 194,104 230,120 272,12 272,140 0,140'
+    : '0,114 22,114 42,108 76,108 112,78 148,78 190,78 232,78 272,14 272,140 0,140';
+
+  return (
+    <div className="relative h-[136px] overflow-hidden rounded-[22px] border border-white/6 bg-[linear-gradient(180deg,#131a24_0%,#0d1218_100%)]">
+      <div className="absolute inset-x-0 top-4 h-px bg-white/6" />
+      <div className="absolute inset-x-0 top-[52px] h-px bg-white/6" />
+      <div className="absolute inset-x-0 top-[88px] h-px bg-white/6" />
+      <svg viewBox="0 0 272 140" className="absolute inset-0 h-full w-full">
+        <polygon points={areaPoints} fill={fill} opacity={negative ? 0.26 : 0.22} />
+        <polyline
+          points={linePoints}
+          fill="none"
+          stroke={color}
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </div>
+  );
+}
+
+function HeroMetricRow({
+  label,
+  value,
+  valueClassName = 'text-[#202630]',
+}: {
+  label: string;
+  value: string;
+  valueClassName?: string;
+}) {
+  return (
+    <div className="flex items-center justify-between rounded-2xl border border-white/6 bg-white/[0.03] px-4 py-3">
+      <span className="text-sm text-[#8fa0b9]">{label}</span>
+      <span className={`text-sm font-semibold ${valueClassName}`}>{value}</span>
+    </div>
+  );
+}
+
 export function HeroProductVisual() {
   return (
     <div aria-label="hero product preview" className="relative">
-      <div className="absolute -top-12 right-16 z-20 flex gap-8">
-        <StatMetric label="Net PnL" value="471.797" valueClassName="text-[#19a566]" />
-        <StatMetric label="Trades" value="563" valueClassName="text-[#7f35d8]" />
-        <StatMetric label="Profit Factor" value="1.07" />
+      <div className="absolute -left-10 bottom-14 z-20 grid gap-3 lg:-left-16">
+        <HeroStatCard label="Net PnL" value="$471.80" accentClassName="text-[#27d56b]" />
+        <HeroStatCard label="Trades" value="563" accentClassName="text-[#be78ff]" />
+        <HeroStatCard label="Profit Factor" value="1.07" accentClassName="text-[#5aa1ff]" />
       </div>
 
-      <WindowFrame title="Simulation dashboard" className="bg-white">
-        <div className="space-y-5">
-          <div className="flex items-center gap-3">
-            <LabelPill tone="gray">Auto Simulations</LabelPill>
-            <LabelPill tone="gray">Manual Plans</LabelPill>
+      <WindowFrame
+        title="Simulation dashboard"
+        className="border-white/8 bg-[linear-gradient(180deg,rgba(20,25,34,0.94)_0%,rgba(9,12,18,0.97)_100%)] pt-10 shadow-[0_34px_90px_rgba(0,0,0,0.42)]"
+        chromeClassName="border-white/8 bg-[linear-gradient(180deg,#1b2029_0%,#151a22_100%)]"
+        bodyClassName="bg-transparent"
+        titleClassName="text-[#edf2fa]"
+      >
+        <div className="space-y-6 text-white">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <HeroFilterPill>Platform: GNS</HeroFilterPill>
+              <HeroFilterPill>Date: 06 / 29 / 2026</HeroFilterPill>
+              <HeroFilterPill>Descending</HeroFilterPill>
+            </div>
+            <button className="rounded-full bg-[linear-gradient(180deg,#1fd45f_0%,#15b650_100%)] px-5 py-2.5 text-sm font-semibold text-[#05130c] shadow-[0_10px_24px_rgba(31,212,95,0.20)]">
+              Analyze
+            </button>
           </div>
-          <SimulationListCard status="Running" />
-          <SimulationListCard status="Completed" />
+
+          <div className="grid gap-4 rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.02)_100%)] p-4 lg:grid-cols-[0.96fr_1.24fr]">
+            <div className="space-y-3">
+              <div className="rounded-[24px] border border-white/8 bg-[#0d1218] p-4">
+                <div className="font-mono text-[18px] text-[#f3f6fb]">0x25480...7c50d</div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-[#173f29] px-3 py-1 text-[11px] font-semibold text-[#45db79]">
+                    Expert
+                  </span>
+                  <span className="rounded-full bg-white/[0.05] px-3 py-1 text-[11px] font-semibold text-[#90a3bf]">
+                    22 positions
+                  </span>
+                </div>
+                <div className="mt-4 grid gap-3">
+                  <HeroMetricRow
+                    label="Total PnL"
+                    value="$15,184.4"
+                    valueClassName="text-[#27d56b]"
+                  />
+                  <HeroMetricRow
+                    label="Average PnL"
+                    value="$690.20"
+                    valueClassName="text-[#27d56b]"
+                  />
+                  <HeroMetricRow
+                    label="Avg. leverage"
+                    value="1.84x"
+                    valueClassName="text-[#ebf0f8]"
+                  />
+                  <HeroMetricRow
+                    label="R2 confidence"
+                    value="0.79"
+                    valueClassName="text-[#ebf0f8]"
+                  />
+                </div>
+              </div>
+
+              <div className="rounded-[24px] border border-white/8 bg-[#0d1218] p-4">
+                <div className="text-sm font-semibold text-[#90a3bf]">Review signals</div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <MetricTag label="Positive slope" tone="green" />
+                  <MetricTag label="Filtered" tone="blue" />
+                  <MetricTag label="Follower-safe" tone="purple" />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="rounded-[24px] border border-white/8 bg-[#0d1218] p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="text-sm font-semibold text-[#f3f6fb]">ACC PNL</div>
+                  <div className="text-xs font-semibold text-[#90a3bf]">
+                    Min $0 <span className="ml-2 text-[#27d56b]">$15,184.4</span>
+                  </div>
+                </div>
+                <HeroLineChart color="#13c38b" fill="#13c38b" />
+              </div>
+
+              <div className="rounded-[24px] border border-white/8 bg-[#0d1218] p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="text-sm font-semibold text-[#f3f6fb]">ACC In / Out</div>
+                  <div className="text-xs font-semibold text-[#90a3bf]">
+                    Min $-88,892.7 <span className="ml-2 text-[#27d56b]">$15,178.2</span>
+                  </div>
+                </div>
+                <HeroLineChart color="#ff4d73" fill="#ff4d73" negative />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8192ac]">
+                First activity
+              </div>
+              <div className="mt-2 text-base font-semibold text-[#edf2fa]">2026 / 04 / 26</div>
+            </div>
+            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8192ac]">
+                Avg. duration
+              </div>
+              <div className="mt-2 text-base font-semibold text-[#edf2fa]">244.02 mins</div>
+            </div>
+            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8192ac]">
+                Avg. pnl by size
+              </div>
+              <div className="mt-2 text-base font-semibold text-[#27d56b]">8.22%</div>
+            </div>
+          </div>
         </div>
       </WindowFrame>
     </div>
@@ -237,74 +429,25 @@ export function HeroProductVisual() {
 }
 
 export function ProblemVisual() {
-  const items = [
-    ['Noisy histories', 'Hard to compare trader behavior across scattered views.'],
-    ['Hidden drawdowns', 'PnL curves can recover after deep risk exposure.'],
-    ['No plan validation', 'Copy logic should be tested before live execution.'],
-  ];
-
   return (
-    <div
-      aria-label="problem preview"
-      className="relative rounded-[40px] border border-[#e4ecfb] bg-white/80 p-6 shadow-[0_24px_80px_rgba(55,84,170,0.08)]"
-    >
-      <div className="absolute inset-0 rounded-[40px] bg-[radial-gradient(circle_at_top_right,rgba(58,103,255,0.10),transparent_26%)]" />
-      <div className="relative rounded-[28px] bg-white/90 p-5 blur-[2px]">
-        <SimulationListCard status="Running" />
-      </div>
-      <div className="relative -mt-16 grid gap-4 md:grid-cols-3">
-        {items.map(([title, body]) => (
-          <div key={title} className="rounded-[28px] border border-[#e7edf8] bg-white px-5 py-6">
-            <div className="flex items-start gap-4">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ffe3e3] text-2xl text-[#ef4444]">
-                x
-              </div>
-              <div>
-                <div className="text-[20px] font-semibold text-[#20242f]">{title}</div>
-                <p className="mt-2 text-base leading-7 text-[#66728d]">{body}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div aria-label="problem preview" className="relative">
+      <img
+        src="/problem-risk-dashboard-preview.png"
+        alt="Problem risk dashboard preview"
+        className="w-full rounded-[18px] object-contain shadow-[0_22px_60px_rgba(34,58,116,0.10)]"
+      />
     </div>
   );
 }
 
 export function SolutionVisual() {
-  const steps = [
-    ['01', 'Select trader', '#2d63e2', '28%'],
-    ['02', 'Generate plans', '#7f35d8', '56%'],
-    ['03', 'Review risk', '#19a566', '82%'],
-  ] as const;
-
   return (
-    <div
-      aria-label="solution preview"
-      className="grid gap-6 lg:grid-cols-[240px_1fr] lg:items-center"
-    >
-      <div className="space-y-6">
-        {steps.map(([step, label, color, width]) => (
-          <div key={step} className="rounded-[28px] border border-[#d9e3f7] bg-white px-6 py-5">
-            <div className="flex items-center gap-4">
-              <div className="text-[18px] font-medium" style={{ color }}>
-                {step}
-              </div>
-              <div className="text-[22px] font-semibold text-[#212630]">{label}</div>
-            </div>
-            <div className="mt-4 h-3 rounded-full bg-[#e6ecf9]">
-              <div className="h-full rounded-full" style={{ width, backgroundColor: color }} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <WindowFrame title="Auto simulation results">
-        <div className="space-y-5">
-          <SimulationListCard status="Running" />
-          <SimulationListCard status="Completed" />
-        </div>
-      </WindowFrame>
+    <div aria-label="solution preview" className="relative">
+      <img
+        src="/solution-simulation-results-preview.png"
+        alt="Solution simulation results preview"
+        className="w-full rounded-[18px] object-contain shadow-[0_22px_60px_rgba(34,58,116,0.10)]"
+      />
     </div>
   );
 }
@@ -761,74 +904,14 @@ export function TrustVisual() {
 }
 
 export function RoadmapVisual() {
-  const stages = [
-    [
-      '1',
-      'Foundation',
-      'Landing page, official links, and simulation-first product story.',
-      'In progress',
-      'blue',
-    ],
-    [
-      '2',
-      'Public resources',
-      'Selected developer notes and official onboarding surfaces.',
-      'Preparing',
-      'purple',
-    ],
-    [
-      '3',
-      'Product preview',
-      'Early simulations and user feedback around copy-trading workflows.',
-      'Planned',
-      'green',
-    ],
-    [
-      '4',
-      'Advanced intelligence',
-      'More scoring, planning, and deeper integrations later on.',
-      'Exploring',
-      'gold',
-    ],
-  ] as const;
-
   return (
-    <div aria-label="roadmap preview">
-      <div className="hidden items-center px-14 md:flex">
-        <div className="h-1 flex-1 bg-[#cfd8ea]" />
-      </div>
-      <div className="-mt-2 grid gap-5 lg:grid-cols-4">
-        {stages.map(([step, title, body, status, tone]) => (
-          <div
-            key={step}
-            className="relative rounded-[30px] border border-[#dde6f5] bg-white p-7 shadow-[0_12px_32px_rgba(55,84,170,0.06)]"
-          >
-            <div
-              className="absolute -top-11 left-8 flex h-16 w-16 items-center justify-center rounded-full text-[20px] font-semibold text-white"
-              style={{
-                backgroundColor:
-                  tone === 'blue'
-                    ? '#2d63e2'
-                    : tone === 'purple'
-                      ? '#7f35d8'
-                      : tone === 'green'
-                        ? '#18a765'
-                        : '#f59e0b',
-              }}
-            >
-              {step}
-            </div>
-            <div className="pt-8">
-              <div className="text-[22px] font-semibold text-[#202630]">{title}</div>
-              <p className="mt-3 text-base leading-7 text-[#66728d]">{body}</p>
-              <div className="mt-6">
-                <LabelPill tone={tone === 'gold' ? 'gold' : (tone as 'blue' | 'purple' | 'green')}>
-                  {status}
-                </LabelPill>
-              </div>
-            </div>
-          </div>
-        ))}
+    <div aria-label="roadmap preview" className="relative">
+      <div aria-label="roadmap progress timeline">
+        <img
+          src="/roadmap-progress-preview.png"
+          alt="Roadmap progress timeline"
+          className="w-full object-contain"
+        />
       </div>
     </div>
   );
