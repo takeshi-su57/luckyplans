@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Redis Pub/Sub for Inter-Service Communication",
     "description": "Chose Redis pub/sub via NestJS Transport.REDIS over HTTP, gRPC, or full message brokers."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "GraphQL Code-First via API Gateway",
-    "permalink": "/architecture/decisions/2026-03-10-graphql-code-first"
-  },
-  "next": {
-    "title": "Switch GraphQL Codegen to client-preset with Inline Operations",
-    "permalink": "/architecture/decisions/2026-03-11-graphql-codegen-client-preset"
   }
 }

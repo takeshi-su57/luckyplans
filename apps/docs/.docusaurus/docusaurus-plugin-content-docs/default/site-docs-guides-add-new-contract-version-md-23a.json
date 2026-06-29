@@ -1,0 +1,27 @@
+{
+  "id": "guides/add-new-contract-version",
+  "title": "Add New Contract Version",
+  "description": "The current backend uses contract metadata to decide which parser and range should be applied to historical logs.",
+  "source": "@site/docs/guides/add-new-contract-version.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/add-new-contract-version",
+  "permalink": "/guides/add-new-contract-version",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/add-new-contract-version.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Add New Contract Version",
+    "sidebar_label": "Add New Contract Version"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Add New Chain",
+    "permalink": "/guides/add-new-chain"
+  },
+  "next": {
+    "title": "Create a Simulation",
+    "permalink": "/guides/create-simulation"
+  }
+}

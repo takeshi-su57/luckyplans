@@ -1,0 +1,27 @@
+{
+  "id": "security/security-best-practices",
+  "title": "Security Best Practices",
+  "description": "- Only trust official links.",
+  "source": "@site/docs/security/security-best-practices.md",
+  "sourceDirName": "security",
+  "slug": "/security/security-best-practices",
+  "permalink": "/security/security-best-practices",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/security/security-best-practices.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Security Best Practices",
+    "sidebar_label": "Security Best Practices"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Official Links",
+    "permalink": "/security/official-links"
+  },
+  "next": {
+    "title": "Impersonation Warning",
+    "permalink": "/security/impersonation-warning"
+  }
+}

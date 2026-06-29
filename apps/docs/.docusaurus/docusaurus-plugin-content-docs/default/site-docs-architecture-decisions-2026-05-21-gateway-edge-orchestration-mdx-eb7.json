@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Gateway-Owned Domain Logic with External Edge Orchestration",
     "description": "Current architecture keeps client-facing domain logic in api-gateway and uses external edge runtimes for distributed execution."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "PostgreSQL Persistence with Prisma ORM",
-    "permalink": "/architecture/decisions/2026-03-16-prisma-postgresql-persistence"
-  },
-  "next": {
-    "title": "Defer Edge WebSocket Sessions",
-    "permalink": "/architecture/decisions/2026-06-05-defer-edge-websocket-sessions"
   }
 }

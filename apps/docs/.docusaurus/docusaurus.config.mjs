@@ -75,12 +75,12 @@ export default {
           "position": "left"
         },
         {
-          "href": "http://localhost:3000/login",
+          "href": "https://app.luckyplans.xyz",
           "label": "App",
           "position": "right"
         },
         {
-          "href": "https://github.com/takeshi-su57/luckyplans",
+          "href": "https://github.com/luckyplans",
           "label": "GitHub",
           "position": "right"
         }
@@ -98,12 +98,12 @@ export default {
               "to": "/architecture/overview"
             },
             {
-              "label": "Developer Guide",
-              "to": "/guides/developer"
+              "label": "Quickstart",
+              "to": "/guides/quickstart"
             },
             {
-              "label": "API Reference",
-              "to": "/system/api"
+              "label": "GraphQL Reference",
+              "to": "/reference/graphql-reference"
             }
           ]
         },
@@ -112,11 +112,19 @@ export default {
           "items": [
             {
               "label": "App",
-              "href": "http://localhost:3000/login"
+              "href": "https://app.luckyplans.xyz"
             },
             {
               "label": "GitHub",
-              "href": "https://github.com/takeshi-su57/luckyplans"
+              "href": "https://github.com/luckyplans"
+            },
+            {
+              "label": "Frontend Repo",
+              "href": "https://github.com/takeshi-su57/lucky-plan-fe"
+            },
+            {
+              "label": "Backend Repo",
+              "href": "https://github.com/takeshi-su57/lucky-plan-be"
             }
           ]
         }

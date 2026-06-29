@@ -1,0 +1,27 @@
+{
+  "id": "guides/add-new-chain",
+  "title": "Add New Chain",
+  "description": "Adding a chain is usually smaller than adding a new platform, but it still affects contract metadata, RPC routing, and historical interpretation.",
+  "source": "@site/docs/guides/add-new-chain.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/add-new-chain",
+  "permalink": "/guides/add-new-chain",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/add-new-chain.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Add New Chain",
+    "sidebar_label": "Add New Chain"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Add New Platform",
+    "permalink": "/guides/add-new-platform"
+  },
+  "next": {
+    "title": "Add New Contract Version",
+    "permalink": "/guides/add-new-contract-version"
+  }
+}

@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Standalone Docs App on docs.luckyplans.xyz",
     "description": "Split the public docs and blog out of apps/web into a dedicated Docusaurus deployment."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "Defer Generic Task Artifact Transfer",
-    "permalink": "/architecture/decisions/2026-06-05-defer-task-artifact-transfer"
-  },
-  "next": {
-    "title": "ArgoCD — GitOps Continuous Delivery",
-    "permalink": "/architecture/argocd"
   }
 }

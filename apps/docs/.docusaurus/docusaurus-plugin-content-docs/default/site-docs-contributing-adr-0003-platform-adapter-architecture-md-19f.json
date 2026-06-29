@@ -1,0 +1,28 @@
+{
+  "id": "contributing/adr/platform-adapter-architecture",
+  "title": "ADR 0003 Platform Adapter Architecture",
+  "description": "Status",
+  "source": "@site/docs/contributing/adr/0003-platform-adapter-architecture.md",
+  "sourceDirName": "contributing/adr",
+  "slug": "/contributing/adr/platform-adapter-architecture",
+  "permalink": "/contributing/adr/platform-adapter-architecture",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/contributing/adr/0003-platform-adapter-architecture.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "ADR 0003 Platform Adapter Architecture",
+    "sidebar_label": "ADR 0003 Platform Adapter Architecture"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "ADR 0002 Contract Versioning by Block Range",
+    "permalink": "/contributing/adr/contract-versioning-by-block-range"
+  },
+  "next": {
+    "title": "Roadmap",
+    "permalink": "/roadmap/"
+  }
+}

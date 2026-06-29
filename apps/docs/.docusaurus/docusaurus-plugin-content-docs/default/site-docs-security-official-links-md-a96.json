@@ -1,0 +1,27 @@
+{
+  "id": "security/official-links",
+  "title": "Official Links",
+  "description": "Official web properties",
+  "source": "@site/docs/security/official-links.md",
+  "sourceDirName": "security",
+  "slug": "/security/official-links",
+  "permalink": "/security/official-links",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/security/official-links.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Official Links",
+    "sidebar_label": "Official Links"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Incident Response",
+    "permalink": "/operations/incident-response"
+  },
+  "next": {
+    "title": "Security Best Practices",
+    "permalink": "/security/security-best-practices"
+  }
+}

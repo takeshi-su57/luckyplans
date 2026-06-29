@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Switch GraphQL Codegen to client-preset with Inline Operations",
     "description": "Replaced three separate codegen plugins and .graphql files with client-preset and inline graphql() calls."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "Redis Pub/Sub for Inter-Service Communication",
-    "permalink": "/architecture/decisions/2026-03-10-redis-pub-sub-transport"
-  },
-  "next": {
-    "title": "Keycloak OIDC + next-auth v5 for Authentication",
-    "permalink": "/architecture/decisions/2026-03-11-keycloak-oidc-nextauth"
   }
 }

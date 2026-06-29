@@ -1,0 +1,27 @@
+{
+  "id": "guides/create-simulation",
+  "title": "Create a Simulation",
+  "description": "The current frontend includes real simulation routes for:",
+  "source": "@site/docs/guides/create-simulation.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/create-simulation",
+  "permalink": "/guides/create-simulation",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/create-simulation.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Create a Simulation",
+    "sidebar_label": "Create a Simulation"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Add New Contract Version",
+    "permalink": "/guides/add-new-contract-version"
+  },
+  "next": {
+    "title": "Analyze Leaderboard",
+    "permalink": "/guides/analyze-leaderboard"
+  }
+}

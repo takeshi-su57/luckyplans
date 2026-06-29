@@ -1,0 +1,27 @@
+{
+  "id": "operations/reindexing-runbook",
+  "title": "Reindexing Runbook",
+  "description": "Goal",
+  "source": "@site/docs/operations/reindexing-runbook.md",
+  "sourceDirName": "operations",
+  "slug": "/operations/reindexing-runbook",
+  "permalink": "/operations/reindexing-runbook",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/operations/reindexing-runbook.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Reindexing Runbook",
+    "sidebar_label": "Reindexing Runbook"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Database Migration",
+    "permalink": "/operations/database-migration"
+  },
+  "next": {
+    "title": "Monitoring",
+    "permalink": "/operations/monitoring"
+  }
+}

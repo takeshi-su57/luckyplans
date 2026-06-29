@@ -1,0 +1,27 @@
+{
+  "id": "reference/error-codes",
+  "title": "Error Codes",
+  "description": "LuckyPlans does not currently publish a formal cross-service error-code catalog in the product repos.",
+  "source": "@site/docs/reference/error-codes.md",
+  "sourceDirName": "reference",
+  "slug": "/reference/error-codes",
+  "permalink": "/reference/error-codes",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/reference/error-codes.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Error Codes",
+    "sidebar_label": "Error Codes"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Helm Values",
+    "permalink": "/reference/helm-values"
+  },
+  "next": {
+    "title": "Deployment Runbook",
+    "permalink": "/operations/deployment-runbook"
+  }
+}

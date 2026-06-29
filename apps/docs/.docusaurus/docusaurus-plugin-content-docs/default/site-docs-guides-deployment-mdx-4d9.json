@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Deployment Guide",
     "description": "Deploy LuckyPlans to local k3d or production Kubernetes with ArgoCD GitOps."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "TLS Certificates — cert-manager + Let's Encrypt",
-    "permalink": "/architecture/tls-certificates"
-  },
-  "next": {
-    "title": "Developer Guide",
-    "permalink": "/guides/developer"
   }
 }

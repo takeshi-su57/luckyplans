@@ -1,0 +1,27 @@
+{
+  "id": "guides/local-development",
+  "title": "Local Development",
+  "description": "Repository structure",
+  "source": "@site/docs/guides/local-development.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/local-development",
+  "permalink": "/guides/local-development",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/local-development.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Local Development",
+    "sidebar_label": "Local Development"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Quickstart",
+    "permalink": "/guides/quickstart"
+  },
+  "next": {
+    "title": "Environment Setup",
+    "permalink": "/guides/environment-setup"
+  }
+}

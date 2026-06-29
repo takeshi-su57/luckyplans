@@ -1,0 +1,27 @@
+{
+  "id": "architecture/data-flow",
+  "title": "Data Flow",
+  "description": "The product flow is easiest to understand as a pipeline from raw venue data into research and execution surfaces.",
+  "source": "@site/docs/architecture/data-flow.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/data-flow",
+  "permalink": "/architecture/data-flow",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/data-flow.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Data Flow",
+    "sidebar_label": "Data Flow"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Service Map",
+    "permalink": "/architecture/service-map"
+  },
+  "next": {
+    "title": "Simulation Engine",
+    "permalink": "/architecture/simulation-engine"
+  }
+}

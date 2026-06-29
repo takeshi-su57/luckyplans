@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "Developer Guide",
     "description": "How to set up and run LuckyPlans locally for development."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "Deployment Guide",
-    "permalink": "/guides/deployment"
-  },
-  "next": {
-    "title": "API Reference",
-    "permalink": "/system/api"
   }
 }

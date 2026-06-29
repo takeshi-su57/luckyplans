@@ -1,0 +1,27 @@
+{
+  "id": "reference/configuration-reference",
+  "title": "Configuration Reference",
+  "description": "LuckyPlans configuration currently spans two implementation families:",
+  "source": "@site/docs/reference/configuration-reference.md",
+  "sourceDirName": "reference",
+  "slug": "/reference/configuration-reference",
+  "permalink": "/reference/configuration-reference",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/reference/configuration-reference.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Configuration Reference",
+    "sidebar_label": "Configuration Reference"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "GraphQL Reference",
+    "permalink": "/reference/graphql-reference"
+  },
+  "next": {
+    "title": "Environment Variables",
+    "permalink": "/reference/environment-variables"
+  }
+}

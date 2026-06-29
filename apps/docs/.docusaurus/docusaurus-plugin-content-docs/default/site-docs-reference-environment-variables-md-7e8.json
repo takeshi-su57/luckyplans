@@ -1,0 +1,27 @@
+{
+  "id": "reference/environment-variables",
+  "title": "Environment Variables",
+  "description": "Backend variables from the current .env.sample",
+  "source": "@site/docs/reference/environment-variables.md",
+  "sourceDirName": "reference",
+  "slug": "/reference/environment-variables",
+  "permalink": "/reference/environment-variables",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/reference/environment-variables.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Environment Variables",
+    "sidebar_label": "Environment Variables"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Configuration Reference",
+    "permalink": "/reference/configuration-reference"
+  },
+  "next": {
+    "title": "Message Patterns",
+    "permalink": "/reference/message-patterns"
+  }
+}

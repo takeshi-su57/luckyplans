@@ -1,0 +1,27 @@
+{
+  "id": "contributing/coding-standards",
+  "title": "Coding Standards",
+  "description": "Backend",
+  "source": "@site/docs/contributing/coding-standards.md",
+  "sourceDirName": "contributing",
+  "slug": "/contributing/coding-standards",
+  "permalink": "/contributing/coding-standards",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/contributing/coding-standards.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Coding Standards",
+    "sidebar_label": "Coding Standards"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Contribution Guide",
+    "permalink": "/contributing/contribution-guide"
+  },
+  "next": {
+    "title": "Pull Request Guide",
+    "permalink": "/contributing/pull-request-guide"
+  }
+}

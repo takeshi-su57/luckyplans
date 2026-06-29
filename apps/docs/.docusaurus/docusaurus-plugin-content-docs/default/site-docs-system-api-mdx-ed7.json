@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "API Reference",
     "description": "GraphQL endpoint, authentication, REST auth endpoints, message patterns, and response formats."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "Developer Guide",
-    "permalink": "/guides/developer"
-  },
-  "next": {
-    "title": "Configuration Reference",
-    "permalink": "/system/configuration"
   }
 }

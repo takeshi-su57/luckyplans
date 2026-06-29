@@ -1,0 +1,27 @@
+{
+  "id": "guides/run-with-docker",
+  "title": "Run with Docker",
+  "description": "Current working Docker path",
+  "source": "@site/docs/guides/run-with-docker.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/run-with-docker",
+  "permalink": "/guides/run-with-docker",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/run-with-docker.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Run with Docker",
+    "sidebar_label": "Run with Docker"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Environment Setup",
+    "permalink": "/guides/environment-setup"
+  },
+  "next": {
+    "title": "Deployment Guide",
+    "permalink": "/guides/deployment-guide"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "operations/database-migration",
+  "title": "Database Migration",
+  "description": "Goal",
+  "source": "@site/docs/operations/database-migration.md",
+  "sourceDirName": "operations",
+  "slug": "/operations/database-migration",
+  "permalink": "/operations/database-migration",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/operations/database-migration.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Database Migration",
+    "sidebar_label": "Database Migration"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Rollback Runbook",
+    "permalink": "/operations/rollback-runbook"
+  },
+  "next": {
+    "title": "Reindexing Runbook",
+    "permalink": "/operations/reindexing-runbook"
+  }
+}

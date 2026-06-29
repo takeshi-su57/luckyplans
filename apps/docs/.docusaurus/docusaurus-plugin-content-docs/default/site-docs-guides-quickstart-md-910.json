@@ -1,0 +1,27 @@
+{
+  "id": "guides/quickstart",
+  "title": "Quickstart",
+  "description": "This quickstart is based on the current working product implementation in the split repositories:",
+  "source": "@site/docs/guides/quickstart.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/quickstart",
+  "permalink": "/guides/quickstart",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/guides/quickstart.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Quickstart",
+    "sidebar_label": "Quickstart"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Security Model",
+    "permalink": "/architecture/security-model"
+  },
+  "next": {
+    "title": "Local Development",
+    "permalink": "/guides/local-development"
+  }
+}

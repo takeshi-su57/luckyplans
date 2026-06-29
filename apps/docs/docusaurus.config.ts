@@ -1,5 +1,5 @@
 const appUrl =
-  process.env.DOCS_APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000/login';
+  process.env.DOCS_APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://app.luckyplans.xyz';
 
 const config = {
   title: 'LuckyPlans Docs',
@@ -66,7 +66,7 @@ const config = {
           position: 'right',
         },
         {
-          href: 'https://github.com/takeshi-su57/luckyplans',
+          href: 'https://github.com/luckyplans',
           label: 'GitHub',
           position: 'right',
         },
@@ -79,15 +79,17 @@ const config = {
           title: 'Docs',
           items: [
             { label: 'Architecture', to: '/architecture/overview' },
-            { label: 'Developer Guide', to: '/guides/developer' },
-            { label: 'API Reference', to: '/system/api' },
+            { label: 'Quickstart', to: '/guides/quickstart' },
+            { label: 'GraphQL Reference', to: '/reference/graphql-reference' },
           ],
         },
         {
           title: 'Project',
           items: [
             { label: 'App', href: appUrl },
-            { label: 'GitHub', href: 'https://github.com/takeshi-su57/luckyplans' },
+            { label: 'GitHub', href: 'https://github.com/luckyplans' },
+            { label: 'Frontend Repo', href: 'https://github.com/takeshi-su57/lucky-plan-fe' },
+            { label: 'Backend Repo', href: 'https://github.com/takeshi-su57/lucky-plan-be' },
           ],
         },
       ],

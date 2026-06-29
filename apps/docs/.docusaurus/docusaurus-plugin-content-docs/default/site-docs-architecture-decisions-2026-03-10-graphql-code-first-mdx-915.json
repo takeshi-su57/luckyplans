@@ -14,14 +14,5 @@
   "frontMatter": {
     "title": "GraphQL Code-First via API Gateway",
     "description": "Chose GraphQL code-first with NestJS decorators over REST or schema-first GraphQL."
-  },
-  "sidebar": "docsSidebar",
-  "previous": {
-    "title": "Functional Decomposition over Domain-Driven Services",
-    "permalink": "/architecture/decisions/2026-03-10-functional-decomposition"
-  },
-  "next": {
-    "title": "Redis Pub/Sub for Inter-Service Communication",
-    "permalink": "/architecture/decisions/2026-03-10-redis-pub-sub-transport"
   }
 }

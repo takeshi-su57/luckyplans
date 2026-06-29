@@ -12,87 +12,95 @@
           "docs": [
             {
               "id": "architecture/argocd",
-              "path": "/architecture/argocd",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/argocd"
             },
             {
               "id": "architecture/ci-cd-pipeline",
-              "path": "/architecture/ci-cd-pipeline",
+              "path": "/architecture/ci-cd-pipeline"
+            },
+            {
+              "id": "architecture/copy-trading-engine",
+              "path": "/architecture/copy-trading-engine",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/data-flow",
+              "path": "/architecture/data-flow",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/database-design",
+              "path": "/architecture/database-design",
               "sidebar": "docsSidebar"
             },
             {
               "id": "architecture/decisions/2026-03-10-functional-decomposition",
-              "path": "/architecture/decisions/2026-03-10-functional-decomposition",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-10-functional-decomposition"
             },
             {
               "id": "architecture/decisions/2026-03-10-graphql-code-first",
-              "path": "/architecture/decisions/2026-03-10-graphql-code-first",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-10-graphql-code-first"
             },
             {
               "id": "architecture/decisions/2026-03-10-redis-pub-sub-transport",
-              "path": "/architecture/decisions/2026-03-10-redis-pub-sub-transport",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-10-redis-pub-sub-transport"
             },
             {
               "id": "architecture/decisions/2026-03-11-graphql-codegen-client-preset",
-              "path": "/architecture/decisions/2026-03-11-graphql-codegen-client-preset",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-11-graphql-codegen-client-preset"
             },
             {
               "id": "architecture/decisions/2026-03-11-keycloak-oidc-nextauth",
-              "path": "/architecture/decisions/2026-03-11-keycloak-oidc-nextauth",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-11-keycloak-oidc-nextauth"
             },
             {
               "id": "architecture/decisions/2026-03-11-nextra-docs-route",
-              "path": "/architecture/decisions/2026-03-11-nextra-docs-route",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-11-nextra-docs-route"
             },
             {
               "id": "architecture/decisions/2026-03-12-custom-auth-pages-ropc",
-              "path": "/architecture/decisions/2026-03-12-custom-auth-pages-ropc",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-12-custom-auth-pages-ropc"
             },
             {
               "id": "architecture/decisions/2026-03-12-gateway-managed-sessions",
-              "path": "/architecture/decisions/2026-03-12-gateway-managed-sessions",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-12-gateway-managed-sessions"
             },
             {
               "id": "architecture/decisions/2026-03-13-bitnami-sealed-secrets",
-              "path": "/architecture/decisions/2026-03-13-bitnami-sealed-secrets",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-13-bitnami-sealed-secrets"
             },
             {
               "id": "architecture/decisions/2026-03-16-prisma-postgresql-persistence",
-              "path": "/architecture/decisions/2026-03-16-prisma-postgresql-persistence",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-03-16-prisma-postgresql-persistence"
             },
             {
               "id": "architecture/decisions/2026-05-21-gateway-edge-orchestration",
-              "path": "/architecture/decisions/2026-05-21-gateway-edge-orchestration",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-05-21-gateway-edge-orchestration"
             },
             {
               "id": "architecture/decisions/2026-06-05-defer-edge-websocket-sessions",
-              "path": "/architecture/decisions/2026-06-05-defer-edge-websocket-sessions",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-06-05-defer-edge-websocket-sessions"
             },
             {
               "id": "architecture/decisions/2026-06-05-defer-task-artifact-transfer",
-              "path": "/architecture/decisions/2026-06-05-defer-task-artifact-transfer",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-06-05-defer-task-artifact-transfer"
             },
             {
               "id": "architecture/decisions/2026-06-25-standalone-docs-app",
-              "path": "/architecture/decisions/2026-06-25-standalone-docs-app",
-              "sidebar": "docsSidebar"
+              "path": "/architecture/decisions/2026-06-25-standalone-docs-app"
             },
             {
               "id": "architecture/helm-deployment",
-              "path": "/architecture/helm-deployment",
+              "path": "/architecture/helm-deployment"
+            },
+            {
+              "id": "architecture/indexing-pipeline",
+              "path": "/architecture/indexing-pipeline",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/infrastructure",
+              "path": "/architecture/infrastructure",
               "sidebar": "docsSidebar"
             },
             {
@@ -101,42 +109,251 @@
               "sidebar": "docsSidebar"
             },
             {
+              "id": "architecture/security-model",
+              "path": "/architecture/security-model",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/service-map",
+              "path": "/architecture/service-map",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "architecture/simulation-engine",
+              "path": "/architecture/simulation-engine",
+              "sidebar": "docsSidebar"
+            },
+            {
               "id": "architecture/tls-certificates",
-              "path": "/architecture/tls-certificates",
+              "path": "/architecture/tls-certificates"
+            },
+            {
+              "id": "contributing/adr/contract-versioning-by-block-range",
+              "path": "/contributing/adr/contract-versioning-by-block-range",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "contributing/adr/deterministic-simulation-engine",
+              "path": "/contributing/adr/deterministic-simulation-engine",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "contributing/adr/platform-adapter-architecture",
+              "path": "/contributing/adr/platform-adapter-architecture",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "contributing/architecture-decisions",
+              "path": "/contributing/architecture-decisions",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "contributing/coding-standards",
+              "path": "/contributing/coding-standards",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "contributing/contribution-guide",
+              "path": "/contributing/contribution-guide",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "contributing/pull-request-guide",
+              "path": "/contributing/pull-request-guide",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/add-new-chain",
+              "path": "/guides/add-new-chain",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/add-new-contract-version",
+              "path": "/guides/add-new-contract-version",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/add-new-platform",
+              "path": "/guides/add-new-platform",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/analyze-leaderboard",
+              "path": "/guides/analyze-leaderboard",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/create-simulation",
+              "path": "/guides/create-simulation",
               "sidebar": "docsSidebar"
             },
             {
               "id": "guides/deployment",
-              "path": "/guides/deployment",
+              "path": "/guides/deployment"
+            },
+            {
+              "id": "guides/deployment-guide",
+              "path": "/guides/deployment-guide",
               "sidebar": "docsSidebar"
             },
             {
               "id": "guides/developer",
-              "path": "/guides/developer",
+              "path": "/guides/developer"
+            },
+            {
+              "id": "guides/environment-setup",
+              "path": "/guides/environment-setup",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/local-development",
+              "path": "/guides/local-development",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/quickstart",
+              "path": "/guides/quickstart",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "guides/run-with-docker",
+              "path": "/guides/run-with-docker",
               "sidebar": "docsSidebar"
             },
             {
               "id": "index",
-              "path": "/",
+              "path": "/"
+            },
+            {
+              "id": "intro/core-concepts",
+              "path": "/intro/core-concepts",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "intro/current-status",
+              "path": "/intro/current-status",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "intro/what-is-luckyplans",
+              "path": "/intro/what-is-luckyplans",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "operations/database-migration",
+              "path": "/operations/database-migration",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "operations/deployment-runbook",
+              "path": "/operations/deployment-runbook",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "operations/incident-response",
+              "path": "/operations/incident-response",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "operations/monitoring",
+              "path": "/operations/monitoring",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "operations/reindexing-runbook",
+              "path": "/operations/reindexing-runbook",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "operations/rollback-runbook",
+              "path": "/operations/rollback-runbook",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "reference/api-reference",
+              "path": "/reference/api-reference",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "reference/configuration-reference",
+              "path": "/reference/configuration-reference",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "reference/database-models",
+              "path": "/reference/database-models",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "reference/environment-variables",
+              "path": "/reference/environment-variables",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "reference/error-codes",
+              "path": "/reference/error-codes",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "reference/graphql-reference",
+              "path": "/reference/graphql-reference",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "reference/helm-values",
+              "path": "/reference/helm-values",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "reference/message-patterns",
+              "path": "/reference/message-patterns",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "roadmap/changelog",
+              "path": "/roadmap/changelog",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "roadmap/roadmap",
+              "path": "/roadmap/",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "security/disclosure-policy",
+              "path": "/security/disclosure-policy",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "security/impersonation-warning",
+              "path": "/security/impersonation-warning",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "security/official-links",
+              "path": "/security/official-links",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "security/security-best-practices",
+              "path": "/security/security-best-practices",
               "sidebar": "docsSidebar"
             },
             {
               "id": "system/api",
-              "path": "/system/api",
-              "sidebar": "docsSidebar"
+              "path": "/system/api"
             },
             {
               "id": "system/configuration",
-              "path": "/system/configuration",
-              "sidebar": "docsSidebar"
+              "path": "/system/configuration"
             }
           ],
           "draftIds": [],
           "sidebars": {
             "docsSidebar": {
               "link": {
-                "path": "/architecture/decisions/2026-03-10-functional-decomposition",
-                "label": "architecture/decisions/2026-03-10-functional-decomposition"
+                "path": "/intro/what-is-luckyplans",
+                "label": "intro/what-is-luckyplans"
               }
             }
           }

@@ -1,0 +1,27 @@
+{
+  "id": "architecture/copy-trading-engine",
+  "title": "Copy-Trading Engine",
+  "description": "LuckyPlans combines historical research with live copy-trading workflows. The live engine and the simulation engine share concepts, but they should not be treated as the same operational mode.",
+  "source": "@site/docs/architecture/copy-trading-engine.md",
+  "sourceDirName": "architecture",
+  "slug": "/architecture/copy-trading-engine",
+  "permalink": "/architecture/copy-trading-engine",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/takeshi-su57/luckyplans/tree/main/apps/docs/docs/architecture/copy-trading-engine.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Copy-Trading Engine",
+    "sidebar_label": "Copy-Trading Engine"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Simulation Engine",
+    "permalink": "/architecture/simulation-engine"
+  },
+  "next": {
+    "title": "Indexing Pipeline",
+    "permalink": "/architecture/indexing-pipeline"
+  }
+}
