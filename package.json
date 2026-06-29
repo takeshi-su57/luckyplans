@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "setup": "bash infrastructure/scripts/setup.sh",
-    "postinstall": "node scripts/postinstall/fix-gray-matter.js",
+    "postinstall": "node -e \"const fs=require('fs'); const {execFileSync}=require('child_process'); const script='scripts/postinstall/fix-gray-matter.js'; if (fs.existsSync(script)) execFileSync(process.execPath, [script], { stdio: 'inherit' });\"",
     "dev": "dotenv -e .env -- turbo run dev",
     "build": "dotenv -e .env -v NODE_ENV=production -- turbo run build",
     "lint": "dotenv -e .env -- turbo run lint",
