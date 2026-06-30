@@ -67,9 +67,9 @@ export function StatsSection() {
   return (
     <section
       id="workflow"
-      className="relative overflow-hidden bg-[linear-gradient(180deg,#f7fbff_0%,#edf4ff_100%)] py-20 sm:py-24 lg:py-28"
+      className="relative overflow-hidden bg-[#f4f8fe] py-20 sm:py-24 lg:py-28"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_6%,rgba(45,99,226,0.14),transparent_30%),radial-gradient(circle_at_92%_18%,rgba(34,197,94,0.11),transparent_24%),linear-gradient(90deg,rgba(255,255,255,0.9),transparent_40%,rgba(255,255,255,0.55))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_8%,rgba(45,99,226,0.10),transparent_32%),radial-gradient(circle_at_92%_18%,rgba(34,197,94,0.08),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.55),rgba(244,248,254,0)_34%,rgba(244,248,254,0))]" />
 
       <div className="relative mx-auto max-w-370 px-5 sm:px-8 lg:px-10">
         <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">

@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
-
-const docsUrl = 'https://docs.luckyplans.xyz';
-const appUrl = 'https://app.luckyplans.xyz';
+import { appUrl, docsUrl } from '../../config/public-site-urls';
 
 const navItems = [
   { label: 'Problem', href: '#problem' },
   { label: 'Workflow', href: '#workflow' },
   { label: 'Features', href: '#features' },
-  { label: 'Engine', href: '#engine' },
-  { label: 'Security', href: '#security' },
   { label: 'Roadmap', href: '#roadmap' },
 ];
 const navLinkClassName =

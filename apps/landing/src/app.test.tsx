@@ -4,7 +4,7 @@ import { App } from './app';
 
 describe('Landing SPA', () => {
   it('renders real product-feature landing sections', () => {
-    render(<App />);
+    const { container } = render(<App />);
 
     expect(
       screen.getByRole('heading', {
@@ -22,8 +22,14 @@ describe('Landing SPA', () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/problem and solution preview/i)).toBeInTheDocument();
-    expect(screen.getByAltText(/problem risk dashboard preview/i)).toBeInTheDocument();
-    expect(screen.getByAltText(/solution simulation results preview/i)).toBeInTheDocument();
+    expect(screen.getByAltText(/problem risk dashboard preview/i)).toHaveAttribute(
+      'src',
+      '/the-problem.png',
+    );
+    expect(screen.getByAltText(/solution simulation results preview/i)).toHaveAttribute(
+      'src',
+      '/the-solution.png',
+    );
     expect(
       screen.getByRole('heading', {
         name: /discover traders, generate plans, and analyze results in one system/i,
@@ -47,8 +53,8 @@ describe('Landing SPA', () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText(/simulation lab/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/trading plan product preview/i)).toBeInTheDocument();
-    expect(screen.getByAltText(/trading plan workflow preview/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/trading plan product preview/i)).not.toBeInTheDocument();
+    expect(screen.queryByAltText(/trading plan workflow preview/i)).not.toBeInTheDocument();
     expect(screen.getByText(/real platform data/i)).toBeInTheDocument();
     expect(screen.getByText(/deterministic engine/i)).toBeInTheDocument();
     expect(screen.getByText(/metrics that matter/i)).toBeInTheDocument();
@@ -58,9 +64,28 @@ describe('Landing SPA', () => {
     expect(screen.getAllByText(/analyze results/i).length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText(/hero product preview/i).length).toBeGreaterThan(0);
     expect(screen.getByLabelText(/roadmap progress timeline/i)).toBeInTheDocument();
-    expect(screen.getByAltText(/roadmap progress timeline/i)).toBeInTheDocument();
+    expect(screen.getByAltText(/roadmap progress timeline/i)).toHaveAttribute(
+      'src',
+      '/roadmap-progress-timeline.svg',
+    );
     expect(screen.getByLabelText(/roadmap status legend/i)).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /docs/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /open app/i }).length).toBeGreaterThan(0);
+
+    expect(screen.getAllByRole('link', { name: /open app/i })).toEqual(
+      expect.arrayContaining([expect.objectContaining({ href: 'http://localhost:3000/login' })]),
+    );
+    expect(screen.getAllByRole('link', { name: /docs/i })).toEqual(
+      expect.arrayContaining([expect.objectContaining({ href: 'http://localhost:3000/docs' })]),
+    );
+
+    const sectionLinks = Array.from(container.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
+      .map((link) => link.getAttribute('href'))
+      .filter((href): href is string => Boolean(href) && href !== '#');
+
+    expect(sectionLinks.length).toBeGreaterThan(0);
+    expect(sectionLinks.filter((href) => container.querySelector(href))).toEqual(sectionLinks);
+
+    expect(screen.getAllByRole('button').map((button) => button.textContent)).toEqual(['Menu']);
   });
 });

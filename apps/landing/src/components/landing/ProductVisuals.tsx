@@ -158,17 +158,17 @@ function SimulationListCard({ status }: { status: 'Running' | 'Completed' }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="rounded-xl bg-[#d8e5ff] px-4 py-2 text-sm font-semibold text-[#2d63e2]">
+          <span className="rounded-xl bg-[#d8e5ff] px-4 py-2 text-sm font-semibold text-[#2d63e2]">
             {running ? 'Resume' : 'Show Plans'}
-          </button>
+          </span>
           {running && (
-            <button className="rounded-xl bg-[#ffd8d8] px-4 py-2 text-sm font-semibold text-[#e45757]">
+            <span className="rounded-xl bg-[#ffd8d8] px-4 py-2 text-sm font-semibold text-[#e45757]">
               Cancel
-            </button>
+            </span>
           )}
-          <button className="rounded-xl bg-[#ef2f2f] px-4 py-2 text-sm font-semibold text-white">
+          <span className="rounded-xl bg-[#ef2f2f] px-4 py-2 text-sm font-semibold text-white">
             Remove
-          </button>
+          </span>
         </div>
       </div>
 
@@ -328,9 +328,9 @@ export function HeroProductVisual() {
               <HeroFilterPill>Date: 06 / 29 / 2026</HeroFilterPill>
               <HeroFilterPill>Descending</HeroFilterPill>
             </div>
-            <button className="rounded-full bg-[linear-gradient(180deg,#1fd45f_0%,#15b650_100%)] px-5 py-2.5 text-sm font-semibold text-[#05130c] shadow-[0_10px_24px_rgba(31,212,95,0.20)]">
+            <span className="rounded-full bg-[linear-gradient(180deg,#1fd45f_0%,#15b650_100%)] px-5 py-2.5 text-sm font-semibold text-[#05130c] shadow-[0_10px_24px_rgba(31,212,95,0.20)]">
               Analyze
-            </button>
+            </span>
           </div>
 
           <div className="grid gap-4 rounded-[26px] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_0%,rgba(255,255,255,0.02)_100%)] p-4 lg:grid-cols-[0.96fr_1.24fr]">
@@ -432,7 +432,7 @@ export function ProblemVisual() {
   return (
     <div aria-label="problem preview" className="relative">
       <img
-        src="/problem-risk-dashboard-preview.png"
+        src="/the-problem.png"
         alt="Problem risk dashboard preview"
         className="w-full rounded-[18px] object-contain shadow-[0_22px_60px_rgba(34,58,116,0.10)]"
       />
@@ -444,7 +444,7 @@ export function SolutionVisual() {
   return (
     <div aria-label="solution preview" className="relative">
       <img
-        src="/solution-simulation-results-preview.png"
+        src="/the-solution.png"
         alt="Solution simulation results preview"
         className="w-full rounded-[18px] object-contain shadow-[0_22px_60px_rgba(34,58,116,0.10)]"
       />
@@ -525,9 +525,9 @@ export function GeneratePlansVisual() {
                   </span>
                 </div>
               </div>
-              <button className="rounded-full bg-[#d8e5ff] px-5 py-3 text-sm font-semibold text-[#2d63e2]">
+              <span className="rounded-full bg-[#d8e5ff] px-5 py-3 text-sm font-semibold text-[#2d63e2]">
                 Show Details
-              </button>
+              </span>
             </div>
           ),
         )}
@@ -576,24 +576,24 @@ export function WorkflowControlsVisual() {
       <WindowFrame title="Workflow controls">
         <div className="space-y-5">
           <div className="flex items-center justify-end gap-3">
-            <button className="rounded-full bg-[#d8e5ff] px-5 py-3 text-sm font-semibold text-[#2d63e2]">
+            <span className="rounded-full bg-[#d8e5ff] px-5 py-3 text-sm font-semibold text-[#2d63e2]">
               + Auto Simulation
-            </button>
-            <button className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#2d63e2] shadow-[inset_0_0_0_1px_rgba(45,99,226,0.14)]">
+            </span>
+            <span className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#2d63e2] shadow-[inset_0_0_0_1px_rgba(45,99,226,0.14)]">
               Manual Plan
-            </button>
+            </span>
           </div>
           <div className="rounded-[24px] border border-[#edf1f8] bg-white p-5 shadow-[0_8px_24px_rgba(55,84,170,0.05)]">
             <div className="flex items-center justify-end gap-3">
-              <button className="rounded-xl bg-[#d8e5ff] px-4 py-2 text-sm font-semibold text-[#2d63e2]">
+              <span className="rounded-xl bg-[#d8e5ff] px-4 py-2 text-sm font-semibold text-[#2d63e2]">
                 Resume
-              </button>
-              <button className="rounded-xl bg-[#ffd8d8] px-4 py-2 text-sm font-semibold text-[#e45757]">
+              </span>
+              <span className="rounded-xl bg-[#ffd8d8] px-4 py-2 text-sm font-semibold text-[#e45757]">
                 Cancel
-              </button>
-              <button className="rounded-xl bg-[#ef2f2f] px-4 py-2 text-sm font-semibold text-white">
+              </span>
+              <span className="rounded-xl bg-[#ef2f2f] px-4 py-2 text-sm font-semibold text-white">
                 Remove
-              </button>
+              </span>
             </div>
             <div className="mt-5 grid gap-3 md:grid-cols-3">
               <FieldBox label="Plans" value="9 / 9" />
@@ -734,9 +734,9 @@ export function LeaderboardVisual() {
           <LabelPill tone="blue">Filtered</LabelPill>
           <LabelPill tone="blue">Hide Degens</LabelPill>
         </div>
-        <button className="rounded-full bg-[#2d63e2] px-6 py-3 text-sm font-semibold text-white">
+        <span className="rounded-full bg-[#2d63e2] px-6 py-3 text-sm font-semibold text-white">
           Analyze
-        </button>
+        </span>
       </div>
 
       <div className="mt-8 space-y-5">
@@ -792,7 +792,7 @@ export function PlatformVisual() {
     <Surface aria-label="platform preview" className="p-8">
       <div className="flex flex-wrap gap-7">
         {['Contracts', 'PnL Snapshot', 'Users', 'Controls'].map((tab, index) => (
-          <button
+          <span
             key={tab}
             className={`rounded-[18px] border px-7 py-4 text-[16px] ${
               index === 0
@@ -801,7 +801,7 @@ export function PlatformVisual() {
             }`}
           >
             {tab}
-          </button>
+          </span>
         ))}
       </div>
 
@@ -843,12 +843,12 @@ export function PlatformVisual() {
               <LabelPill tone="gray">Dead</LabelPill>
             </div>
             <div className="flex items-center gap-3">
-              <button className="rounded-full bg-[#2d63e2] px-5 py-3 text-sm font-semibold text-white">
+              <span className="rounded-full bg-[#2d63e2] px-5 py-3 text-sm font-semibold text-white">
                 Live
-              </button>
-              <button className="rounded-full bg-[#2d63e2] px-5 py-3 text-sm font-semibold text-white">
+              </span>
+              <span className="rounded-full bg-[#2d63e2] px-5 py-3 text-sm font-semibold text-white">
                 Start Adaption
-              </button>
+              </span>
             </div>
           </div>
         ))}
@@ -898,20 +898,6 @@ export function TrustVisual() {
             </div>
           ))}
         </div>
-      </div>
-    </div>
-  );
-}
-
-export function RoadmapVisual() {
-  return (
-    <div aria-label="roadmap preview" className="relative">
-      <div aria-label="roadmap progress timeline">
-        <img
-          src="/roadmap-progress-preview.png"
-          alt="Roadmap progress timeline"
-          className="w-full object-contain"
-        />
       </div>
     </div>
   );

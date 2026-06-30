@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1490 420" role="img" aria-labelledby="title desc">
+  <title id="title">Roadmap progress timeline</title>
+  <desc id="desc">Four roadmap item cards connected by progress circles and a stepper.</desc>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <g fill="none" stroke="#d8e2f4" stroke-width="5" stroke-linecap="round">
+      <path d="M222 60h282"/>
+      <path d="M597 60h282"/>
+      <path d="M972 60h282"/>
+    </g>
+
+    <g fill="#ffffff" stroke-width="3">
+      <circle cx="180" cy="60" r="44" stroke="#2d63e2"/>
+      <circle cx="555" cy="60" r="44" stroke="#8733df"/>
+      <circle cx="930" cy="60" r="44" stroke="#18a865"/>
+      <circle cx="1305" cy="60" r="44" stroke="#ed9400"/>
+    </g>
+
+    <g font-size="42" font-weight="900" text-anchor="middle">
+      <text x="180" y="75" fill="#2d63e2">1</text>
+      <text x="555" y="75" fill="#8733df">2</text>
+      <text x="930" y="75" fill="#18a865">3</text>
+      <text x="1305" y="75" fill="#ed9400">4</text>
+    </g>
+
+    <g fill="#ffffff" stroke="#d8e2f4" stroke-width="3">
+      <circle cx="371" cy="60" r="18"/>
+      <circle cx="746" cy="60" r="18"/>
+      <circle cx="1121" cy="60" r="18"/>
+    </g>
+
+    <g fill="none" stroke="#2d63e2" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
+      <path d="M367 53l7 7-7 7"/>
+      <path d="M742 53l7 7-7 7"/>
+      <path d="M1117 53l7 7-7 7"/>
+    </g>
+
+    <g transform="translate(24 102)">
+      <rect width="320" height="284" rx="24" fill="#ffffff" stroke="#e0e8f6"/>
+      <rect x="34" y="46" width="252" height="5" rx="2.5" fill="#d8e2f4"/>
+      <rect x="34" y="46" width="148" height="5" rx="2.5" fill="#2d63e2"/>
+      <text x="42" y="100" font-size="24" font-weight="850" fill="#0f1831">Foundation</text>
+      <text x="42" y="146" font-size="17" fill="#5c6881">Landing page, official links,</text>
+      <text x="42" y="173" font-size="17" fill="#5c6881">and simulation-first</text>
+      <text x="42" y="200" font-size="17" fill="#5c6881">product story.</text>
+      <rect x="42" y="228" width="134" height="38" rx="19" fill="#e7eefc"/>
+      <circle cx="62" cy="247" r="5" fill="#2d63e2"/>
+      <text x="78" y="253" font-size="16" font-weight="800" fill="#2d63e2">In progress</text>
+    </g>
+
+    <g transform="translate(399 102)">
+      <rect width="320" height="284" rx="24" fill="#ffffff" stroke="#e0e8f6"/>
+      <rect x="34" y="46" width="252" height="5" rx="2.5" fill="#d8e2f4"/>
+      <rect x="34" y="46" width="148" height="5" rx="2.5" fill="#8733df"/>
+      <text x="42" y="100" font-size="24" font-weight="850" fill="#0f1831">Public resources</text>
+      <text x="42" y="146" font-size="17" fill="#5c6881">Selected developer notes</text>
+      <text x="42" y="173" font-size="17" fill="#5c6881">and official onboarding</text>
+      <text x="42" y="200" font-size="17" fill="#5c6881">surfaces.</text>
+      <rect x="42" y="228" width="122" height="38" rx="19" fill="#eddcff"/>
+      <circle cx="62" cy="247" r="5" fill="#8733df"/>
+      <text x="78" y="253" font-size="16" font-weight="800" fill="#8733df">Preparing</text>
+    </g>
+
+    <g transform="translate(774 102)">
+      <rect width="320" height="284" rx="24" fill="#ffffff" stroke="#e0e8f6"/>
+      <rect x="34" y="46" width="252" height="5" rx="2.5" fill="#d8e2f4"/>
+      <rect x="34" y="46" width="148" height="5" rx="2.5" fill="#18a865"/>
+      <text x="42" y="100" font-size="24" font-weight="850" fill="#0f1831">Product preview</text>
+      <text x="42" y="146" font-size="17" fill="#5c6881">Early simulations and user</text>
+      <text x="42" y="173" font-size="17" fill="#5c6881">feedback around copy-trading</text>
+      <text x="42" y="200" font-size="17" fill="#5c6881">workflows.</text>
+      <rect x="42" y="228" width="109" height="38" rx="19" fill="#dff6ea"/>
+      <circle cx="62" cy="247" r="5" fill="#18a865"/>
+      <text x="78" y="253" font-size="16" font-weight="800" fill="#18a865">Planned</text>
+    </g>
+
+    <g transform="translate(1149 102)">
+      <rect width="320" height="284" rx="24" fill="#ffffff" stroke="#e0e8f6"/>
+      <rect x="34" y="46" width="252" height="5" rx="2.5" fill="#d8e2f4"/>
+      <rect x="34" y="46" width="148" height="5" rx="2.5" fill="#ed9400"/>
+      <text x="42" y="100" font-size="24" font-weight="850" fill="#0f1831">Advanced intelligence</text>
+      <text x="42" y="146" font-size="17" fill="#5c6881">More scoring, planning, and</text>
+      <text x="42" y="173" font-size="17" fill="#5c6881">deeper integrations later on.</text>
+      <rect x="42" y="228" width="122" height="38" rx="19" fill="#fff0d9"/>
+      <circle cx="62" cy="247" r="5" fill="#ed9400"/>
+      <text x="78" y="253" font-size="16" font-weight="800" fill="#ed9400">Exploring</text>
+    </g>
+  </g>
+</svg>

@@ -21,18 +21,18 @@ Authentication is gateway-managed. The browser only receives an opaque HttpOnly 
 
 ## Tech Stack
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | Next.js 16 + React 19 |
-| GraphQL Client | Apollo Client |
-| API Gateway | NestJS + Apollo Server (code-first) |
-| Runtime Messaging | Redis transport |
-| Auth | Keycloak |
-| Database | PostgreSQL 17 + Prisma |
-| Object Storage | MinIO |
-| Monorepo | Turborepo + pnpm workspaces |
-| Observability | OpenTelemetry, Prometheus, Grafana, Loki, Tempo |
-| Deployment | Docker + Helm + ArgoCD + k3s/k3d |
+| Layer             | Technology                                      |
+| ----------------- | ----------------------------------------------- |
+| Frontend          | Next.js 16 + React 19                           |
+| GraphQL Client    | Apollo Client                                   |
+| API Gateway       | NestJS + Apollo Server (code-first)             |
+| Runtime Messaging | Redis transport                                 |
+| Auth              | Keycloak                                        |
+| Database          | PostgreSQL 17 + Prisma                          |
+| Object Storage    | MinIO                                           |
+| Monorepo          | Turborepo + pnpm workspaces                     |
+| Observability     | OpenTelemetry, Prometheus, Grafana, Loki, Tempo |
+| Deployment        | Docker + Helm + ArgoCD + k3s/k3d                |
 
 ## Repo Layout
 
@@ -84,7 +84,8 @@ Local Docker Compose intentionally starts only the day-to-day backing services:
 
 Common local URLs:
 
-- App and landing: http://localhost:3000
+- Landing SPA: http://localhost:5173
+- Product app: http://localhost:3000/login
 - API Gateway GraphQL: http://localhost:3001/graphql
 - Docs app during `pnpm dev`: http://localhost:3002
 - Keycloak admin: http://localhost:8080

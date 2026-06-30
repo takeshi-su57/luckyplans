@@ -1,4 +1,5 @@
 import { ArrowUpRight, BarChart3, ShieldCheck, Sparkles, Waypoints } from 'lucide-react';
+import { appUrl, docsUrl } from '../../config/public-site-urls';
 
 const productAreas = [
   {
@@ -18,8 +19,6 @@ const productAreas = [
   },
 ];
 const proofPoints = ['Auto Simulations', 'Leaderboard Analysis', 'Follower PnL Metrics'];
-const docsUrl = 'https://docs.luckyplans.xyz';
-const appUrl = 'https://app.luckyplans.xyz';
 
 export function HeroSection() {
   return (
