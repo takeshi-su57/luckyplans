@@ -110,8 +110,8 @@ legacyV0:
   proxyPort: 8080
   proxyTimeouts:
     connect: '5s'
-    send: '30s'
-    read: '30s'
+    send: '3600s'
+    read: '3600s'
   replicas: 1
   resources:
     requests:
