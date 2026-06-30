@@ -6,7 +6,6 @@ const navItems = [
   { label: 'Problem', href: '#problem' },
   { label: 'Workflow', href: '#workflow' },
   { label: 'Features', href: '#features' },
-  { label: 'Roadmap', href: '#roadmap' },
 ];
 const navLinkClassName =
   'rounded-full px-3.5 py-2 text-[14px] font-medium text-[#1d2633]/76 transition-all duration-200 hover:bg-white/72 hover:text-[#07111f] hover:shadow-[0_8px_20px_rgba(9,18,48,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1fd45f]';
