@@ -7,11 +7,11 @@ description: How to set up and run LuckyPlans locally for development.
 
 ## Prerequisites
 
-| Tool | Version | Install |
-| --- | --- | --- |
-| Node.js | >= 20.0.0 | [nodejs.org](https://nodejs.org) |
-| pnpm | repo-managed via Corepack | `corepack enable && corepack prepare pnpm@11.5.3 --activate` |
-| Docker Compose | Latest | [docker.com](https://www.docker.com) |
+| Tool           | Version                   | Install                                                      |
+| -------------- | ------------------------- | ------------------------------------------------------------ |
+| Node.js        | >= 20.0.0                 | [nodejs.org](https://nodejs.org)                             |
+| pnpm           | repo-managed via Corepack | `corepack enable && corepack prepare pnpm@11.5.3 --activate` |
+| Docker Compose | Latest                    | [docker.com](https://www.docker.com)                         |
 
 ## Quick Start
 
@@ -26,7 +26,7 @@ docker compose up -d
 pnpm dev
 ```
 
-Open http://localhost:3000. The local host serves the public landing page and routes product app traffic through the web app and gateway.
+Open http://localhost:5173 for the standalone landing SPA. The product web app is separate and runs at http://localhost:3000, with product routes and gateway rewrites handled by `apps/web`.
 
 Production domains:
 
@@ -68,13 +68,13 @@ Docker Compose provides only the local backing services needed for `pnpm dev`:
 docker compose up -d
 ```
 
-| Container | Port | Purpose |
-| --- | --- | --- |
-| redis | 6379 | Inter-service communication and sessions |
-| postgresql-keycloak | 5433 | Keycloak database |
-| postgresql-app | 5434 | Application database |
-| keycloak | 8080 | Identity provider |
-| minio | 9000 (API), 9001 (Console) | Object storage for uploads |
+| Container           | Port                       | Purpose                                  |
+| ------------------- | -------------------------- | ---------------------------------------- |
+| redis               | 6379                       | Inter-service communication and sessions |
+| postgresql-keycloak | 5433                       | Keycloak database                        |
+| postgresql-app      | 5434                       | Application database                     |
+| keycloak            | 8080                       | Identity provider                        |
+| minio               | 9000 (API), 9001 (Console) | Object storage for uploads               |
 
 Verify everything is healthy:
 
@@ -109,17 +109,17 @@ pnpm dev
 
 Common local entry points:
 
-| Surface | URL | Description |
-| --- | --- | --- |
-| Landing SPA | http://localhost:3000 | Public marketing site |
-| Product app | http://localhost:3000/login | Authenticated web app |
-| GraphQL | http://localhost:3000/graphql | Gateway endpoint via rewrite |
-| Docs | http://localhost:3002 | Standalone docs SPA during `pnpm dev` |
+| Surface     | URL                           | Description                           |
+| ----------- | ----------------------------- | ------------------------------------- |
+| Landing SPA | http://localhost:5173         | Public marketing site                 |
+| Product app | http://localhost:3000/login   | Authenticated web app                 |
+| GraphQL     | http://localhost:3000/graphql | Gateway endpoint via rewrite          |
+| Docs        | http://localhost:3002         | Standalone docs SPA during `pnpm dev` |
 
 ### 6. Verify everything works
 
-1. Open http://localhost:3000 and confirm the landing page loads.
-2. Navigate to a protected route such as `/dashboard`.
+1. Open http://localhost:5173 and confirm the landing page loads.
+2. Open http://localhost:3000/dashboard.
 3. Confirm you are redirected to `/login`.
 4. Register a user or sign in with the test account:
    - Email: `testuser@luckyplans.xyz`
@@ -464,22 +464,22 @@ pnpm dev
 
 ## All Commands
 
-| Command | Description |
-| --- | --- |
-| `pnpm setup` | First-time project setup |
-| `pnpm dev` | Start all services with hot reload |
-| `pnpm build` | Build all packages and apps |
-| `pnpm lint` | Lint all packages |
-| `pnpm type-check` | Type-check all packages |
-| `pnpm format` | Format all files |
-| `pnpm format:check` | Check formatting |
-| `pnpm clean` | Remove build artifacts |
-| `pnpm deploy:local` | Full deploy to local k3d |
-| `./infrastructure/scripts/deploy-local.sh landing` | Rebuild and redeploy the landing SPA |
-| `./infrastructure/scripts/deploy-local.sh web` | Rebuild and redeploy the product web app |
-| `./infrastructure/scripts/deploy-local.sh --helm-only` | Helm upgrade only |
-| `pnpm deploy:teardown` | Destroy the local k3d cluster |
-| `pnpm deploy:status` | Show cluster, Helm release, and pod status |
+| Command                                                | Description                                |
+| ------------------------------------------------------ | ------------------------------------------ |
+| `pnpm setup`                                           | First-time project setup                   |
+| `pnpm dev`                                             | Start all services with hot reload         |
+| `pnpm build`                                           | Build all packages and apps                |
+| `pnpm lint`                                            | Lint all packages                          |
+| `pnpm type-check`                                      | Type-check all packages                    |
+| `pnpm format`                                          | Format all files                           |
+| `pnpm format:check`                                    | Check formatting                           |
+| `pnpm clean`                                           | Remove build artifacts                     |
+| `pnpm deploy:local`                                    | Full deploy to local k3d                   |
+| `./infrastructure/scripts/deploy-local.sh landing`     | Rebuild and redeploy the landing SPA       |
+| `./infrastructure/scripts/deploy-local.sh web`         | Rebuild and redeploy the product web app   |
+| `./infrastructure/scripts/deploy-local.sh --helm-only` | Helm upgrade only                          |
+| `pnpm deploy:teardown`                                 | Destroy the local k3d cluster              |
+| `pnpm deploy:status`                                   | Show cluster, Helm release, and pod status |
 
 ## Troubleshooting
 

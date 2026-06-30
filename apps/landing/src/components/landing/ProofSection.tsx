@@ -210,16 +210,16 @@ function ControlsPanel() {
   return (
     <Panel title="Workflow controls">
       <div className="flex gap-3">
-        <button className="rounded-[8px] bg-[#115dff] px-4 py-2 text-[12px] font-bold text-white">
+        <span className="rounded-[8px] bg-[#115dff] px-4 py-2 text-[12px] font-bold text-white">
           Run
-        </button>
+        </span>
         {['Ⅱ', '◷', '…'].map((label) => (
-          <button
+          <span
             key={label}
             className="rounded-[8px] border border-[#dfe7f4] bg-white px-4 py-2 text-[12px] font-bold text-[#26314a]"
           >
             {label}
-          </button>
+          </span>
         ))}
       </div>
       <div className="mt-4 rounded-[8px] border border-[#e3eaf5]">
@@ -386,9 +386,9 @@ function PlatformPanel() {
             </span>
           ))}
         </div>
-        <button className="rounded-[8px] border border-[#dfe7f4] px-3 py-1.5 text-[10px] font-bold text-[#115dff]">
+        <span className="rounded-[8px] border border-[#dfe7f4] px-3 py-1.5 text-[10px] font-bold text-[#115dff]">
           + New Contract
-        </button>
+        </span>
       </div>
       <div className="grid grid-cols-[1.4fr_0.7fr_0.8fr_0.8fr_0.4fr] px-4 py-3 text-[10px] font-bold text-[#4d5870]">
         <div>Contract</div>
@@ -424,10 +424,10 @@ export function ProofSection() {
     <section
       id="features"
       aria-label="core product features preview"
-      className="relative isolate overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#edf4fb_100%)] px-4 py-16 md:px-8 lg:py-20"
+      className="relative isolate -mt-px overflow-hidden bg-[#f4f8fe] px-4 py-16 md:px-8 lg:py-20"
     >
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(17,93,255,0.08)_1px,transparent_1px),linear-gradient(180deg,rgba(17,93,255,0.08)_1px,transparent_1px)] bg-[size:64px_64px] opacity-45" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_18%,rgba(45,99,226,0.10),transparent_32%),radial-gradient(circle_at_78%_12%,rgba(31,212,95,0.07),transparent_30%)]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(17,93,255,0.045)_1px,transparent_1px),linear-gradient(180deg,rgba(17,93,255,0.045)_1px,transparent_1px)] bg-[size:64px_64px] opacity-35" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_18%,rgba(45,99,226,0.08),transparent_34%),radial-gradient(circle_at_78%_18%,rgba(31,212,95,0.055),transparent_32%),linear-gradient(180deg,rgba(244,248,254,0)_0%,rgba(255,255,255,0.42)_50%,rgba(244,248,254,0)_100%)]" />
       <div className="mx-auto max-w-[1500px]">
         <div className="max-w-4xl">
           <div className="text-[14px] font-bold uppercase tracking-[0.08em] text-[#115dff]">

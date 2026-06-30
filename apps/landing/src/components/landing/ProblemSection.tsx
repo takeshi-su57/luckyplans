@@ -115,10 +115,10 @@ export function ProblemSection() {
     <section
       id="problem"
       aria-label="problem and solution preview"
-      className="relative isolate bg-[#f4f8fe] px-4 py-16 md:px-8 lg:py-24"
+      className="relative isolate -mt-px bg-[#f4f8fe] px-4 py-16 md:px-8 lg:py-22"
     >
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_18%,rgba(45,99,226,0.10),transparent_30%),radial-gradient(circle_at_82%_8%,rgba(31,212,95,0.08),transparent_28%)]" />
-      <div className="mx-auto max-w-[1500px] overflow-hidden rounded-[16px] border border-white/80 bg-[linear-gradient(135deg,#f9fcff_0%,#eff6ff_48%,#f7fbff_100%)] px-6 py-12 shadow-[0_28px_90px_rgba(35,68,132,0.10)] md:px-10 lg:px-12">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_18%,rgba(45,99,226,0.08),transparent_32%),radial-gradient(circle_at_82%_8%,rgba(31,212,95,0.06),transparent_30%)]" />
+      <div className="mx-auto max-w-[1500px] overflow-hidden rounded-[16px] border border-white/70 bg-[linear-gradient(135deg,rgba(249,252,255,0.86)_0%,rgba(239,246,255,0.76)_48%,rgba(247,251,255,0.82)_100%)] px-6 py-12 shadow-[0_22px_70px_rgba(35,68,132,0.08)] md:px-10 lg:px-12">
         <div className="grid gap-10 xl:grid-cols-2 xl:gap-12">
           <div>
             <div className="grid gap-7 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">

@@ -5,11 +5,11 @@ const githubUrl = 'https://github.com/takeshi-su57/luckyplans';
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-5 py-12 sm:px-8 lg:px-10">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(45,99,226,0.12),transparent_28%),radial-gradient(circle_at_82%_16%,rgba(127,53,216,0.12),transparent_24%)]" />
+    <footer className="relative -mt-px overflow-hidden bg-[#f4f8fe] px-5 py-12 sm:px-8 lg:px-10">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(45,99,226,0.08),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(127,53,216,0.075),transparent_28%),linear-gradient(180deg,rgba(244,248,254,0)_0%,rgba(255,255,255,0.5)_100%)]" />
 
       <div className="relative mx-auto max-w-[1480px]">
-        <div className="rounded-[28px] border border-[#d9e3f4] bg-[linear-gradient(135deg,rgba(255,255,255,0.92)_0%,rgba(247,250,255,0.88)_46%,rgba(244,239,255,0.9)_100%)] px-6 py-7 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:px-8 md:flex md:items-center md:justify-between md:gap-10">
+        <div className="rounded-[28px] border border-[#e0e8f5] bg-[linear-gradient(135deg,rgba(255,255,255,0.74)_0%,rgba(247,250,255,0.66)_46%,rgba(244,239,255,0.7)_100%)] px-6 py-7 shadow-[0_18px_58px_rgba(15,23,42,0.06)] backdrop-blur-xl sm:px-8 md:flex md:items-center md:justify-between md:gap-10">
           <div className="max-w-xl">
             <div className="flex items-center gap-4">
               <img
