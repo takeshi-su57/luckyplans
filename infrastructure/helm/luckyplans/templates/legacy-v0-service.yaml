@@ -14,6 +14,11 @@ data:
       "" $scheme;
     }
 
+    map $http_upgrade $connection_upgrade {
+      default upgrade;
+      "" close;
+    }
+
     server {
       listen {{ .Values.legacyV0.proxyPort }};
 
@@ -28,6 +33,8 @@ data:
         proxy_send_timeout {{ .Values.legacyV0.proxyTimeouts.send }};
         proxy_read_timeout {{ .Values.legacyV0.proxyTimeouts.read }};
         proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $proxy_x_forwarded_proto;
