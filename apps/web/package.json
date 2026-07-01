@@ -39,7 +39,7 @@
     "@luckyplans/config": "workspace:*",
     "@next/eslint-plugin-next": "^16.2.9",
     "@tanstack/react-query-devtools": "^5.100.14",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@testing-library/jest-dom": "^6.9.1",
