@@ -55,7 +55,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/
 RUN mkdir -p /tmp/sharp-install \
     && cd /tmp/sharp-install \
     && npm init -y \
-    && npm install sharp@0.34.5 \
+    && npm install sharp@0.35.2 \
     && cp -r /tmp/sharp-install/node_modules/* /app/node_modules/ \
     && rm -rf /tmp/sharp-install \
     && chown -R nextjs:nodejs /app/node_modules

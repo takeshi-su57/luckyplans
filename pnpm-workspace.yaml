@@ -39,5 +39,5 @@ minimumReleaseAgeExclude:
   - '@turbo/linux-arm64@2.9.18'
   - '@turbo/windows-64@2.9.18'
   - '@turbo/windows-arm64@2.9.18'
-  - '@types/node@25.9.3'
+  - '@types/node@26.0.1'
   - turbo@2.9.18
