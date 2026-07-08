@@ -49,19 +49,28 @@ export const metadata: Metadata = {
   authors: [{ name: 'LuckyPlans' }],
   creator: 'LuckyPlans',
   openGraph: {
-    title: 'LuckyPlans | $552B+ Perpetual DEX Volume, One Analytics Layer',
+    title: 'LuckyPlans | Simulation-first copy-trading research',
     description:
-      'Full leaderboard analytics and deterministic backtesting across gTrade, GMX, and Avantis. Multi-chain EVM. Verifiable. Open source.',
-    url: 'https://luckyplans.com',
+      'Simulate copy-trading plans, inspect trader risk, and review deterministic backtesting results before risking capital.',
+    url: 'https://luckyplans.xyz',
     siteName: 'LuckyPlans',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'LuckyPlans simulation-first copy-trading research preview',
+      },
+    ],
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LuckyPlans | $552B+ Perpetual DEX Volume, One Analytics Layer',
+    title: 'LuckyPlans | Simulation-first copy-trading research',
     description:
-      'Full leaderboard analytics and deterministic backtesting across gTrade, GMX, and Avantis. Multi-chain EVM. Verifiable. Open source.',
+      'Simulate copy-trading plans, inspect trader risk, and review deterministic backtesting results before risking capital.',
+    images: ['https://luckyplans.xyz/og-image.png'],
   },
   robots: {
     index: true,
