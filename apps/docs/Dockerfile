@@ -30,7 +30,9 @@ RUN pnpm turbo run build --filter=@luckyplans/docs
 
 FROM nginxinc/nginx-unprivileged:1.27-alpine AS runner
 USER root
-RUN apk upgrade --no-cache
+ARG SECURITY_UPGRADE_CACHE_BUST=manual
+RUN echo "security upgrade cache bust: ${SECURITY_UPGRADE_CACHE_BUST}" \
+    && apk upgrade --no-cache
 COPY --from=builder /app/apps/docs/build /usr/share/nginx/html
 
 USER 101
