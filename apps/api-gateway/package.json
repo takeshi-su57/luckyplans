@@ -24,7 +24,7 @@
     "@nestjs/graphql": "^13.2.4",
     "@nestjs/microservices": "^11.1.19",
     "@nestjs/platform-express": "^11.1.24",
-    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/adapter-pg": "^7.9.1",
     "cookie-parser": "^1.4.7",
     "graphql": "^16.8.0",
     "graphql-subscriptions": "^3.0.0",
