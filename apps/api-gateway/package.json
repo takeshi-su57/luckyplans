@@ -19,7 +19,7 @@
     "@luckyplans/prisma": "workspace:*",
     "@luckyplans/shared": "workspace:*",
     "@nestjs/apollo": "^13.2.4",
-    "@nestjs/common": "^11.1.17",
+    "@nestjs/common": "^11.1.28",
     "@nestjs/core": "^11.1.17",
     "@nestjs/graphql": "^13.2.4",
     "@nestjs/microservices": "^11.1.19",
