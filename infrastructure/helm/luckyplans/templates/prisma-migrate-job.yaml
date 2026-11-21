@@ -14,6 +14,13 @@ metadata:
     helm.sh/hook-weight: "-5"
     # Keep the last successful job for debugging, delete failed ones
     helm.sh/hook-delete-policy: before-hook-creation
+    # ArgoCD maps helm pre-upgrade to PreSync, which runs before PostgreSQL
+    # exists on a fresh cluster. An explicit ArgoCD hook overrides the helm
+    # hooks: run as a Sync hook after PostgreSQL (wave -1) is healthy and
+    # before api-gateway (wave 1) rolls out.
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
   backoffLimit: 5
   activeDeadlineSeconds: 180
