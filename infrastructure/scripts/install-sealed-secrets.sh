@@ -26,7 +26,7 @@ done
 
 # Add the Helm repo
 echo "--- Adding sealed-secrets Helm repo ---"
-helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets 2>/dev/null || true
+helm repo add sealed-secrets https://bitnami.github.io/sealed-secrets 2>/dev/null || true
 helm repo update
 
 # Install or upgrade the controller
