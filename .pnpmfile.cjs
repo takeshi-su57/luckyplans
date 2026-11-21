@@ -10,7 +10,7 @@ function readPackage(pkg) {
     pkg.dependencies.tar = '>=7.5.11';
   }
   if (pkg.dependencies?.multer) {
-    pkg.dependencies.multer = '2.2.0';
+    pkg.dependencies.multer = '^2.5.0';
   }
   if (pkg.dependencies?.['serialize-javascript']) {
     pkg.dependencies['serialize-javascript'] = '>=7.0.3';
@@ -22,7 +22,7 @@ function readPackage(pkg) {
     pkg.dependencies['js-yaml'] = '>=4.2.0';
   }
   if (pkg.dependencies?.postcss && pkg.name === 'next') {
-    pkg.dependencies.postcss = '>=8.5.10';
+    pkg.dependencies.postcss = '^8.5.18';
   }
   if (pkg.dependencies?.uuid && pkg.name === 'sockjs') {
     pkg.dependencies.uuid = '>=11.1.1';
