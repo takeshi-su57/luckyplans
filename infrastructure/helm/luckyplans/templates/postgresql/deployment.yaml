@@ -8,6 +8,9 @@ metadata:
   labels:
     {{- include "luckyplans.labels" . | nindent 4 }}
     app: {{ $component }}
+  annotations:
+    # ArgoCD: PostgreSQL must be healthy before the prisma-migrate Sync hook (wave 0)
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   replicas: 1
   strategy:

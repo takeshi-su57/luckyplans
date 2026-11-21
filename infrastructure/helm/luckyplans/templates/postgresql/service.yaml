@@ -6,6 +6,9 @@ metadata:
   namespace: {{ include "luckyplans.namespace" . }}
   labels:
     {{- include "luckyplans.labels" . | nindent 4 }}
+  annotations:
+    # ArgoCD: PostgreSQL must be up before the prisma-migrate Sync hook (wave 0)
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   selector:
     app: postgresql

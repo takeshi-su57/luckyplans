@@ -6,6 +6,9 @@ metadata:
   namespace: {{ include "luckyplans.namespace" . }}
   labels:
     {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 4 }}
+  annotations:
+    # ArgoCD: roll out only after the prisma-migrate Sync hook (wave 0) succeeds
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: {{ .Values.apiGateway.replicas }}
   selector:
