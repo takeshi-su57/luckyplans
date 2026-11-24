@@ -6,7 +6,10 @@ metadata:
   labels:
     {{- include "luckyplans.labels" . | nindent 4 }}
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    # Same wave as the MinIO Deployment (0). local-path uses WaitForFirstConsumer,
+    # so this PVC stays Pending until the MinIO pod exists; putting it in an
+    # earlier wave deadlocks ArgoCD waiting for it to become healthy.
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   accessModes:
     - ReadWriteOnce
