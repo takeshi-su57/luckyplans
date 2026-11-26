@@ -108,6 +108,8 @@ legacyV0:
   upstreamPort: 8080
   proxyImage: 'nginxinc/nginx-unprivileged:1.27-alpine'
   proxyPort: 8080
+  # Keep at or above the upstream API's JSON body limit (be: 50mb).
+  clientMaxBodySize: '50m'
   proxyTimeouts:
     connect: '5s'
     send: '3600s'
