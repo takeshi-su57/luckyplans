@@ -21,6 +21,9 @@ data:
 
     server {
       listen {{ .Values.legacyV0.proxyPort }};
+      # nginx defaults to 1m. Evaluator workers post whole task results here
+      # (multi-MB for wide Layer 1 grids); the be API itself accepts 50mb.
+      client_max_body_size {{ .Values.legacyV0.clientMaxBodySize }};
 
       location = /_proxy_health {
         access_log off;
@@ -58,6 +61,9 @@ spec:
     metadata:
       labels:
         {{- include "luckyplans.componentLabels" (dict "component" $component "ctx" .) | nindent 8 }}
+      annotations:
+        # nginx renders its config only at start: roll the pod when it changes.
+        checksum/proxy-config: {{ toJson .Values.legacyV0 | sha256sum }}
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
