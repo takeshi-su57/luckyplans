@@ -2,32 +2,35 @@ export function LabNotesSection() {
   return (
     <section id="research" className="research section" aria-labelledby="research-title">
       <div className="shell research-grid">
-        <div>
-          <p className="eyebrow">Separate research workbench</p>
-          <h2 id="research-title">Test strategies on BVIV.</h2>
+        <div className="research-copy">
+          <p className="eyebrow">Strategy research</p>
+          <h2 id="research-title">How strategies hold up on later data.</h2>
           <p className="section-description">
-            The local workbench charts Gains trader activity alongside BTC implied-volatility
-            prices. Build strategies from signals, filters, sizing, and exits, then backtest them on
-            an archived five-minute price series.
-          </p>
-          <p className="section-description">
-            Search parameters with Optuna or a grid. Take a candidate from the Pareto front into
-            walk-forward and shifted-window robustness checks on a separate validation partition.
+            The local BVIV workbench pairs Gains trader activity with Bitcoin implied volatility
+            prices. It lets you combine signals, filters, position sizing, and exits, then backtest
+            those rules on archived five-minute prices.
           </p>
           <details className="research-details">
             <summary>How the validation works</summary>
             <p>
-              Search uses the first 70% of the discovery archive. Validation runs a fixed candidate
-              on the final 30%. Walk-forward scoring compares results across consecutive train and
-              test segments. The robustness check measures stability across shifted windows.
+              Search with Optuna or a grid, then take a fixed candidate into validation.
+              Walk-forward scoring compares consecutive train and test segments. The robustness
+              check measures stability across shifted windows.
             </p>
           </details>
         </div>
         <figure className="study">
           <figcaption>
             <h3>BVIV preset validation</h3>
-            <p>November 25, 2026 · 2,772 five-minute validation bars</p>
+            <p>
+              <time dateTime="2026-11-25">November 25, 2026</time> · 2,772 five-minute validation
+              bars
+            </p>
           </figcaption>
+          <div className="study-split">
+            <span>70% parameter search</span>
+            <span>30% validation</span>
+          </div>
           <table>
             <thead>
               <tr>
@@ -58,8 +61,8 @@ export function LabNotesSection() {
             </tbody>
           </table>
           <p className="study-note">
-            Each check required a score of 0.600. Both presets fell short on walk-forward
-            consistency.
+            Both presets cleared the 0.600 robustness threshold and fell short on walk-forward
+            consistency. This run preceded the inclusion of financing costs in the research scores.
           </p>
         </figure>
       </div>
