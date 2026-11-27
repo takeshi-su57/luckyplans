@@ -1,57 +1,90 @@
-import { ChartNoAxesCombined, ListChecks, ScanSearch } from 'lucide-react';
+import { ArrowRight, ChartNoAxesCombined, ScanSearch, SlidersHorizontal } from 'lucide-react';
+import { docsUrl } from '../../config/public-site-urls';
 
 const steps = [
   {
-    title: 'Choose which traders to follow',
-    body: 'Rank traders from data available at the time of selection. Compare a net signal that includes costs with a directional signal that isolates trade PnL.',
+    title: 'Find traders',
+    body: 'Filter by venue, activity, and trading history. Use a historical cutoff to rank traders on the information available at the time.',
     Icon: ScanSearch,
+    previewTitle: 'Selection criteria',
+    previewRows: [
+      ['Venue', 'Gains Network'],
+      ['Selection cutoff', 'Sep 30'],
+      ['Signal basis', 'Directional PnL'],
+    ],
   },
   {
-    title: 'Replay follower trades',
-    body: 'Replay copy or reverse-copy rules, then inspect the follower ledger for directional PnL, fees, weekly results, and the effect of removing the largest positions.',
+    title: 'Replay the trades',
+    body: 'Mirror the leader or take the opposite side. Review trade-level PnL and fees in the follower ledger to see what drove the result.',
     Icon: ChartNoAxesCombined,
+    previewTitle: 'Follower ledger',
+    previewRows: [
+      ['Direction', 'Reverse copy'],
+      ['Directional PnL', '+$520'],
+      ['Modeled fees', '−$140'],
+    ],
   },
   {
-    title: 'Apply portfolio limits',
-    body: 'Replay the ledger as one follower account. Test bankroll, leverage, exposure and loss limits, then compare realized-equity drawdown and rejected entries.',
-    Icon: ListChecks,
+    title: 'Test portfolio limits',
+    body: 'Replay trades as one account with a starting bankroll and exposure limits. See which entries are rejected and how realized drawdown changes.',
+    Icon: SlidersHorizontal,
+    previewTitle: 'Portfolio replay',
+    previewRows: [
+      ['Starting bankroll', '$10,000'],
+      ['Exposure per market side', '30% of equity'],
+      ['Rejected entries', '8'],
+    ],
   },
 ];
 
 export function ProofSection() {
   return (
     <section id="workflow" className="section shell" aria-labelledby="workflow-title">
-      <p className="eyebrow">Copy-trading workflow</p>
-      <h2 id="workflow-title">See what a follower would have experienced.</h2>
-      <div className="workflow-grid">
-        {steps.map(({ title, body, Icon }) => (
-          <article className="workflow-card" key={title}>
-            <Icon className="workflow-icon" size={24} aria-hidden="true" />
+      <div className="section-intro">
+        <p className="eyebrow">Copy-trading workflow</p>
+        <h2 id="workflow-title">From trader history to portfolio risk.</h2>
+        <p className="section-description">
+          See how a trader’s historical positions translate into follower results under your rules.
+        </p>
+      </div>
+      <ol className="workflow-grid" role="list">
+        {steps.map(({ title, body, Icon, previewTitle, previewRows }, index) => (
+          <li className="workflow-card" key={title}>
+            <div className="workflow-step">
+              <span className="step-icon">
+                <Icon size={19} aria-hidden="true" />
+              </span>
+              <span className="step-number" aria-hidden="true">
+                Step {index + 1}
+              </span>
+            </div>
             <h3>{title}</h3>
             <p>{body}</p>
-          </article>
+            <figure className="step-preview">
+              <figcaption>
+                <span>{previewTitle}</span>
+                <span className="step-example">Example</span>
+              </figcaption>
+              <dl>
+                {previewRows.map(([label, value]) => (
+                  <div key={label}>
+                    <dt>{label}</dt>
+                    <dd>{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </figure>
+          </li>
         ))}
-      </div>
-      <p className="method-note">
-        The optional collateral loss cap limits realized losses in the portfolio replay. Intratrade
-        liquidation requires a price path.
-      </p>
-      <div className="mcp-card">
-        <div>
-          <h3>Agent access through MCP</h3>
-          <p>
-            Use an admin-issued token to validate configurations, compare simulations, and read
-            research reports. A write-scoped token can start research and cancel runs it created.
-          </p>
-        </div>
-        <details className="research-details">
-          <summary>Connection details</summary>
-          <p>
-            Point a Streamable HTTP MCP client at <code>https://v0.api.luckyplans.xyz/mcp</code> and
-            send the admin-issued token as a Bearer credential. Read scope covers reports and
-            configuration checks. Write scope also enables research creation and cancellation.
-          </p>
-        </details>
+      </ol>
+      <div className="workflow-note">
+        <p>
+          In the portfolio replay, an optional collateral cap limits realized losses. Modeling
+          liquidation while a trade is open requires a historical price path.
+        </p>
+        <a className="text-link" href={`${docsUrl.replace(/\/$/, '')}/guides/create-simulation`}>
+          Read the simulation guide <ArrowRight size={16} aria-hidden="true" />
+        </a>
       </div>
     </section>
   );

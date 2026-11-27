@@ -89,7 +89,7 @@ jobs:
         if: matrix.service == 'landing'
         id: landing-urls
         run: |
-          echo "app_url=https://app.luckyplans.xyz/login" >> "$GITHUB_OUTPUT"
+          echo "app_url=https://app.luckyplans.xyz/simulations" >> "$GITHUB_OUTPUT"
           echo "docs_url=https://docs.luckyplans.xyz" >> "$GITHUB_OUTPUT"
 
       - name: Set docs app URL
