@@ -3,6 +3,7 @@ import { HeroSection } from './components/landing/HeroSection';
 import { LabNotesSection } from './components/landing/LabNotesSection';
 import { McpSection } from './components/landing/McpSection';
 import { Navbar } from './components/landing/Navbar';
+import { PlatformSection } from './components/landing/PlatformSection';
 import { ProofSection } from './components/landing/ProofSection';
 
 export function App() {
@@ -12,6 +13,7 @@ export function App() {
       <main id="main-content" tabIndex={-1}>
         <HeroSection />
         <ProofSection />
+        <PlatformSection />
         <LabNotesSection />
         <McpSection />
       </main>
