@@ -578,6 +578,149 @@
   font-weight: 650;
 }
 
+.platform {
+  border-top: 1px solid var(--line);
+  background: #fdfefa;
+}
+
+.platform-intro,
+.platform-notes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem clamp(2rem, 5vw, 4.5rem);
+}
+
+.platform-intro {
+  align-items: end;
+}
+
+.platform .section-description,
+.platform .research-details {
+  margin-top: 0;
+}
+
+.architecture-flow {
+  --stage-gap: clamp(1.9rem, 3.5vw, 2.75rem);
+  --connector: #89a992;
+  --window-height: 2.6rem;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: var(--stage-gap);
+  margin-block: clamp(1.5rem, 4vw, 2.35rem);
+  padding: 3.15rem clamp(1rem, 3vw, 2rem) 1.55rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--tint);
+}
+
+.architecture-stage {
+  position: relative;
+  min-width: 0;
+  padding: clamp(0.7rem, 1.4vw, 1rem);
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: #fff;
+}
+
+.architecture-stage h3 {
+  margin-top: 0.7rem;
+  font-size: 1rem;
+}
+
+.architecture-stage p {
+  margin-top: 0.3rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.architecture-arrow {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(100% + var(--stage-gap) / 2);
+  color: var(--green);
+  transform: translate(-50%, -50%);
+}
+
+.architecture-workers {
+  position: relative;
+}
+
+.architecture-workers h3 {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: calc(100% + 0.55rem);
+  color: var(--green-deep);
+  font-size: 0.83rem;
+  text-align: center;
+}
+
+.architecture-windows {
+  position: relative;
+  display: grid;
+  grid-auto-rows: var(--window-height);
+  gap: 0.45rem;
+}
+
+.architecture-windows li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid #cbdcd0;
+  border-radius: 0.5rem;
+  background: #fdfefa;
+  color: var(--green-deep);
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.architecture-windows svg {
+  flex: none;
+}
+
+.architecture-windows::before,
+.architecture-windows::after {
+  position: absolute;
+  inset-block: calc(var(--window-height) / 2);
+  width: 1px;
+  background: var(--connector);
+  content: '';
+}
+
+.architecture-windows::before {
+  inset-inline-start: calc(var(--stage-gap) / -2);
+}
+
+.architecture-windows::after {
+  inset-inline-end: calc(var(--stage-gap) / -2);
+}
+
+.architecture-scheduler::after,
+.architecture-windows li::before,
+.architecture-windows li::after,
+.architecture-replay::before {
+  position: absolute;
+  inset-block-start: 50%;
+  width: calc(var(--stage-gap) / 2);
+  height: 1px;
+  background: var(--connector);
+  content: '';
+}
+
+.architecture-scheduler::after,
+.architecture-windows li::after {
+  inset-inline-start: 100%;
+}
+
+.architecture-windows li::before,
+.architecture-replay::before {
+  inset-inline-end: 100%;
+}
+
 .research {
   border-block: 1px solid var(--line);
   background: var(--tint);
@@ -800,6 +943,8 @@
 @media (max-width: 47rem) {
   .hero-layout,
   .workflow-grid,
+  .platform-intro,
+  .platform-notes,
   .research-grid,
   .integration {
     grid-template-columns: minmax(0, 1fr);
@@ -835,6 +980,53 @@
 
   .workflow-card {
     padding: 1.15rem;
+  }
+
+  .architecture-flow {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1rem;
+  }
+
+  .architecture-arrow {
+    inset-block-start: calc(100% + var(--stage-gap) / 2);
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .architecture-workers h3 {
+    position: static;
+    margin-bottom: 0.5rem;
+  }
+
+  .architecture-windows {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .architecture-windows li {
+    gap: 0.28rem;
+    font-size: 0.78rem;
+  }
+
+  .architecture-windows::before,
+  .architecture-windows::after,
+  .architecture-windows li::before,
+  .architecture-windows li::after {
+    content: none;
+  }
+
+  .architecture-scheduler::after,
+  .architecture-replay::before {
+    inset-inline: 50% auto;
+    width: 1px;
+    height: calc(var(--stage-gap) - 0.45rem);
+  }
+
+  .architecture-scheduler::after {
+    inset-block-start: 100%;
+  }
+
+  .architecture-replay::before {
+    inset-block: auto 100%;
   }
 }
 

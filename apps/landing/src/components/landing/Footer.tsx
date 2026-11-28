@@ -21,6 +21,7 @@ export function Footer() {
           </a>
           <nav aria-label="Footer navigation">
             <a href="#workflow">Workflow</a>
+            <a href="#platform">Platform</a>
             <a href="#research">Research</a>
             <a href={docsUrl}>Docs</a>
             <a href="https://github.com/takeshi-su57/luckyplans">GitHub</a>

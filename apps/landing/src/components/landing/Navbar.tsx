@@ -14,6 +14,7 @@ export function Navbar() {
         </a>
         <div className="nav-sections">
           <a href="#workflow">Workflow</a>
+          <a href="#platform">Platform</a>
           <a href="#research">Research</a>
           <a href={docsUrl}>Docs</a>
         </div>
